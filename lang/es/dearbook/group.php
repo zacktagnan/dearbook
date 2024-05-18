@@ -10,6 +10,6 @@ return [
     ],
 
     'list' => [
-        'no_registers' => 'No estás unido a ningún grupo'
+        'no_registers' => 'No estás unido a ningún grupo.'
     ],
 ];

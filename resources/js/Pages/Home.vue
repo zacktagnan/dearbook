@@ -1,5 +1,6 @@
 <script setup>
 import GroupList from '@/Components/dearbook/GroupList.vue'
+import FollowingList from '@/Components/dearbook/FollowingList.vue'
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -10,7 +11,7 @@ defineProps({
 
     <Head :title="$t('Home')" />
     <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-3 px-3 py-6">
+        <div class="col-span-3 py-6">
             <GroupList />
         </div>
 
@@ -18,8 +19,8 @@ defineProps({
             Publicaciones
         </div>
 
-        <div class="col-span-3 bg-blue-500">
-            Seguidores
+        <div class="col-span-3 py-6">
+            <FollowingList />
         </div>
     </div>
 </template>
