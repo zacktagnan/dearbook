@@ -150,4 +150,6 @@ return [
     'uppercase'            => 'El campo :attribute debe estar en mayúscula.',
     'url'                  => 'El campo :attribute debe ser una URL válida.',
     'uuid'                 => 'El campo :attribute debe ser un UUID válido.',
+
+    'regex_username'       => 'El campo :attribute solo puede contener caracteres alfanuméricos, guiones (-) y puntos (.).',
 ];

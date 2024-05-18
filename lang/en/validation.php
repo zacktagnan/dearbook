@@ -150,4 +150,6 @@ return [
     'uppercase'            => 'The :attribute field must be uppercase.',
     'url'                  => 'The :attribute must be a valid URL.',
     'uuid'                 => 'The :attribute must be a valid UUID.',
+
+    'regex_username'       => 'The :attribute field only can contains alphanumeric characters, dashes (-) and dots (.).',
 ];

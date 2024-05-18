@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('username')->after('password');
+            $table->string('username')->unique()->after('password');
             $table->string('cover_path', 1024)->nullable()->after('username');
             $table->string('avatar_path', 1024)->nullable()->after('cover_path');
         });
