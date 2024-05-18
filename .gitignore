@@ -23,6 +23,10 @@ yarn-error.log
 docker-compose.yml
 
 
+# traductions for Vue files
+lang/php_*.json
+
+
 # personal files to ignore
 /.___docs
 /**/*__00__*
