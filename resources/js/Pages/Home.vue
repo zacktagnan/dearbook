@@ -1,4 +1,5 @@
 <script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import GroupList from '@/Components/dearbook/GroupList.vue'
 import PostCreate from '@/Components/dearbook/PostCreate.vue'
 import PostList from '@/Components/dearbook/PostList.vue'
@@ -12,18 +13,21 @@ defineProps({
 <template>
 
     <Head :title="$t('Home')" />
-    <div class="grid gap-3 p-4 lg:grid-cols-12">
-        <div class="lg:col-span-3 lg:order-1">
-            <GroupList />
-        </div>
 
-        <div class="overflow-hidden lg:col-span-3 lg:order-3">
-            <FollowingList />
-        </div>
+    <AuthenticatedLayout>
+        <div class="grid gap-3 px-4 pt-20 pb-4 lg:grid-cols-12">
+            <div class="lg:col-span-3 lg:order-1">
+                <GroupList />
+            </div>
 
-        <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
-            <PostCreate />
-            <PostList class="flex-1" />
+            <div class="overflow-hidden lg:col-span-3 lg:order-3">
+                <FollowingList />
+            </div>
+
+            <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
+                <PostCreate />
+                <PostList class="flex-1" />
+            </div>
         </div>
-    </div>
+    </AuthenticatedLayout>
 </template>

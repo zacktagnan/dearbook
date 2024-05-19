@@ -21,7 +21,7 @@ defineProps({
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">{{ $t('Profile') }}</h2>
+            <h2 class="mt-16 text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">{{ $t('Profile') }}</h2>
         </template>
 
         <div class="py-12">

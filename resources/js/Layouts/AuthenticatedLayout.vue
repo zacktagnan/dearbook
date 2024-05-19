@@ -13,14 +13,14 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+            <nav class="fixed z-50 w-full bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
-                <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+                <div class="px-4 mx-auto sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('home')">
                                     <ApplicationLogo
                                     class="block w-auto text-gray-800 fill-current h-9 dark:text-gray-200" />
                                 </Link>
@@ -28,10 +28,10 @@ const showingNavigationDropdown = ref(false);
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')"
+                                <!-- <NavLink :href="route('dashboard')" :active="route().current('dashboard')"
                                     :title="$t('Dashboard')">
                                     {{ $t('Dashboard') }}
-                                </NavLink>
+                                </NavLink> -->
                             </div>
                         </div>
 
@@ -92,10 +92,10 @@ const showingNavigationDropdown = ref(false);
                 <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                     class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')"
+                        <!-- <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')"
                             :title="$t('Dashboard')">
                             {{ $t('Dashboard') }}
-                        </ResponsiveNavLink>
+                        </ResponsiveNavLink> -->
                     </div>
 
                     <!-- Responsive Settings Options -->
