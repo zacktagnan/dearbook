@@ -1,5 +1,7 @@
 <script setup>
 import GroupList from '@/Components/dearbook/GroupList.vue'
+import PostCreate from '@/Components/dearbook/PostCreate.vue'
+import PostList from '@/Components/dearbook/PostList.vue'
 import FollowingList from '@/Components/dearbook/FollowingList.vue'
 import { Head } from '@inertiajs/vue3';
 
@@ -15,8 +17,9 @@ defineProps({
             <GroupList />
         </div>
 
-        <div class="col-span-6 bg-yellow-500">
-            Publicaciones
+        <div class="col-span-6 py-6">
+            <PostCreate />
+            <PostList />
         </div>
 
         <div class="col-span-3 py-6">

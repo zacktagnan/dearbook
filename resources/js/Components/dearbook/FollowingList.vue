@@ -10,7 +10,7 @@ const searchKeyword = ref('')
     <div class="px-3">
         <h2 class="text-xl font-bold">{{ $t('dearbook.following.section_label') }}</h2>
 
-        <TextInput class="mt-2" :model="searchKeyword" :placeholder="$t('dearbook.following.search.placeholder')" />
+        <TextInput class="mt-2" :model-value="searchKeyword" :placeholder="$t('dearbook.following.search.placeholder')" />
 
         <div class="py-2">
             <div v-if="false" class="flex text-gray-400">
