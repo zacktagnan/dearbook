@@ -1,32 +1,36 @@
 <script setup>
-import FollowingItem from '@/Components/dearbook/FollowingItem.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { ref } from 'vue';
-
-const searchKeyword = ref('')
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import FollowingListTitle from '@/Components/dearbook/FollowingListTitle.vue';
+import FollowingListItems from '@/Components/dearbook/FollowingListItems.vue';
 </script>
 
 <template>
-    <div class="px-3">
-        <h2 class="text-xl font-bold">{{ $t('dearbook.following.section_label') }}</h2>
+    <div class="flex flex-col p-3 bg-white border rounded">
+        <div class="flex-1 block lg:hidden">
+            <Disclosure v-slot="{ open }">
+                <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">
+                    <div class="flex items-center justify-between">
+                        <FollowingListTitle />
 
-        <TextInput class="mt-2" :model-value="searchKeyword" :placeholder="$t('dearbook.following.search.placeholder')" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 transition-all" :class="open ? 'rotate-180 transform' : ''">
+                            <path fill-rule="evenodd"
+                                d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </DisclosureButton>
 
-        <div class="py-2">
-            <div v-if="false" class="flex text-gray-400">
-                <p class="w-full text-center">
-                    {{ $t('dearbook.following.list.no_registers') }}
-                </p>
-            </div>
+                <DisclosurePanel>
+                    <FollowingListItems />
+                </DisclosurePanel>
+            </Disclosure>
+        </div>
 
-            <div v-else>
-                <FollowingItem image="https://picsum.photos/100" title="Pol Niuman"
-                    :class="{'mt-1': false}" />
-                <FollowingItem image="https://picsum.photos/100" title="Rover Redfor"
-                                        :class="{'mt-1': true}" />
-                <FollowingItem image="https://picsum.photos/100" title="Catarine Ross"
-                    :class="{'mt-1': true}" />
-            </div>
+        <div class="flex-col flex-1 hidden lg:block">
+            <FollowingListTitle />
+
+            <FollowingListItems />
         </div>
     </div>
 </template>

@@ -1,33 +1,36 @@
 <script setup>
-import GroupItem from '@/Components/dearbook/GroupItem.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { ref } from 'vue';
-
-const searchKeyword = ref('')
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import GroupListTitle from '@/Components/dearbook/GroupListTitle.vue'
+import GroupListItems from '@/Components/dearbook/GroupListItems.vue'
 </script>
 
 <template>
-    <div class="px-3">
-        <h2 class="text-xl font-bold">{{ $t('dearbook.group.section_label') }}</h2>
+    <div class="flex flex-col p-3 bg-white border rounded">
+        <div class="flex-1 block lg:hidden">
+            <Disclosure v-slot="{ open }">
+                <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">
+                    <div class="flex items-center justify-between">
+                        <GroupListTitle />
 
-        <TextInput class="mt-2" :model-value="searchKeyword" :placeholder="$t('dearbook.group.search.placeholder')" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 transition-all" :class="open ? 'rotate-180 transform' : ''">
+                            <path fill-rule="evenodd"
+                                d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </DisclosureButton>
 
-        <div class="py-2">
-            <div v-if="false" class="flex text-gray-400">
-                <p class="w-full text-center">
-                    {{ $t('dearbook.group.list.no_registers') }}
-                </p>
-            </div>
+                <DisclosurePanel>
+                    <GroupListItems />
+                </DisclosurePanel>
+            </Disclosure>
+        </div>
 
-            <div v-else>
-                <GroupItem image="https://picsum.photos/100" title="Laravel Fans"
-                    description="Lorem ipsum dolor sit amet consectetur adipisicing elit." :class="{'mt-1': false}" />
-                <GroupItem image="https://picsum.photos/100" title="Backenderos"
-                    description="Reprehenderit, inventore excepturi aut, explicabo unde, id et accusantium dolor."
-                    :class="{'mt-1': true}" />
-                <GroupItem image="https://picsum.photos/100" title="Donostiarras"
-                    description="Tempore deserunt suscipit ratione numquam dolores maiores." :class="{'mt-1': true}" />
-            </div>
+        <div class="flex-col flex-1 hidden lg:block">
+            <GroupListTitle />
+
+            <GroupListItems />
         </div>
     </div>
 </template>

@@ -12,18 +12,18 @@ defineProps({
 <template>
 
     <Head :title="$t('Home')" />
-    <div class="grid grid-cols-12 gap-3">
-        <div class="col-span-3 py-6">
+    <div class="grid gap-3 p-4 lg:grid-cols-12">
+        <div class="lg:col-span-3 lg:order-1">
             <GroupList />
         </div>
 
-        <div class="col-span-6 py-6">
-            <PostCreate />
-            <PostList />
+        <div class="overflow-hidden lg:col-span-3 lg:order-3">
+            <FollowingList />
         </div>
 
-        <div class="col-span-3 py-6">
-            <FollowingList />
+        <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
+            <PostCreate />
+            <PostList class="flex-1" />
         </div>
     </div>
 </template>

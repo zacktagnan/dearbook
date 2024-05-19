@@ -57,5 +57,7 @@ const post2 = {
     <div>
         <PostItem :post="post1" />
         <PostItem :post="post2" />
+        <PostItem :post="post2" />
+        <PostItem :post="post2" />
     </div>
 </template>
