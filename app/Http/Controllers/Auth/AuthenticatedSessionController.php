@@ -34,7 +34,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         // return redirect()->intended(route('dashboard', absolute: false));
-        // [ tanto para el LOGIN, como para el REGISTER ]
+        // [ tanto para el LOGIN, REGISTER y otros procesos de Auth ]
         // Eliminada la ruta de 'dashboard', se pasa la redirección hacia la ruta de 'home'
         return redirect()->intended(route('home', absolute: false));
     }

@@ -47,8 +47,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // return redirect(route('dashboard', absolute: false));
-        // [ tanto para el LOGIN, como para el REGISTER ]
-        // Eliminada la ruta de 'dashboard', se pasa la redirección hacia la ruta de 'home'
         return redirect(route('home', absolute: false));
     }
 }
