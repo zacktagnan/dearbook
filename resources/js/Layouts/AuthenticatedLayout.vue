@@ -13,10 +13,10 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="fixed z-50 w-full bg-white border-b border-gray-100 dark:bg-gray-800 dark:border-gray-700">
+            <nav class="fixed z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-16">
+                    <div class="flex justify-between h-14">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
@@ -56,7 +56,7 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')" :title="$t('Profile')"> {{
+                                        <DropdownLink :href="route('profile.index', { username: $page.props.auth.user.username })" :title="$t('Profile')"> {{
                                             $t('Profile') }} </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button"
                                             :title="$t('Log Out')">
@@ -108,7 +108,7 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')" :title="$t('Profile')"> {{ $t('Profile') }}
+                            <ResponsiveNavLink :href="route('profile.index', { username: $page.props.auth.user.username })" :title="$t('Profile')"> {{ $t('Profile') }}
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button" :title="$t('Log Out')">
                                 {{ $t('Log Out') }}

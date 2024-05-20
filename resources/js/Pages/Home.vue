@@ -11,7 +11,6 @@ defineProps({
 </script>
 
 <template>
-
     <Head :title="$t('Home')" />
 
     <AuthenticatedLayout>
