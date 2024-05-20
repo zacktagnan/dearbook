@@ -1,22 +1,29 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import Edit from '@/Pages/Profile/Edit.vue'
+import Show from '@/Pages/Profile/Show.vue'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import TabItem from '@/Pages/Profile/Partials/TabItem.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Head } from '@inertiajs/vue3';
 import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 
-const user = usePage().props.auth.user;
-
-defineProps({
+const props = defineProps({
     mustVerifyEmail: {
         type: Boolean,
     },
     status: {
         type: String,
     },
+    user: {
+        type: Object,
+    },
 });
+
+const authUser = usePage().props.auth.user;
+
+const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
 </script>
 
 <template>
@@ -50,7 +57,7 @@ defineProps({
                         </div>
 
                         <div class="flex items-end h-full mt-11">
-                            <PrimaryButton class="mr-[47px] bg-cyan-600 hover:bg-cyan-500">
+                            <PrimaryButton v-if="isMyProfile" class="mr-[47px] bg-cyan-600 hover:bg-cyan-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -102,7 +109,8 @@ defineProps({
                         </TabPanel>
 
                         <TabPanel :key="followers" class="">
-                            <Edit :mustVerifyEmail="mustVerifyEmail" :status="status" />
+                            <Edit v-if="isMyProfile" :mustVerifyEmail="mustVerifyEmail" :status="status" />
+                            <Show v-else :user="user" />
                         </TabPanel>
 
                         <TabPanel :key="followers" class="p-3 bg-white shadow">
