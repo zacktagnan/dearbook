@@ -38,20 +38,52 @@ const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
                     <img src="/img/demo/cover.jpg" alt="Cover"
                         class="object-cover object-top w-full h-[330px] rounded-es-lg rounded-ee-lg">
 
+                    <button
+                        class="absolute flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded right-5 bottom-40 bg-gray-50 hover:bg-gray-200"
+                        title="Actualizar foto de portada">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1">
+                            <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
+                            <path fill-rule="evenodd"
+                                d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+
+                        <span class="mt-[2px]">Actualizar foto de portada</span>
+                    </button>
+
                     <div class="flex items-center justify-between bg-white ">
                         <div>
                             <img src="/img/demo/avatar.png" alt=""
                                 class="absolute left-[47px] bottom-3 w-[158px] h-[158px] rounded-full border-4 border-white">
+
+                            <button
+                                class="absolute flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full left-[156px] bottom-5 hover:bg-gray-300"
+                                title="Actualizar foto de usuario">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                                    class="w-5 h-5">
+                                    <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
+                                    <path fill-rule="evenodd"
+                                        d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+
                             <div class="pl-[220px] pt-[18px] pb-9 flex flex-col">
                                 <h1 class="text-3xl font-extrabold">{{ user.name }}</h1>
                                 <small class="font-bold text-gray-600">69 seguidores</small>
                                 <div class="relative flex w-full mt-1.5 mb-6">
-                                    <img src="/img/demo/avatar.png" alt=""
-                                        class="absolute z-30 w-[33px] h-[33px] rounded-full border-2 border-white">
-                                    <img src="/img/demo/avatar.png" alt=""
-                                        class="absolute z-20 left-6 w-[33px] h-[33px] rounded-full border-2 border-white">
-                                    <img src="/img/demo/avatar.png" alt=""
-                                        class="absolute z-10 left-12 w-[33px] h-[33px] rounded-full border-2 border-white">
+                                    <button>
+                                        <img src="/img/demo/avatar.png" alt=""
+                                            class="absolute z-30 w-[33px] h-[33px] rounded-full border-2 border-white">
+                                    </button>
+                                    <button>
+                                        <img src="/img/demo/avatar.png" alt=""
+                                            class="absolute z-20 left-6 w-[33px] h-[33px] rounded-full border-2 border-white">
+                                    </button>
+                                    <button>
+                                        <img src="/img/demo/avatar.png" alt=""
+                                            class="absolute z-10 left-12 w-[33px] h-[33px] rounded-full border-2 border-white">
+                                    </button>
                                 </div>
                             </div>
                         </div>
