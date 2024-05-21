@@ -1,5 +1,5 @@
 <script setup>
-import ProfileInformation from './Partials/ProfileInformation.vue';
+import ProfileInformation from "./Partials/ProfileInformation.vue";
 
 defineProps({
     user: {
@@ -10,8 +10,13 @@ defineProps({
 
 <template>
     <div class="mt-2 space-y-6">
-        <div class="px-8 bg-white shadow sm:py-4 dark:bg-gray-800 sm:rounded-lg">
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">{{ $t('About') }}
+        <div
+            class="px-4 bg-white shadow md:px-8 sm:py-4 dark:bg-gray-800 sm:rounded-lg"
+        >
+            <h2
+                class="text-lg font-semibold text-gray-800 md:leading-tight lg:text-xl dark:text-gray-200"
+            >
+                {{ $t("About") }}
             </h2>
         </div>
     </div>
