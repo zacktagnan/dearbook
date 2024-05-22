@@ -1,13 +1,12 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import GroupList from '@/Components/dearbook/GroupList.vue'
-import PostCreate from '@/Components/dearbook/PostCreate.vue'
-import PostList from '@/Components/dearbook/PostList.vue'
-import FollowingList from '@/Components/dearbook/FollowingList.vue'
-import { Head } from '@inertiajs/vue3';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import GroupList from "@/Components/dearbook/GroupList.vue";
+import PostCreate from "@/Components/dearbook/PostCreate.vue";
+import PostList from "@/Components/dearbook/PostList.vue";
+import FollowingList from "@/Components/dearbook/FollowingList.vue";
+import { Head } from "@inertiajs/vue3";
 
-defineProps({
-});
+defineProps({});
 </script>
 
 <template>

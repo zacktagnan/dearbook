@@ -5,9 +5,12 @@ import Show from "@/Pages/Profile/Show.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { CameraIcon } from "@heroicons/vue/24/solid";
+import { PencilSquareIcon } from "@heroicons/vue/24/outline";
 import { Head } from "@inertiajs/vue3";
 import { usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
+import { ref } from "vue";
 
 const props = defineProps({
     mustVerifyEmail: {
@@ -35,30 +38,16 @@ const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
             <div class="lg:w-2/3 mx-auto pt-[58px]">
                 <div class="relative bg-white">
                     <img
-                        src="/img/demo/cover.jpg"
+                        :src="user.cover_path || '/img/default_cover.jpg'"
                         alt="Cover"
-                        class="object-cover object-top w-full md:h-[330px] md:rounded-es-lg md:rounded-ee-lg"
+                        class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg"
                     />
 
                     <button
                         class="absolute flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded lg:right-5 lg:bottom-40 right-5 top-28 md:top-72 lg:top-auto bg-gray-50 hover:bg-gray-200"
                         title="Actualizar foto de portada"
                     >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            class="w-5 h-5 lg:mr-1"
-                        >
-                            <path
-                                d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z"
-                            />
-                            <path
-                                fill-rule="evenodd"
-                                d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
-                                clip-rule="evenodd"
-                            />
-                        </svg>
+                        <CameraIcon class="w-5 h-5 lg:mr-1" />
 
                         <span class="hidden lg:block mt-[2px]"
                             >Actualizar foto de portada</span
@@ -69,39 +58,14 @@ const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
                         class="flex flex-col items-center justify-between bg-white lg:flex-row"
                     >
                         <div class="flex flex-col w-full lg:block">
-                            <!-- <div class="relative lg:static">
-                                <img
-                                    src="/img/demo/avatar.png"
-                                    alt=""
-                                    class="absolute left-[47px] -bottom-20 lg:bottom-3 w-[158px] h-[158px] rounded-full border-4 border-white"
-                                />
-
-                                <button
-                                    class="absolute flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full left-[156px] top-11 lg:top-auto lg:bottom-5 hover:bg-gray-300"
-                                    title="Actualizar foto de usuario"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                        class="w-5 h-5"
-                                    >
-                                        <path
-                                            d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z"
-                                        />
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                </button>
-                            </div> -->
                             <div
                                 class="flex justify-center lg:justify-start lg:static"
                             >
                                 <img
-                                    src="/img/demo/avatar.png"
+                                    :src="
+                                        user.avatar_path ||
+                                        '/img/default_avatar.png'
+                                    "
                                     alt=""
                                     class="absolute top-20 md:top-64 lg:top-auto lg:left-[47px] lg:bottom-3 w-[158px] h-[158px] rounded-full border-4 border-white"
                                 />
@@ -110,21 +74,7 @@ const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
                                     class="absolute flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full right-[136px] md:right-[314px] lg:right-auto lg:left-[156px] top-48 md:top-[369px] lg:top-auto lg:bottom-5 hover:bg-gray-300"
                                     title="Actualizar foto de usuario"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24"
-                                        fill="currentColor"
-                                        class="w-5 h-5"
-                                    >
-                                        <path
-                                            d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z"
-                                        />
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M9.344 3.071a49.52 49.52 0 0 1 5.312 0c.967.052 1.83.585 2.332 1.39l.821 1.317c.24.383.645.643 1.11.71.386.054.77.113 1.152.177 1.432.239 2.429 1.493 2.429 2.909V18a3 3 0 0 1-3 3h-15a3 3 0 0 1-3-3V9.574c0-1.416.997-2.67 2.429-2.909.382-.064.766-.123 1.151-.178a1.56 1.56 0 0 0 1.11-.71l.822-1.315a2.942 2.942 0 0 1 2.332-1.39ZM6.75 12.75a5.25 5.25 0 1 1 10.5 0 5.25 5.25 0 0 1-10.5 0Zm12-1.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
+                                    <CameraIcon class="w-5 h-5" />
                                 </button>
                             </div>
 
@@ -173,20 +123,7 @@ const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
                                 class="lg:mr-[47px] bg-cyan-600 hover:bg-cyan-500"
                                 title="Editar"
                             >
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke-width="1.5"
-                                    stroke="currentColor"
-                                    class="w-5 h-5 mr-1"
-                                >
-                                    <path
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                    />
-                                </svg>
+                                <PencilSquareIcon class="w-5 h-5 mr-1" />
 
                                 Editar
                             </PrimaryButton>
