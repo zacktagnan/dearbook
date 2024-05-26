@@ -19,7 +19,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-cover-image', [ProfileController::class, 'updateCoverImage'])->name('update-cover-image');
         Route::post('/update-avatar-image', [ProfileController::class, 'updateAvatarImage'])->name('update-avatar-image');
         // Route::get('', [ProfileController::class, 'edit'])->name('edit');
-        // Route::patch('', [ProfileController::class, 'update'])->name('update');
+        Route::patch('', [ProfileController::class, 'update'])->name('update');
         // Route::delete('', [ProfileController::class, 'destroy'])->name('destroy');
     });
 });

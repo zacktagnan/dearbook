@@ -41,7 +41,7 @@ const imagesForm = useForm({
 
 const coverImageSrc = ref("");
 const avatarImageSrc = ref("");
-const showNotification = ref(false)
+const showNotification = ref(true)
 
 const onCoverChange = (event) => {
     console.log(event);
@@ -262,12 +262,12 @@ const fadeOutEffect = (className) => {
                     <div class="flex flex-col items-center justify-between bg-white lg:flex-row">
                         <div class="flex flex-col w-full lg:block">
                             <div class="flex justify-center lg:justify-start lg:static">
-                                <div class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
+                                <div
+                                    class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
                                     <img :src="
                                             avatarImageSrc || user.avatar_url ||
                                             '/img/default_avatar.png'
-                                        " alt=""
-                                        class="rounded-full border-[1px] border-gray-200 w-[174px]" />
+                                        " alt="" class="rounded-full border-[1px] border-gray-200 w-[174px] h-[168px]" />
                                 </div>
 
                                 <div
