@@ -15,6 +15,9 @@ import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
+    success: {
+        type: String,
+    },
     errors: Object,
     mustVerifyEmail: {
         type: Boolean,
@@ -37,6 +40,7 @@ const imagesForm = useForm({
 })
 
 const coverImageSrc = ref("");
+const avatarImageSrc = ref("");
 const showNotification = ref(false)
 
 const onCoverChange = (event) => {
@@ -46,10 +50,24 @@ const onCoverChange = (event) => {
     if (imagesForm.cover) {
         const reader = new FileReader();
         reader.onload = () => {
-            console.log("OnLoad...");
+            console.log("OnLoad COVER ...");
             coverImageSrc.value = reader.result;
         };
         reader.readAsDataURL(imagesForm.cover);
+    }
+};
+
+const onAvatarChange = (event) => {
+    console.log(event);
+
+    imagesForm.avatar = event.target.files[0];
+    if (imagesForm.avatar) {
+        const reader = new FileReader();
+        reader.onload = () => {
+            console.log("OnLoad AVATAR ...");
+            avatarImageSrc.value = reader.result;
+        };
+        reader.readAsDataURL(imagesForm.avatar);
     }
 };
 
@@ -58,19 +76,27 @@ const resetCoverImage = () => {
     imagesForm.cover = null
 }
 
+const resetAvatarImage = () => {
+    avatarImageSrc.value = ''
+    imagesForm.avatar = null
+}
+
 const submitCoverImage = () => {
     console.log(imagesForm.cover)
 
-    imagesForm.post(route('profile.update-images'), {
+    var fadeTarget = document.getElementById("notification-box");
+    fadeTarget.style.removeProperty("opacity");
+    // showNotification.value = true
+
+    imagesForm.post(route('profile.update-cover-image'), {
         onSuccess: () => {
-            var fadeTarget = document.getElementById("notification-box");
             // fadeTarget.style.opacity = 1;
             // if (fadeTarget.style.opacity) {
             //     fadeTarget.style.removeProperty("opacity");
             //     // fadeInEffect()
             // }
-            fadeTarget.style.removeProperty("opacity");
 
+            // fadeTarget.style.removeProperty("opacity");
             showNotification.value = true
             resetCoverImage()
 
@@ -80,11 +106,36 @@ const submitCoverImage = () => {
             // }, 3000)
         },
         onError: () => {
+            // console.log('INI - Hubo errores...', props.errors.cover, showNotification.value)
+            // fadeTarget.style.removeProperty("opacity");
             showNotification.value = true
+            // console.log('FIN - Hubo errores...', props.errors.cover, showNotification.value)
         },
         onFinish: () => {
             setTimeout(() => {
                 // showNotification.value = false
+                fadeOutEffect('notification')
+            }, 3000)
+        }
+    })
+}
+
+const submitAvatarImage = () => {
+    console.log(imagesForm.avatar)
+
+    var fadeTarget = document.getElementById("notification-box");
+    fadeTarget.style.removeProperty("opacity");
+
+    imagesForm.post(route('profile.update-avatar-image'), {
+        onSuccess: () => {
+            showNotification.value = true
+            resetAvatarImage()
+        },
+        onError: () => {
+            showNotification.value = true
+        },
+        onFinish: () => {
+            setTimeout(() => {
                 fadeOutEffect('notification')
             }, 3000)
         }
@@ -131,6 +182,10 @@ const fadeOutEffect = (className) => {
             // }
         }, 50);
     }
+
+    setTimeout(() => {
+        showNotification.value = false
+    }, 1000)
 }
 </script>
 
@@ -142,12 +197,12 @@ const fadeOutEffect = (className) => {
         <!-- <div class="container pt-20 mx-auto "> -->
         <div class="bg-white">
             <div class="lg:w-2/3 mx-auto pt-[58px] relative">
-                <!-- <div v-show="showNotification && status === 'cover-image-updated'"
+                <!-- <div v-show="showNotification && success === 'cover-image-updated'"
                     class="absolute z-50 px-4 py-2 my-2 text-sm font-medium text-white rounded-md top-28 bg-emerald-600 dark:bg-emerald-400">
                     Cover image has been updated successfully!
                 </div> -->
                 <!-- <div class="z-50 toast" id="notification-box">
-                    <div v-show="status === 'cover-image-updated'" class="shadow-lg alert">
+                    <div v-show="success === 'cover-image-updated'" class="shadow-lg alert">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             class="w-6 h-6 stroke-info shrink-0">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -164,10 +219,12 @@ const fadeOutEffect = (className) => {
                         </button>
                     </div>
                 </div> -->
-                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-show="showNotification" :title="'Info'"
-                    :message="'Cover image has been updated successfully!'" />
+                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-show="showNotification && success" :title="'Info'"
+                    :message="success" />
                 <NotificationBox @callFadeOutEffect="fadeOutEffect" v-if="showNotification && errors.cover"
                     :title="'Error'" :message="errors.cover" />
+                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-if="showNotification && errors.avatar"
+                    :title="'Error'" :message="errors.avatar" />
 
                 <div class="relative bg-white">
                     <img :src="coverImageSrc || user.cover_url || '/img/default_cover.jpg'" alt="Cover"
@@ -205,21 +262,42 @@ const fadeOutEffect = (className) => {
                     <div class="flex flex-col items-center justify-between bg-white lg:flex-row">
                         <div class="flex flex-col w-full lg:block">
                             <div class="flex justify-center lg:justify-start lg:static">
-                                <img :src="
-                                        user.avatar_url ||
-                                        '/img/default_avatar.png'
-                                    " alt=""
-                                    class="absolute top-20 md:top-64 lg:top-auto lg:left-11 lg:bottom-4 w-[168px] h-[168px] rounded-full border-4 border-white" />
+                                <div class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
+                                    <img :src="
+                                            avatarImageSrc || user.avatar_url ||
+                                            '/img/default_avatar.png'
+                                        " alt=""
+                                        class="rounded-full border-[1px] border-gray-200 w-[174px]" />
+                                </div>
 
-                                <button
-                                    class="absolute flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full right-[135px] md:right-[314px] lg:right-auto lg:left-[164px] top-[200px] md:top-[369px] lg:top-auto lg:bottom-7 hover:bg-gray-300"
-                                    title="Actualizar foto de usuario">
-                                    <CameraIcon class="w-5 h-5" />
-                                </button>
+                                <div
+                                    class="absolute right-[135px] md:right-[314px] lg:right-auto lg:left-[164px] top-[200px] md:top-[369px] lg:top-auto lg:bottom-7">
+                                    <button v-if="!avatarImageSrc"
+                                        class="flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300"
+                                        title="Actualizar foto de usuario">
+                                        <CameraIcon class="w-5 h-5" />
+
+                                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer"
+                                            @change="onAvatarChange" title="Actualizar foto de portada" />
+                                    </button>
+
+                                    <div v-else class="flex flex-col gap-2">
+                                        <button @click="resetAvatarImage"
+                                            class="flex items-center p-1 text-sm font-semibold text-gray-100 rounded-full bg-red-400/65 hover:bg-red-600/65"
+                                            title="Cancelar">
+                                            <XMarkIcon class="w-5 h-5" />
+                                        </button>
+                                        <button @click="submitAvatarImage"
+                                            class="flex items-center p-1 text-sm font-semibold text-gray-100 rounded-full bg-emerald-400/65 hover:bg-emerald-600/65"
+                                            title="Enviar">
+                                            <CheckIcon class="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
 
                             <div
-                                class="lg:pl-[228px] pt-[16px] mb-4 lg:mb-0 flex flex-col items-center lg:items-start lg:mt-0 mt-[69px]">
+                                class="lg:pl-[228px] pt-[16px] mb-4 lg:mb-0 flex flex-col items-center lg:items-start lg:mt-0 mt-20">
                                 <h1 class="text-[32px] font-extrabold">
                                     {{ user.name }}
                                 </h1>
