@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CropperController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
+
+    Route::get('/cropping', [CropperController::class, 'index'])->name('cropping');
 });
 
 Route::middleware('auth')->group(function () {
@@ -20,7 +23,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-avatar-image', [ProfileController::class, 'updateAvatarImage'])->name('update-avatar-image');
         // Route::get('', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('', [ProfileController::class, 'update'])->name('update');
-        // Route::delete('', [ProfileController::class, 'destroy'])->name('destroy');
+        Route::delete('', [ProfileController::class, 'destroy'])->name('destroy');
     });
 });
 
