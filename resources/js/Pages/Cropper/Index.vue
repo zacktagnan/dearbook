@@ -25,28 +25,14 @@ const uploadImage = (event) => {
     if (input) {
         const reader = new FileReader();
         reader.onload = () => {
-            console.log("OnLoad AVATAR ...");
             image.value = reader.result;
         };
         reader.readAsDataURL(input);
     }
 }
 
-// CROP hacia otra pestaña...
-// const cropImage = () => {
-//     //     if (cropper.value) {
-//     const result = cropper.value.getResult();
-//     const newTab = window.open();
-//     newTab.document.body.innerHTML = `<img src="${result.canvas.toDataURL(
-//         "image/jpeg"
-//     )}"></img>`;
-
-//     closeCropImageModal()
-// }
-
 // RECORTE y SUBIDA a servidor...
 const saveImage = () => {
-    //     if (cropper.value) {
     const result = cropper.value.getResult();
 
     result.canvas.toBlob(blob => {
@@ -57,14 +43,10 @@ const saveImage = () => {
 
         imagesForm.post(route('profile.update-avatar-image'), {
             onSuccess: () => {
-                // closeCropImageModal()
-                // showNotification.value = true
                 emit('callCloseCropImageModal')
                 emit('callActiveShowNotification')
             },
             onError: () => {
-                // closeCropImageModal()
-                // showNotification.value = true
                 emit('callCloseCropImageModal')
                 emit('callActiveShowNotification')
             },
@@ -76,13 +58,6 @@ const saveImage = () => {
             }
         })
     })
-
-    // const newTab = window.open();
-    // newTab.document.body.innerHTML = `<img src="${result.canvas.toDataURL(
-    //     "image/jpeg"
-    // )}"></img>`;
-
-    // closeCropImageModal()
 }
 
 const sizePreview = reactive({
@@ -103,29 +78,16 @@ const checkSizePreview = () => {
 }
 
 const resultPreview = reactive({
-    // image: {
-    //     src: null
-    // },
-    // coordinates: {
-    //     width: null,
-    //     height: null,
-    // },
     image: null,
     coordinates: null,
 })
-// const change = () => {
-//     console.log('getRESULT', cropper.value.getResult())
-//     imagePreview.src = cropper.value.getResult().src;
-// }
+
 const change = () => {
-    console.log('getRESULT', cropper.value.getResult())
     const { image, coordinates } = cropper.value.getResult();
-    console.log('COORD.', coordinates)
-    // resultPreview.coordinates.width = coordinates.width
-    // resultPreview.coordinates.height = coordinates.height
+
     sizePreview.width = coordinates.width
     sizePreview.height = coordinates.height
-    console.log('IMAGE', image)
+
     resultPreview.image = image
     resultPreview.coordinates = coordinates
     checkSizePreview()
@@ -134,10 +96,8 @@ const change = () => {
 const flip = (x, y) => {
     const { image } = cropper.value.getResult();
     if (image.transforms.rotate % 180 !== 0) {
-        // this.$refs.cropper.flip(!x, !y);
         cropper.value.flip(!x, !y);
     } else {
-        // this.$refs.cropper.flip(x, y);
         cropper.value.flip(x, y);
     }
 }
@@ -151,56 +111,11 @@ const emit = defineEmits([
     'callCloseCropImageModal',
     'callActiveShowNotification',
 ])
-
-// ===========================================================
-
-// import Navigation from "./Navigation.vue";
-
-// const image = ref('')
-
-// const cropper = ref()
-// const file = ref()
-// const uploadImage = (event) => {
-//     let input = event.target.files[0];
-//     if (input) {
-//         const reader = new FileReader();
-//         reader.onload = () => {
-//             console.log("OnLoad AVATAR ...");
-//             image.value = reader.result;
-//         };
-//         reader.readAsDataURL(input);
-//     }
-// }
-
-// const cropImage = () => {
-// //     if (cropper.value) {
-//     const result = cropper.value.getResult();
-//     const newTab = window.open();
-//     newTab.document.body.innerHTML = `<img src="${result.canvas.toDataURL(
-//         "image/jpeg"
-//     )}"></img>`;
-// }
 </script>
 
 <template>
 
     <Head :title="$t('Cropping')" />
-
-    <!-- <div>
-        <div class="upload-example">
-            <Cropper ref="cropper" class="upload-example-cropper" :src="image" :auto-zoom="true" />
-
-            <Navigation :zoom="zoom" @change="onZoom" />
-
-            <div class="my-4 button-wrapper">
-                <span class="button" @click="$refs.file.click()">
-                    <input type="file" ref="file" @change="uploadImage($event)" accept="image/*" />
-                    Upload image
-                </span>
-                <span class="button" @click="cropImage">Crop image</span>
-            </div>
-        </div>
-    </div> -->
 
     <div class="w-[90%] mx-auto">
         <div class="mt-4 space-y-6">
@@ -236,15 +151,6 @@ const emit = defineEmits([
         </div>
 
         <div class="flex items-center justify-between w-full px-4 py-3 my-4 sm:items-stretch sm:px-11 bg-slate-400 rounded-es-md rounded-ee-md">
-            <!-- <Preview
-                        :width="120"
-                        :height="120"
-
-                        :image="result.image"
-                        :coordinates="result.coordinates"
-
-                        :image="imagePreview.src"
-                    /> -->
             <div class="border border-white rounded-full max-h-[118px] sm:max-h-max">
                 <Preview title="Preview" class="m-2 bg-white rounded-full" :width="100" :height="100"
                     :coordinates="resultPreview.coordinates" :image="resultPreview.image" />
@@ -363,52 +269,3 @@ const emit = defineEmits([
         </div>
     </div>
 </template>
-
-<style>
-/* #app {
-    font-family: "Avenir", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
-} */
-
-.upload-example {
-    width: 90%;
-    margin: 0 auto;
-}
-
-.upload-example-cropper {
-    height: 400px;
-    margin: 0 auto;
-    margin-top: 1rem;
-    max-height: 500px;
-    border: 1px solid black;
-    background-color: #474747;
-}
-
-.button-wrapper {
-    display: flex;
-    justify-content: center;
-    /* margin-top: 1rem; */
-}
-.button {
-    color: white;
-    font-size: 16px;
-    padding: 10px 20px;
-    width: 100%;
-    background: #151515;
-    cursor: pointer;
-    transition: background 0.5s;
-    border: none;
-}
-.button:not(:last-of-type) {
-    margin-right: 10px;
-}
-.button:hover {
-    background: #2F2F2F;
-}
-.button input {
-    display: none;
-}
-</style>
