@@ -40,14 +40,24 @@ const imagesForm = useForm({
 
 const coverImageSrc = ref("");
 const avatarImageSrc = ref("");
+
 const showNotification = ref(true)
+const notificationBoxRef = ref(null)
 
 const activeShowNotification = () => {
     showNotification.value = true
 
     setTimeout(() => {
-        fadeOutEffect('notification')
+        closingNotification('notification')
     }, 3000)
+}
+
+const closingNotification = (className) => {
+    notificationBoxRef.value.fadeOutEffect(className)
+}
+
+const closeShowNotification = () => {
+    showNotification.value = false
 }
 
 const onCoverChange = (event) => {
@@ -85,33 +95,10 @@ const submitCoverImage = () => {
         },
         onFinish: () => {
             setTimeout(() => {
-                fadeOutEffect('notification')
+                closingNotification('notification')
             }, 3000)
         }
     })
-}
-
-/* Pasado al componente de NotificationBox...*/
-const fadeOutEffect = (className) => {
-    var fadeTargetArr = document.getElementsByClassName(className);
-    for (let i = 0; i < fadeTargetArr.length; i++) {
-        var fadeTarget = fadeTargetArr[i];
-
-        var fadeEffect = setInterval(function () {
-            if (!fadeTarget.style.opacity) {
-                fadeTarget.style.opacity = 1;
-            }
-            if (fadeTarget.style.opacity > 0) {
-                fadeTarget.style.opacity -= 0.1;
-            } else {
-                clearInterval(fadeEffect);
-            }
-        }, 50);
-    }
-
-    setTimeout(() => {
-        showNotification.value = false
-    }, 1000)
 }
 
 // -----------------------------------------------
@@ -135,11 +122,11 @@ const closeCropImageModal = () => {
     <AuthenticatedLayout>
         <div class="bg-white">
             <div class="lg:w-2/3 mx-auto pt-[58px] relative">
-                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-show="showNotification && success" :title="'Info'"
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-show="showNotification && success" :title="'Info'"
                     :message="success" />
-                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-if="showNotification && errors.cover"
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-if="showNotification && errors.cover"
                     :title="'Error'" :message="errors.cover" />
-                <NotificationBox @callFadeOutEffect="fadeOutEffect" v-if="showNotification && errors.avatar"
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-if="showNotification && errors.avatar"
                     :title="'Error'" :message="errors.avatar" />
 
                 <div class="relative bg-white">
@@ -298,7 +285,7 @@ const closeCropImageModal = () => {
         </div>
 
         <Modal :show="showingCropImageModal" @close="closeCropImageModal">
-            <CropperIndex @callFadeOutEffect="fadeOutEffect" @callCloseCropImageModal="closeCropImageModal"
+            <CropperIndex @callCloseCropImageModal="closeCropImageModal"
             @callActiveShowNotification="activeShowNotification"
             :user="user" />
         </Modal>

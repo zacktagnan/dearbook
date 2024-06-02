@@ -52,9 +52,6 @@ const saveImage = () => {
             },
             onFinish: () => {
                 image.value = ''
-                setTimeout(() => {
-                    emit('callFadeOutEffect', 'notification')
-                }, 3000)
             }
         })
     })
@@ -106,8 +103,37 @@ const rotate = (angle) => {
     cropper.value.rotate(angle)
 }
 
+// const centerCrop = () => {
+//     cropper.value.setCoordinates(({ coordinates, imageSize }) => ({
+//         left: imageSize.width / 2 - coordinates.width / 2,
+//         top: imageSize.height / 2 - coordinates.height / 2,
+//     }));
+// }
+
+// const maximize = () => {
+//     const { coordinates } = cropper.value.getResult();
+//     const center = {
+//         left: coordinates.left + coordinates.width / 2,
+//         top: coordinates.top + coordinates.height / 2,
+//     };
+//     cropper.value.setCoordinates([
+//         ({ imageSize }) => ({
+//             width: imageSize.width,
+//             height: imageSize.height,
+//         }),
+//         () => ({
+//             left: center.left - coordinates.width / 2,
+//             top: center.top - coordinates.height / 2,
+//         }),
+//     ]);
+//     // centerCrop()
+//     cropper.value.setCoordinates(({ imageSize }) => ({
+//         left: imageSize.width / 2 - coordinates.width / 2,
+//         top: imageSize.height / 2 - coordinates.height / 2,
+//     }));
+// }
+
 const emit = defineEmits([
-    'callFadeOutEffect',
     'callCloseCropImageModal',
     'callActiveShowNotification',
 ])
@@ -144,7 +170,7 @@ const emit = defineEmits([
         </div>
 
         <div class="p-4 mt-4 bg-black rounded-ss-md rounded-se-md">
-            <Cropper ref="cropper" class="h-[400px] mx-auto max-h-[500px] bg-gray-500 w-full"
+            <Cropper ref="cropper" class="h-[400px] mx-auto max-h-[500px] w-full"
                 :src="image || user.avatar_url || '/img/default_avatar.png'" :stencil-props="{
                     aspectRatio: 1 / 1
                 }" :auto-zoom="true" @change="change" :debounce="false" />

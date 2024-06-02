@@ -1,6 +1,5 @@
 <script setup>
 import { XMarkIcon } from "@heroicons/vue/24/solid";
-import { onActivated } from "vue";
 
 defineProps({
     title: {
@@ -11,28 +10,33 @@ defineProps({
     },
 });
 
-// -> El método vuelve al componente de Index.vue
-// const fadeOutEffect = () => {
-//     var fadeTarget = document.getElementById("notification-box");
-//     var fadeEffect = setInterval(function () {
-//         if (!fadeTarget.style.opacity) {
-//             fadeTarget.style.opacity = 1;
-//             // styleObject.opacity.value = 1
-//         }
-//         if (fadeTarget.style.opacity > 0) {
-//             fadeTarget.style.opacity -= 0.1;
-//         } else {
-//             clearInterval(fadeEffect);
-//         }
-//         // if (styleObject.opacity.value > 0) {
-//         //     styleObject.opacity.value -= 0.1;
-//         // } else {
-//         //     clearInterval(fadeEffect);
-//         // }
-//     }, 50);
-// }
+const fadeOutEffect = (className) => {
+    var fadeTargetArr = document.getElementsByClassName(className);
+    for (let i = 0; i < fadeTargetArr.length; i++) {
+        var fadeTarget = fadeTargetArr[i];
 
-const emit = defineEmits(['callFadeOutEffect'])
+        var fadeEffect = setInterval(function () {
+            if (!fadeTarget.style.opacity) {
+                fadeTarget.style.opacity = 1;
+            }
+            if (fadeTarget.style.opacity > 0) {
+                fadeTarget.style.opacity -= 0.1;
+            } else {
+                clearInterval(fadeEffect);
+            }
+        }, 50);
+    }
+
+    setTimeout(() => {
+        emit('callCloseShowNotification')
+    }, 1000)
+}
+
+const emit = defineEmits(['callCloseShowNotification'])
+
+defineExpose({
+    fadeOutEffect,
+})
 </script>
 
 <template>
@@ -55,7 +59,7 @@ const emit = defineEmits(['callFadeOutEffect'])
                 </div>
             </div>
             <div>
-                <button @click="$emit('callFadeOutEffect', 'notification')"
+                <button @click="fadeOutEffect('notification')"
                     class="flex items-center p-1 font-bold text-white bg-red-300 rounded-full hover:bg-red-400"
                     title="Cerrar">
                     <XMarkIcon class="w-3 h-3" />
