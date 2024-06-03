@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CropperController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,10 @@ Route::middleware('auth')->group(function () {
         // Route::get('', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('', [ProfileController::class, 'update'])->name('update');
         Route::delete('', [ProfileController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('post')->as('post.')->group(function () {
+        Route::post('', [PostController::class, 'store'])->name('store');
     });
 });
 

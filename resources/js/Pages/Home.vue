@@ -6,7 +6,9 @@ import PostList from "@/Components/dearbook/PostList.vue";
 import FollowingList from "@/Components/dearbook/FollowingList.vue";
 import { Head } from "@inertiajs/vue3";
 
-defineProps({});
+defineProps({
+    posts: Object,
+});
 </script>
 
 <template>
@@ -24,7 +26,7 @@ defineProps({});
 
             <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
                 <PostCreate />
-                <PostList class="flex-1" />
+                <PostList class="flex-1" :posts="posts.data" />
             </div>
         </div>
     </AuthenticatedLayout>
