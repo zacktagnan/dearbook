@@ -23,8 +23,8 @@ class PostResource extends JsonResource
             'group' => $this->group,
             'attachments' => $this->attachments,
 
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
+            'updated_at' => $this->updated_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
         ];
     }
 }
