@@ -28,13 +28,15 @@ defineProps({
                         post.group.name }}</a>
                 </template>
             </h4>
-            <div v-if="showPostDate" class="text-gray-400">
+            <div v-if="showPostDate" class="flex text-gray-400">
                 <div class="tooltip tooltip-right" :data-tip="post.created_at_large_format">
                     <small class="text-xs hover:cursor-pointer">{{ post.created_at_formatted }}</small>
                 </div>
-                <small class="ml-0.5 text-xs">&bull;</small>
-                <div v-if="post.created_at != post.updated_at" class="tooltip tooltip-right" :data-tip="post.updated_at_large_format">
-                    <small class="ml-0.5 text-xs hover:cursor-pointer italic">Editado</small>
+                <div v-if="post.created_at != post.updated_at">
+                    <small class="ml-0.5 text-xs">&bull;</small>
+                    <div class="tooltip tooltip-right" :data-tip="post.updated_at_large_format">
+                        <small class="ml-0.5 text-xs hover:cursor-pointer italic">Editado</small>
+                    </div>
                 </div>
             </div>
         </div>
