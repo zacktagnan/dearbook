@@ -125,10 +125,18 @@ return [
 
     'format' => [
         'en' => [
-            'datetime' => 'Y-m-d H:i:s',
+            'datetime' => [
+                'basic' => 'Y-m-d H:i:s',
+                'without_year' => 'j F',
+                'with_year' => 'j F Y',
+            ],
         ],
         'es' => [
-            'datetime' => 'd-m-Y H:i:s',
+            'datetime' => [
+                'basic' => 'd-m-Y H:i:s',
+                'without_year' => 'j \d\e F',
+                'with_year' => 'j \d\e F \d\e Y',
+            ],
         ],
     ],
 

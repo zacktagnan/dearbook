@@ -24,7 +24,7 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, Post $post)
     {
-        //
+        $post->update($request->all());
     }
 
     /**

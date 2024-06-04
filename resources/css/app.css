@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.avatar.online:before,
+.avatar.offline:before {
+    width: 22%;
+    height: 22%;
+    bottom: 4%;
+    right: 4%;
+    top: auto;
+}
+.avatar.offline:before {
+    background-color: gainsboro;
+}

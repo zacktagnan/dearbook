@@ -1,9 +1,13 @@
 <script setup>
+import { ref, computed } from "vue";
 import {
     ArrowDownTrayIcon,
     DocumentIcon,
     HandThumbUpIcon,
     ChatBubbleLeftRightIcon,
+    EllipsisVerticalIcon,
+    PencilIcon,
+    TrashIcon,
 } from "@heroicons/vue/24/solid";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
@@ -11,43 +15,98 @@ const props = defineProps({
     post: Object,
 });
 
+const emit = defineEmits('callOpenEditModal')
+
 const largeBodyLength = 100
 
-const ellipsis = props.post.body.length > largeBodyLength ? "..." : "";
+const bodyExcerpt = ref('')
+const getBodyExcerpt = computed(() => {
+    if (props.post.body) {
+        const ellipsis = props.post.body.length > largeBodyLength ? "..." : "";
+        bodyExcerpt.value = props.post.body.substring(0, largeBodyLength) + ellipsis
+    }
+    return bodyExcerpt.value
+})
 
 const isImage = (attachment) => {
     const mime = attachment.mime.split("/");
     return mime[0].toLowerCase() === "image";
 };
+
+// =======================================================================================
+
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import PostHeader from '@/Components/dearbook/PostHeader.vue'
+
+const openEditModal = () => {
+    emit('callOpenEditModal', props.post)
+}
 </script>
 
 <template>
-    <div class="p-4 mt-4 bg-white rounded shadow hover:shadow-cyan-900">
-        <div class="flex items-center gap-2">
-            <a href="javascript:void(0)" :title="'Perfil de ' + post.user.name">
-                <img :src="post.user.avatar_url"
-                    class="w-[40px] rounded-full border-2 hover:border-cyan-500 transition-all" :alt="post.user.name" />
-            </a>
-            <div class="mt-1 leading-none">
-                <h4 class="font-bold">
-                    <a href="javascript:void(0)" class="hover:underline" :title="'Perfil de ' + post.user.name">{{
-                        post.user.name }}</a>
-                    <template v-if="post.group">
-                        <span class="mx-1 text-cyan-500">></span>
-                        <a href="javascript:void(0)" class="hover:underline" :title="'Perfil de ' + post.group.name">{{
-                            post.group.name }}</a>
-                    </template>
-                </h4>
-                <small class="text-xs text-gray-400">{{
-                    post.created_at
-                    }}</small>
-            </div>
+    <div class="p-4 mt-4 mx-0.5 bg-white rounded shadow hover:shadow-cyan-900">
+        <div class="flex items-center justify-between">
+            <PostHeader :post="post" />
+
+            <!-- =========================================================== -->
+            <Menu as="div" class="relative inline-block text-left">
+                <div>
+                    <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5"
+                        title="Ver opciones">
+                        <EllipsisVerticalIcon class="w-5 h-5" aria-hidden="true" />
+                    </MenuButton>
+                </div>
+
+                <transition enter-active-class="transition duration-100 ease-out"
+                    enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
+                    leave-active-class="transition duration-75 ease-in"
+                    leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
+                    <MenuItems
+                        class="absolute right-0 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-28 ring-1 ring-black/5 focus:outline-none">
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="openEditModal" :class="[
+                                    active ? 'bg-indigo-100' : 'text-gray-900',
+                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]" title="Edit">
+                                <PencilIcon :active="active" class="w-5 h-5 mr-2 text-indigo-400" aria-hidden="true" />
+                                Edit
+                            </button>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button :class="[
+                                active ? 'bg-indigo-100' : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Eliminar">
+                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-indigo-400" aria-hidden="true" />
+                                Eliminar
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </MenuItems>
+                </transition>
+            </Menu>
+            <!-- =========================================================== -->
         </div>
 
         <div class="mt-1">
             <Disclosure v-slot="{ open }">
-                <div v-if="!open" v-html="post.body.substring(0, largeBodyLength) + ellipsis" />
-                <template v-if="post.body.length > largeBodyLength">
+                <template v-if="!post.body">
+                    <div class="tooltip tooltip-right" data-tip="Nada reseñado aún...">
+                        <p class="inline-block px-1.5 py-0.5 text-white rounded-md bg-slate-500">
+                            zzZz...
+                        </p>
+                    </div>
+                </template>
+                <template v-else>
+                    <div v-if="!open" class="whitespace-pre">
+                        {{ getBodyExcerpt }}
+                    </div>
+                </template>
+                <template v-if="post.body && post.body.length > largeBodyLength">
                     <!-- <transition
                     enter-active-class="transition duration-100 ease-out"
                     enter-from-class="transform scale-95 opacity-0"
@@ -59,7 +118,7 @@ const isImage = (attachment) => {
                         enter-to-class="opacity-100" leave-active-class="transition-opacity duration-150"
                         leave-from-class="opacity-100" leave-to-class="opacity-0">
                         <DisclosurePanel>
-                            <div v-html="post.body" />
+                            <div class="whitespace-pre" v-html="post.body" />
                         </DisclosurePanel>
                     </transition>
                     <hr class="m-1" />

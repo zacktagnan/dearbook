@@ -20,6 +20,7 @@ onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
         input.value.focus();
     }
+    adjustHeight()
 });
 
 defineExpose({ focus: () => input.value.focus() });
@@ -28,7 +29,10 @@ const emit = defineEmits(['update:modelValue'])
 
 const onInputChange = (event) => {
     emit('update:modelValue', event.target.value)
+    adjustHeight()
+}
 
+const adjustHeight = () => {
     // Para que se vaya redimensionando con los saltos de línea...
     if (props.autoResize) {
         input.value.style.height = 'auto'

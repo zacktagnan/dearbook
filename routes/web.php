@@ -1,20 +1,13 @@
 <?php
 
-use App\Http\Controllers\CropperController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
-
-// Route::get('/u/{user:username}', [ProfileController::class, 'index'])->middleware(['auth', 'verified'])->name('profile.index');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
-
-    Route::get('/cropping', [CropperController::class, 'index'])->name('cropping');
 });
 
 Route::middleware('auth')->group(function () {
@@ -29,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('post')->as('post.')->group(function () {
         Route::post('', [PostController::class, 'store'])->name('store');
+        Route::put('/{post}', [PostController::class, 'update'])->name('update');
     });
 });
 
