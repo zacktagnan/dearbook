@@ -4,9 +4,11 @@ import TextareaInput from '@/Components/TextareaInput.vue';
 import { useForm } from '@inertiajs/vue3';
 
 const postCreating = ref(false)
-const cancelPostCreate = () => {
+const closePostCreate = () => {
     postCreating.value = false
-    postCreateForm.body = ''
+    // postCreateForm.body = ''
+    // o
+    postCreateForm.reset()
 }
 
 const postCreateForm = useForm({
@@ -16,7 +18,7 @@ const postCreateForm = useForm({
 const submitPostCreate = () => {
     postCreateForm.post(route('post.store'), {
         onSuccess: () => {
-            postCreateForm.reset()
+            closePostCreate()
         },
     })
 }
@@ -33,7 +35,7 @@ const submitPostCreate = () => {
 
         <div v-if="postCreating" class="flex justify-between mt-3">
             <button
-                @click="cancelPostCreate"
+                @click="closePostCreate"
                 class="px-3 py-2 text-sm font-semibold text-white bg-gray-800 rounded-md shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800">
                 Cancelar
             </button>

@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('post')->as('post.')->group(function () {
         Route::post('', [PostController::class, 'store'])->name('store');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
+        Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
     });
 });
 

@@ -37,10 +37,25 @@ const isImage = (attachment) => {
 
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import PostHeader from '@/Components/dearbook/PostHeader.vue'
+import { router, usePage } from "@inertiajs/vue3";
 
 const openEditModal = () => {
     emit('callOpenEditModal', props.post)
 }
+
+const deletePost = () => {
+    if (window.confirm('Are you sure you want to DELETE this post?')) {
+        router.delete(route('post.destroy', props.post), {
+            preserveScroll: true,
+        })
+    }
+}
+
+// =======================================================================================
+
+const authUser = usePage().props.auth.user
+
+const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.id)
 </script>
 
 <template>
@@ -48,8 +63,12 @@ const openEditModal = () => {
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
+            <!-- {{ authUser }}<br>
+            {{ authUser.id }}<br>
+            {{ post.user_id }}<br>
+            {{ isPostAuthor }} -->
             <!-- =========================================================== -->
-            <Menu as="div" class="relative inline-block text-left">
+            <Menu v-if="isPostAuthor" as="div" class="relative inline-block text-left">
                 <div>
                     <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5"
                         title="Ver opciones">
@@ -77,7 +96,7 @@ const openEditModal = () => {
 
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
-                            <button :class="[
+                            <button @click="deletePost" :class="[
                                 active ? 'bg-indigo-100' : 'text-gray-900',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                             ]" title="Eliminar">
@@ -102,7 +121,7 @@ const openEditModal = () => {
                     </div>
                 </template>
                 <template v-else>
-                    <div v-if="!open" class="whitespace-pre">
+                    <div v-if="!open" class="whitespace-pre-line">
                         {{ getBodyExcerpt }}
                     </div>
                 </template>
@@ -118,7 +137,7 @@ const openEditModal = () => {
                         enter-to-class="opacity-100" leave-active-class="transition-opacity duration-150"
                         leave-from-class="opacity-100" leave-to-class="opacity-0">
                         <DisclosurePanel>
-                            <div class="whitespace-pre" v-html="post.body" />
+                            <div class="whitespace-pre-line" v-html="post.body" />
                         </DisclosurePanel>
                     </transition>
                     <hr class="m-1" />

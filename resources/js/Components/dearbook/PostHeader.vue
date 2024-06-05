@@ -14,7 +14,8 @@ defineProps({
             <!-- Clases para marcar usuario activo, por BADGE o por anillo (ring) -->
             <!-- <div class="avatar online w-[40px] ring-2 ring-primary ring-offset-slate-50 ring-offset-1 rounded-full"> -->
             <div class="avatar offline w-[40px] rounded-full">
-                <img :src="post.user.avatar_url"
+                <img :src="post.user.avatar_url ||
+                    '/img/default_avatar.png'"
                     class="w-[40px] rounded-full border-2 hover:border-cyan-500 transition-all" :alt="post.user.name" />
             </div>
         </a>

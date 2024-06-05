@@ -43,6 +43,7 @@ watch(() => props.post, () => {
 
 const closeModal = () => {
     show.value = false
+    postUpdateForm.body = props.post.body
 }
 
 const submitPostUpdate = () => {
