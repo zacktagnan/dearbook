@@ -121,9 +121,11 @@ const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.
                     </div>
                 </template>
                 <template v-else>
-                    <div v-if="!open" class="whitespace-pre-line">
+                    <!-- Sin estilar para el CKEditor -->
+                    <!-- <div v-if="!open" class="whitespace-pre-line">
                         {{ getBodyExcerpt }}
-                    </div>
+                    </div> -->
+                    <div v-if="!open" class="whitespace-pre-line ck-content-output" v-html="getBodyExcerpt" />
                 </template>
                 <template v-if="post.body && post.body.length > largeBodyLength">
                     <!-- <transition
@@ -137,7 +139,9 @@ const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.
                         enter-to-class="opacity-100" leave-active-class="transition-opacity duration-150"
                         leave-from-class="opacity-100" leave-to-class="opacity-0">
                         <DisclosurePanel>
-                            <div class="whitespace-pre-line" v-html="post.body" />
+                            <!-- Sin estilar para el CKEditor -->
+                            <!-- <div class="whitespace-pre-line" v-html="post.body" /> -->
+                            <div class="whitespace-pre-line ck-content-output" v-html="post.body" />
                         </DisclosurePanel>
                     </transition>
                     <hr class="m-1" />

@@ -13,6 +13,33 @@ import {
 import { useForm } from '@inertiajs/vue3';
 import { watch } from 'vue';
 
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import '@ckeditor/ckeditor5-build-classic/build/translations/es';
+
+const editor = ClassicEditor
+const editorConfig = {
+    // language: 'es',
+    toolbar: {
+        items: [
+            'undo',
+            'redo',
+            '|',
+            'heading',
+            '|',
+            'bold',
+            'italic',
+            '|',
+            'link',
+            'bulletedList',
+            'numberedList',
+            '|',
+            'outdent',
+            'indent',
+            'blockquote',
+        ],
+    },
+}
+
 const props = defineProps({
     post: {
         type: Object,
@@ -89,13 +116,14 @@ const submitPostUpdate = () => {
 
                                 <div class="px-[14px] pt-[14px]">
                                     <PostHeader :post="post" :show-post-date="false" />
-                                    <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
-                                        v-model="postUpdateForm.body" autofocus></TextareaInput>
+                                    <ckeditor :editor="editor" v-model="postUpdateForm.body" :config="editorConfig">
+                                    </ckeditor>
+                                    <!-- <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
+                                        v-model="postUpdateForm.body" autofocus></TextareaInput> -->
                                 </div>
 
                                 <div class="flex p-[14px]">
-                                    <button type="button"
-                                        title="Actualizar"
+                                    <button type="button" title="Actualizar"
                                         class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-indigo-900 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
                                         @click="submitPostUpdate">
                                         Actualizar

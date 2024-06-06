@@ -5,6 +5,7 @@ import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+import CKEditor from '@ckeditor/ckeditor5-vue'
 
 import { i18nVue } from 'laravel-vue-i18n';
 
@@ -23,6 +24,7 @@ createInertiaApp({
                     return await langs[`../../lang/${lang}.json`]();
                 }
             })
+            .use(CKEditor)
             .mount(el);
     },
     progress: {
