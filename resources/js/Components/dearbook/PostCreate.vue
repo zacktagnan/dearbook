@@ -1,39 +1,54 @@
 <script setup>
+import PostModal from "@/Components/dearbook/PostModal.vue";
+import { usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
-import TextareaInput from '@/Components/TextareaInput.vue';
-import { useForm } from '@inertiajs/vue3';
+// import TextareaInput from '@/Components/TextareaInput.vue';
+// import { useForm } from '@inertiajs/vue3';
 
-const postCreating = ref(false)
-const closePostCreate = () => {
-    postCreating.value = false
-    // postCreateForm.body = ''
-    // o
-    postCreateForm.reset()
-}
+// const postCreating = ref(false)
+// const closePostCreate = () => {
+//     postCreating.value = false
+//     // postCreateForm.body = ''
+//     // o
+//     postCreateForm.reset()
+// }
 
-const postCreateForm = useForm({
-    body: ''
+// const postCreateForm = useForm({
+//     body: ''
+// })
+
+// const submitPostCreate = () => {
+//     postCreateForm.post(route('post.store'), {
+//         onSuccess: () => {
+//             closePostCreate()
+//         },
+//     })
+// }
+
+// ====================
+
+const postToCreate = ref({
+    id: null,
+    body: '',
+    user: usePage().props.auth.user,
 })
+const showCreateModal = ref(false)
 
-const submitPostCreate = () => {
-    postCreateForm.post(route('post.store'), {
-        onSuccess: () => {
-            closePostCreate()
-        },
-    })
+const openCreateModal = () => {
+    showCreateModal.value = true
 }
 </script>
 
 <template>
     <div class="p-4 bg-white border rounded">
-        <div v-if="!postCreating" @click="postCreating=true"
+        <div @click="openCreateModal"
             class="px-2.5 py-1.5 text-gray-500 border-2 border-gray-200 rounded-md h-[67px] cursor-pointer">
-            Pulsar aquí para una nueva publicación
+            ¿Qué tienes en mente?
         </div>
-        <TextareaInput v-else placeholder="Expresa lo que quieras comunicar"
-            class="w-full" v-model="postCreateForm.body" autofocus></TextareaInput>
+        <!-- <TextareaInput v-else placeholder="Expresa lo que quieras comunicar"
+            class="w-full" v-model="postCreateForm.body" autofocus></TextareaInput> -->
 
-        <div v-if="postCreating" class="flex justify-between mt-3">
+        <!-- <div v-if="postCreating" class="flex justify-between mt-3">
             <button
                 @click="closePostCreate"
                 class="px-3 py-2 text-sm font-semibold text-white bg-gray-800 rounded-md shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800">
@@ -54,6 +69,8 @@ const submitPostCreate = () => {
                     Enviar
                 </button>
             </div>
-        </div>
+        </div> -->
+
+        <PostModal :post="postToCreate" v-model="showCreateModal" />
     </div>
 </template>

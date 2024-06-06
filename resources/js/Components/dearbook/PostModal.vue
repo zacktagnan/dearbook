@@ -1,6 +1,6 @@
 <script setup>
 import PostHeader from '@/Components/dearbook/PostHeader.vue'
-import TextareaInput from '@/Components/TextareaInput.vue';
+// import TextareaInput from '@/Components/TextareaInput.vue';
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import { computed } from 'vue'
 import {
@@ -11,14 +11,14 @@ import {
     DialogTitle,
 } from '@headlessui/vue'
 import { useForm } from '@inertiajs/vue3';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
 
 const editor = ClassicEditor
 const editorConfig = {
-    // language: 'es',
+    language: 'es',
     toolbar: {
         items: [
             'undo',
@@ -40,6 +40,15 @@ const editorConfig = {
     },
 }
 
+const onEditorReady = (editor) => {
+    // Situando el cursor al final del contenido existente...
+    editor.model.change(writer => {
+        writer.setSelection(editor.model.document.getRoot(), 'end')
+    })
+    // Poniendo el foco en el editor...
+    editor.editing.view.focus()
+}
+
 const props = defineProps({
     post: {
         type: Object,
@@ -48,9 +57,14 @@ const props = defineProps({
     modelValue: Boolean
 })
 
-const postUpdateForm = useForm({
+const postForm = useForm({
     id: null,
     body: '',
+})
+
+const modalData = ref({
+    dialogTitleText: 'Crear publicación',
+    submitButtonText: 'Publicar',
 })
 
 const show = computed({
@@ -62,25 +76,37 @@ const emit = defineEmits('update:modelValue')
 
 watch(() => props.post, () => {
     console.log('POST has changed...')
-    postUpdateForm.id = props.post.id
-    postUpdateForm.body = props.post.body
+    postForm.id = props.post.id
+    postForm.body = props.post.body
+
+    modalData.value.dialogTitleText = 'Editar publicación'
+    modalData.value.submitButtonText = 'Actualizar'
 }, {
     deep: true,
 })
 
 const closeModal = () => {
     show.value = false
-    postUpdateForm.body = props.post.body
 }
 
 const submitPostUpdate = () => {
-    postUpdateForm.put(route('post.update', props.post), {
-        preserveScroll: true,
-
-        onSuccess: () => {
-            closeModal()
-        },
-    })
+    if (postForm.id) {
+        postForm.put(route('post.update', props.post), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal()
+                postForm.reset()
+            },
+        })
+    } else {
+        postForm.post(route('post.store'), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeModal()
+                postForm.reset()
+            },
+        })
+    }
 }
 </script>
 
@@ -103,7 +129,7 @@ const submitPostUpdate = () => {
                                 <div class="flex items-center justify-between px-3 py-2 border border-b-gray-300">
                                     <div class="w-full text-center">
                                         <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
-                                            Editar Post
+                                            {{ modalData.dialogTitleText }}
                                         </DialogTitle>
                                     </div>
 
@@ -116,17 +142,18 @@ const submitPostUpdate = () => {
 
                                 <div class="px-[14px] pt-[14px]">
                                     <PostHeader :post="post" :show-post-date="false" />
-                                    <ckeditor :editor="editor" v-model="postUpdateForm.body" :config="editorConfig">
+                                    <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
+                                        :config="editorConfig">
                                     </ckeditor>
                                     <!-- <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
-                                        v-model="postUpdateForm.body" autofocus></TextareaInput> -->
+                                        v-model="postForm.body" autofocus></TextareaInput> -->
                                 </div>
 
                                 <div class="flex p-[14px]">
                                     <button type="button" title="Actualizar"
                                         class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-indigo-900 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
                                         @click="submitPostUpdate">
-                                        Actualizar
+                                        {{ modalData.submitButtonText }}
                                     </button>
                                 </div>
                             </DialogPanel>
