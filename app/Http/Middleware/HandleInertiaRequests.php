@@ -39,6 +39,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user()
                     ? new UserResource($request->user())
                     : $request->user(),
+                // o
+                // : null,
             ],
         ];
     }

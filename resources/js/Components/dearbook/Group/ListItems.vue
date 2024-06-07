@@ -1,5 +1,5 @@
 <script setup>
-import GroupItem from '@/Components/dearbook/GroupItem.vue';
+import GroupItem from '@/Components/dearbook/Group/Item.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 

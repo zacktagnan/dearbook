@@ -1,6 +1,6 @@
 <script setup>
-import PostItem from '@/Components/dearbook/PostItem.vue';
-import PostModal from "@/Components/dearbook/PostModal.vue";
+import PostItem from '@/Components/dearbook/Post/Item.vue';
+import PostModal from "@/Components/dearbook/Post/Modal.vue";
 import { ref } from 'vue';
 
 defineProps({

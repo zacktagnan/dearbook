@@ -1,7 +1,7 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
-import GroupListTitle from '@/Components/dearbook/GroupListTitle.vue'
-import GroupListItems from '@/Components/dearbook/GroupListItems.vue'
+import GroupListTitle from '@/Components/dearbook/Group/ListTitle.vue'
+import GroupListItems from '@/Components/dearbook/Group/ListItems.vue'
 </script>
 
 <template>

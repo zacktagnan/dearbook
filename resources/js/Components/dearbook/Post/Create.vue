@@ -1,5 +1,5 @@
 <script setup>
-import PostModal from "@/Components/dearbook/PostModal.vue";
+import PostModal from "@/Components/dearbook/Post/Modal.vue";
 import { usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
 // import TextareaInput from '@/Components/TextareaInput.vue';

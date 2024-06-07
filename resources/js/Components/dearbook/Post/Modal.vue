@@ -1,5 +1,5 @@
 <script setup>
-import PostHeader from '@/Components/dearbook/PostHeader.vue'
+import PostHeader from '@/Components/dearbook/Post/Header.vue'
 // import TextareaInput from '@/Components/TextareaInput.vue';
 import { XMarkIcon } from "@heroicons/vue/24/solid";
 import { computed } from 'vue'

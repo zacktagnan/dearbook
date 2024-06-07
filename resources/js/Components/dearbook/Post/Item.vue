@@ -36,7 +36,7 @@ const isImage = (attachment) => {
 // =======================================================================================
 
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import PostHeader from '@/Components/dearbook/PostHeader.vue'
+import PostHeader from '@/Components/dearbook/Post/Header.vue'
 import { router, usePage } from "@inertiajs/vue3";
 
 const openEditModal = () => {

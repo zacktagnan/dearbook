@@ -1,7 +1,7 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
-import FollowingListTitle from '@/Components/dearbook/FollowingListTitle.vue';
-import FollowingListItems from '@/Components/dearbook/FollowingListItems.vue';
+import FollowingListTitle from '@/Components/dearbook/Following/ListTitle.vue';
+import FollowingListItems from '@/Components/dearbook/Following/ListItems.vue';
 </script>
 
 <template>

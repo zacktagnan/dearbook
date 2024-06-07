@@ -1,5 +1,5 @@
 <script setup>
-import FollowingItem from '@/Components/dearbook/FollowingItem.vue';
+import FollowingItem from '@/Components/dearbook/Following/Item.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
