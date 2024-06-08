@@ -16,7 +16,8 @@ class PostResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'body' => $this->body,
+            'body' => $this->body
+                ?: '',
             'user' => new UserResource($this->user),
 
             // Cargando a través del nombre de la relación con Post,
