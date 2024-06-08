@@ -40,9 +40,14 @@ const openCreateModal = () => {
 </script>
 
 <template>
-    <div class="p-4 bg-white border rounded">
+    <div class="flex gap-2 p-4 bg-white border rounded">
+        <a href="javascript:void(0)" :title="'Perfil de ' + $page.props.auth.user.name">
+            <img :src="$page.props.auth.user.avatar_url ||
+            '/img/default_avatar.png'" class="w-[40px] rounded-full border-2 hover:border-cyan-500 transition-all"
+                :alt="$page.props.auth.user.name" />
+        </a>
         <div @click="openCreateModal"
-            class="px-2.5 py-1.5 text-gray-500 border-2 border-gray-200 rounded-md h-[67px] cursor-pointer">
+            class="px-2.5 py-1.5 text-gray-500 border-2 border-gray-200 rounded-md cursor-pointer w-full">
             ¿Qué tienes en mente?
         </div>
         <!-- <TextareaInput v-else placeholder="Expresa lo que quieras comunicar"
