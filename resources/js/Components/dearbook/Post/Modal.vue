@@ -1,7 +1,7 @@
 <script setup>
 import PostHeader from '@/Components/dearbook/Post/Header.vue'
 // import TextareaInput from '@/Components/TextareaInput.vue';
-import { XMarkIcon } from "@heroicons/vue/24/solid";
+import { XMarkIcon, PaperClipIcon, } from "@heroicons/vue/24/solid";
 import { computed } from 'vue'
 import {
     TransitionRoot,
@@ -15,6 +15,7 @@ import { watch, ref } from 'vue';
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
+import { isImage, isVideo } from '@/Libs/helpers';
 
 const editor = ClassicEditor
 const editorConfig = {
@@ -87,6 +88,8 @@ watch(() => props.post, () => {
 
 const closeModal = () => {
     show.value = false
+    postForm.reset()
+    attachmentFiles.value = []
 }
 
 const submitPostUpdate = () => {
@@ -108,6 +111,64 @@ const submitPostUpdate = () => {
         })
     }
 }
+
+/**
+ * {
+ *      file: File,
+ *      url: '',
+ * }
+ */
+const attachmentFiles = ref([])
+
+const maxPreviewFiles = 6
+const maxPreviewIndex = maxPreviewFiles - 1
+
+const uploadAttachmentSelected = async (event) => {
+    // console.log(event)
+    console.log('EVENT-TARGET-FILES', event.target.files)
+
+    for (const file of event.target.files) {
+        const myFile = {
+            file,
+            url: await readFile(file),
+        }
+        attachmentFiles.value.push(myFile)
+    }
+    event.target.value = null
+    console.log('ATTACHMENT_FILES', attachmentFiles.value)
+}
+
+const readFile = async (file) => {
+    return new Promise((res, rej) => {
+        if (isImage(file) || isVideo(file)) {
+            const reader = new FileReader()
+
+            reader.onload = () => {
+                res(reader.result)
+            }
+            reader.onerror = rej
+
+            reader.readAsDataURL(file)
+        }
+        // else if (isVideo(file)) {
+        //     const blobURL = URL.createObjectURL(file)
+
+        //     blobURL.onload = () => {
+        //         res(reader.result)
+        //     }
+        //     blobURL.onerror = rej
+
+        //     reader.readAsDataURL(file)
+        // }
+         else {
+            res(null)
+        }
+    })
+}
+
+const removeFile = (file) => {
+    attachmentFiles.value = attachmentFiles.value.filter(f => f !== file)
+}
 </script>
 
 <template>
@@ -125,7 +186,7 @@ const submitPostUpdate = () => {
                             enter-to="opacity-100 scale-100" leave="duration-200 ease-in"
                             leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
                             <DialogPanel
-                                class="w-full max-w-md overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl">
+                                class="w-full max-w-lg overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl">
                                 <div class="flex items-center justify-between px-3 py-2 border border-b-gray-300">
                                     <div class="w-full text-center">
                                         <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900">
@@ -147,6 +208,75 @@ const submitPostUpdate = () => {
                                     </ckeditor>
                                     <!-- <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
                                         v-model="postForm.body" autofocus></TextareaInput> -->
+                                </div>
+
+                                <div v-if="attachmentFiles.length > 0" class="m-[14px]">
+                                    <div class="grid grid-cols-2 gap-3 mt-1 lg:grid-cols-3">
+                                        <template v-for="myFile of attachmentFiles">
+                                            <div
+                                                class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
+
+                                                <button @click="removeFile(myFile)" title="Excluir"
+                                                    class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-300 rounded-full opacity-0 cursor-pointer w-7 h-7 group-hover:opacity-100 hover:bg-gray-400 right-2 top-2">
+                                                    <XMarkIcon class="w-5 h-5" />
+                                                </button>
+
+                                                <template v-if="isImage(myFile.file) || isVideo(myFile.file)">
+                                                    <img v-if="isImage(myFile.file)" :src="myFile.url"
+                                                        :alt="myFile.file.name"
+                                                        class="object-cover w-10/12 aspect-square" />
+                                                    <video v-if="isVideo(myFile.file)" :src="myFile.url" controls
+                                                        :alt="myFile.file.name"
+                                                        class="object-cover w-10/12 aspect-square"></video>
+                                                </template>
+
+                                                <template v-else>
+                                                    <PaperClipIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+
+                                                    <span class="text-sm text-center lg:text-base">
+                                                        {{ myFile.file.name }}
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <div
+                                    class="flex p-[14px] mx-[14px] mt-[14px] border border-gray-300 rounded-md justify-between items-center">
+                                    <span class="font-medium">Añadir a tu publicación</span>
+
+                                    <div>
+                                        <button type="button" class="relative group/ico_attach_multimedia">
+                                            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-6 h-6">
+                                                <path
+                                                    d="M432,112V96a48.14,48.14,0,0,0-48-48H64A48.14,48.14,0,0,0,16,96V352a48.14,48.14,0,0,0,48,48H80"
+                                                    class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
+                                                    style="stroke-linejoin:round;stroke-width:32px">
+                                                </path>
+                                                <rect x="96" y="128" width="400" height="336" rx="45.99" ry="45.99"
+                                                    class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
+                                                    style="stroke-linejoin:round;stroke-width:32px">
+                                                </rect>
+                                                <ellipse cx="372.92" cy="219.64" rx="30.77" ry="30.55"
+                                                    class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
+                                                    style="stroke-miterlimit:10;stroke-width:32px">
+                                                </ellipse>
+                                                <path
+                                                    d="M342.15,372.17,255,285.78a30.93,30.93,0,0,0-42.18-1.21L96,387.64"
+                                                    class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
+                                                    style="stroke-linecap:round;stroke-linejoin:round;stroke-width:32px">
+                                                </path>
+                                                <path d="M265.23,464,383.82,346.27a31,31,0,0,1,41.46-1.87L496,402.91"
+                                                    class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
+                                                    style="stroke-linecap:round;stroke-linejoin:round;stroke-width:32px">
+                                                </path>
+                                            </svg>
+                                            <input @change="uploadAttachmentSelected" type="file" multiple
+                                                class="absolute inset-0 opacity-0 cursor-pointer" title="Foto/video">
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="flex p-[14px]">

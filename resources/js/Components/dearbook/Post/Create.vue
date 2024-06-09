@@ -41,7 +41,8 @@ const openCreateModal = () => {
 
 <template>
     <div class="flex gap-2 p-4 bg-white border rounded">
-        <a href="javascript:void(0)" :title="'Perfil de ' + $page.props.auth.user.name">
+        <a :href="route('profile.index', { username: $page.props.auth.user.username })"
+            :title="'Perfil de ' + $page.props.auth.user.name">
             <img :src="$page.props.auth.user.avatar_url ||
             '/img/default_avatar.png'" class="w-[40px] rounded-full border-2 hover:border-cyan-500 transition-all"
                 :alt="$page.props.auth.user.name" />

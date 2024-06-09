@@ -28,10 +28,11 @@ const getBodyExcerpt = computed(() => {
     return bodyExcerpt.value
 })
 
-const isImage = (attachment) => {
-    const mime = attachment.mime.split("/");
-    return mime[0].toLowerCase() === "image";
-};
+// const isImage = (attachment) => {
+//     const mime = attachment.mime.split("/");
+//     return mime[0].toLowerCase() === "image";
+// };
+import { isImage } from "@/Libs/helpers";
 
 // =======================================================================================
 
