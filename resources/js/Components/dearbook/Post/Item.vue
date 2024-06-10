@@ -34,7 +34,7 @@ const getBodyExcerpt = computed(() => {
 //     const mime = attachment.mime.split("/");
 //     return mime[0].toLowerCase() === "image";
 // };
-import { isImage } from "@/Libs/helpers";
+import { isImage, isVideo } from "@/Libs/helpers";
 
 // =======================================================================================
 
@@ -161,7 +161,9 @@ const maxPreviewIndex = maxPreviewFiles - 1
             </Disclosure>
         </div>
 
-        <div v-if="post.attachments" class="grid grid-cols-2 gap-3 mt-1 lg:grid-cols-3">
+        <div v-if="post.attachments" class="grid gap-3 mt-1" :class="[
+            post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
+        ]">
             <template v-for="(attachment, index) of post.attachments.slice(0, maxPreviewFiles)">
                 <div
                     class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
@@ -175,8 +177,12 @@ const maxPreviewIndex = maxPreviewFiles - 1
                         <ArrowDownTrayIcon class="w-5 h-5" />
                     </button>
 
-                    <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
-                        class="object-cover aspect-square" />
+                    <template v-if="isImage(attachment) || isVideo(attachment)">
+                        <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
+                            class="object-cover aspect-square" />
+                        <video v-if="isVideo(attachment)" :src="attachment.url" controls :alt="attachment.name"
+                            class="object-cover w-10/12 aspect-square"></video>
+                    </template>
 
                     <template v-else>
                         <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
