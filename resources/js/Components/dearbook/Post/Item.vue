@@ -3,12 +3,14 @@ import { ref, computed } from "vue";
 import {
     ArrowDownTrayIcon,
     DocumentIcon,
-    HandThumbUpIcon,
-    ChatBubbleLeftRightIcon,
     EllipsisVerticalIcon,
     PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/solid";
+import {
+    HandThumbUpIcon,
+    ChatBubbleLeftRightIcon,
+} from "@heroicons/vue/24/outline";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
 const props = defineProps({

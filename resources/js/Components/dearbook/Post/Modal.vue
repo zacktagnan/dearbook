@@ -61,6 +61,7 @@ const props = defineProps({
 const postForm = useForm({
     id: null,
     body: '',
+    attachments: [],
 })
 
 const modalData = ref({
@@ -93,12 +94,13 @@ const closeModal = () => {
 }
 
 const submitPostUpdate = () => {
+    postForm.attachments = attachmentFiles.value.map(myFile => myFile.file)
+
     if (postForm.id) {
         postForm.put(route('post.update', props.post), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal()
-                postForm.reset()
             },
         })
     } else {
@@ -106,7 +108,6 @@ const submitPostUpdate = () => {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal()
-                postForm.reset()
             },
         })
     }
@@ -119,9 +120,6 @@ const submitPostUpdate = () => {
  * }
  */
 const attachmentFiles = ref([])
-
-const maxPreviewFiles = 6
-const maxPreviewIndex = maxPreviewFiles - 1
 
 const uploadAttachmentSelected = async (event) => {
     // console.log(event)

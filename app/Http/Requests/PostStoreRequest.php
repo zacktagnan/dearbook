@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class PostStoreRequest extends FormRequest
 {
@@ -23,6 +24,16 @@ class PostStoreRequest extends FormRequest
     {
         return [
             'body' => 'nullable|string',
+            'attachments' => 'array|max:10',
+            'attachments.*' => [
+                'file',
+                File::types([
+                    'jpg', 'jpeg', 'png', 'gif', 'webp',
+                    'wav', 'mp3', 'mp4',
+                    'doc', 'docx', 'xls', 'xlsx',
+                    'pdf', 'csv', 'zip', 'rar',
+                ])->max('500mb'),
+            ],
         ];
     }
 

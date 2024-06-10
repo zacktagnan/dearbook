@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PostStoreRequest;
-use App\Http\Requests\PostUpdateRequest;
 use App\Models\Post;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use App\Models\PostAttachment;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Requests\PostStoreRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\PostUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Contracts\Routing\ResponseFactory;
 
 class PostController extends Controller
 {
@@ -16,7 +19,41 @@ class PostController extends Controller
      */
     public function store(PostStoreRequest $request): RedirectResponse
     {
-        Post::create($request->all());
+        // dd($request);
+        // dd($request->attachments);
+
+        DB::beginTransaction();
+
+        $allFilePaths = [];
+
+        try {
+            $post = Post::create($request->all());
+
+            /** @var \Illuminate\Http\UploadedFile[] $files */
+            $files = $request->attachments ?? [];
+
+            foreach ($files as $file) {
+                $path = $file->store('attachments/post-' . $post->id, 'public');
+                $allFilePaths[] = $path;
+                PostAttachment::create([
+                    'post_id' => $post->id,
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'mime' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                    'created_by' => $request->user()->id,
+                ]);
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            foreach ($allFilePaths as $path) {
+                if (Storage::disk('public')->exists($path)) {
+                    Storage::disk('public')->delete($path);
+                }
+            }
+            DB::rollBack();
+        }
 
         return back();
     }

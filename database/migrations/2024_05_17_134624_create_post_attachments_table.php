@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('name', 255);
             $table->string('path', 255);
             $table->string('mime', 25);
-            $table->integer('size')->nullable();
+            // $table->integer('size')->nullable();
+            $table->integer('size');
             // $table->foreignIdFor(User::class, 'created_by')->constrained();
             $table->foreignId('created_by')->constrained('users');
             $table->timestamp('created_at')->nullable();
