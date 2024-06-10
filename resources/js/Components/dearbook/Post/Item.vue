@@ -59,6 +59,9 @@ const deletePost = () => {
 const authUser = usePage().props.auth.user
 
 const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.id)
+
+const maxPreviewFiles = 6
+const maxPreviewIndex = maxPreviewFiles - 1
 </script>
 
 <template>
@@ -159,10 +162,15 @@ const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.
         </div>
 
         <div v-if="post.attachments" class="grid grid-cols-2 gap-3 mt-1 lg:grid-cols-3">
-            <template v-for="attachment of post.attachments">
+            <template v-for="(attachment, index) of post.attachments.slice(0, maxPreviewFiles)">
                 <div
                     class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
-                    <button
+                    <div v-if="index === maxPreviewIndex && post.attachments.length > maxPreviewFiles"
+                        class="absolute inset-0 flex items-center justify-center text-[24px] md:text-[28px] text-white bg-black/60">
+                        +{{ post.attachments.length - maxPreviewFiles }}
+                    </div>
+
+                    <button v-if="index < maxPreviewIndex" title="Descargar"
                         class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
                         <ArrowDownTrayIcon class="w-5 h-5" />
                     </button>
