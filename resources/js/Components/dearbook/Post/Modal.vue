@@ -213,7 +213,9 @@ const removeFile = (file) => {
                                 </div>
 
                                 <div v-if="attachmentFiles.length > 0" class="m-[14px]">
-                                    <div class="grid grid-cols-2 gap-3 mt-1 lg:grid-cols-3">
+                                    <div class="grid gap-3 mt-1" :class="[
+                                        attachmentFiles.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
+                                    ]">
                                         <template v-for="myFile of attachmentFiles">
                                             <div
                                                 class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
