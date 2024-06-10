@@ -37,6 +37,33 @@ const showCreateModal = ref(false)
 const openCreateModal = () => {
     showCreateModal.value = true
 }
+
+// -------------------------------------
+
+import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
+
+const errorsFromPostToCreate = ref({})
+
+const showNotification = ref(true)
+const notificationBoxRef = ref(null)
+
+const activeShowNotification = (errors) => {
+    errorsFromPostToCreate.value = errors
+    // console.log('errorsFromPostToCreate', errorsFromPostToCreate)
+    showNotification.value = true
+
+    setTimeout(() => {
+        closingNotification('notification')
+    }, 3000)
+}
+
+const closingNotification = (className) => {
+    notificationBoxRef.value.fadeOutEffect(className)
+}
+
+const closeShowNotification = () => {
+    showNotification.value = false
+}
 </script>
 
 <template>
@@ -77,6 +104,10 @@ const openCreateModal = () => {
             </div>
         </div> -->
 
-        <PostModal :post="postToCreate" v-model="showCreateModal" />
+        <PostModal :post="postToCreate" v-model="showCreateModal"
+            @callActiveShowNotification="activeShowNotification" />
+
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-if="showNotification && errorsFromPostToCreate.attachments" :title="'Error'" :message="errorsFromPostToCreate.attachments" />
     </div>
 </template>

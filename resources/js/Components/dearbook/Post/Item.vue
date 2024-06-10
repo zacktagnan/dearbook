@@ -84,7 +84,7 @@ const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.
                     leave-active-class="transition duration-75 ease-in"
                     leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
                     <MenuItems
-                        class="absolute right-0 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-28 ring-1 ring-black/5 focus:outline-none">
+                        class="absolute right-0 z-10 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-28 ring-1 ring-black/5 focus:outline-none">
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
                             <button @click="openEditModal" :class="[

@@ -55,7 +55,7 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    modelValue: Boolean
+    modelValue: Boolean,
 })
 
 const postForm = useForm({
@@ -74,7 +74,7 @@ const show = computed({
     set: (value) => emit('update:modelValue', value)
 })
 
-const emit = defineEmits('update:modelValue')
+const emit = defineEmits(['update:modelValue', 'callActiveShowNotification'])
 
 watch(() => props.post, () => {
     console.log('POST has changed...')
@@ -108,6 +108,10 @@ const submitPostUpdate = () => {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal()
+            },
+            onError: () => {
+                emit('callActiveShowNotification', postForm.errors)
+                // console.log('PROPs.ERRORS', postForm.errors)
             },
         })
     }
