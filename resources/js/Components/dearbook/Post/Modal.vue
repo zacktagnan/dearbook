@@ -228,10 +228,10 @@ const removeFile = (file) => {
                                                 <template v-if="isImage(myFile.file) || isVideo(myFile.file)">
                                                     <img v-if="isImage(myFile.file)" :src="myFile.url"
                                                         :alt="myFile.file.name"
-                                                        class="object-cover w-10/12 aspect-square" />
+                                                        class="object-contain w-10/12 aspect-square" />
                                                     <video v-if="isVideo(myFile.file)" :src="myFile.url" controls
                                                         :alt="myFile.file.name"
-                                                        class="object-cover w-10/12 aspect-square"></video>
+                                                        class="object-contain w-10/12 aspect-square"></video>
                                                 </template>
 
                                                 <template v-else>

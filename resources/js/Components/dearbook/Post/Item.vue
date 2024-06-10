@@ -179,9 +179,9 @@ const maxPreviewIndex = maxPreviewFiles - 1
 
                     <template v-if="isImage(attachment) || isVideo(attachment)">
                         <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
-                            class="object-cover aspect-square" />
+                            class="object-contain w-10/12 aspect-square" />
                         <video v-if="isVideo(attachment)" :src="attachment.url" controls :alt="attachment.name"
-                            class="object-cover w-10/12 aspect-square"></video>
+                            class="object-contain w-10/12 aspect-square"></video>
                     </template>
 
                     <template v-else>
