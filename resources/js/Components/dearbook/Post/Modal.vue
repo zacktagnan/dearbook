@@ -1,8 +1,7 @@
 <script setup>
 import PostHeader from '@/Components/dearbook/Post/Header.vue'
 // import TextareaInput from '@/Components/TextareaInput.vue';
-import { XMarkIcon, PaperClipIcon, } from "@heroicons/vue/24/solid";
-import { computed } from 'vue'
+import { XMarkIcon, PaperClipIcon, ArrowUturnLeftIcon } from "@heroicons/vue/24/solid";
 import {
     TransitionRoot,
     TransitionChild,
@@ -11,7 +10,7 @@ import {
     DialogTitle,
 } from '@headlessui/vue'
 import { useForm } from '@inertiajs/vue3';
-import { watch, ref } from 'vue';
+import { watch, ref, computed } from 'vue';
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
@@ -71,9 +70,11 @@ const props = defineProps({
 })
 
 const postForm = useForm({
-    id: null,
+    // id: null,
     body: '',
     attachments: [],
+    deleted_file_ids: [],
+    _method: 'POST',
 })
 
 const modalData = ref({
@@ -90,29 +91,52 @@ const emit = defineEmits(['update:modelValue', 'callActiveShowNotification'])
 
 watch(() => props.post, () => {
     console.log('POST has changed...')
-    postForm.id = props.post.id
-    postForm.body = props.post.body
+    // postForm.id = props.post.id
+    // ---------------------------------------------------------------------
+    // postForm.body = props.post.body
+    postForm.body = props.post.body || ''
 
     modalData.value.dialogTitleText = 'Editar publicación'
     modalData.value.submitButtonText = 'Actualizar'
+    // ---------------------------------------------------------------------
+    // if (props.post) {
+    //     postForm.body = props.post.body
+
+    //     modalData.value.dialogTitleText = 'Editar publicación'
+    //     modalData.value.submitButtonText = 'Actualizar'
+    // }
 }, {
     deep: true,
 })
 
 const closeModal = () => {
     show.value = false
-    postForm.reset()
     attachmentFiles.value = []
+    // ---------------------------------------------------------------------
+    // postForm.reset()
+    // props.post.attachments.forEach(file => file.deleted = false)
+    // ---------------------------------------------------------------------
+    if (!props.post.id) {
+        postForm.reset()
+    }
+    if (props.post.attachments) {
+        props.post.attachments.forEach(file => file.deleted = false)
+    }
 }
 
 const submitPostUpdate = () => {
     postForm.attachments = attachmentFiles.value.map(myFile => myFile.file)
 
-    if (postForm.id) {
-        postForm.put(route('post.update', props.post), {
+    if (props.post.id) {
+        postForm._method = 'PUT'
+        postForm.post(route('post.update', props.post), {
             preserveScroll: true,
             onSuccess: () => {
                 closeModal()
+            },
+            onError: () => {
+                emit('callActiveShowNotification', postForm.errors)
+                // console.log('PROPs.ERRORS', postForm.errors)
             },
         })
     } else {
@@ -135,7 +159,29 @@ const submitPostUpdate = () => {
  *      url: '',
  * }
  */
+// const attachmentFiles = ref([])
+// -----------------------------------------------------------
+// const attachmentFiles = computed(() => {
+//     if (postForm.id) {
+//         return [...props.post.attachments]
+//     }
+//     return []
+// })
+// -----------------------------------------------------------
 const attachmentFiles = ref([])
+const attachmentFilesComputed = computed(() => {
+    //// return [...attachmentFiles.value, ...props.post.attachments]
+    // Así da ERROR si no existen los ATTACHMENTs si Post es null
+    // ------------------------------------------------------------------
+    // if (props.post.id) {
+    //     return [...attachmentFiles.value, ...props.post.attachments]
+    // }
+    // return attachmentFiles.value
+    // Así si
+    // ------------------------------------------------------------------
+    // o, mejor, así
+    return [...attachmentFiles.value, ...(props.post.attachments || [])]
+})
 
 const uploadAttachmentSelected = async (event) => {
     // console.log(event)
@@ -180,8 +226,18 @@ const readFile = async (file) => {
     })
 }
 
-const removeFile = (file) => {
-    attachmentFiles.value = attachmentFiles.value.filter(f => f !== file)
+const removeFile = (myFile) => {
+    if (myFile.file) {
+        attachmentFiles.value = attachmentFiles.value.filter(f => f !== myFile)
+    } else {
+        postForm.deleted_file_ids.push(myFile.id)
+        myFile.deleted = true
+    }
+}
+
+const revertDeleteMode = (myFile) => {
+    postForm.deleted_file_ids = postForm.deleted_file_ids.filter(id => myFile.id !== id)
+    myFile.deleted = false
 }
 </script>
 
@@ -224,34 +280,58 @@ const removeFile = (file) => {
                                         v-model="postForm.body" autofocus></TextareaInput> -->
                                 </div>
 
-                                <div v-if="attachmentFiles.length > 0" class="m-[14px]">
-                                    <div class="grid gap-3 mt-1" :class="[
-                                        attachmentFiles.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
-                                    ]">
-                                        <template v-for="myFile of attachmentFiles">
+                                <div v-if="attachmentFilesComputed.length > 0" class="m-[14px]">
+                                    <!-- <div class="grid gap-3 mt-1" :class="[
+                                        attachmentFilesComputed.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
+                                    ]"> -->
+                                    <!--
+                                        En el Modal, la imagen única de previo queda demasiado grande y la barra superior del Modal queda por debajo de la barra de navegación casi en su totalidad
+                                    -->
+                                    <div class="grid grid-cols-2 gap-3 mt-1 lg:grid-cols-3">
+                                        <template v-for="myFile of attachmentFilesComputed">
+                                            <!-- <pre>{{ myFile }}</pre> -->
                                             <div
                                                 class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
+
+                                                <div v-if="myFile.deleted"
+                                                    class="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75">
+                                                    <span class="text-sm">to delete...</span>
+
+                                                    <button @click="revertDeleteMode(myFile)" title="Revertir borrado"
+                                                        class="p-1 text-red-700 rounded-full cursor-pointer hover:bg-red-700 hover:text-white">
+                                                        <ArrowUturnLeftIcon class="w-5 h-5" />
+                                                    </button>
+                                                </div>
 
                                                 <button @click="removeFile(myFile)" title="Excluir"
                                                     class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-300 rounded-full opacity-0 cursor-pointer w-7 h-7 group-hover:opacity-100 hover:bg-gray-400 right-2 top-2">
                                                     <XMarkIcon class="w-5 h-5" />
                                                 </button>
 
-                                                <template v-if="isImage(myFile.file) || isVideo(myFile.file)">
-                                                    <img v-if="isImage(myFile.file)" :src="myFile.url"
-                                                        :alt="myFile.file.name"
-                                                        class="object-contain w-10/12 aspect-square" />
-                                                    <video v-if="isVideo(myFile.file)" :src="myFile.url" controls
-                                                        :alt="myFile.file.name"
-                                                        class="object-contain w-10/12 aspect-square"></video>
+                                                <template
+                                                    v-if="isImage(myFile.file || myFile) || isVideo(myFile.file || myFile)">
+                                                    <img v-if="isImage(myFile.file || myFile)" :src="myFile.url"
+                                                        :alt="(myFile.file || myFile).name"
+                                                        class="object-contain w-10/12 aspect-square" :class="[
+                                                            myFile.deleted ? 'opacity-50' : ''
+                                                        ]" />
+                                                    <video v-if="isVideo(myFile.file || myFile)" :src="myFile.url"
+                                                        controls :alt="(myFile.file || myFile).name"
+                                                        class="object-contain w-10/12 aspect-square" :class="[
+                                                            myFile.deleted ? 'opacity-50' : ''
+                                                        ]"></video>
                                                 </template>
 
                                                 <template v-else>
-                                                    <PaperClipIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+                                                    <div class="flex flex-col items-center justify-center" :class="[
+                                                        myFile.deleted ? 'opacity-50' : ''
+                                                    ]">
+                                                        <PaperClipIcon class="w-10 h-10 lg:w-12 lg:h-12" />
 
-                                                    <span class="text-sm text-center lg:text-base">
-                                                        {{ myFile.file.name }}
-                                                    </span>
+                                                        <span class="text-sm text-center lg:text-base">
+                                                            {{ (myFile.file || myFile).name }}
+                                                        </span>
+                                                    </div>
                                                 </template>
                                             </div>
                                         </template>
