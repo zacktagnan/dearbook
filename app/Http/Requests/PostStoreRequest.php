@@ -30,7 +30,7 @@ class PostStoreRequest extends FormRequest
                 File::types([
                     'jpg', 'jpeg', 'png', 'gif', 'webp',
                     'wav', 'mp3', 'mp4',
-                    'doc', 'docx', 'xls', 'xlsx',
+                    'doc', 'docx', 'xls', 'xlsx', 'txt',
                     'pdf', 'csv', 'zip', 'rar',
                 ])->max('500mb'),
             ],
