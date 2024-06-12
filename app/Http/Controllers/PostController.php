@@ -120,4 +120,11 @@ class PostController extends Controller
         // Si no se establece el BACK(), no vale el RedirectResponse
         // y, entonces, mejor no establecer ningún tipo de RETURN
     }
+
+    public function downloadAttachment(PostAttachment $attachment)
+    {
+        // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+        // o, sino,
+        return response()->download(storage_path('app/public/' . $attachment->path), $attachment->name);
+    }
 }

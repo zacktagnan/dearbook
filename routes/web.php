@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
         Route::post('', [PostController::class, 'store'])->name('store');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+        Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
     });
 });
 

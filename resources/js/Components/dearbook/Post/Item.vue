@@ -172,10 +172,10 @@ const maxPreviewIndex = maxPreviewFiles - 1
                         +{{ post.attachments.length - maxPreviewFiles }}
                     </div>
 
-                    <button v-if="index < maxPreviewIndex" title="Descargar"
+                    <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex" title="Descargar"
                         class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
                         <ArrowDownTrayIcon class="w-5 h-5" />
-                    </button>
+                    </a>
 
                     <template v-if="isImage(attachment) || isVideo(attachment)">
                         <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
