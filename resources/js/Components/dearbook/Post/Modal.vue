@@ -281,18 +281,11 @@ const revertDeleteMode = (myFile) => {
                                 </div>
 
                                 <div v-if="attachmentFilesComputed.length > 0" class="m-[14px]">
-                                    <!-- <div class="grid gap-3 mt-1" :class="[
-                                        attachmentFilesComputed.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
-                                    ]"> -->
-                                    <!--
-                                        En el Modal, la imagen única de previo queda demasiado grande y la barra superior del Modal queda por debajo de la barra de navegación casi en su totalidad
-                                    -->
                                     <div
                                         class="grid gap-3 mt-1 overflow-auto h-60" :class="[
                                         attachmentFilesComputed.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
                                     ]">
                                         <template v-for="myFile of attachmentFilesComputed">
-                                            <!-- <pre>{{ myFile }}</pre> -->
                                             <div
                                                 class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
 

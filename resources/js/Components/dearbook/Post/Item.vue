@@ -17,7 +17,7 @@ const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits('callOpenEditModal')
+const emit = defineEmits(['callOpenEditModal', 'callOpenAttachmentsModal'])
 
 const largeBodyLength = 100
 
@@ -62,6 +62,10 @@ const isPostAuthor = computed(() => authUser && authUser.id === props.post.user.
 
 const maxPreviewFiles = 6
 const maxPreviewIndex = maxPreviewFiles - 1
+
+const openAttachmentPreview = (index) => {
+    emit('callOpenAttachmentsModal', props.post, index)
+}
 </script>
 
 <template>
@@ -166,13 +170,16 @@ const maxPreviewIndex = maxPreviewFiles - 1
         ]">
             <template v-for="(attachment, index) of post.attachments.slice(0, maxPreviewFiles)">
                 <div
-                    class="relative flex flex-col items-center justify-center text-gray-500 aspect-square bg-cyan-100 group">
+                    @click="openAttachmentPreview(index)"
+                    title="Ver en detalle"
+                    class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
                     <div v-if="index === maxPreviewIndex && post.attachments.length > maxPreviewFiles"
                         class="absolute inset-0 flex items-center justify-center text-[24px] md:text-[28px] text-white bg-black/60">
                         +{{ post.attachments.length - maxPreviewFiles }}
                     </div>
 
-                    <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex" title="Descargar"
+                    <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex"
+                        title="Descargar"
                         class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
                         <ArrowDownTrayIcon class="w-5 h-5" />
                     </a>
@@ -185,11 +192,13 @@ const maxPreviewIndex = maxPreviewFiles - 1
                     </template>
 
                     <template v-else>
-                        <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+                        <div class="flex flex-col items-center justify-center">
+                            <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
 
-                        <span class="text-sm lg:text-base">{{
-                            attachment.name
-                            }}</span>
+                            <span class="text-sm lg:text-base">
+                                {{ attachment.name }}
+                            </span>
+                        </div>
                     </template>
                 </div>
             </template>

@@ -194,23 +194,23 @@ const closeCropImageModal = () => {
                                 <div class="relative mt-2.5 lg:mb-6">
                                     <div
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
-                                        <div class="z-40 flex items-center justify-center w-[30px] h-[30px] shadow-lg">
+                                        <div class="z-20 flex items-center justify-center w-[30px] h-[30px] shadow-lg">
                                             <a href="#">
                                                 <img src="/img/demo/avatar.png" alt=""
                                                     class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900" />
                                             </a>
                                         </div>
                                         <div
-                                            class="z-30 flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            class="z-[19] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             04</div>
                                         <div
-                                            class="z-20 flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            class="z-[18] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             03</div>
                                         <div
-                                            class="z-10 flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            class="z-[17] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             02</div>
                                         <div
-                                            class="z-0 flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            class="z-[16] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             01</div>
                                     </div>
                                 </div>

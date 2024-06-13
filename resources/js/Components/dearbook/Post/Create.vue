@@ -104,10 +104,31 @@ const closeShowNotification = () => {
             </div>
         </div> -->
 
+        <!-- {{
+        'showNotification >> ' + showNotification
+        + 'errorsFromPostToCreate >> ' + errorsFromPostToCreate
+    + 'errorsFromPostToCreate.attachments >> ' + errorsFromPostToCreate.attachments
+    + 'errorsFromPostToCreate.body >> ' + errorsFromPostToCreate.body
+        }} -->
+
         <PostModal :post="postToCreate" v-model="showCreateModal"
             @callActiveShowNotification="activeShowNotification" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPostToCreate.attachments" :title="'Error'" :message="errorsFromPostToCreate.attachments" />
+            v-if="showNotification && errorsFromPostToCreate.attachments" :title="'Error'"
+            :message="errorsFromPostToCreate.attachments" />
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-else-if="showNotification && errorsFromPostToCreate.body" :title="'Error'"
+            :message="errorsFromPostToCreate.body" />
+        <!-- <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-else-if="showNotification && errorsFromPostToCreate && !errorsFromPostToCreate.attachments && !errorsFromPostToCreate.body"
+            :title="'Error'" :message="'Errores en el formulario ... Revisar.'" /> -->
+        <!-- <template v-if="showNotification && errorsFromPostToCreate">
+            <NotificationBox v-for="errorFromPostToCreate of errorsFromPostToCreate" ref="notificationBoxRef"
+                @callCloseShowNotification="closeShowNotification" :title="'Error'" :message="errorFromPostToCreate" />
+        </template> -->
+        <!-- <NotificationBox v-if="showNotification && errorsFromPostToCreate"
+            v-for="errorFromPostToCreate of errorsFromPostToCreate" ref="notificationBoxRef"
+            @callCloseShowNotification="closeShowNotification" :title="'Error'" :message="errorFromPostToCreate" /> -->
     </div>
 </template>
