@@ -68,6 +68,7 @@ class PostController extends Controller
         $allFilePaths = [];
 
         try {
+            // dd($request->all());
             $post->update($request->all());
 
             // dd($request->deleted_file_ids);
@@ -75,9 +76,10 @@ class PostController extends Controller
                 $attachmentsToDelete = PostAttachment::where('post_id', $post->id)
                     ->whereIn('id', $request->deleted_file_ids)
                     ->get();
-            }
-            foreach ($attachmentsToDelete as $attachmentToDelete) {
-                $attachmentToDelete->delete();
+
+                foreach ($attachmentsToDelete as $attachmentToDelete) {
+                    $attachmentToDelete->delete();
+                }
             }
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
@@ -98,6 +100,7 @@ class PostController extends Controller
 
             DB::commit();
         } catch (\Exception $e) {
+            // dd($e->getMessage());
             foreach ($allFilePaths as $path) {
                 if (Storage::disk('public')->exists($path)) {
                     Storage::disk('public')->delete($path);
