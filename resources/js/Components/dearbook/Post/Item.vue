@@ -175,7 +175,7 @@ const openAttachmentPreview = (index) => {
                     class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
                     <div v-if="index === maxPreviewIndex && post.attachments.length > maxPreviewFiles"
                         class="absolute inset-0 flex items-center justify-center text-[24px] md:text-[28px] text-white bg-black/60">
-                        +{{ post.attachments.length - maxPreviewFiles }}
+                        +{{ post.attachments.length - maxPreviewIndex }}
                     </div>
 
                     <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex"
