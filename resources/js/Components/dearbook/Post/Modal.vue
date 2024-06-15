@@ -133,20 +133,19 @@ const closeModal = () => {
     }
     attachmentErrors.value = [];
     totalAttachment.value = 0;
-    showWarningExtensions.value = false;
+    // showWarningExtensions.value = false;
 };
 
 import InputError from "@/Components/InputError.vue";
 const attachmentErrors = ref([]);
 
-const maxAttachmentAllowed = 10;
 const totalAttachment = ref(0);
 const maxAttachmentExceededOnUpdating = () => {
     totalAttachment.value =
         props.post.attachments.length +
         attachmentFiles.value.length -
         postForm.deleted_file_ids.length;
-    return totalAttachment.value > maxAttachmentAllowed;
+    return totalAttachment.value > maximumAmount;
 };
 
 const submitPostUpdate = () => {
@@ -156,7 +155,7 @@ const submitPostUpdate = () => {
         if (maxAttachmentExceededOnUpdating()) {
             let msg =
                 "Se excedió el máximo de adjuntos admitido de " +
-                maxAttachmentAllowed +
+                maximumAmount +
                 ". Total actual: " +
                 totalAttachment.value +
                 ".";
@@ -215,8 +214,9 @@ const processErrors = (errors) => {
     }
 };
 
+const maximumAmount = usePage().props.maximumAmount;
 const allowedMimeTypes = usePage().props.allowedMimeTypes.join(", ") + ".";
-const showWarningExtensions = ref(false);
+// const showWarningExtensions = ref(false);
 
 /**
  * {
@@ -248,16 +248,30 @@ const attachmentFilesComputed = computed(() => {
     return [...attachmentFiles.value, ...(props.post.attachments || [])];
 });
 
-const uploadAttachmentSelected = async (event) => {
-    showWarningExtensions.value = false;
-
-    for (const file of event.target.files) {
+const showWarningExtensions = computed(() => {
+    for (let myFile of attachmentFiles.value) {
+        const file = myFile.file
         let parts = file.name.split(".");
         // se coge la última parte porque pudiera ser un nombre tal que así "name.xxx.ext"
         let ext = parts.pop().toLowerCase();
         if (!allowedMimeTypes.includes(ext)) {
-            showWarningExtensions.value = true;
+            return true;
         }
+    }
+
+    return false
+})
+
+const uploadAttachmentSelected = async (event) => {
+    // showWarningExtensions.value = false;
+
+    for (const file of event.target.files) {
+        // let parts = file.name.split(".");
+        // // se coge la última parte porque pudiera ser un nombre tal que así "name.xxx.ext"
+        // let ext = parts.pop().toLowerCase();
+        // if (!allowedMimeTypes.includes(ext)) {
+        //     showWarningExtensions.value = true;
+        // }
 
         const myFile = {
             file,

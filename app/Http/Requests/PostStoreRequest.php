@@ -3,10 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rules\File;
 
 class PostStoreRequest extends FormRequest
 {
+    public static int $maximumAmount = 28;
+
     public static array $allowedMimeTypes = [
         'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
         'wav', 'mp3', 'mp4',
@@ -14,7 +17,20 @@ class PostStoreRequest extends FormRequest
         'pdf', 'csv', 'zip', 'rar',
     ];
 
-    private $maximumAmount = 10;
+    // private $maximumBytes = pow(1024, 3);
+    // // 1GB ~= 1 * 1024 * 1024 * 1024 (1GB * 1024MB * 1024KBytes * 1024bytes)
+    // // private $maximumTotalBytes = 1 * 1024 * 1024 * 1024;
+    // private $maximumTotalBytes = 1 * $this->maximumBytes;
+    private $maximumBytes;
+    // 1GB ~= 1 * 1024 * 1024 * 1024 (1GB * 1024MB * 1024KBytes * 1024bytes)
+    // private $maximumTotalBytes = 1 * 1024 * 1024 * 1024;
+    private $maximumTotalBytes;
+
+    public function __construct()
+    {
+        $this->maximumBytes = pow(1024, 3);
+        $this->maximumTotalBytes = 1 * $this->maximumBytes;
+    }
 
     /**
      * Determine if the user is authorized to make this request.
@@ -33,10 +49,27 @@ class PostStoreRequest extends FormRequest
     {
         return [
             'body' => 'nullable|string',
-            'attachments' => 'array|max:' . $this->maximumAmount,
+            'attachments' => [
+                'array',
+                'max:' . self::$maximumAmount,
+                function ($attribute, $value, $fail) {
+                    // $totalSize = collect($value)->sum(function (UploadedFile $file) {
+                    //     return $file->getSize();
+                    // });
+                    $totalSize = collect($value)->sum(fn (UploadedFile $file) => $file->getSize());
+
+                    // dd('maximumBytes', $this->maximumBytes, 'maximumTotalBytes', $this->maximumTotalBytes, 'totalSize', $totalSize, $totalSize / $this->maximumBytes);
+
+                    // Total de tamaño en KB del conjunto de archivos subidos
+                    if ($totalSize > $this->maximumTotalBytes) {
+                        // $fail('The total size of all files must not exceed 1GB.');
+                        $fail('El tamaño total de todos los archivos no debe exceder de ' . ($this->maximumTotalBytes / $this->maximumBytes) . 'GB. Subido: ' . number_format($totalSize / $this->maximumBytes, 2) . 'GB.');
+                    }
+                },
+            ],
             'attachments.*' => [
                 'file',
-                File::types(self::$allowedMimeTypes)->max('500mb'),
+                File::types(self::$allowedMimeTypes),
             ],
         ];
     }
@@ -53,7 +86,8 @@ class PostStoreRequest extends FormRequest
             // 'attachments.*' => 'El adjunto elegido debe disponer de una de las siguientes extensiones: ' . implode(', ', self::$allowedMimeTypes),
             // mensaje demasiado largo
             'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . $this->maximumAmount . '.',
-            'attachments.*' => 'Extensión no válida.',
+            'attachments.*.file' => 'Cada adjunto debe ser un archivo.',
+            'attachments.*.mimes' => 'Extensión no válida.',
         ];
     }
 }
