@@ -23,6 +23,8 @@ class PostResource extends JsonResource
             // Cargando a través del nombre de la relación con Post,
             'group' => $this->group,
             'attachments' => PostAttachmentResource::collection($this->attachments),
+            'total_of_reactions' => $this->reactions_count,
+            'current_user_has_reaction' => $this->reactions->count() > 0,
 
             // 'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
             // 'updated_at' => $this->updated_at->format(config('app.format.' . app()->getLocale() . '.datetime.basic')),

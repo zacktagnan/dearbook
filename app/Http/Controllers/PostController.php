@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostReactionRequest;
 use App\Models\Post;
 use App\Models\PostAttachment;
 use Illuminate\Support\Facades\DB;
@@ -9,8 +10,10 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PostUpdateRequest;
+use App\Models\PostReaction;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
 {
@@ -129,5 +132,50 @@ class PostController extends Controller
         // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
         // o, sino,
         return response()->download(storage_path('app/public/' . $attachment->path), $attachment->name);
+    }
+
+    public function reaction(PostReactionRequest $request, Post $post): JsonResponse
+    {
+        if ($this->reactionExists($post, $request->reaction)) {
+            $hasReaction = false;
+            $this->deleteReaction($post, $request->reaction);
+        } else {
+            $hasReaction = true;
+            PostReaction::create([
+                'post_id' => $post->id,
+                'user_id' => auth()->id(),
+                'type' => $request->reaction,
+            ]);
+        }
+
+        $reactions = PostReaction::where('post_id', $post->id)->count();
+
+        return response()->json([
+            'total_of_reactions' => $reactions,
+            'current_user_has_reaction' => $hasReaction,
+        ], Response::HTTP_OK);
+    }
+
+    public function reactionExists(Post $post, string $reactionType): bool
+    {
+        $reaction = PostReaction::where('user_id', auth()->id())
+            ->where('post_id', $post->id)
+            ->where('type', $reactionType)
+            ->first();
+        if ($reaction) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteReaction(Post $post, string $reactionType): void
+    {
+        $reaction = PostReaction::where('user_id', auth()->id())
+            ->where('post_id', $post->id)
+            ->where('type', $reactionType)
+            ->first();
+
+        $reaction->delete();
     }
 }

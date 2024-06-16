@@ -33,6 +33,11 @@ class Post extends Model
         return $this->hasMany(PostAttachment::class);
     }
 
+    public function reactions(): HasMany
+    {
+        return $this->hasMany(PostReaction::class);
+    }
+
     public function createdAtWithFormat()
     {
         if ($this->created_at->isoFormat('Y') === date('Y')) {

@@ -66,6 +66,18 @@ const maxPreviewIndex = maxPreviewFiles - 1
 const openAttachmentPreview = (index) => {
     emit('callOpenAttachmentsModal', props.post, index)
 }
+
+import axiosClient from '@/axiosClient'
+
+const sendReaction = () => {
+    axiosClient.post(route('post.reaction', props.post), {
+        reaction: 'like',
+    })
+        .then(({ data }) => {
+            props.post.current_user_has_reaction = data.current_user_has_reaction
+            props.post.total_of_reactions = data.total_of_reactions
+    })
+}
 </script>
 
 <template>
@@ -206,9 +218,15 @@ const openAttachmentPreview = (index) => {
 
         <div class="flex gap-2 mt-3">
             <button
-                class="flex items-center justify-center flex-1 gap-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
+                @click="sendReaction"
+                class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg"
+                :class="[
+                    post.current_user_has_reaction
+                        ? 'bg-sky-100 hover:bg-sky-200'
+                        : 'bg-gray-100 hover:bg-gray-200'
+                ]">
                 <HandThumbUpIcon class="w-6 h-6" />
-                Like
+                {{ post.current_user_has_reaction ? 'Unlike' : 'Like' }} [{{ post.total_of_reactions }}]
             </button>
 
             <button
