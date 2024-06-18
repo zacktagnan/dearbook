@@ -68,16 +68,59 @@ const openAttachmentPreview = (index) => {
 }
 
 import axiosClient from '@/axiosClient'
+import { onMounted } from "vue";
 
-const sendReaction = () => {
+// const sendReaction = () => {
+const sendReaction = (type) => {
     axiosClient.post(route('post.reaction', props.post), {
-        reaction: 'like',
+        reaction: type,
     })
         .then(({ data }) => {
             props.post.current_user_has_reaction = data.current_user_has_reaction
             props.post.total_of_reactions = data.total_of_reactions
     })
 }
+
+onMounted(() => {
+    allReactionsUsers()
+    likeReactionsUsers('like')
+});
+
+const allReactionsUsers = () => {
+    axiosClient.get(route('post.all-reactions-users', props.post))
+        .then(({ data }) => {
+            props.post.all_reactions_users = data
+        })
+}
+
+const likeReactionsUsers = (type) => {
+    axiosClient.get(route('post.type-reactions-users', [props.post, type]))
+        .then(({ data }) => {
+            props.post.like_reactions_users = data
+        })
+}
+
+const showAllReactionsUsersPopover = ref(false)
+const showLikeReactionsUsersPopover = ref(false)
+
+const typeReactionClasses = ref('')
+
+const setTypeReactionClasses = () => {
+    if (!props.post.current_user_has_reaction) {
+        return ''
+    } else {
+        return switchTypeReactionClasses[props.post.current_user_type_reaction]
+    }
+}
+const switchTypeReactionClasses = {
+    'like': () => 'text-sky-500',
+    'love': () => '',
+    'care': () => '',
+    'haha': () => '',
+    'wow': () => '',
+    'sad': () => '',
+    'angry': () => '',
+};
 </script>
 
 <template>
@@ -166,7 +209,6 @@ const sendReaction = () => {
                             <div class="whitespace-pre-line ck-content-output" v-html="post.body" />
                         </DisclosurePanel>
                     </transition>
-                    <hr class="m-1" />
                     <div class="flex justify-end">
                         <DisclosureButton class="text-cyan-700 hover:text-cyan-500"
                             :title="open ? 'Mostrar -' : 'Mostrar +'">
@@ -177,63 +219,131 @@ const sendReaction = () => {
             </Disclosure>
         </div>
 
-        <div v-if="post.attachments" class="grid gap-3 mt-1" :class="[
-            post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
-        ]">
-            <template v-for="(attachment, index) of post.attachments.slice(0, maxPreviewFiles)">
-                <div
-                    @click="openAttachmentPreview(index)"
-                    title="Ver en detalle"
-                    class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
-                    <div v-if="index === maxPreviewIndex && post.attachments.length > maxPreviewFiles"
-                        class="absolute inset-0 flex items-center justify-center text-[24px] md:text-[28px] text-white bg-black/60">
-                        +{{ post.attachments.length - maxPreviewIndex }}
-                    </div>
+        <div v-if="post.attachments.length > 0">
+            <hr class="mx-0 mt-2" />
 
-                    <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex"
-                        title="Descargar"
-                        class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
-                        <ArrowDownTrayIcon class="w-5 h-5" />
-                    </a>
-
-                    <template v-if="isImage(attachment) || isVideo(attachment)">
-                        <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
-                            class="object-contain w-10/12 aspect-square" />
-                        <video v-if="isVideo(attachment)" :src="attachment.url" controls :alt="attachment.name"
-                            class="object-contain w-10/12 aspect-square"></video>
-                    </template>
-
-                    <template v-else>
-                        <div class="flex flex-col items-center justify-center">
-                            <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
-
-                            <span class="text-sm lg:text-base">
-                                {{ attachment.name }}
-                            </span>
+            <div class="grid gap-3 mt-2" :class="[
+                post.attachments.length === 1 ? 'grid-cols-1' : 'grid-cols-2 lg:grid-cols-3'
+            ]">
+                <template v-for="(attachment, index) of post.attachments.slice(0, maxPreviewFiles)">
+                    <div @click="openAttachmentPreview(index)" title="Ver en detalle"
+                        class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
+                        <div v-if="index === maxPreviewIndex && post.attachments.length > maxPreviewFiles"
+                            class="absolute inset-0 flex items-center justify-center text-[24px] md:text-[28px] text-white bg-black/60">
+                            +{{ post.attachments.length - maxPreviewIndex }}
                         </div>
-                    </template>
-                </div>
-            </template>
+
+                        <a :href="route('post.download-attachment', attachment)" v-if="index < maxPreviewIndex"
+                            title="Descargar"
+                            class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
+                            <ArrowDownTrayIcon class="w-5 h-5" />
+                        </a>
+
+                        <template v-if="isImage(attachment) || isVideo(attachment)">
+                            <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
+                                class="object-contain w-10/12 aspect-square" />
+                            <video v-if="isVideo(attachment)" :src="attachment.url" controls :alt="attachment.name"
+                                class="object-contain w-10/12 aspect-square"></video>
+                        </template>
+
+                        <template v-else>
+                            <div class="flex flex-col items-center justify-center">
+                                <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+
+                                <span class="text-sm lg:text-base">
+                                    {{ attachment.name }}
+                                </span>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+
+            <hr class="mx-0 mt-2" />
         </div>
 
-        <div class="flex gap-2 mt-3">
-            <button
-                @click="sendReaction"
-                class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg"
-                :class="[
-                    post.current_user_has_reaction
-                        ? 'bg-sky-100 hover:bg-sky-200'
-                        : 'bg-gray-100 hover:bg-gray-200'
-                ]">
-                <HandThumbUpIcon class="w-6 h-6" />
-                {{ post.current_user_has_reaction ? 'Unlike' : 'Like' }} [{{ post.total_of_reactions }}]
-            </button>
+        <hr v-else class="mx-0 mt-2" />
 
-            <button
-                class="flex items-center justify-center flex-1 gap-1 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-                <ChatBubbleLeftRightIcon class="w-6 h-6" />
-                Comentario(s)
-            </button>
+        <div class="px-2">
+            <div v-if="post.total_of_reactions > 0">
+                <div class="flex items-center py-2 text-gray-500">
+                    <div class="relative">
+                        <img src="/img/emojis/like.png" alt="Like" class="w-[18px] h-[18px] mr-1.5 cursor-pointer"
+                            @mouseover="showLikeReactionsUsersPopover = true"
+                            @mouseleave="showLikeReactionsUsersPopover = false" />
+                        <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
+                            :class="{
+                            'animated-popover': showLikeReactionsUsersPopover
+                        }">
+                            <h3 class="mb-1.5 text-[15px] font-bold">Me gusta</h3>
+
+                            <p v-if="post.current_user_has_reaction">
+                                {{ authUser.name }}
+                            </p>
+                            <p v-for="(userThatReact) of post.all_reactions_users">
+                                {{ userThatReact.name }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <span class="cursor-pointer hover:underline" @mouseover="showAllReactionsUsersPopover = true"
+                            @mouseleave="showAllReactionsUsersPopover = false">
+                            {{ post.total_of_reactions }}
+                        </span>
+                        <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-4 text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500"
+                            :class="{
+                            'animated-popover': showAllReactionsUsersPopover
+                        }">
+                            <!-- <p>Pepito</p>
+                            <p>Fulanito</p>
+                            <p>Menganito</p>
+                            <p>Zutanito</p>
+                            <p>Perenganito</p> -->
+
+                            <!-- {{ post.users_that_react_to_post }} -->
+                            <!-- <p v-for="(reaction, index) of post.reactions">
+                                {{ reaction }}
+                            </p> -->
+
+                            <p v-if="post.current_user_has_reaction" class="whitespace-nowrap">
+                                {{ authUser.name }}
+                            </p>
+                            <p v-for="(userThatReact) of post.all_reactions_users" class="whitespace-nowrap">
+                                {{ userThatReact.name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr />
+            </div>
+
+            <div class="flex gap-2 mt-1.5 font-bold text-gray-500">
+                <!-- <button @click="sendReaction"
+                    class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg hover:bg-gray-100" :class="[
+                        post.current_user_has_reaction
+                            ? 'text-sky-500'
+                            : ''
+                    ]"> -->
+                <button @click="sendReaction('like')"
+                    class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg hover:bg-gray-100" :class="setTypeReactionClasses">
+                    <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
+                    <img v-else src="/img/emojis/like.png" alt="Like" class="w-6" />
+                    Like
+                </button>
+
+                <button class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg hover:bg-gray-100">
+                    <ChatBubbleLeftRightIcon class="w-6 h-6" />
+                    Comentario(s)
+                </button>
+            </div>
         </div>
     </div>
 </template>
+
+<style>
+.animated-popover {
+    opacity: 1;
+}
+</style>

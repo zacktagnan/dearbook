@@ -13,6 +13,7 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Models\PostReaction;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 
 class PostController extends Controller
@@ -139,6 +140,7 @@ class PostController extends Controller
         if ($this->reactionExists($post, $request->reaction)) {
             $hasReaction = false;
             $this->deleteReaction($post, $request->reaction);
+            $type = '';
         } else {
             $hasReaction = true;
             PostReaction::create([
@@ -146,6 +148,7 @@ class PostController extends Controller
                 'user_id' => auth()->id(),
                 'type' => $request->reaction,
             ]);
+            $type = $request->reaction;
         }
 
         $reactions = PostReaction::where('post_id', $post->id)->count();
@@ -153,6 +156,7 @@ class PostController extends Controller
         return response()->json([
             'total_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
+            'current_user_type_reaction' => $type,
         ], Response::HTTP_OK);
     }
 
@@ -177,5 +181,39 @@ class PostController extends Controller
             ->first();
 
         $reaction->delete();
+    }
+
+    public function allReactionsUsers(Post $post): array
+    {
+        $reactions = PostReaction::where('post_id', $post->id)
+            ->where('user_id', '<>', auth()->id())->get();
+
+        $usersThatReactToPost = $this->getReactionUsers($reactions);
+
+        return $usersThatReactToPost;
+    }
+
+    public function typeReactionsUsers(Post $post, string $type): array
+    {
+        $reactions = PostReaction::where('post_id', $post->id)
+            ->where('type', $type)
+            ->where('user_id', '<>', auth()->id())->get();
+
+        $usersThatReactToPost = $this->getReactionUsers($reactions);
+
+        return $usersThatReactToPost;
+    }
+
+    private function getReactionUsers(Collection $reactions): array
+    {
+        $usersThatReactToPost = [];
+        foreach ($reactions as $reaction) {
+            // $usersThatReactToPost[] = $reaction->user->name;
+            $usersThatReactToPost[] = [
+                'name' => $reaction->user->name,
+            ];
+        }
+
+        return $usersThatReactToPost;
     }
 }
