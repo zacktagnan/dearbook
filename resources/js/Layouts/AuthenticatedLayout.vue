@@ -65,7 +65,7 @@ const showingNavigationDropdown = ref(false);
                                         <div class="p-1.5">
                                             <DropdownLink
                                                 :href="route('profile.index', { username: $page.props.auth.user.username })"
-                                                :title="$t('Profile')" class="flex gap-1.5 group/menu_user_profile_item">
+                                                :title="$t('Profile')" class="flex items-center gap-1.5 group/menu_user_profile_item">
                                                 <!-- {{ $t('Profile') }} -->
                                                 <img :src="$page.props.auth.user.avatar_url ||
                                                     '/img/default_avatar.png'"
