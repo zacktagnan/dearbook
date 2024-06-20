@@ -1,10 +1,11 @@
 <script setup>
+import ReactionTypeBar from '@/Components/dearbook/Reaction/TypeBar.vue'
 import ReactionMainTypeButton from '@/Components/dearbook/Reaction/MainTypeButton.vue'
 import { ref } from "vue";
 
 import axiosClient from '@/axiosClient'
 
-const showReactionBar = ref(false)
+const showReactionTypeBar = ref(false)
 
 const props = defineProps({
     post: Object,
@@ -12,8 +13,8 @@ const props = defineProps({
 
 const emit = defineEmits(['callActiveShowNotificationToItem'])
 
-const changeShowReactionBar = (value) => {
-    showReactionBar.value = value
+const changeShowReactionTypeBar = (value) => {
+    showReactionTypeBar.value = value
 }
 
 // const sendReaction = () => {
@@ -32,16 +33,16 @@ const sendReaction = (from, type) => {
             // console.log('ERRORES: ', error.response.data.errors)
             emit('callActiveShowNotificationToItem', error.response.data.errors)
         })
-    changeShowReactionBar(false)
+    changeShowReactionTypeBar(false)
 }
 </script>
 
 <template>
     <div class="relative w-1/2">
-        <div class="z-[22] opacity-0 scale-0 absolute left-10 bottom-[38px] p-[3px] border rounded-full shadow flex items-center gap-1.5 bg-white h-12 transition-opacity duration-500 delay-500 ease-in-out"
+        <!-- <div class="z-[22] opacity-0 scale-0 absolute left-10 bottom-[38px] p-[3px] border rounded-full shadow flex items-center gap-1.5 bg-white h-12 transition-opacity duration-500 delay-500 ease-in-out"
             :class="{
-                'opacity-100 scale-110': showReactionBar
-            }" @mouseover="changeShowReactionBar(true)" @mouseleave="changeShowReactionBar(false)">
+                'opacity-100 scale-110': showReactionTypeBar
+            }" @mouseover="changeShowReactionTypeBar(true)" @mouseleave="changeShowReactionTypeBar(false)">
             <div class="tooltip tooltip-top" data-tip="Me gusta">
                 <button @click="sendReaction(false, 'like')" class="flex justify-center w-10 group/like">
                     <img src="/img/emojis/like.png" alt="Like"
@@ -84,28 +85,11 @@ const sendReaction = (from, type) => {
                         class="w-[35px] h-[35px] group-hover/angry:w-[39px] group-hover/angry:h-[39px] transition-all duration-150" />
                 </button>
             </div>
-        </div>
-        <!-- <button @click="sendReaction(true, 'like')" @mouseover="changeShowReactionBar(true)"
-            @mouseleave="changeShowReactionBar(false)"
-            class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
-            :class="mainTypeReactionFormat.classes">
-            <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
-            <img v-else-if="post.current_user_type_reaction == 'like'" src="/img/emojis/like.png" alt="Like"
-                class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'love'" src="/img/emojis/love.png" alt="Love"
-                class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'care'" src="/img/emojis/care.png" alt="Care"
-                class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'haha'" src="/img/emojis/haha.png" alt="Haha"
-                class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'wow'" src="/img/emojis/wow.png" alt="Wow" class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'sad'" src="/img/emojis/sad.png" alt="Sad" class="w-6" />
-            <img v-else-if="post.current_user_type_reaction == 'angry'" src="/img/emojis/angry.png" alt="Angry"
-                class="w-6" />
-            {{ mainTypeReactionFormat.text }}
-        </button> -->
+        </div> -->
+        <ReactionTypeBar :showReactionTypeBar="showReactionTypeBar"
+            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendReaction="sendReaction" />
+
         <ReactionMainTypeButton :post="post"
-            @callChangeShowReactionBar="changeShowReactionBar"
-            @callSendReaction="sendReaction" />
+            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendReaction="sendReaction" />
     </div>
 </template>
