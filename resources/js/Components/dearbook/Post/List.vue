@@ -47,7 +47,10 @@ const activeShowNotification = (errors) => {
 }
 
 const closingNotification = (className) => {
-    notificationBoxRef.value.fadeOutEffect(className)
+    // Siempre que no se haya cerrado ya, manualmente, la notificación (o sea, que exista, es decir, que aún no sea NULL)
+    if (notificationBoxRef.value) {
+        notificationBoxRef.value.fadeOutEffect(className)
+    }
 }
 
 const closeShowNotification = () => {
