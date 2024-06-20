@@ -1,16 +1,20 @@
 <script setup>
-import { HandThumbUpIcon, } from "@heroicons/vue/24/outline";
-import { ref, computed } from "vue";
+import ReactionMainTypeButton from '@/Components/dearbook/Reaction/MainTypeButton.vue'
+import { ref } from "vue";
 
 import axiosClient from '@/axiosClient'
 
-const showButtonsReactionBox = ref(false)
+const showReactionBar = ref(false)
 
 const props = defineProps({
     post: Object,
 });
 
 const emit = defineEmits(['callActiveShowNotificationToItem'])
+
+const changeShowReactionBar = (value) => {
+    showReactionBar.value = value
+}
 
 // const sendReaction = () => {
 const sendReaction = (from, type) => {
@@ -28,50 +32,16 @@ const sendReaction = (from, type) => {
             // console.log('ERRORES: ', error.response.data.errors)
             emit('callActiveShowNotificationToItem', error.response.data.errors)
         })
-    showButtonsReactionBox.value = false
-
-    // setTypeReactionTextAndClasses()
+    changeShowReactionBar(false)
 }
-
-const typeReactionTextAndClasses = computed(() => {
-    if (!props.post.current_user_has_reaction) {
-        return {
-            text: 'Like',
-            classes: ''
-        }
-    } else {
-        return {
-            text: switchTypeReactionTextAndClasses[props.post.current_user_type_reaction][0],
-            classes: switchTypeReactionTextAndClasses[props.post.current_user_type_reaction][1]
-        }
-    }
-})
-
-// Siendo typeReactionTextAndClasses una referencia computada, no es necesario este método
-// const setTypeReactionTextAndClasses = () => {
-//     if (!props.post.current_user_has_reaction) {
-//         typeReactionTextAndClasses.value = ''
-//     } else {
-//         typeReactionTextAndClasses.value = switchTypeReactionTextAndClasses[props.post.current_user_type_reaction]
-//     }
-// }
-const switchTypeReactionTextAndClasses = {
-    'like': ['Like', 'text-sky-500'],
-    'love': ['Love', 'text-rose-500'],
-    'care': '',
-    'haha': '',
-    'wow': '',
-    'sad': '',
-    'angry': '',
-};
 </script>
 
 <template>
     <div class="relative w-1/2">
         <div class="z-[22] opacity-0 scale-0 absolute left-10 bottom-[38px] p-[3px] border rounded-full shadow flex items-center gap-1.5 bg-white h-12 transition-opacity duration-500 delay-500 ease-in-out"
             :class="{
-                'opacity-100 scale-110': showButtonsReactionBox
-            }" @mouseover="showButtonsReactionBox = true" @mouseleave="showButtonsReactionBox = false">
+                'opacity-100 scale-110': showReactionBar
+            }" @mouseover="changeShowReactionBar(true)" @mouseleave="changeShowReactionBar(false)">
             <div class="tooltip tooltip-top" data-tip="Me gusta">
                 <button @click="sendReaction(false, 'like')" class="flex justify-center w-10 group/like">
                     <img src="/img/emojis/like.png" alt="Like"
@@ -115,10 +85,10 @@ const switchTypeReactionTextAndClasses = {
                 </button>
             </div>
         </div>
-        <button @click="sendReaction(true, 'like')" @mouseover="showButtonsReactionBox = true"
-            @mouseleave="showButtonsReactionBox = false"
+        <!-- <button @click="sendReaction(true, 'like')" @mouseover="changeShowReactionBar(true)"
+            @mouseleave="changeShowReactionBar(false)"
             class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
-            :class="typeReactionTextAndClasses.classes">
+            :class="mainTypeReactionFormat.classes">
             <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
             <img v-else-if="post.current_user_type_reaction == 'like'" src="/img/emojis/like.png" alt="Like"
                 class="w-6" />
@@ -132,7 +102,10 @@ const switchTypeReactionTextAndClasses = {
             <img v-else-if="post.current_user_type_reaction == 'sad'" src="/img/emojis/sad.png" alt="Sad" class="w-6" />
             <img v-else-if="post.current_user_type_reaction == 'angry'" src="/img/emojis/angry.png" alt="Angry"
                 class="w-6" />
-            {{ typeReactionTextAndClasses.text }}
-        </button>
+            {{ mainTypeReactionFormat.text }}
+        </button> -->
+        <ReactionMainTypeButton :post="post"
+            @callChangeShowReactionBar="changeShowReactionBar"
+            @callSendReaction="sendReaction" />
     </div>
 </template>
