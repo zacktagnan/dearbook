@@ -59,9 +59,17 @@ const showUsersPopover = ref(false)
             }">
             <h3 v-if="showHeader" class="mb-1.5 text-[15px] font-bold">{{ title }}</h3>
 
-            <p v-if="currentUserTypeReaction === type">
-                {{ authUser.name }}
-            </p>
+            <template v-if="currentUserHasReaction">
+                <p v-if="currentUserHasReaction">
+                    {{ authUser.name }}
+                </p>
+            </template>
+            <template v-if="currentUserTypeReaction !== ''">
+                <p v-if="currentUserTypeReaction === type">
+                    {{ authUser.name }}
+                </p>
+            </template>
+
             <p v-for="(userThatReact) of reactionUsers">
                 {{ userThatReact.name }}
             </p>
