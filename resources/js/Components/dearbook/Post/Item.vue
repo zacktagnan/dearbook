@@ -98,10 +98,10 @@ const typeReactionsUsers = (type) => {
 
 const showAllReactionsUsersPopover = ref(false)
 const showLikeReactionsUsersPopover = ref(false)
-const showLoveReactionsUsersPopover = ref(false)
 
 // ============================================================================
 
+import ReactionTypeUsersSummary from '@/Components/dearbook/Reaction/TypeUsersSummary.vue'
 import ReactionBox from '@/Components/dearbook/Reaction/Box.vue'
 
 const activeShowNotification = (errors) => {
@@ -254,77 +254,24 @@ const activeShowNotification = (errors) => {
             <div v-if="post.total_of_reactions > 0">
                 <div class="flex items-center py-2 text-gray-500">
                     <div class="flex items-center -space-x-2">
-                        <div v-if="post.current_user_type_reaction === 'like' || (post.like_reactions_users && post.like_reactions_users.length > 0)"
-                            class="relative">
-                            <img src="/img/emojis/like.png" alt="Like"
-                                class="z-[7] relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
-                                @mouseover="showLikeReactionsUsersPopover = true"
-                                @mouseleave="showLikeReactionsUsersPopover = false" />
-                            <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
-                                :class="{
-                                'opacity-100': showLikeReactionsUsersPopover
-                            }">
-                                <h3 class="mb-1.5 text-[15px] font-bold">Me gusta</h3>
+                        <ReactionTypeUsersSummary
+                            v-if="post.current_user_type_reaction === 'like' || (post.like_reactions_users && post.like_reactions_users.length > 0)"
+                            :title="'Me gusta'" :type="'like'" :z-index-icon="7"
+                            :reaction-users="post.like_reactions_users"
+                            :current-user-type-reaction="post.current_user_type_reaction" />
 
-                                <p v-if="post.current_user_type_reaction === 'like'" class="whitespace-nowrap">
-                                    {{ authUser.name }}
-                                </p>
-                                <p v-for="(userThatReact) of post.like_reactions_users" class="whitespace-nowrap">
-                                    {{ userThatReact.name }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div v-if="post.current_user_type_reaction === 'love' || (post.love_reactions_users && post.love_reactions_users.length > 0)"
-                            class="relative">
-                            <img src="/img/emojis/love.png" alt="Love"
-                                class="z-[6] relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
-                                @mouseover="showLoveReactionsUsersPopover = true"
-                                @mouseleave="showLoveReactionsUsersPopover = false" />
-                            <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
-                                :class="{
-                                    'opacity-100': showLoveReactionsUsersPopover
-                                }">
-                                <h3 class="mb-1.5 text-[15px] font-bold">Me encanta</h3>
-
-                                <p v-if="post.current_user_type_reaction === 'love'" class="whitespace-nowrap">
-                                    {{ authUser.name }}
-                                </p>
-                                <p v-for="(userThatReact) of post.love_reactions_users" class="whitespace-nowrap">
-                                    {{ userThatReact.name }}
-                                </p>
-                            </div>
-                        </div>
+                        <ReactionTypeUsersSummary
+                            v-if="post.current_user_type_reaction === 'love' || (post.love_reactions_users && post.love_reactions_users.length > 0)"
+                            :title="'Me encanta'" :type="'love'" :z-index-icon="6"
+                            :reaction-users="post.love_reactions_users"
+                            :current-user-type-reaction="post.current_user_type_reaction" />
                     </div>
 
-                    <div class="relative">
-                        <span class="cursor-pointer hover:underline" @mouseover="showAllReactionsUsersPopover = true"
-                            @mouseleave="showAllReactionsUsersPopover = false">
-                            {{ post.total_of_reactions }}
-                        </span>
-                        <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-4 text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500"
-                            :class="{
-                            'opacity-100': showAllReactionsUsersPopover
-                        }">
-                            <!-- <p>Pepito</p>
-                            <p>Fulanito</p>
-                            <p>Menganito</p>
-                            <p>Zutanito</p>
-                            <p>Perenganito</p> -->
-
-                            <!-- {{ post.users_that_react_to_post }} -->
-                            <!-- <p v-for="(reaction, index) of post.reactions">
-                                {{ reaction }}
-                            </p> -->
-
-                            <p v-if="post.current_user_has_reaction" class="whitespace-nowrap">
-                                {{ authUser.name }}
-                            </p>
-                            <p v-for="(userThatReact) of post.all_reactions_users" class="whitespace-nowrap">
-                                {{ userThatReact.name }}
-                            </p>
-                        </div>
-                    </div>
+                    <ReactionTypeUsersSummary :reaction-users="post.all_reactions_users"
+                        :current-user-has-reaction="post.current_user_has_reaction"
+                        :total-of-reactions="post.total_of_reactions"
+                        :show-type-icon="false"
+                        :show-header="false" />
                 </div>
 
                 <hr />
