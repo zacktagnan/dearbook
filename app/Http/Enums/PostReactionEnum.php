@@ -8,9 +8,9 @@ enum PostReactionEnum: string
         // -> Otros posibles tipos de reacción
         // ------------------------------------------
     case LOVE = 'love'; // 'Me encanta'
-    // case Care = 'care'; // 'Me importa'
-    // case Haha = 'haha'; // 'Me divierte'
-    // case Wow = 'wow'; // 'Me asombra'
-    // case Sad = 'sad'; // 'Me entristece'
-    // case Angry = 'angry'; // 'Me enoja'
+    case CARE = 'care'; // 'Me importa'
+    case HAHA = 'haha'; // 'Me divierte'
+    case WOW = 'wow'; // 'Me asombra'
+    case SAD = 'sad'; // 'Me entristece'
+    case ANGRY = 'angry'; // 'Me enoja'
 }
