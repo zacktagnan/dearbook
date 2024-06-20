@@ -58,7 +58,8 @@ const closeShowNotification = () => {
 <template>
     <div>
         <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal"
-            @callOpenAttachmentsModal="openAttachmentsModal" />
+            @callOpenAttachmentsModal="openAttachmentsModal"
+            @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
@@ -68,5 +69,9 @@ const closeShowNotification = () => {
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPostToEdit.attachments" :title="'Error'"
             :message="errorsFromPostToEdit.attachments" />
+
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-if="showNotification && errorsFromPostToEdit.reaction_type" :title="'Error'"
+            :message="errorsFromPostToEdit.reaction_type[0]" />
     </div>
 </template>

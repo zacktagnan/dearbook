@@ -7,17 +7,14 @@ import {
     PencilIcon,
     TrashIcon,
 } from "@heroicons/vue/24/solid";
-import {
-    HandThumbUpIcon,
-    ChatBubbleLeftRightIcon,
-} from "@heroicons/vue/24/outline";
+import { ChatBubbleLeftRightIcon, } from "@heroicons/vue/24/outline";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
 
 const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callOpenEditModal', 'callOpenAttachmentsModal'])
+const emit = defineEmits(['callOpenEditModal', 'callOpenAttachmentsModal', 'callActiveShowNotificationFromItem'])
 
 const largeBodyLength = 100
 
@@ -70,20 +67,10 @@ const openAttachmentPreview = (index) => {
 import axiosClient from '@/axiosClient'
 import { onMounted } from "vue";
 
-// const sendReaction = () => {
-const sendReaction = (type) => {
-    axiosClient.post(route('post.reaction', props.post), {
-        reaction: type,
-    })
-        .then(({ data }) => {
-            props.post.current_user_has_reaction = data.current_user_has_reaction
-            props.post.total_of_reactions = data.total_of_reactions
-    })
-}
-
 onMounted(() => {
     allReactionsUsers()
-    likeReactionsUsers('like')
+    typeReactionsUsers('like')
+    typeReactionsUsers('love')
 });
 
 const allReactionsUsers = () => {
@@ -93,38 +80,37 @@ const allReactionsUsers = () => {
         })
 }
 
-const likeReactionsUsers = (type) => {
+const typeReactionsUsers = (type) => {
     axiosClient.get(route('post.type-reactions-users', [props.post, type]))
         .then(({ data }) => {
-            props.post.like_reactions_users = data
+            switch (type) {
+                case 'like':
+                    props.post.like_reactions_users = data
+                    break;
+                case 'love':
+                    props.post.love_reactions_users = data
+                    break;
+                default:
+                    break;
+            }
         })
 }
 
 const showAllReactionsUsersPopover = ref(false)
 const showLikeReactionsUsersPopover = ref(false)
+const showLoveReactionsUsersPopover = ref(false)
 
-const typeReactionClasses = ref('')
+// ============================================================================
 
-const setTypeReactionClasses = () => {
-    if (!props.post.current_user_has_reaction) {
-        return ''
-    } else {
-        return switchTypeReactionClasses[props.post.current_user_type_reaction]
-    }
+import ReactionBox from '@/Components/dearbook/Reaction/Box.vue'
+
+const activeShowNotification = (errors) => {
+    emit('callActiveShowNotificationFromItem', errors)
 }
-const switchTypeReactionClasses = {
-    'like': () => 'text-sky-500',
-    'love': () => '',
-    'care': () => '',
-    'haha': () => '',
-    'wow': () => '',
-    'sad': () => '',
-    'angry': () => '',
-};
 </script>
 
 <template>
-    <div class="p-4 mt-4 mx-0.5 bg-white rounded shadow hover:shadow-cyan-900">
+    <div class="p-4 mt-4 mx-0.5 text- bg-white rounded shadow hover:shadow-cyan-900">
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
@@ -267,22 +253,47 @@ const switchTypeReactionClasses = {
         <div class="px-2">
             <div v-if="post.total_of_reactions > 0">
                 <div class="flex items-center py-2 text-gray-500">
-                    <div class="relative">
-                        <img src="/img/emojis/like.png" alt="Like" class="w-[18px] h-[18px] mr-1.5 cursor-pointer"
-                            @mouseover="showLikeReactionsUsersPopover = true"
-                            @mouseleave="showLikeReactionsUsersPopover = false" />
-                        <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
-                            :class="{
-                            'animated-popover': showLikeReactionsUsersPopover
-                        }">
-                            <h3 class="mb-1.5 text-[15px] font-bold">Me gusta</h3>
+                    <div class="flex items-center -space-x-2">
+                        <div v-if="post.current_user_type_reaction === 'like' || (post.like_reactions_users && post.like_reactions_users.length > 0)"
+                            class="relative">
+                            <img src="/img/emojis/like.png" alt="Like"
+                                class="z-[7] relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
+                                @mouseover="showLikeReactionsUsersPopover = true"
+                                @mouseleave="showLikeReactionsUsersPopover = false" />
+                            <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
+                                :class="{
+                                'opacity-100': showLikeReactionsUsersPopover
+                            }">
+                                <h3 class="mb-1.5 text-[15px] font-bold">Me gusta</h3>
 
-                            <p v-if="post.current_user_has_reaction">
-                                {{ authUser.name }}
-                            </p>
-                            <p v-for="(userThatReact) of post.all_reactions_users">
-                                {{ userThatReact.name }}
-                            </p>
+                                <p v-if="post.current_user_type_reaction === 'like'" class="whitespace-nowrap">
+                                    {{ authUser.name }}
+                                </p>
+                                <p v-for="(userThatReact) of post.like_reactions_users" class="whitespace-nowrap">
+                                    {{ userThatReact.name }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div v-if="post.current_user_type_reaction === 'love' || (post.love_reactions_users && post.love_reactions_users.length > 0)"
+                            class="relative">
+                            <img src="/img/emojis/love.png" alt="Love"
+                                class="z-[6] relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
+                                @mouseover="showLoveReactionsUsersPopover = true"
+                                @mouseleave="showLoveReactionsUsersPopover = false" />
+                            <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[14px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
+                                :class="{
+                                    'opacity-100': showLoveReactionsUsersPopover
+                                }">
+                                <h3 class="mb-1.5 text-[15px] font-bold">Me encanta</h3>
+
+                                <p v-if="post.current_user_type_reaction === 'love'" class="whitespace-nowrap">
+                                    {{ authUser.name }}
+                                </p>
+                                <p v-for="(userThatReact) of post.love_reactions_users" class="whitespace-nowrap">
+                                    {{ userThatReact.name }}
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -293,7 +304,7 @@ const switchTypeReactionClasses = {
                         </span>
                         <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-4 text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500"
                             :class="{
-                            'animated-popover': showAllReactionsUsersPopover
+                            'opacity-100': showAllReactionsUsersPopover
                         }">
                             <!-- <p>Pepito</p>
                             <p>Fulanito</p>
@@ -326,24 +337,88 @@ const switchTypeReactionClasses = {
                             ? 'text-sky-500'
                             : ''
                     ]"> -->
-                <button @click="sendReaction('like')"
-                    class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg hover:bg-gray-100" :class="setTypeReactionClasses">
-                    <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
-                    <img v-else src="/img/emojis/like.png" alt="Like" class="w-6" />
-                    Like
-                </button>
+                <!-- ==================================================================================== -->
+                <!-- <div class="relative w-1/2">
+                    <div class="z-[22] opacity-0 scale-0 absolute left-10 bottom-[38px] p-[3px] border rounded-full shadow flex items-center gap-1.5 bg-white h-12 transition-opacity duration-500 delay-500 ease-in-out"
+                        :class="{
+                            'opacity-100 scale-110': showButtonsReactionBox
+                        }" @mouseover="showButtonsReactionBox = true" @mouseleave="showButtonsReactionBox = false">
+                        <div class="tooltip tooltip-top" data-tip="Me gusta">
+                            <button @click="sendReaction(false, 'like')" class="flex justify-center w-10 group/like">
+                                <img src="/img/emojis/like.png" alt="Like"
+                                    class="w-[35px] h-[35px] group-hover/like:w-[39px] group-hover/like:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me encanta">
+                            <button @click="sendReaction(false, 'love')" class="flex justify-center w-10 group/love">
+                                <img src="/img/emojis/love.png" alt="Love"
+                                    class="w-[35px] h-[35px] group-hover/love:w-[39px] group-hover/love:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me importa">
+                            <button @click="sendReaction(false, 'care')" class="flex justify-center w-10 group/care">
+                                <img src="/img/emojis/care.png" alt="Care"
+                                    class="w-[35px] h-[35px] group-hover/care:w-[39px] group-hover/care:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me divierte">
+                            <button @click="sendReaction(false, 'haha')" class="flex justify-center w-10 group/haha">
+                                <img src="/img/emojis/haha.png" alt="Haha"
+                                    class="w-[35px] h-[35px] group-hover/haha:w-[39px] group-hover/haha:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me asombra">
+                            <button @click="sendReaction(false, 'wow')" class="flex justify-center w-10 group/wow">
+                                <img src="/img/emojis/wow.png" alt="Wow"
+                                    class="w-[35px] h-[35px] group-hover/wow:w-[39px] group-hover/wow:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me entristece">
+                            <button @click="sendReaction(false, 'sad')" class="flex justify-center w-10 group/sad">
+                                <img src="/img/emojis/sad.png" alt="Sad"
+                                    class="w-[35px] h-[35px] group-hover/sad:w-[39px] group-hover/sad:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                        <div class="tooltip tooltip-top" data-tip="Me enoja">
+                            <button @click="sendReaction(false, 'angry')" class="flex justify-center w-10 group/angry">
+                                <img src="/img/emojis/angry.png" alt="Angry"
+                                    class="w-[35px] h-[35px] group-hover/angry:w-[39px] group-hover/angry:h-[39px] transition-all duration-150" />
+                            </button>
+                        </div>
+                    </div>
+                    <button @click="sendReaction(true, 'like')" @mouseover="showButtonsReactionBox = true"
+                        @mouseleave="showButtonsReactionBox = false"
+                        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
+                        :class="typeReactionTextAndClasses.classes">
+                        <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'like'" src="/img/emojis/like.png" alt="Like"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'love'" src="/img/emojis/love.png" alt="Love"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'care'" src="/img/emojis/care.png" alt="Care"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'haha'" src="/img/emojis/haha.png" alt="Haha"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'wow'" src="/img/emojis/wow.png" alt="Wow"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'sad'" src="/img/emojis/sad.png" alt="Sad"
+                            class="w-6" />
+                        <img v-else-if="post.current_user_type_reaction == 'angry'" src="/img/emojis/angry.png"
+                            alt="Angry" class="w-6" />
+                        {{ typeReactionTextAndClasses.text }}
+                    </button>
+                </div> -->
+                <!-- ==================================================================================== -->
+                <ReactionBox :post="post" @callActiveShowNotificationToItem="activeShowNotification" />
 
-                <button class="flex items-center justify-center flex-1 gap-1 px-4 py-2 rounded-lg hover:bg-gray-100">
-                    <ChatBubbleLeftRightIcon class="w-6 h-6" />
-                    Comentario(s)
-                </button>
+                <div class="w-1/2">
+                    <button
+                        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100">
+                        <ChatBubbleLeftRightIcon class="w-6 h-6" />
+                        Comentario(s)
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </template>
-
-<style>
-.animated-popover {
-    opacity: 1;
-}
-</style>

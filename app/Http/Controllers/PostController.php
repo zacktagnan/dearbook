@@ -137,19 +137,55 @@ class PostController extends Controller
 
     public function reaction(PostReactionRequest $request, Post $post): JsonResponse
     {
-        if ($this->reactionExists($post, $request->reaction)) {
-            $hasReaction = false;
-            $this->deleteReaction($post, $request->reaction);
-            $type = '';
-        } else {
+        // dd('REQUEST', $request->all());
+
+        // if (!$request->current_reaction_type) {
+        //     dd('CURRENT_TYPE es NULL');
+        // }
+        // dd('CURRENT_TYPE', $request->current_reaction_type);
+
+        // if (!$this->reactionExists($post->id)) {
+
+        if (!$request->current_reaction_type) {
             $hasReaction = true;
-            PostReaction::create([
-                'post_id' => $post->id,
-                'user_id' => auth()->id(),
-                'type' => $request->reaction,
-            ]);
-            $type = $request->reaction;
+            $this->createReaction($post->id, $request->reaction_type);
+            // PostReaction::create([
+            //     'post_id' => $post->id,
+            //     'user_id' => auth()->id(),
+            //     'type' => $request->reaction_type,
+            // ]);
+            $type = $request->reaction_type;
+        } else {
+            if ($request->from_main_reaction_button) {
+                if ($this->reactionExists($post->id)) {
+                    $hasReaction = false;
+                    $this->deleteReaction($post->id);
+                    $type = '';
+                } else {
+                    $hasReaction = true;
+                    $this->createReaction($post->id, $request->reaction_type);
+                    $type = $request->reaction_type;
+                }
+            } else {
+                $hasReaction = true;
+                $this->updateReaction($post->id, $request->reaction_type);
+                $type = $request->reaction_type;
+            }
         }
+
+        // if ($this->reactionExists($post->id)) {
+        //     $hasReaction = false;
+        //     $this->deleteReaction($post->id);
+        //     $type = '';
+        // } else {
+        //     $hasReaction = true;
+        //     PostReaction::create([
+        //         'post_id' => $post->id,
+        //         'user_id' => auth()->id(),
+        //         'type' => $request->reaction,
+        //     ]);
+        //     $type = $request->reaction;
+        // }
 
         $reactions = PostReaction::where('post_id', $post->id)->count();
 
@@ -160,11 +196,10 @@ class PostController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function reactionExists(Post $post, string $reactionType): bool
+    public function reactionExists(int $postId): bool
     {
         $reaction = PostReaction::where('user_id', auth()->id())
-            ->where('post_id', $post->id)
-            ->where('type', $reactionType)
+            ->where('post_id', $postId)
             ->first();
         if ($reaction) {
             return true;
@@ -173,11 +208,30 @@ class PostController extends Controller
         }
     }
 
-    public function deleteReaction(Post $post, string $reactionType): void
+    public function createReaction(int $postId, string $type): void
+    {
+        PostReaction::create([
+            'post_id' => $postId,
+            'user_id' => auth()->id(),
+            'type' => $type,
+        ]);
+    }
+
+    public function updateReaction(int $postId, string $type): void
     {
         $reaction = PostReaction::where('user_id', auth()->id())
-            ->where('post_id', $post->id)
-            ->where('type', $reactionType)
+            ->where('post_id', $postId)
+            ->first();
+
+        $reaction->update([
+            'type' => $type,
+        ]);
+    }
+
+    public function deleteReaction(int $postId): void
+    {
+        $reaction = PostReaction::where('user_id', auth()->id())
+            ->where('post_id', $postId)
             ->first();
 
         $reaction->delete();

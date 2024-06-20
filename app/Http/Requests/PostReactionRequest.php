@@ -24,9 +24,16 @@ class PostReactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reaction' => [
+            'reaction_type' => [
                 Rule::enum(PostReactionEnum::class),
             ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'reaction_type' => 'El tipo de reacción marcada no está disponible.',
         ];
     }
 }
