@@ -8,7 +8,7 @@ import {
     TrashIcon,
 } from "@heroicons/vue/24/solid";
 import { ChatBubbleLeftRightIcon } from "@heroicons/vue/24/outline";
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
+import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 
 const props = defineProps({
     post: Object,
@@ -20,17 +20,7 @@ const emit = defineEmits([
     "callActiveShowNotificationFromItem",
 ]);
 
-const largeBodyLength = 100;
-
-const bodyExcerpt = ref("");
-const getBodyExcerpt = computed(() => {
-    if (props.post.body) {
-        const ellipsis = props.post.body.length > largeBodyLength ? "..." : "";
-        bodyExcerpt.value =
-            props.post.body.substring(0, largeBodyLength) + ellipsis;
-    }
-    return bodyExcerpt.value;
-});
+const maxPostBodyLength = 100;
 
 // const isImage = (attachment) => {
 //     const mime = attachment.mime.split("/");
@@ -225,67 +215,7 @@ const activeShowNotification = (errors) => {
         </div>
 
         <div class="mt-1">
-            <Disclosure v-slot="{ open }">
-                <template v-if="!post.body">
-                    <div
-                        class="tooltip tooltip-right"
-                        data-tip="Nada reseñado aún..."
-                    >
-                        <p
-                            class="inline-block px-1.5 py-0.5 text-white rounded-md bg-slate-500"
-                        >
-                            zzZz...
-                        </p>
-                    </div>
-                </template>
-                <template v-else>
-                    <!-- Sin estilar para el CKEditor -->
-                    <!-- <div v-if="!open" class="whitespace-pre-line">
-                        {{ getBodyExcerpt }}
-                    </div> -->
-                    <div
-                        v-if="!open"
-                        class="whitespace-pre-line ck-content-output"
-                        v-html="getBodyExcerpt"
-                    />
-                </template>
-                <template
-                    v-if="post.body && post.body.length > largeBodyLength"
-                >
-                    <!-- <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-out"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"> -->
-                    <transition
-                        enter-active-class="transition-opacity duration-75"
-                        enter-from-class="opacity-0"
-                        enter-to-class="opacity-100"
-                        leave-active-class="transition-opacity duration-150"
-                        leave-from-class="opacity-100"
-                        leave-to-class="opacity-0"
-                    >
-                        <DisclosurePanel>
-                            <!-- Sin estilar para el CKEditor -->
-                            <!-- <div class="whitespace-pre-line" v-html="post.body" /> -->
-                            <div
-                                class="whitespace-pre-line ck-content-output"
-                                v-html="post.body"
-                            />
-                        </DisclosurePanel>
-                    </transition>
-                    <div class="flex justify-end">
-                        <DisclosureButton
-                            class="flex items-center w-5 h-5 px-1 border rounded-full border-cyan-700 text-cyan-700 hover:text-cyan-500 hover:border-cyan-500"
-                            :title="open ? 'Mostrar -' : 'Mostrar +'"
-                        >
-                            {{ open ? "-" : "+" }}
-                        </DisclosureButton>
-                    </div>
-                </template>
-            </Disclosure>
+            <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength" />
         </div>
 
         <div v-if="post.attachments.length > 0">
