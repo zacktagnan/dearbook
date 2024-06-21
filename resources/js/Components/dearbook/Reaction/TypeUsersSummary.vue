@@ -13,8 +13,8 @@ defineProps({
         default: "",
     },
     zIndexIcon: {
-        type: Number,
-        default: 0,
+        type: String,
+        default: "0",
     },
     currentUserTypeReaction: {
         type: String,
@@ -53,7 +53,7 @@ const maxUsersIndex = maxUsersListed - 1;
             :src="'/img/emojis/' + type + '.png'"
             :alt="title"
             class="relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
-            :class="'z-[' + zIndexIcon + ']'"
+            :class="zIndexIcon"
             @mouseover="showUsersPopover = true"
             @mouseleave="showUsersPopover = false"
         />

@@ -383,7 +383,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me gusta'"
                             :type="'like'"
-                            :z-index-icon="7"
+                            :z-index-icon="'z-[7]'"
                             :reaction-users="post.like_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -398,7 +398,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me encanta'"
                             :type="'love'"
-                            :z-index-icon="6"
+                            :z-index-icon="'z-[6]'"
                             :reaction-users="post.love_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -413,7 +413,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me importa'"
                             :type="'care'"
-                            :z-index-icon="5"
+                            :z-index-icon="'z-[5]'"
                             :reaction-users="post.care_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -428,7 +428,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me divierte'"
                             :type="'haha'"
-                            :z-index-icon="4"
+                            :z-index-icon="'z-[4]'"
                             :reaction-users="post.haha_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -443,7 +443,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me asombra'"
                             :type="'wow'"
-                            :z-index-icon="3"
+                            :z-index-icon="'z-[3]'"
                             :reaction-users="post.wow_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -458,7 +458,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me entristece'"
                             :type="'sad'"
-                            :z-index-icon="2"
+                            :z-index-icon="'z-[2]'"
                             :reaction-users="post.sad_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
@@ -473,7 +473,7 @@ const activeShowNotification = (errors) => {
                             "
                             :title="'Me enoja'"
                             :type="'angry'"
-                            :z-index-icon="1"
+                            :z-index-icon="'z-[1]'"
                             :reaction-users="post.angry_reactions_users"
                             :current-user-type-reaction="
                                 post.current_user_type_reaction
