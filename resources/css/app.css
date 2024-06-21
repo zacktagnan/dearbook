@@ -32,6 +32,11 @@
     margin: revert;
 }
 
+.ck-content>p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
 .ck-content>ol,
 .ck-content>ul {
     list-style: revert;
@@ -72,6 +77,11 @@
 .ck-content-output>p,
 .ck-content-output>pre {
     margin: revert;
+}
+
+.ck-content-output>p {
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 .ck-content-output>*:last-child {
