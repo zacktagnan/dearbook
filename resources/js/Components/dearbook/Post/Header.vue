@@ -10,7 +10,7 @@ defineProps({
 
 <template>
     <div class="flex items-center gap-2">
-        <a href="javascript:void(0)" :title="'Perfil de ' + post.user.name">
+        <a :href="route('profile.index', { username: $page.props.auth.user.username })" :title="'Perfil de ' + post.user.name">
             <!-- Clases para marcar usuario activo, por BADGE o por anillo (ring) -->
             <!-- <div class="avatar online w-[40px] ring-2 ring-primary ring-offset-slate-50 ring-offset-1 rounded-full"> -->
             <div class="avatar offline w-[40px] rounded-full">
@@ -21,7 +21,7 @@ defineProps({
         </a>
         <div class="leading-none">
             <h4 class="font-bold">
-                <a href="javascript:void(0)" class="hover:underline" :title="'Perfil de ' + post.user.name">{{
+                <a :href="route('profile.index', { username: $page.props.auth.user.username })" class="hover:underline" :title="'Perfil de ' + post.user.name">{{
                     post.user.name }}</a>
                 <template v-if="post.group">
                     <span class="mx-1 text-cyan-500">></span>
