@@ -6,11 +6,11 @@ defineProps({
     reactionUsers: Object,
     title: {
         type: String,
-        default: '',
+        default: "",
     },
     type: {
         type: String,
-        default: '',
+        default: "",
     },
     zIndexIcon: {
         type: Number,
@@ -18,7 +18,7 @@ defineProps({
     },
     currentUserTypeReaction: {
         type: String,
-        default: '',
+        default: "",
     },
     currentUserHasReaction: {
         type: Boolean,
@@ -35,29 +35,45 @@ defineProps({
     showHeader: {
         type: Boolean,
         default: true,
-    }
+    },
 });
 
-const authUser = usePage().props.auth.user
+const authUser = usePage().props.auth.user;
 
-const showUsersPopover = ref(false)
+const showUsersPopover = ref(false);
+
+const maxUsersListed = 4;
+const maxUsersIndex = maxUsersListed - 1;
 </script>
 
 <template>
     <div class="relative">
-        <img v-if="showTypeIcon" :src="'/img/emojis/' + type + '.png'" :alt="title"
+        <img
+            v-if="showTypeIcon"
+            :src="'/img/emojis/' + type + '.png'"
+            :alt="title"
             class="relative w-[18px] h-[18px] mr-1.5 cursor-pointer ring-2 ring-white dark:ring-slate-900 rounded-full"
-            :class="'z-[' + zIndexIcon + ']'" @mouseover="showUsersPopover = true"
-            @mouseleave="showUsersPopover = false" />
-        <span v-else class="cursor-pointer hover:underline" @mouseover="showUsersPopover = true"
-            @mouseleave="showUsersPopover = false">
+            :class="'z-[' + zIndexIcon + ']'"
+            @mouseover="showUsersPopover = true"
+            @mouseleave="showUsersPopover = false"
+        />
+        <span
+            v-else
+            class="cursor-pointer hover:underline"
+            @mouseover="showUsersPopover = true"
+            @mouseleave="showUsersPopover = false"
+        >
             {{ totalOfReactions }}
         </span>
-        <div class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
+        <div
+            class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
             :class="{
-                'opacity-100': showUsersPopover
-            }">
-            <h3 v-if="showHeader" class="mb-1.5 text-[15px] font-bold">{{ title }}</h3>
+                'opacity-100': showUsersPopover,
+            }"
+        >
+            <h3 v-if="showHeader" class="mb-1.5 text-[15px] font-bold">
+                {{ title }}
+            </h3>
 
             <template v-if="currentUserHasReaction">
                 <p v-if="currentUserHasReaction">
@@ -70,9 +86,31 @@ const showUsersPopover = ref(false)
                 </p>
             </template>
 
-            <p v-for="(userThatReact) of reactionUsers">
-                {{ userThatReact.name }}
-            </p>
+            <template v-if="reactionUsers?.length > maxUsersListed">
+                <template
+                    v-for="(userThatReact, index) of reactionUsers?.slice(
+                        0,
+                        maxUsersListed
+                    )"
+                >
+                    <p
+                        v-if="
+                            index === maxUsersIndex &&
+                            reactionUsers.length > maxUsersListed
+                        "
+                    >
+                        y {{ reactionUsers.length - maxUsersIndex }} más...
+                    </p>
+                    <p v-else>
+                        {{ userThatReact.name }}
+                    </p>
+                </template>
+            </template>
+            <template v-else>
+                <p v-for="userThatReact of reactionUsers">
+                    {{ userThatReact.name }}
+                </p>
+            </template>
         </div>
     </div>
 </template>
