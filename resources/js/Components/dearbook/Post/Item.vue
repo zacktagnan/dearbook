@@ -278,10 +278,10 @@ const activeShowNotification = (errors) => {
                     </transition>
                     <div class="flex justify-end">
                         <DisclosureButton
-                            class="text-cyan-700 hover:text-cyan-500"
+                            class="flex items-center w-5 h-5 px-1 border rounded-full border-cyan-700 text-cyan-700 hover:text-cyan-500 hover:border-cyan-500"
                             :title="open ? 'Mostrar -' : 'Mostrar +'"
                         >
-                            {{ open ? "Mostrar -" : "Mostrar +" }}
+                            {{ open ? "-" : "+" }}
                         </DisclosureButton>
                     </div>
                 </template>
