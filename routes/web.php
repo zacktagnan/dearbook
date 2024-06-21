@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,10 +26,10 @@ Route::middleware('auth')->group(function () {
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
-        Route::post('/{post}/reaction', [PostController::class, 'reaction'])->name('reaction');
 
-        Route::get('/{post}/all-reactions-users', [PostController::class, 'allReactionsUsers'])->name('all-reactions-users');
-        Route::get('/{post}/type-reactions-users/{type}', [PostController::class, 'typeReactionsUsers'])->name('type-reactions-users');
+        Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
+        Route::get('/{post}/all-reactions-users', [PostReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
+        Route::get('/{post}/type-reactions-users/{type}', [PostReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
     });
 });
 
