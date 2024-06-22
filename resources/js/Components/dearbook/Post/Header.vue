@@ -12,11 +12,11 @@ defineProps({
     <div class="flex items-center gap-2">
         <a :href="route('profile.index', { username: $page.props.auth.user.username })" :title="'Perfil de ' + post.user.name">
             <!-- Clases para marcar usuario activo, por BADGE o por anillo (ring) -->
-            <!-- <div class="avatar online w-[40px] ring-2 ring-primary ring-offset-slate-50 ring-offset-1 rounded-full"> -->
-            <div class="avatar offline w-[40px] rounded-full">
+            <!-- <div class="w-10 rounded-full avatar online ring-2 ring-primary ring-offset-slate-50 ring-offset-1"> -->
+            <div class="w-10 rounded-full avatar offline">
                 <img :src="post.user.avatar_url ||
                     '/img/default_avatar.png'"
-                    class="w-[40px] rounded-full border-2 hover:border-cyan-500 transition-all" :alt="post.user.name" />
+                    class="w-10 transition-all border-2 rounded-full hover:border-cyan-500" :alt="post.user.name" />
             </div>
         </a>
         <div class="leading-none">

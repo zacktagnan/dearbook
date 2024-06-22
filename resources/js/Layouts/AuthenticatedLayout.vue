@@ -47,7 +47,7 @@ const showingNavigationDropdown = ref(false);
                                                 <!-- {{ $page.props.auth.user.name }} -->
                                                 <img :src="$page.props.auth.user.avatar_url ||
                                                     '/img/default_avatar.png'"
-                                                    class="w-[40px] rounded-full border-2 group-hover/menu_user:border-cyan-500 transition-all"
+                                                    class="w-10 transition-all border-2 rounded-full group-hover/menu_user:border-cyan-500"
                                                     :alt="$page.props.auth.user.name" />
 
                                                 <svg class="absolute w-4 h-4 bg-gray-200 border border-white rounded-full top-8 right-2 p-o group-hover/menu_user:bg-gray-300"
@@ -69,7 +69,7 @@ const showingNavigationDropdown = ref(false);
                                                 <!-- {{ $t('Profile') }} -->
                                                 <img :src="$page.props.auth.user.avatar_url ||
                                                     '/img/default_avatar.png'"
-                                                    class="w-[36px] h-[36px] rounded-full border-2 group-hover/menu_user_profile_item:border-cyan-500 transition-all"
+                                                    class="transition-all border-2 rounded-full w-9 h-9 group-hover/menu_user_profile_item:border-cyan-500"
                                                     :alt="$page.props.auth.user.name" />
                                                 <span class="font-bold">{{ $page.props.auth.user.name }}</span>
                                             </DropdownLink>
@@ -119,7 +119,7 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex px-4">
                             <img :src="$page.props.auth.user.avatar_url ||
                                 '/img/default_avatar.png'"
-                                class="w-[40px] rounded-full border-2 group-hover:border-cyan-500 transition-all"
+                                class="w-10 transition-all border-2 rounded-full group-hover:border-cyan-500"
                                 :alt="$page.props.auth.user.name" />
                             <div class="ml-4">
                                 <div class="text-base font-medium text-gray-800 dark:text-gray-200">
