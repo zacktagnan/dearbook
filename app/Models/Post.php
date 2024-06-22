@@ -38,6 +38,11 @@ class Post extends Model
         return $this->hasMany(PostReaction::class);
     }
 
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function createdAtWithFormat()
     {
         if ($this->created_at->isoFormat('Y') === date('Y')) {

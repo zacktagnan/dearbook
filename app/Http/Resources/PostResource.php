@@ -48,6 +48,8 @@ class PostResource extends JsonResource
                 ? $this->reactions[0]->type
                 : '',
 
+            'total_of_comments' => $this->comments_count,
+
             // 'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
             // 'updated_at' => $this->updated_at->format(config('app.format.' . app()->getLocale() . '.datetime.basic')),
             // ------------------------------------------------------------------------------------------------

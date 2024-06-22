@@ -6,9 +6,12 @@ import {
     EllipsisVerticalIcon,
     PencilIcon,
     TrashIcon,
+    PaperAirplaneIcon,
 } from "@heroicons/vue/24/solid";
 import { ChatBubbleLeftRightIcon } from "@heroicons/vue/24/outline";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
+
+import TextareaInput from '@/Components/TextareaInput.vue';
 
 const props = defineProps({
     post: Object,
@@ -123,6 +126,14 @@ import ReactionBox from "@/Components/dearbook/Reaction/Box.vue";
 const activeShowNotification = (errors) => {
     emit("callActiveShowNotificationFromItem", errors);
 };
+
+const commentTextAreaRef = ref(null);
+const focusCommentTextArea = () => {
+  if (commentTextAreaRef.value) {
+    commentTextAreaRef.value.focus();
+  }
+};
+
 </script>
 
 <template>
@@ -302,130 +313,137 @@ const activeShowNotification = (errors) => {
         <hr v-else class="mx-0 mt-2" />
 
         <div class="px-2">
-            <div v-if="post.total_of_reactions > 0">
-                <div class="flex items-center py-2 text-gray-500">
-                    <div class="flex items-center -space-x-2">
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'like' ||
-                                (post.like_reactions_users &&
-                                    post.like_reactions_users.length > 0)
-                            "
-                            :title="'Me gusta'"
-                            :type="'like'"
-                            :z-index-icon="'z-[7]'"
-                            :reaction-users="post.like_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
+            <div v-if="post.total_of_reactions > 0 || post.total_of_comments > 0">
+                <div class="flex items-center justify-between py-2 text-gray-500">
+                    <div v-if="post.total_of_reactions > 0" class="flex items-center">
+                        <div class="flex items-center -space-x-2">
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'like' ||
+                                    (post.like_reactions_users &&
+                                        post.like_reactions_users.length > 0)
+                                "
+                                :title="'Me gusta'"
+                                :type="'like'"
+                                :z-index-icon="'z-[7]'"
+                                :reaction-users="post.like_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'love' ||
+                                    (post.love_reactions_users &&
+                                        post.love_reactions_users.length > 0)
+                                "
+                                :title="'Me encanta'"
+                                :type="'love'"
+                                :z-index-icon="'z-[6]'"
+                                :reaction-users="post.love_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'care' ||
+                                    (post.care_reactions_users &&
+                                        post.care_reactions_users.length > 0)
+                                "
+                                :title="'Me importa'"
+                                :type="'care'"
+                                :z-index-icon="'z-[5]'"
+                                :reaction-users="post.care_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'haha' ||
+                                    (post.haha_reactions_users &&
+                                        post.haha_reactions_users.length > 0)
+                                "
+                                :title="'Me divierte'"
+                                :type="'haha'"
+                                :z-index-icon="'z-[4]'"
+                                :reaction-users="post.haha_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'wow' ||
+                                    (post.wow_reactions_users &&
+                                        post.wow_reactions_users.length > 0)
+                                "
+                                :title="'Me asombra'"
+                                :type="'wow'"
+                                :z-index-icon="'z-[3]'"
+                                :reaction-users="post.wow_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'sad' ||
+                                    (post.sad_reactions_users &&
+                                        post.sad_reactions_users.length > 0)
+                                "
+                                :title="'Me entristece'"
+                                :type="'sad'"
+                                :z-index-icon="'z-[2]'"
+                                :reaction-users="post.sad_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+
+                            <ReactionTypeUsersSummary
+                                v-if="
+                                    post.current_user_type_reaction === 'angry' ||
+                                    (post.angry_reactions_users &&
+                                        post.angry_reactions_users.length > 0)
+                                "
+                                :title="'Me enoja'"
+                                :type="'angry'"
+                                :z-index-icon="'z-[1]'"
+                                :reaction-users="post.angry_reactions_users"
+                                :current-user-type-reaction="
+                                    post.current_user_type_reaction
+                                "
+                            />
+                        </div>
 
                         <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'love' ||
-                                (post.love_reactions_users &&
-                                    post.love_reactions_users.length > 0)
+                            :reaction-users="post.all_reactions_users"
+                            :current-user-has-reaction="
+                                post.current_user_has_reaction
                             "
-                            :title="'Me encanta'"
-                            :type="'love'"
-                            :z-index-icon="'z-[6]'"
-                            :reaction-users="post.love_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
-
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'care' ||
-                                (post.care_reactions_users &&
-                                    post.care_reactions_users.length > 0)
-                            "
-                            :title="'Me importa'"
-                            :type="'care'"
-                            :z-index-icon="'z-[5]'"
-                            :reaction-users="post.care_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
-
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'haha' ||
-                                (post.haha_reactions_users &&
-                                    post.haha_reactions_users.length > 0)
-                            "
-                            :title="'Me divierte'"
-                            :type="'haha'"
-                            :z-index-icon="'z-[4]'"
-                            :reaction-users="post.haha_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
-
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'wow' ||
-                                (post.wow_reactions_users &&
-                                    post.wow_reactions_users.length > 0)
-                            "
-                            :title="'Me asombra'"
-                            :type="'wow'"
-                            :z-index-icon="'z-[3]'"
-                            :reaction-users="post.wow_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
-
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'sad' ||
-                                (post.sad_reactions_users &&
-                                    post.sad_reactions_users.length > 0)
-                            "
-                            :title="'Me entristece'"
-                            :type="'sad'"
-                            :z-index-icon="'z-[2]'"
-                            :reaction-users="post.sad_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
-                        />
-
-                        <ReactionTypeUsersSummary
-                            v-if="
-                                post.current_user_type_reaction === 'angry' ||
-                                (post.angry_reactions_users &&
-                                    post.angry_reactions_users.length > 0)
-                            "
-                            :title="'Me enoja'"
-                            :type="'angry'"
-                            :z-index-icon="'z-[1]'"
-                            :reaction-users="post.angry_reactions_users"
-                            :current-user-type-reaction="
-                                post.current_user_type_reaction
-                            "
+                            :total-of-reactions="post.total_of_reactions"
+                            :show-type-icon="false"
+                            :show-header="false"
                         />
                     </div>
+                    <div v-else />
 
-                    <ReactionTypeUsersSummary
-                        :reaction-users="post.all_reactions_users"
-                        :current-user-has-reaction="
-                            post.current_user_has_reaction
-                        "
-                        :total-of-reactions="post.total_of_reactions"
-                        :show-type-icon="false"
-                        :show-header="false"
-                    />
+                    <div>
+                        <p v-if="post.total_of_comments > 0">{{ post.total_of_comments }} {{ post.total_of_comments === 1 ? 'comentario' : 'comentarios' }}</p>
+                    </div>
                 </div>
 
                 <hr />
             </div>
 
-            <div class="flex gap-2 mt-1.5 font-bold text-gray-500">
+            <div class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <ReactionBox
                     :post="post"
                     @callActiveShowNotificationToItem="activeShowNotification"
@@ -433,11 +451,39 @@ const activeShowNotification = (errors) => {
 
                 <div class="w-1/2">
                     <button
+                        title="Deja un comentario"
+                        @click="focusCommentTextArea"
                         class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
                     >
                         <ChatBubbleLeftRightIcon class="w-6 h-6" />
-                        Comentario(s)
+                        Comentar
                     </button>
+                </div>
+            </div>
+
+            <div>
+                <hr>
+
+                <div class="flex gap-2 mt-3">
+                    <a :href="route('profile.index', { username: $page.props.auth.user.username })"
+                        :title="'Perfil de ' + $page.props.auth.user.name">
+                        <img :src="$page.props.auth.user.avatar_url ||
+                        '/img/default_avatar.png'" class="w-8 transition-all border-2 rounded-full hover:border-cyan-500"
+                            :alt="$page.props.auth.user.name" />
+                    </a>
+
+                    <!-- <div class="overflow-auto rounded-full bg-gray-200/50">
+                        <TextareaInput :placeholder="'Comentar como ' + $page.props.auth.user.name" :class="'w-full rounded-full border-0 bg-gray-200/50'" rows="1" />
+                    </div> -->
+                    <div class="flex flex-col w-full gap-0">
+                        <TextareaInput ref="commentTextAreaRef" :placeholder="'Comentar como ' + $page.props.auth.user.name" :class="'w-full rounded-none rounded-t-lg border-0 bg-gray-200/50 text-[15px] ring-0 focus:ring-0 resize-none pt-2 max-h-28'" rows="1" />
+
+                        <div class="flex justify-end px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50">
+                            <button :disabled="false" title="Comentar" class="text-cyan-700 hover:text-cyan-500 disabled:text-gray-400 disabled:cursor-not-allowed">
+                                <PaperAirplaneIcon class="w-[18px] h-[18px]" />
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
