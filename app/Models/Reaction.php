@@ -3,24 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class PostReaction extends Model
+class Reaction extends Model
 {
     use HasFactory;
 
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'post_id',
         'user_id',
         'type',
     ];
 
-    public function post(): BelongsTo
+    public function reactionable(): MorphTo
     {
-        return $this->belongsTo(Post::class);
+        return $this->morphTo();
     }
 
     public function user(): BelongsTo

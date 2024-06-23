@@ -15,10 +15,9 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // [ Pasado a nivel de PostController, llamado desde onMounted del Post/Item ]
+        // [ Pasado a nivel de PostReactionController, llamado desde onMounted del Post/Item ]
         // -> Consulta desde el Resource - Sacar datos
-        // $postReactions = PostReaction::where('post_id', $this->id)
-        //     ->where('user_id', '<>', $this->user_id)->get();
+        // $postReactions = $post->reactions()->where('user_id', '<>', $this->user_id)->get();
         // $usersThatReactToPost = [];
         // foreach ($postReactions as $postReaction) {
         //     // $usersThatReactToPost[] = $postReaction->user->name;
