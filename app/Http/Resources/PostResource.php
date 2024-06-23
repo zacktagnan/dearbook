@@ -39,7 +39,7 @@ class PostResource extends JsonResource
 
             // Cargando a través del nombre de la relación con Post,
             'group' => $this->group,
-            'attachments' => PostAttachmentResource::collection($this->attachments),
+            'attachments' => AttachmentResource::collection($this->attachments),
             // -> Consulta desde el Resource - Enviar datos
             // 'users_that_react_to_post' => $usersThatReactToPost,
             'total_of_reactions' => $this->reactions_count,

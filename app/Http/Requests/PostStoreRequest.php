@@ -28,7 +28,7 @@ class PostStoreRequest extends FormRequest
 
     public function __construct()
     {
-        $this->maximumBytes = pow(1024, 3);
+        $this->maximumBytes = pow(1024, 3); // 1GB en Bytes
         $this->maximumTotalBytes = 1 * $this->maximumBytes;
     }
 

@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\PostAttachment;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PostUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Contracts\Routing\ResponseFactory;
 
 class PostController extends Controller
 {
@@ -35,8 +34,7 @@ class PostController extends Controller
             foreach ($files as $file) {
                 $path = $file->store('attachments/post-' . $post->id, 'public');
                 $allFilePaths[] = $path;
-                PostAttachment::create([
-                    'post_id' => $post->id,
+                $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
                     'mime' => $file->getMimeType(),
@@ -73,7 +71,7 @@ class PostController extends Controller
 
             // dd($request->deleted_file_ids);
             if ($request->deleted_file_ids) {
-                $attachmentsToDelete = PostAttachment::where('post_id', $post->id)
+                $attachmentsToDelete = $post->attachments()
                     ->whereIn('id', $request->deleted_file_ids)
                     ->get();
 
@@ -88,8 +86,7 @@ class PostController extends Controller
             foreach ($files as $file) {
                 $path = $file->store('attachments/post-' . $post->id, 'public');
                 $allFilePaths[] = $path;
-                PostAttachment::create([
-                    'post_id' => $post->id,
+                $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
                     'mime' => $file->getMimeType(),
@@ -124,7 +121,7 @@ class PostController extends Controller
         // y, entonces, mejor no establecer ningún tipo de RETURN
     }
 
-    public function downloadAttachment(PostAttachment $attachment)
+    public function downloadAttachment(Attachment $attachment)
     {
         // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
         // o, sino,

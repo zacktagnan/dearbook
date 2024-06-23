@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Attachmentable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ class Post extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    use Attachmentable;
 
     protected $fillable = [
         'body',
@@ -26,11 +28,6 @@ class Post extends Model
     public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
-    }
-
-    public function attachments(): HasMany
-    {
-        return $this->hasMany(PostAttachment::class);
     }
 
     public function reactions(): HasMany
