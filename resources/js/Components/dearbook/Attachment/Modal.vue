@@ -1,5 +1,5 @@
 <script setup>
-import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon, DocumentIcon, } from "@heroicons/vue/24/solid";
+import { ArrowDownTrayIcon, XMarkIcon, ChevronLeftIcon, ChevronRightIcon, DocumentIcon, } from "@heroicons/vue/24/solid";
 import {
     TransitionRoot,
     TransitionChild,
@@ -94,42 +94,54 @@ const closeModal = () => {
 
                                 <div class="relative flex items-center justify-center">
                                     <div v-if="isFirstAttachmentIndex()"
-                                        class="absolute left-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
+                                        class="absolute z-[100] left-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
                                         <ChevronLeftIcon />
                                     </div>
                                     <div v-else @click="prevAttach" title="Previo"
-                                        class="absolute left-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
+                                        class="absolute z-[100] left-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
                                         <ChevronLeftIcon />
                                     </div>
 
                                     <div v-if="isLastAttachmentIndex()"
-                                        class="absolute right-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
+                                        class="absolute z-[100] right-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
                                         <ChevronRightIcon />
                                     </div>
                                     <div v-else @click="nextAttach" title="Siguiente"
-                                        class="absolute right-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
+                                        class="absolute z-[100] right-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
                                         <ChevronRightIcon />
                                     </div>
 
                                     <!-- <pre>{{ index }}</pre>
                                     <pre>{{ attachments }}</pre> -->
-                                    <div class="flex items-center justify-center w-full h-screen p-4">
-                                        <template v-if="isImage(attachment) || isVideo(attachment)">
-                                            <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
-                                                class="max-w-full max-h-full" />
-                                            <video v-if="isVideo(attachment)" :src="attachment.url" controls
-                                                :alt="attachment.name" class="max-w-full max-h-full"></video>
-                                        </template>
+                                    <div class="relative group">
+                                        <a
+                                            :href="
+                                                route('post.download-attachment', attachment)
+                                            "
+                                            title="Descargar"
+                                            class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-600 rounded opacity-25 cursor-pointer w-14 h-14 group-hover:opacity-75 hover:bg-gray-900 right-9 top-8"
+                                        >
+                                            <ArrowDownTrayIcon class="w-14 h-14" />
+                                        </a>
 
-                                        <template v-else>
-                                            <div class="flex flex-col items-center justify-center p-32">
-                                                <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+                                        <div class="flex items-center justify-center w-full h-screen p-4">
+                                            <template v-if="isImage(attachment) || isVideo(attachment)">
+                                                <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
+                                                    class="max-w-full max-h-full" />
+                                                <video v-if="isVideo(attachment)" :src="attachment.url" controls
+                                                    :alt="attachment.name" class="max-w-full max-h-full"></video>
+                                            </template>
 
-                                                <span class="text-sm lg:text-base">
-                                                    {{ attachment.name }}
-                                                </span>
-                                            </div>
-                                        </template>
+                                            <template v-else>
+                                                <div class="flex flex-col items-center justify-center p-32">
+                                                    <DocumentIcon class="w-12 h-12 lg:w-16 lg:h-16" />
+
+                                                    <span class="text-sm lg:text-base">
+                                                        {{ attachment.name }}
+                                                    </span>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
                             </DialogPanel>
