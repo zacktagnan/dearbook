@@ -148,7 +148,7 @@ const maxAttachmentExceededOnUpdating = () => {
     return totalAttachment.value > maximumAmount;
 };
 
-const submitPostUpdate = () => {
+const submitPost = () => {
     postForm.attachments = attachmentFiles.value.map((myFile) => myFile.file);
 
     if (props.post.id) {
@@ -696,9 +696,9 @@ const revertDeleteMode = (myFile) => {
                                 <div class="flex p-[14px]">
                                     <button
                                         type="button"
-                                        title="Actualizar"
+                                        :title="modalData.submitButtonText"
                                         class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-indigo-900 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-                                        @click="submitPostUpdate"
+                                        @click="submitPost"
                                     >
                                         {{ modalData.submitButtonText }}
                                     </button>
