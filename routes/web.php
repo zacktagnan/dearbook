@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{post}/type-reactions-users/{type}', [PostReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
 
         Route::post('/{post}/comment', [CommentController::class, 'store'])->name('comment.store');
+        Route::get('/{post}/all-comments-users', [CommentController::class, 'allCommentsUsers'])->name('all-comments-users');
     });
 });
 

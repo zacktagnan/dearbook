@@ -19,6 +19,11 @@ class HomeController extends Controller
                     $query->where('user_id', $userId);
                 }
             ])
+            ->with([
+                'comments' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                }
+            ])
             ->latest()
             ->paginate(20);
         // $posts = PostResource::collection($posts);

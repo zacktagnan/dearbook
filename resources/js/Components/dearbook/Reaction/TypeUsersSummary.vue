@@ -59,7 +59,7 @@ const maxUsersIndex = maxUsersListed - 1;
         />
         <span
             v-else
-            class="cursor-pointer hover:underline"
+            class="cursor-pointer hover:underline text-[15px]"
             @mouseover="showUsersPopover = true"
             @mouseleave="showUsersPopover = false"
         >

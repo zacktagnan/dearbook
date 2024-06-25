@@ -26,6 +26,7 @@ const sendComment = (comment) => {
     })
         .then(({ data }) => {
             props.post.total_of_comments = data.total_of_comments
+            props.post.current_user_has_comment = data.current_user_has_comment
             resetCommentTextAreaOfCreate()
         })
         .catch((error) => {

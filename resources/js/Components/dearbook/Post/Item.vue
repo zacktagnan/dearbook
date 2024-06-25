@@ -73,7 +73,17 @@ onMounted(() => {
     typeReactionsUsers("wow");
     typeReactionsUsers("sad");
     typeReactionsUsers("angry");
+
+    allCommentsUsers();
 });
+
+const allCommentsUsers = () => {
+    axiosClient
+        .get(route("post.all-comments-users", props.post))
+        .then(({ data }) => {
+            props.post.all_comments_users = data;
+        });
+};
 
 const allReactionsUsers = () => {
     axiosClient
@@ -434,6 +444,8 @@ const focusCommentTextArea = () => {
 
                     <CommentUsersSummary
                         v-if="post.total_of_comments > 0"
+                        :comment-users="post.all_comments_users"
+                        :current-user-has-comment="post.current_user_has_comment"
                         :total-of-comments="post.total_of_comments"
                     />
                 </div>
