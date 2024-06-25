@@ -17,7 +17,7 @@ class CommentController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        $comments = Comment::count();
+        $comments = $post->comments()->count();
 
         return response()->json([
             'total_of_comments' => $comments,
