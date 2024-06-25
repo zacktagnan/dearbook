@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostReactionController;
@@ -30,6 +31,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
         Route::get('/{post}/all-reactions-users', [PostReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
         Route::get('/{post}/type-reactions-users/{type}', [PostReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
+
+        Route::post('/{post}/comment', [CommentController::class, 'store'])->name('comment.store');
     });
 });
 
