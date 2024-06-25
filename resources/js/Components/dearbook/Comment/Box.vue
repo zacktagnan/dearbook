@@ -10,6 +10,8 @@ const props = defineProps({
     post: Object,
 });
 
+const emit = defineEmits(['callActiveShowNotificationToItem'])
+
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
 };
@@ -28,7 +30,6 @@ const sendComment = (comment) => {
             // console.log('ERRORES: ', error.response.data.errors)
             emit('callActiveShowNotificationToItem', error.response.data.errors)
         })
-    // resetear TextareaInput si fuera necesario...
 }
 
 defineExpose({

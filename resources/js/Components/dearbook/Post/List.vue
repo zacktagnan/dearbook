@@ -31,14 +31,15 @@ const openAttachmentsModal = (post, index) => {
 
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 
-const errorsFromPostToEdit = ref({})
+const errorsFromPost = ref({})
 
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
 
 const activeShowNotification = (errors) => {
-    errorsFromPostToEdit.value = errors
-    // console.log('errorsFromPostToEdit', errorsFromPostToEdit)
+    errorsFromPost.value = errors
+    // console.log('errorsFromPost', errorsFromPost)
+    // console.log('errorsFromPost.comment[0]', errorsFromPost.value.comment[0])
     showNotification.value = true
 
     setTimeout(() => {
@@ -70,11 +71,15 @@ const closeShowNotification = () => {
             v-model:index="postWithAttachmentsToPreview.index" v-model="showAttachmentsModal" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPostToEdit.attachments" :title="'Error'"
-            :message="errorsFromPostToEdit.attachments" />
+            v-if="showNotification && errorsFromPost.attachments" :title="'Error'"
+            :message="errorsFromPost.attachments" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPostToEdit.reaction_type" :title="'Error'"
-            :message="errorsFromPostToEdit.reaction_type[0]" />
+            v-if="showNotification && errorsFromPost.reaction_type" :title="'Error'"
+            :message="errorsFromPost.reaction_type[0]" />
+
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-if="showNotification && errorsFromPost.comment" :title="'Error'"
+            :message="errorsFromPost.comment[0]" />
     </div>
 </template>
