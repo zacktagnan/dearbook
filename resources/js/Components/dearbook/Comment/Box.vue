@@ -16,18 +16,19 @@ const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
 };
 
+const resetCommentTextAreaOfCreate = () => {
+    commentCreateRef.value.resetCommentTextArea()
+};
+
 const sendComment = (comment) => {
-    // console.log('Alohaaaaa')
-    // console.log(comment)
-    // alert('Se envió un comentario...')
     axiosClient.post(route('post.comment.store', props.post), {
         comment: comment,
     })
         .then(({ data }) => {
             props.post.total_of_comments = data.total_of_comments
+            resetCommentTextAreaOfCreate()
         })
         .catch((error) => {
-            // console.log('ERRORES: ', error.response.data.errors)
             emit('callActiveShowNotificationToItem', error.response.data.errors)
         })
 }

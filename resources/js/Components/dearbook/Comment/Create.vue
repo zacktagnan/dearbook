@@ -12,14 +12,19 @@ const emit = defineEmits([
 ]);
 
 const focusCommentTextArea = () => {
-  if (commentTextAreaRef.value) {
-    commentTextAreaRef.value.focus();
-  }
-//   console.log('Alohaaaaa')
+    if (commentTextAreaRef.value) {
+        commentTextAreaRef.value.focus();
+    }
+};
+
+const resetCommentTextArea = () => {
+    if (commentTextAreaRef.value) {
+        comment.value = '';
+    }
 };
 
 defineExpose({
-    focusCommentTextArea,
+    focusCommentTextArea, resetCommentTextArea,
 })
 </script>
 
@@ -32,9 +37,6 @@ defineExpose({
                 :alt="$page.props.auth.user.name" />
         </a>
 
-        <!-- <div class="overflow-auto rounded-full bg-gray-200/50">
-            <TextareaInput :placeholder="'Comentar como ' + $page.props.auth.user.name" :class="'w-full rounded-full border-0 bg-gray-200/50'" rows="1" />
-        </div> -->
         <div class="flex flex-col w-full gap-0">
             <TextareaInput ref="commentTextAreaRef" v-model="comment" :placeholder="'Comentar como ' + $page.props.auth.user.name" :class="'w-full rounded-none rounded-t-lg border-0 bg-gray-200/50 text-[15px] ring-0 focus:ring-0 resize-none pt-2 max-h-28'" rows="1" />
 
