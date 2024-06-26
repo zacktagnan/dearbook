@@ -48,7 +48,8 @@ class PostResource extends JsonResource
                 : '',
 
             'total_of_comments' => $this->comments_count,
-            'current_user_has_comment' => $this->comments->count() > 0,
+            'current_user_has_comment' => $this->currentUserComments->count() > 0,
+            'current_user_total_of_comments' => $this->currentUserComments->count(),
 
             // 'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
             // 'updated_at' => $this->updated_at->format(config('app.format.' . app()->getLocale() . '.datetime.basic')),

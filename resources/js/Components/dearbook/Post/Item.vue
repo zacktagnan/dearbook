@@ -446,6 +446,7 @@ const focusCommentTextArea = () => {
                         v-if="post.total_of_comments > 0"
                         :comment-users="post.all_comments_users"
                         :current-user-has-comment="post.current_user_has_comment"
+                        :current-user-total-of-comments="post.current_user_total_of_comments"
                         :total-of-comments="post.total_of_comments"
                     />
                 </div>

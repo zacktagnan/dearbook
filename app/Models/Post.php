@@ -38,4 +38,9 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function currentUserComments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

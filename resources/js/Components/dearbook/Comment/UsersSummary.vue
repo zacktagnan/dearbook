@@ -8,6 +8,10 @@ defineProps({
         type: Boolean,
         default: false,
     },
+    currentUserTotalOfComments: {
+        type: Number,
+        default: 0,
+    },
     totalOfComments: {
         type: Number,
         default: 0,
@@ -34,7 +38,7 @@ const maxUsersIndex = maxUsersListed - 1;
         </span>
 
         <div
-            class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
+            class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition-all duration-500 whitespace-nowrap"
             :class="{
                 'opacity-100': showUsersPopover,
             }"
@@ -42,6 +46,7 @@ const maxUsersIndex = maxUsersListed - 1;
             <template v-if="currentUserHasComment">
                 <p v-if="currentUserHasComment">
                     {{ authUser.name }}
+                    <span v-if="currentUserTotalOfComments > 1" class="text-xs"> [{{ currentUserTotalOfComments }}]</span>
                 </p>
             </template>
 
@@ -62,12 +67,14 @@ const maxUsersIndex = maxUsersListed - 1;
                     </p>
                     <p v-else>
                         {{ userThatComment.name }}
+                        <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{ userThatComment.user_total_comments }}]</span>
                     </p>
                 </template>
             </template>
             <template v-else>
                 <p v-for="userThatComment of commentUsers">
                     {{ userThatComment.name }}
+                    <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{ userThatComment.user_total_comments }}]</span>
                 </p>
             </template>
         </div>

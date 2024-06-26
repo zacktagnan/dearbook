@@ -24,14 +24,21 @@ class CommentController extends Controller
         return response()->json([
             'total_of_comments' => $comments,
             'current_user_has_comment' => $hasComment,
+            'current_user_total_of_comments' => $post->currentUserComments()->count(),
         ], Response::HTTP_CREATED);
     }
 
     public function allCommentsUsers(Post $post): array
     {
-        $comments = $post->comments()->where('user_id', '<>', auth()->id())
-            ->distinct()
-            ->get(['user_id']);
+        // -> Para solo el dato del ID del User
+        // $comments = $post->comments()->where('user_id', '<>', auth()->id())
+        //     ->distinct()
+        //     ->get(['user_id']);
+
+        // -> Para el dato del ID del User y el TOT de Comment
+        $comments = $post->comments()->select('user_id')->selectRaw('COUNT(*) AS user_total_comments')
+            ->where('user_id', '<>', auth()->id())
+            ->groupBy('user_id')->get();
 
         $usersThatCommentedOnPost = $this->getCommentUsers($comments);
 
@@ -45,6 +52,7 @@ class CommentController extends Controller
             // $usersThatCommentedOnPost[] = $comment->user->name;
             $usersThatCommentedOnPost[] = [
                 'name' => $comment->user->name,
+                'user_total_comments' => $comment->user_total_comments,
             ];
         }
 
