@@ -65,19 +65,19 @@ import axiosClient from "@/axiosClient";
 import { onMounted } from "vue";
 
 onMounted(() => {
-    allReactionsUsers();
-    typeReactionsUsers("like");
-    typeReactionsUsers("love");
-    typeReactionsUsers("care");
-    typeReactionsUsers("haha");
-    typeReactionsUsers("wow");
-    typeReactionsUsers("sad");
-    typeReactionsUsers("angry");
+    allReactionsUsersPost();
+    typeReactionsUsersPost("like");
+    typeReactionsUsersPost("love");
+    typeReactionsUsersPost("care");
+    typeReactionsUsersPost("haha");
+    typeReactionsUsersPost("wow");
+    typeReactionsUsersPost("sad");
+    typeReactionsUsersPost("angry");
 
-    allCommentsUsers();
+    allCommentsUsersPost();
 });
 
-const allCommentsUsers = () => {
+const allCommentsUsersPost = () => {
     axiosClient
         .get(route("post.all-comments-users", props.post))
         .then(({ data }) => {
@@ -85,7 +85,7 @@ const allCommentsUsers = () => {
         });
 };
 
-const allReactionsUsers = () => {
+const allReactionsUsersPost = () => {
     axiosClient
         .get(route("post.all-reactions-users", props.post))
         .then(({ data }) => {
@@ -93,7 +93,7 @@ const allReactionsUsers = () => {
         });
 };
 
-const typeReactionsUsers = (type) => {
+const typeReactionsUsersPost = (type) => {
     axiosClient
         .get(route("post.type-reactions-users", [props.post, type]))
         .then(({ data }) => {
@@ -153,7 +153,7 @@ const focusCommentTextArea = () => {
             <!-- {{ authUser }}<br>
             {{ authUser.id }}<br>
             {{ post.user_id }}<br>
-            {{ isPostAuthor }} -->
+            {{ 'isPostAuthor' + isPostAuthor }} -->
             <!-- =========================================================== -->
             <Menu
                 v-if="isPostAuthor"
