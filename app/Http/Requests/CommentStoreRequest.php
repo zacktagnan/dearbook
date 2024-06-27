@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Str;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CommentStoreRequest extends FormRequest
 {
+    public static int $maximumLength = 200;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -22,7 +25,14 @@ class CommentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'comment' => 'max:50',
+            'comment' => 'max:' . self::$maximumLength,
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'comment.max' => 'El comentario no debe exceder los ' . self::$maximumLength . ' caracteres. Introducidos ' . Str::length($this->comment) . '.',
         ];
     }
 }
