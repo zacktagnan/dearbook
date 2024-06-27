@@ -25,6 +25,11 @@ trait CustomDateFormatting
         return $this->created_at->isoFormat('LLLL');
     }
 
+    public function createdAtShortAbsDiffForHumans()
+    {
+        return $this->created_at->shortAbsoluteDiffForHumans();
+    }
+
     public function createdAtDiffForHumans()
     {
         return $this->created_at->diffForHumans();
