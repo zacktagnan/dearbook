@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Http\Requests\CommentStoreRequest;
+use App\Http\Resources\CommentResource;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,7 +25,11 @@ class CommentController extends Controller
         return response()->json([
             'total_of_comments' => $comments,
             'current_user_has_comment' => $hasComment,
-            'current_user_total_of_comments' => $post->currentUserComments()->count(),
+            'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
+            // 'latest_comments' => $post->latestComments()->latest()->limit(1)->get(),
+            'latest_comments' => CommentResource::collection(
+                $post->latestComments()->latest()->limit(1)->get()
+            ),
         ], Response::HTTP_CREATED);
     }
 

@@ -20,6 +20,9 @@ class HomeController extends Controller
                 'currentUserComments' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 },
+                'latestComments' => function ($query) {
+                    $query->latest()->limit(1)->get();
+                },
             ])
             ->latest()
             ->paginate(20);

@@ -1,4 +1,5 @@
 <script setup>
+import CommentLatestList from '@/Components/dearbook/Comment/LatestList.vue'
 import CommentCreate from '@/Components/dearbook/Comment/Create.vue'
 import { ref } from 'vue';
 
@@ -28,6 +29,7 @@ const sendComment = (comment) => {
             props.post.total_of_comments = data.total_of_comments
             props.post.current_user_has_comment = data.current_user_has_comment
             props.post.current_user_total_of_comments = data.current_user_total_of_comments
+            props.post.latest_comments = data.latest_comments
             resetCommentTextAreaOfCreate()
         })
         .catch((error) => {
@@ -41,9 +43,7 @@ defineExpose({
 </script>
 
 <template>
-    <div>
-        Listado
-    </div>
+    <CommentLatestList :post="post" />
 
     <CommentCreate ref="commentCreateRef" @callSendComment="sendComment" />
 </template>
