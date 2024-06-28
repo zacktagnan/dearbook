@@ -127,8 +127,8 @@ const typeReactionsUsersPost = (type) => {
 
 // ============================================================================
 
-import ReactionTypeUsersSummary from "@/Components/dearbook/Reaction/TypeUsersSummary.vue";
-import ReactionBox from "@/Components/dearbook/Reaction/Box.vue";
+import ReactionTypeUsersSummary from "@/Components/dearbook/Post/Reaction/TypeUsersSummary.vue";
+import ReactionBox from "@/Components/dearbook/Post/Reaction/Box.vue";
 
 const activeShowNotification = (errors) => {
     emit("callActiveShowNotificationFromItem", errors);

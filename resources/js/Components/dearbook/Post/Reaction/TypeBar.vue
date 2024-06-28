@@ -1,5 +1,5 @@
 <script setup>
-import ReactionOtherTypeButton from '@/Components/dearbook/Reaction/OtherTypeButton.vue'
+import ReactionOtherTypeButton from '@/Components/dearbook/Post/Reaction/OtherTypeButton.vue'
 
 const props = defineProps({
     showReactionTypeBar: Boolean,

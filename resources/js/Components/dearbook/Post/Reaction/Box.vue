@@ -1,6 +1,6 @@
 <script setup>
-import ReactionTypeBar from '@/Components/dearbook/Reaction/TypeBar.vue'
-import ReactionMainTypeButtonOnPost from '@/Components/dearbook/Reaction/MainTypeButtonOnPost.vue'
+import ReactionTypeBar from '@/Components/dearbook/Post/Reaction/TypeBar.vue'
+import ReactionMainTypeButton from '@/Components/dearbook/Post/Reaction/MainTypeButton.vue'
 import { ref } from "vue";
 
 import axiosClient from '@/axiosClient'
@@ -41,7 +41,7 @@ const sendPostReaction = (from, type) => {
         <ReactionTypeBar :showReactionTypeBar="showReactionTypeBar"
             @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendPostReaction="sendPostReaction" />
 
-        <ReactionMainTypeButtonOnPost :post="post"
+        <ReactionMainTypeButton :post="post"
             @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendPostReaction="sendPostReaction" />
     </div>
 </template>
