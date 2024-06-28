@@ -6,7 +6,7 @@ const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callChangeShowReactionTypeBar', 'callSendReaction'])
+const emit = defineEmits(['callChangeShowReactionTypeBar', 'callSendPostReaction'])
 
 const mainTypeReactionFormat = computed(() => {
     if (!props.post.current_user_has_reaction) {
@@ -34,7 +34,7 @@ const switchMainTypeReactionFormat = {
 </script>
 
 <template>
-    <button @click="$emit('callSendReaction', true, 'like')" @mouseover="$emit('callChangeShowReactionTypeBar', true)"
+    <button @click="$emit('callSendPostReaction', true, 'like')" @mouseover="$emit('callChangeShowReactionTypeBar', true)"
         @mouseleave="$emit('callChangeShowReactionTypeBar', false)"
         class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
         :class="mainTypeReactionFormat.classes">

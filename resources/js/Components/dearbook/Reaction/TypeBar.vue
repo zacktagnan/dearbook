@@ -5,10 +5,10 @@ const props = defineProps({
     showReactionTypeBar: Boolean,
 });
 
-const emit = defineEmits(['callChangeShowReactionTypeBar', 'callSendReaction'])
+const emit = defineEmits(['callChangeShowReactionTypeBar', 'callSendPostReaction'])
 
-const sendReaction = (from, type) => {
-    emit('callSendReaction', from, type)
+const sendPostReaction = (from, type) => {
+    emit('callSendPostReaction', from, type)
 }
 </script>
 
@@ -18,12 +18,12 @@ const sendReaction = (from, type) => {
             'opacity-100 scale-110': showReactionTypeBar
         }" @mouseover="$emit('callChangeShowReactionTypeBar', true)"
         @mouseleave="$emit('callChangeShowReactionTypeBar', false)">
-        <ReactionOtherTypeButton :title="'Me gusta'" :type="'like'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me encanta'" :type="'love'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me importa'" :type="'care'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me divierte'" :type="'haha'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me asombra'" :type="'wow'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me entristece'" :type="'sad'" @callSendReaction="sendReaction" />
-        <ReactionOtherTypeButton :title="'Me enoja'" :type="'angry'" @callSendReaction="sendReaction" />
+        <ReactionOtherTypeButton :title="'Me gusta'" :type="'like'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me encanta'" :type="'love'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me importa'" :type="'care'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me divierte'" :type="'haha'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me asombra'" :type="'wow'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me entristece'" :type="'sad'" @callSendPostReaction="sendPostReaction" />
+        <ReactionOtherTypeButton :title="'Me enoja'" :type="'angry'" @callSendPostReaction="sendPostReaction" />
     </div>
 </template>

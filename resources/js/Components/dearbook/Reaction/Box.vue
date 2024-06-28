@@ -1,6 +1,6 @@
 <script setup>
 import ReactionTypeBar from '@/Components/dearbook/Reaction/TypeBar.vue'
-import ReactionMainTypeButton from '@/Components/dearbook/Reaction/MainTypeButton.vue'
+import ReactionMainTypeButtonOnPost from '@/Components/dearbook/Reaction/MainTypeButtonOnPost.vue'
 import { ref } from "vue";
 
 import axiosClient from '@/axiosClient'
@@ -17,8 +17,7 @@ const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
 }
 
-// const sendReaction = () => {
-const sendReaction = (from, type) => {
+const sendPostReaction = (from, type) => {
     axiosClient.post(route('post.reaction', props.post), {
         from_main_reaction_button: from,
         reaction_type: type,
@@ -40,9 +39,9 @@ const sendReaction = (from, type) => {
 <template>
     <div class="relative w-1/2">
         <ReactionTypeBar :showReactionTypeBar="showReactionTypeBar"
-            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendReaction="sendReaction" />
+            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendPostReaction="sendPostReaction" />
 
-        <ReactionMainTypeButton :post="post"
-            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendReaction="sendReaction" />
+        <ReactionMainTypeButtonOnPost :post="post"
+            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendPostReaction="sendPostReaction" />
     </div>
 </template>
