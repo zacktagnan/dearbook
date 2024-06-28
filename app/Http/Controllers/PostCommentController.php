@@ -9,7 +9,7 @@ use App\Http\Resources\CommentResource;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
-class CommentController extends Controller
+class PostCommentController extends Controller
 {
     public function store(CommentStoreRequest $request, Post $post)
     {
@@ -26,7 +26,6 @@ class CommentController extends Controller
             'total_of_comments' => $comments,
             'current_user_has_comment' => $hasComment,
             'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
-            // 'latest_comments' => $post->latestComments()->latest()->limit(1)->get(),
             'latest_comments' => CommentResource::collection(
                 $post->latestComments()->latest()->limit(1)->get()
             ),
