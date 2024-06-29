@@ -30,6 +30,11 @@ class CommentResource extends JsonResource
                     ? Storage::url($this->user->avatar_path)
                     : null,
             ],
+            'total_of_reactions' => $this->reactions->count(),
+            'current_user_has_reaction' => self::authUserReactionsToComment($this->reactions())->count() > 0,
+            'current_user_type_reaction' => self::authUserReactionsToComment($this->reactions())->count() > 0
+                ? self::authUserReactionsToComment($this->reactions())[0]->type
+                : '',
             // ------------------------------------------------------------------------------------------------
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -37,5 +42,10 @@ class CommentResource extends JsonResource
             'created_at_large_format' => $this->createdAtWithLargeFormat(),
             'updated_at_large_format' => $this->updatedAtWithLargeFormat(),
         ];
+    }
+
+    private static function authUserReactionsToComment($commentReactions)
+    {
+        return $commentReactions->where('user_id', auth()->id())->get();
     }
 }

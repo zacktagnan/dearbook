@@ -37,13 +37,17 @@ const sendComment = (comment) => {
         })
 }
 
+const activeShowNotificationToItem = (errors) => {
+    emit("callActiveShowNotificationToItem", errors);
+};
+
 defineExpose({
     focusCommentTextAreaOfCreate,
 })
 </script>
 
 <template>
-    <CommentLatestList :post="post" />
+    <CommentLatestList :post="post" @callActiveShowNotificationToCommentBox="activeShowNotificationToItem" />
 
     <CommentCreate ref="commentCreateRef" @callSendComment="sendComment" />
 </template>

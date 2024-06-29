@@ -1,15 +1,22 @@
 <script setup>
 import { EllipsisHorizontalIcon } from "@heroicons/vue/24/solid";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
+import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import { usePage } from "@inertiajs/vue3";
 
 defineProps({
     post: Object,
 });
 
+const emit = defineEmits(['callActiveShowNotificationToCommentBox'])
+
 const authUser = usePage().props.auth.user;
 
 const isCommentAuthor = (latestComment) => authUser && authUser.id === latestComment.user.id
+
+const activeShowNotificationToCommentBox = (errors) => {
+    emit("callActiveShowNotificationToCommentBox", errors);
+};
 </script>
 
 <template>
@@ -106,7 +113,7 @@ const isCommentAuthor = (latestComment) => authUser && authUser.id === latestCom
                         <small class="text-xs hover:cursor-pointer hover:underline">{{ latest_comment.created_at_formatted }}</small>
                     </div>
 
-                    <button class="font-extrabold hover:underline">Like</button>
+                    <CommentReactionBox :comment="latest_comment" @callActiveShowNotificationToLatestList="activeShowNotificationToCommentBox" />
 
                     <button class="font-extrabold hover:underline">Responder</button>
 

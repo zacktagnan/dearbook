@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\CommentController;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\PostReactionController;
+use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostReactionController;
+use App\Http\Controllers\CommentReactionController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -32,8 +33,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{post}/all-reactions-users', [PostReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
         Route::get('/{post}/type-reactions-users/{type}', [PostReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
 
-        Route::post('/{post}/comment', [CommentController::class, 'store'])->name('comment.store');
-        Route::get('/{post}/all-comments-users', [CommentController::class, 'allCommentsUsers'])->name('all-comments-users');
+        Route::post('/{post}/comment', [PostCommentController::class, 'store'])->name('comment.store');
+        Route::get('/{post}/all-comments-users', [PostCommentController::class, 'allCommentsUsers'])->name('all-comments-users');
+    });
+
+    Route::prefix('comment')->as('comment.')->group(function () {
+        Route::post('/{comment}/reaction', [CommentReactionController::class, 'reaction'])->name('reaction');
+        Route::get('/{comment}/all-reactions-users', [CommentReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
+        Route::get('/{comment}/type-reactions-users/{type}', [CommentReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
     });
 });
 
