@@ -127,19 +127,19 @@ const typeReactionsUsersPost = (type) => {
 
 // ============================================================================
 
-import ReactionTypeUsersSummary from "@/Components/dearbook/Post/Reaction/TypeUsersSummary.vue";
-import ReactionBox from "@/Components/dearbook/Post/Reaction/Box.vue";
+import PostReactionTypeUsersSummary from "@/Components/dearbook/Post/Reaction/TypeUsersSummary.vue";
+import PostReactionBox from "@/Components/dearbook/Post/Reaction/Box.vue";
 
 const activeShowNotification = (errors) => {
     emit("callActiveShowNotificationFromItem", errors);
 };
 
-import CommentUsersSummary from '@/Components/dearbook/Comment/UsersSummary.vue'
-import CommentBox from '@/Components/dearbook/Comment/Box.vue'
+import PostCommentUsersSummary from '@/Components/dearbook/Comment/UsersSummary.vue'
+import PostCommentBox from '@/Components/dearbook/Comment/Box.vue'
 
-const commentBoxRef = ref(null)
+const postCommentBoxRef = ref(null)
 const focusCommentTextArea = () => {
-    commentBoxRef.value.focusCommentTextAreaOfCreate()
+    postCommentBoxRef.value.focusCommentTextAreaOfCreate()
 };
 </script>
 
@@ -324,7 +324,7 @@ const focusCommentTextArea = () => {
                 <div class="flex items-center justify-between py-2 text-gray-500">
                     <div v-if="post.total_of_reactions > 0" class="flex items-center">
                         <div class="flex items-center -space-x-2">
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'like' ||
                                     (post.like_reactions_users &&
@@ -339,7 +339,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'love' ||
                                     (post.love_reactions_users &&
@@ -354,7 +354,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'care' ||
                                     (post.care_reactions_users &&
@@ -369,7 +369,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'haha' ||
                                     (post.haha_reactions_users &&
@@ -384,7 +384,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'wow' ||
                                     (post.wow_reactions_users &&
@@ -399,7 +399,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'sad' ||
                                     (post.sad_reactions_users &&
@@ -414,7 +414,7 @@ const focusCommentTextArea = () => {
                                 "
                             />
 
-                            <ReactionTypeUsersSummary
+                            <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'angry' ||
                                     (post.angry_reactions_users &&
@@ -430,7 +430,7 @@ const focusCommentTextArea = () => {
                             />
                         </div>
 
-                        <ReactionTypeUsersSummary
+                        <PostReactionTypeUsersSummary
                             :reaction-users="post.all_reactions_users"
                             :current-user-has-reaction="
                                 post.current_user_has_reaction
@@ -442,7 +442,7 @@ const focusCommentTextArea = () => {
                     </div>
                     <div v-else />
 
-                    <CommentUsersSummary
+                    <PostCommentUsersSummary
                         v-if="post.total_of_comments > 0"
                         :comment-users="post.all_comments_users"
                         :current-user-has-comment="post.current_user_has_comment"
@@ -455,7 +455,7 @@ const focusCommentTextArea = () => {
             </div>
 
             <div class="flex gap-2 my-1.5 font-bold text-gray-500">
-                <ReactionBox
+                <PostReactionBox
                     :post="post"
                     @callActiveShowNotificationToItem="activeShowNotification"
                 />
@@ -475,7 +475,7 @@ const focusCommentTextArea = () => {
             <div>
                 <hr>
 
-                <CommentBox ref="commentBoxRef" :post="post"
+                <PostCommentBox ref="postCommentBoxRef" :post="post"
                     @callActiveShowNotificationToItem="activeShowNotification" />
             </div>
         </div>
