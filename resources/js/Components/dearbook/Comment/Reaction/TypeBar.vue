@@ -13,7 +13,7 @@ const sendCommentReaction = (from, type) => {
 </script>
 
 <template>
-    <div class="z-[22] opacity-0 scale-0 absolute left-3 lg:-left-2 bottom-4 p-[3px] border rounded-full shadow flex items-center gap-0.5 bg-white h-10 transition-opacity duration-500 delay-500 ease-in-out"
+    <div class="z-[22] opacity-0 scale-0 absolute -left-2 bottom-4 p-[3px] border rounded-full shadow flex items-center gap-0.5 bg-white h-10 transition-opacity duration-500 delay-500 ease-in-out"
         :class="{
             'opacity-100 scale-110': showReactionTypeBar
         }" @mouseover="$emit('callChangeShowReactionTypeBar', true)"

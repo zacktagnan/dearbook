@@ -11,7 +11,7 @@ const props = defineProps({
     comment: Object,
 });
 
-const emit = defineEmits(['callActiveShowNotificationToLatestList'])
+const emit = defineEmits(['callActiveShowNotificationToCommentItem'])
 
 const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
@@ -29,7 +29,7 @@ const sendCommentReaction = (from, type) => {
             props.comment.total_of_reactions = data.total_of_reactions
         })
         .catch((error) => {
-            emit('callActiveShowNotificationToLatestList', error.response.data.errors)
+            emit('callActiveShowNotificationToCommentItem', error.response.data.errors)
         })
     changeShowReactionTypeBar(false)
 }

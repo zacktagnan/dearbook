@@ -1,18 +1,11 @@
 <script setup>
-import { EllipsisHorizontalIcon } from "@heroicons/vue/24/solid";
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
-import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
-import { usePage } from "@inertiajs/vue3";
+import CommentItem from '@/Components/dearbook/Comment/Item.vue'
 
 defineProps({
     post: Object,
 });
 
 const emit = defineEmits(['callActiveShowNotificationToCommentBox'])
-
-const authUser = usePage().props.auth.user;
-
-const isCommentAuthor = (latestComment) => authUser && authUser.id === latestComment.user.id
 
 const activeShowNotificationToCommentBox = (errors) => {
     emit("callActiveShowNotificationToCommentBox", errors);
@@ -33,7 +26,8 @@ const activeShowNotificationToCommentBox = (errors) => {
                 </div>
             </a>
 
-            <div class="flex flex-col w-full group/block_comment">
+            <CommentItem :comment="latest_comment" @callActiveShowNotificationToLatestList="activeShowNotificationToCommentBox" />
+            <!-- <div class="flex flex-col w-full group/block_comment">
                 <div class="flex items-center gap-1">
                     <div class="px-3 py-1 rounded-lg bg-gray-200/50">
                         <a :href="route('profile.index', { username: latest_comment.user.username })" class="text-[0.8125rem] font-semibold" :title="'Perfil de ' + latest_comment.user.name">
@@ -120,8 +114,42 @@ const activeShowNotificationToCommentBox = (errors) => {
                     <div v-if="latest_comment.created_at != latest_comment.updated_at" class="tooltip tooltip-top" :data-tip="latest_comment.updated_at_large_format">
                         <small class="text-xs italic hover:cursor-pointer hover:underline">Editado</small>
                     </div>
+
+                    {{ 'latest_comment.total_of_reactions: ' + latest_comment.total_of_reactions }}
+                    <div v-if="latest_comment.total_of_reactions > 0" class="flex items-center">
+                        <div v-if="true" class="flex items-center -space-x-0.5">
+                            <CommentReactionTypeUsersSummary
+                                v-if="
+                                    latest_comment.current_user_type_reaction === 'like' ||
+                                    (latest_comment.like_reactions_users &&
+                                        latest_comment.like_reactions_users.length > 0)
+                                "
+                                :title="'Me gusta'"
+                                :type="'like'"
+                                :z-index-icon="'z-[7]'"
+                                :reaction-users="latest_comment.like_reactions_users"
+                                :current-user-type-reaction="
+                                    latest_comment.current_user_type_reaction
+                                "
+                            />
+
+
+
+
+
+
+
+                            <img src="/img/emojis/like.png" class="z-[7] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/love.png" class="z-[6] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/care.png" class="z-[5] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/haha.png" class="z-[4] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/wow.png" class="z-[3] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/sad.png" class="z-[2] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                            <img src="/img/emojis/angry.png" class="z-[1] w-4 h-4 rounded-full ring-1 ring-white" alt="">
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </template>
 </template>
