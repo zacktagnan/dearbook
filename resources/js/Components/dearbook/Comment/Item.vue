@@ -73,6 +73,15 @@ const activeShowNotificationToLatestList = (errors) => {
 </script>
 
 <template>
+    <a :href="route('profile.index', { username: comment.user.username })"
+        :title="'Perfil de ' + comment.user.name">
+        <div class="w-8 avatar offline">
+            <img :src="comment.user.avatar_url ||
+            '/img/default_avatar.png'" class="transition-all border-2 rounded-full hover:border-cyan-500"
+                :alt="comment.user.name" />
+        </div>
+    </a>
+
     <div class="flex flex-col w-full group/block_comment">
         <div class="flex items-center gap-1">
             <div class="px-3 py-1 rounded-lg bg-gray-200/50">
