@@ -96,7 +96,7 @@ const closeModal = () => {
                             >
                                 <div class="">
                                     <TabGroup :defaultIndex="defaultIndex">
-                                        <div class="flex items-center justify-between bg-white shadow md:px-4">
+                                        <div class="flex items-center justify-between px-2 bg-white shadow md:px-4">
                                             <TabList class="flex">
                                                 <template v-for="(reactionType, index) of reactionTypesFormat">
                                                     <Tab v-if="showTab(index)" as="template" v-slot="{ selected }">
@@ -118,7 +118,7 @@ const closeModal = () => {
 
                                         <TabPanels class="overflow-auto h-96">
                                             <template v-for="(reactionType, index) of reactionTypesFormat">
-                                                <TabPanel v-if="showTab(index)" class="w-full px-4 py-2 bg-white">
+                                                <TabPanel v-if="showTab(index)" class="w-full px-2 py-2 bg-white md:px-4">
                                                     <UserListItem v-if="showCurrentUserReaction(index)" :user="$page.props.auth.user" :type="entity.current_user_type_reaction" />
 
                                                     <UserListItem v-for="element of entity[index]" :user="element.user" :type="element.type" />
