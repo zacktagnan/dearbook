@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from "vue";
+import { reactionTypesFormat } from "@/Libs/helpers";
 
 const props = defineProps({
     comment: Object,
@@ -10,26 +11,16 @@ const emit = defineEmits(['callChangeShowReactionTypeBar', 'callSendCommentReact
 const mainTypeReactionFormat = computed(() => {
     if (!props.comment.current_user_has_reaction) {
         return {
-            text: 'Like',
-            classes: ''
+            text: reactionTypesFormat.all.main_type_button_text,
+            classes: reactionTypesFormat.all.classes,
         }
     } else {
         return {
-            text: switchMainTypeReactionFormat[props.comment.current_user_type_reaction][0],
-            classes: switchMainTypeReactionFormat[props.comment.current_user_type_reaction][1]
+            text: reactionTypesFormat[props.comment.current_user_type_reaction].main_type_button_text,
+            classes: reactionTypesFormat[props.comment.current_user_type_reaction].classes,
         }
     }
 })
-
-const switchMainTypeReactionFormat = {
-    'like': ['Like', 'text-sky-500'],
-    'love': ['Love', 'text-rose-500'],
-    'care': ['Care', 'text-yellow-500'],
-    'haha': ['Haha', 'text-yellow-500'],
-    'wow': ['Wow', 'text-yellow-500'],
-    'sad': ['Sad', 'text-blue-300'],
-    'angry': ['Angry', 'text-orange-600'],
-};
 </script>
 
 <template>

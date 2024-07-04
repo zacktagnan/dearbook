@@ -11,7 +11,7 @@ const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callActiveShowNotificationToItem'])
+const emit = defineEmits(['callActiveShowNotificationToItem', 'callOpenUserReactionsModalToItem',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -37,6 +37,10 @@ const sendComment = (comment) => {
         })
 }
 
+const openUserReactionsModalToItem = (comment, tabIndex) => {
+    emit("callOpenUserReactionsModalToItem", comment, tabIndex);
+}
+
 const activeShowNotificationToItem = (errors) => {
     emit("callActiveShowNotificationToItem", errors);
 };
@@ -47,7 +51,9 @@ defineExpose({
 </script>
 
 <template>
-    <CommentLatestList :post="post" @callActiveShowNotificationToCommentBox="activeShowNotificationToItem" />
+    <CommentLatestList :post="post"
+        @callOpenUserReactionsModalToCommentBox="openUserReactionsModalToItem"
+        @callActiveShowNotificationToCommentBox="activeShowNotificationToItem" />
 
     <CommentCreate ref="commentCreateRef" @callSendComment="sendComment" />
 </template>

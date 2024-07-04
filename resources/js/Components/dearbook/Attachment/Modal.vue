@@ -86,7 +86,7 @@ const closeModal = () => {
                                     </div>
 
                                     <button @click="closeModal"
-                                        class="flex items-center p-1 font-bold text-gray-500 transition-colors duration-200 bg-gray-200 rounded-full hover:bg-gray-300"
+                                        class="flex items-center p-1 font-bold text-gray-500 transition-colors duration-200 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-gray-700"
                                         title="Cerrar">
                                         <XMarkIcon class="w-5 h-5" />
                                     </button>

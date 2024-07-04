@@ -38,10 +38,12 @@ const maxUsersIndex = maxUsersListed - 1;
         </span>
 
         <div
-            class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition-all duration-500 whitespace-nowrap"
-            :class="{
-                'opacity-100': showUsersPopover,
-            }"
+            :class="[
+                'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition- duration-500 whitespace-nowrap',
+                showUsersPopover
+                    ? 'opacity-100 visible'
+                    : 'opacity-0 invisible'
+            ]"
         >
             <template v-if="currentUserHasComment">
                 <p v-if="currentUserHasComment">

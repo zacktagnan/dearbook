@@ -4,26 +4,48 @@ import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
 import { usePage } from "@inertiajs/vue3";
-import { onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import axiosClient from "@/axiosClient";
+import { reactionTypesFormat, } from "@/Libs/helpers";
 
 const props = defineProps({
     comment: Object,
 });
+
 onMounted(() => {
     allReactionsUsersComment();
-    typeReactionsUsersComment("like");
-    typeReactionsUsersComment("love");
-    typeReactionsUsersComment("care");
-    typeReactionsUsersComment("haha");
-    typeReactionsUsersComment("wow");
-    typeReactionsUsersComment("sad");
-    typeReactionsUsersComment("angry");
+    setTypeReactionsUsersCommentByType()
 });
+
+const setTypeReactionsUsersCommentByType = () => {
+    defaultTabIndex.value = 0
+    defaultTabIndexObject.value = {}
+
+    Object.keys(reactionTypesFormat).forEach(element => {
+        return element !== 'all'
+            ? typeReactionsUsersComment(element)
+            : null
+    });
+}
 
 const authUser = usePage().props.auth.user;
 
-const isCommentAuthor = () => authUser && authUser.id === props.comment.user.id
+// const isCommentAuthor = () => authUser && authUser.id === props.comment.user.id
+// Sin el COMPUTED, funciona y debe ser llamado como método >> isCommentAuthor()
+// Con el COMPUTED, funciona como una simple variable computada y debe ser llamado como tal
+const isCommentAuthor = computed(
+    () => authUser && authUser.id === props.comment.user.id
+)
+
+const defaultTabIndex = ref(0)
+const defaultTabIndexObject = ref({})
+
+const setDefaultTabIndex = (data, type) => {
+    if (data.length > 0 || (props.comment.current_user_has_reaction && props.comment.current_user_type_reaction === type)) {
+        defaultTabIndex.value = defaultTabIndex.value + 1
+        defaultTabIndexObject.value[type] = defaultTabIndex.value
+    }
+}
 
 const allReactionsUsersComment = () => {
     axiosClient
@@ -62,10 +84,15 @@ const typeReactionsUsersComment = (type) => {
                 default:
                     break;
             }
+            setDefaultTabIndex(data, type)
         });
 };
 
-const emit = defineEmits(['callActiveShowNotificationToLatestList'])
+const emit = defineEmits(['callActiveShowNotificationToLatestList', 'callOpenUserReactionsModalToLatestList',])
+
+const openUserReactionsModalToLatestList = (tabIndex) => {
+    emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
+};
 
 const activeShowNotificationToLatestList = (errors) => {
     emit("callActiveShowNotificationToLatestList", errors);
@@ -92,7 +119,7 @@ const activeShowNotificationToLatestList = (errors) => {
             </div>
 
             <Menu
-                v-if="isCommentAuthor()"
+                v-if="isCommentAuthor"
                 as="div"
                 class="relative inline-block text-left"
             >
@@ -162,7 +189,11 @@ const activeShowNotificationToLatestList = (errors) => {
                 <small class="text-xs hover:cursor-pointer hover:underline">{{ comment.created_at_formatted }}</small>
             </div>
 
-            <CommentReactionBox :comment="comment" @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList" />
+            <CommentReactionBox
+                :comment="comment"
+                @callRestartDefaultTabIndex="setTypeReactionsUsersCommentByType"
+                @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList"
+            />
 
             <button class="font-extrabold hover:underline">Responder</button>
 
@@ -170,7 +201,6 @@ const activeShowNotificationToLatestList = (errors) => {
                 <small class="text-xs italic hover:cursor-pointer hover:underline">Editado</small>
             </div>
 
-            <!-- {{ 'comment.total_of_reactions: ' + comment.total_of_reactions }} -->
             <div v-if="comment.total_of_reactions > 0" class="flex items-center">
                 <CommentReactionTypeUsersSummary
                     :reaction-users="comment.all_reactions_users"
@@ -180,6 +210,7 @@ const activeShowNotificationToLatestList = (errors) => {
                     :total-of-reactions="comment.total_of_reactions"
                     :show-type-icon="false"
                     :show-header="false"
+                    @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(0)"
                 />
 
                 <div class="flex items-center -space-x-0.5">
@@ -196,6 +227,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['like'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -211,6 +243,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['love'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -226,6 +259,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['care'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -241,6 +275,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['haha'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -256,6 +291,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['wow'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -271,6 +307,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['sad'])"
                     />
 
                     <CommentReactionTypeUsersSummary
@@ -286,6 +323,7 @@ const activeShowNotificationToLatestList = (errors) => {
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
+                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['angry'])"
                     />
                 </div>
             </div>

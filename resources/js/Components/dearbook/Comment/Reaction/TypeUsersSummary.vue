@@ -38,6 +38,10 @@ const props = defineProps({
     },
 });
 
+const emit = defineEmits([
+    "callOpenUserReactionsModalToCommentItem",
+]);
+
 const authUser = usePage().props.auth.user;
 
 const showUsersPopover = ref(false);
@@ -62,6 +66,7 @@ const reactionUsersLength = computed(() => {
     <div class="relative">
         <img
             v-if="showTypeIcon"
+            @click="$emit('callOpenUserReactionsModalToCommentItem')"
             :src="'/img/emojis/' + type + '.png'"
             :alt="title"
             class="relative w-4 h-4 rounded-full cursor-pointer ring-1 ring-white dark:ring-slate-900"
@@ -71,6 +76,7 @@ const reactionUsersLength = computed(() => {
         />
         <span
             v-else
+            @click="$emit('callOpenUserReactionsModalToCommentItem')"
             class="mr-0.5 cursor-pointer hover:underline"
             @mouseover="showUsersPopover = true"
             @mouseleave="showUsersPopover = false"
@@ -78,13 +84,14 @@ const reactionUsersLength = computed(() => {
             {{ totalOfReactions }}
         </span>
         <div
-            class="opacity-0 absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg -left-12 bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap"
-            :class="{
-                'opacity-100': showUsersPopover,
-            }"
+            :class="[
+                'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg -left-12 bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap',
+                showUsersPopover
+                    ? 'opacity-100 visible'
+                    : 'opacity-0 invisible'
+            ]"
         >
             <h3 v-if="showHeader" class="mb-1.5 text-sm items-center flex gap-1">
-                <!-- {{ title }} -->
                 <img
                     :src="'/img/emojis/' + type + '.png'"
                     :alt="title"
@@ -121,13 +128,13 @@ const reactionUsersLength = computed(() => {
                         y {{ reactionUsers.length - maxUsersIndex }} más...
                     </p>
                     <p v-else>
-                        {{ userThatReact.name }}
+                        {{ userThatReact.user?.name }}
                     </p>
                 </template>
             </template>
             <template v-else>
                 <p v-for="userThatReact of reactionUsers">
-                    {{ userThatReact.name }}
+                    {{ userThatReact.user?.name }}
                 </p>
             </template>
         </div>

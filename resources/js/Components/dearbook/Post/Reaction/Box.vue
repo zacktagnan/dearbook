@@ -11,7 +11,7 @@ const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callActiveShowNotificationToItem'])
+const emit = defineEmits(['callRestartDefaultTabIndex', 'callActiveShowNotificationToItem'])
 
 const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
@@ -27,6 +27,7 @@ const sendPostReaction = (from, type) => {
             props.post.current_user_type_reaction = data.current_user_type_reaction
             props.post.current_user_has_reaction = data.current_user_has_reaction
             props.post.total_of_reactions = data.total_of_reactions
+            emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {
             // console.log('ERRORES: ', error.response.data.errors)

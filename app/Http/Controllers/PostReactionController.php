@@ -4,30 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Requests\ReactionRequest;
+use App\Http\Resources\ReactionResource;
 use App\Models\Post;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostReactionController extends Controller
 {
     public function reaction(ReactionRequest $request, Post $post): JsonResponse
     {
-        // dd('REQUEST', $request->all());
-
-        // if (!$request->current_reaction_type) {
-        //     dd('CURRENT_TYPE es NULL');
-        // }
-        // dd('CURRENT_TYPE', $request->current_reaction_type);
-
-        // if (!$this->reactionExists($post)) {
-
         if (!$request->current_reaction_type) {
             $hasReaction = true;
             $this->createReaction($post, $request->reaction_type);
-            // $post->reactions()->create([
-            //     'user_id' => auth()->id(),
-            //     'type' => $request->reaction_type,
-            // ]);
             $type = $request->reaction_type;
         } else {
             if ($request->from_main_reaction_button) {
@@ -46,19 +35,6 @@ class PostReactionController extends Controller
                 $type = $request->reaction_type;
             }
         }
-
-        // if ($this->reactionExists($post)) {
-        //     $hasReaction = false;
-        //     $this->deleteReaction($post);
-        //     $type = '';
-        // } else {
-        //     $hasReaction = true;
-        //     $post->reactions()->create([
-        //         'user_id' => auth()->id(),
-        //         'type' => $request->reaction,
-        //     ]);
-        //     $type = $request->reaction;
-        // }
 
         $reactions = $post->reactions()->count();
 
@@ -106,35 +82,20 @@ class PostReactionController extends Controller
         $reaction->delete();
     }
 
-    public function allReactionsUsers(Post $post): array
+    public function allReactionsUsers(Post $post): JsonResource
     {
-        $reactions = $post->reactions()->where('user_id', '<>', auth()->id())->get();
+        $reactions = $post->reactions()->where('user_id', '<>', auth()->id())
+            ->orderBy('created_at', 'DESC')->get();
 
-        $usersThatReactToPost = $this->getReactionUsers($reactions);
-
-        return $usersThatReactToPost;
+        return ReactionResource::collection($reactions);
     }
 
-    public function typeReactionsUsers(Post $post, string $type): array
+    public function typeReactionsUsers(Post $post, string $type): JsonResource
     {
         $reactions = $post->reactions()->where('type', $type)
-            ->where('user_id', '<>', auth()->id())->get();
+            ->where('user_id', '<>', auth()->id())
+            ->orderBy('created_at', 'DESC')->get();
 
-        $usersThatReactToPost = $this->getReactionUsers($reactions);
-
-        return $usersThatReactToPost;
-    }
-
-    private function getReactionUsers(Collection $reactions): array
-    {
-        $usersThatReactToPost = [];
-        foreach ($reactions as $reaction) {
-            // $usersThatReactToPost[] = $reaction->user->name;
-            $usersThatReactToPost[] = [
-                'name' => $reaction->user->name,
-            ];
-        }
-
-        return $usersThatReactToPost;
+        return ReactionResource::collection($reactions);
     }
 }

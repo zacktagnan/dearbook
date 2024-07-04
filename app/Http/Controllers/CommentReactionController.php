@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
-use App\Http\Requests\ReactionRequest;
 use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\ReactionRequest;
+use App\Http\Resources\ReactionResource;
+use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentReactionController extends Controller
 {
@@ -80,34 +82,20 @@ class CommentReactionController extends Controller
         $reaction->delete();
     }
 
-    public function allReactionsUsers(Comment $comment): array
+    public function allReactionsUsers(Comment $comment): JsonResource
     {
-        $reactions = $comment->reactions()->where('user_id', '<>', auth()->id())->get();
+        $reactions = $comment->reactions()->where('user_id', '<>', auth()->id())
+            ->orderBy('created_at', 'DESC')->get();
 
-        $usersThatReactToComment = $this->getReactionUsers($reactions);
-
-        return $usersThatReactToComment;
+        return ReactionResource::collection($reactions);
     }
 
-    public function typeReactionsUsers(Comment $comment, string $type): array
+    public function typeReactionsUsers(Comment $comment, string $type): JsonResource
     {
         $reactions = $comment->reactions()->where('type', $type)
-            ->where('user_id', '<>', auth()->id())->get();
+            ->where('user_id', '<>', auth()->id())
+            ->orderBy('created_at', 'DESC')->get();
 
-        $usersThatReactToComment = $this->getReactionUsers($reactions);
-
-        return $usersThatReactToComment;
-    }
-
-    private function getReactionUsers(Collection $reactions): array
-    {
-        $usersThatReactToComment = [];
-        foreach ($reactions as $reaction) {
-            $usersThatReactToComment[] = [
-                'name' => $reaction->user->name,
-            ];
-        }
-
-        return $usersThatReactToComment;
+        return ReactionResource::collection($reactions);
     }
 }

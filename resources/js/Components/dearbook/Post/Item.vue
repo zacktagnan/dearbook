@@ -17,16 +17,13 @@ const props = defineProps({
 const emit = defineEmits([
     "callOpenEditModal",
     "callOpenAttachmentsModal",
+    'callOpenUserReactionsModal',
     "callActiveShowNotificationFromItem",
 ]);
 
 const maxPostBodyLength = 100;
 
-// const isImage = (attachment) => {
-//     const mime = attachment.mime.split("/");
-//     return mime[0].toLowerCase() === "image";
-// };
-import { isImage, isVideo } from "@/Libs/helpers";
+import { isImage, isVideo, reactionTypesFormat, } from "@/Libs/helpers";
 
 // =======================================================================================
 
@@ -66,16 +63,21 @@ import { onMounted } from "vue";
 
 onMounted(() => {
     allReactionsUsersPost();
-    typeReactionsUsersPost("like");
-    typeReactionsUsersPost("love");
-    typeReactionsUsersPost("care");
-    typeReactionsUsersPost("haha");
-    typeReactionsUsersPost("wow");
-    typeReactionsUsersPost("sad");
-    typeReactionsUsersPost("angry");
+    setTypeReactionsUsersPostByType()
 
     allCommentsUsersPost();
 });
+
+const setTypeReactionsUsersPostByType = () => {
+    defaultTabIndex.value = 0
+    defaultTabIndexObject.value = {}
+
+    Object.keys(reactionTypesFormat).forEach(element => {
+        return element !== 'all'
+            ? typeReactionsUsersPost(element)
+            : null
+    });
+}
 
 const allCommentsUsersPost = () => {
     axiosClient
@@ -84,6 +86,16 @@ const allCommentsUsersPost = () => {
             props.post.all_comments_users = data;
         });
 };
+
+const defaultTabIndex = ref(0)
+const defaultTabIndexObject = ref({})
+
+const setDefaultTabIndex = (data, type) => {
+    if (data.length > 0 || (props.post.current_user_has_reaction && props.post.current_user_type_reaction === type)) {
+        defaultTabIndex.value = defaultTabIndex.value + 1
+        defaultTabIndexObject.value[type] = defaultTabIndex.value
+    }
+}
 
 const allReactionsUsersPost = () => {
     axiosClient
@@ -122,6 +134,7 @@ const typeReactionsUsersPost = (type) => {
                 default:
                     break;
             }
+            setDefaultTabIndex(data, type)
         });
 };
 
@@ -129,6 +142,10 @@ const typeReactionsUsersPost = (type) => {
 
 import PostReactionTypeUsersSummary from "@/Components/dearbook/Post/Reaction/TypeUsersSummary.vue";
 import PostReactionBox from "@/Components/dearbook/Post/Reaction/Box.vue";
+
+const openUserReactionsModal = (entity, tabIndex) => {
+    emit("callOpenUserReactionsModal", entity, tabIndex);
+};
 
 const activeShowNotification = (errors) => {
     emit("callActiveShowNotificationFromItem", errors);
@@ -150,11 +167,6 @@ const focusCommentTextArea = () => {
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <!-- {{ authUser }}<br>
-            {{ authUser.id }}<br>
-            {{ post.user_id }}<br>
-            {{ 'isPostAuthor' + isPostAuthor }} -->
-            <!-- =========================================================== -->
             <Menu
                 v-if="isPostAuthor"
                 as="div"
@@ -337,6 +349,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['like'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -352,6 +365,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['love'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -367,6 +381,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['care'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -382,6 +397,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['haha'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -397,6 +413,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['wow'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -412,6 +429,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['sad'])"
                             />
 
                             <PostReactionTypeUsersSummary
@@ -427,6 +445,7 @@ const focusCommentTextArea = () => {
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
+                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['angry'])"
                             />
                         </div>
 
@@ -438,6 +457,7 @@ const focusCommentTextArea = () => {
                             :total-of-reactions="post.total_of_reactions"
                             :show-type-icon="false"
                             :show-header="false"
+                            @callOpenUserReactionsModalToItem="openUserReactionsModal(post, 0)"
                         />
                     </div>
                     <div v-else />
@@ -457,6 +477,7 @@ const focusCommentTextArea = () => {
             <div class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <PostReactionBox
                     :post="post"
+                    @callRestartDefaultTabIndex="setTypeReactionsUsersPostByType"
                     @callActiveShowNotificationToItem="activeShowNotification"
                 />
 
@@ -476,6 +497,7 @@ const focusCommentTextArea = () => {
                 <hr>
 
                 <PostCommentBox ref="postCommentBoxRef" :post="post"
+                    @callOpenUserReactionsModalToItem="openUserReactionsModal"
                     @callActiveShowNotificationToItem="activeShowNotification" />
             </div>
         </div>

@@ -11,7 +11,7 @@ const props = defineProps({
     comment: Object,
 });
 
-const emit = defineEmits(['callActiveShowNotificationToCommentItem'])
+const emit = defineEmits(['callRestartDefaultTabIndex', 'callActiveShowNotificationToCommentItem'])
 
 const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
@@ -27,6 +27,7 @@ const sendCommentReaction = (from, type) => {
             props.comment.current_user_type_reaction = data.current_user_type_reaction
             props.comment.current_user_has_reaction = data.current_user_has_reaction
             props.comment.total_of_reactions = data.total_of_reactions
+            emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {
             emit('callActiveShowNotificationToCommentItem', error.response.data.errors)
