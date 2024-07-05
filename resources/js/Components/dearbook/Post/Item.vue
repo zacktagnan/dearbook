@@ -222,7 +222,8 @@ const focusCommentTextArea = () => {
         </div>
 
         <div class="mt-1">
-            <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength" />
+            <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength"
+                :content-classes="'ck-content-output'" />
         </div>
 
         <div v-if="post.attachments.length > 0">
