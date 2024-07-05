@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class CommentStoreRequest extends FormRequest
 {
-    public static int $maximumLength = 200;
+    public static int $maximumLength = 250;
 
     /**
      * Determine if the user is authorized to make this request.
