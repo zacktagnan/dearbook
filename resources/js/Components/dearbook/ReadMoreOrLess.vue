@@ -38,8 +38,10 @@ const getContentExcerpt = computed(() => {
             </div> -->
             <div
                 v-if="!open"
-                class="whitespace-pre-line ck-content-output"
-                :class="contentClasses"
+                :class="[
+                    'whitespace-pre-line',
+                    contentClasses
+                ]"
                 v-html="getContentExcerpt"
             />
         </template>
@@ -64,8 +66,10 @@ const getContentExcerpt = computed(() => {
                     <!-- Sin estilar para el CKEditor -->
                     <!-- <div class="whitespace-pre-line" v-html="content" /> -->
                     <div
-                        class="whitespace-pre-line ck-content-output"
-                        :class="contentClasses"
+                        :class="[
+                            'whitespace-pre-line',
+                            contentClasses
+                        ]"
                         v-html="content"
                     />
                 </DisclosurePanel>
