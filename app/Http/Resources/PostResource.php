@@ -3,11 +3,18 @@
 namespace App\Http\Resources;
 
 // use App\Models\PostReaction;
+
+use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Traits\UserReactions;
+use App\Traits\UsersThatCommented;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
+    use UserReactions;
+    use UsersThatCommented;
+
     /**
      * Transform the resource into an array.
      *
@@ -47,10 +54,21 @@ class PostResource extends JsonResource
                 ? $this->reactions[0]->type
                 : '',
 
+            'all_user_reactions' => $this->allUserReactions(new Post, $this->id),
+            'like_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'like'),
+            'love_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'love'),
+            'care_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'care'),
+            'haha_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'haha'),
+            'wow_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'wow'),
+            'sad_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'sad'),
+            'angry_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'angry'),
+
             'total_of_comments' => $this->comments_count,
             'current_user_has_comment' => $this->currentUserComments->count() > 0,
             'current_user_total_of_comments' => $this->currentUserComments->count(),
             'latest_comments' => CommentResource::collection($this->latestComments),
+            'all_comments' => CommentResource::collection($this->comments),
+            'all_users_that_commented' => $this->allUsersThatCommented($this->id),
 
             // 'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),
             // 'updated_at' => $this->updated_at->format(config('app.format.' . app()->getLocale() . '.datetime.basic')),

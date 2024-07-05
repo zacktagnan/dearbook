@@ -36,14 +36,14 @@ const openUserReactionsModal = (entity, tabIndex) => {
     entityWithReactions.value = {
         'current_user_has_reaction': entity.current_user_has_reaction,
         'current_user_type_reaction': entity.current_user_type_reaction,
-        'all': entity.all_reactions_users,
-        'like': entity.like_reactions_users,
-        'love': entity.love_reactions_users,
-        'care': entity.care_reactions_users,
-        'haha': entity.haha_reactions_users,
-        'wow': entity.wow_reactions_users,
-        'sad': entity.sad_reactions_users,
-        'angry': entity.angry_reactions_users,
+        'all': entity.all_user_reactions,
+        'like': entity.like_user_reactions,
+        'love': entity.love_user_reactions,
+        'care': entity.care_user_reactions,
+        'haha': entity.haha_user_reactions,
+        'wow': entity.wow_user_reactions,
+        'sad': entity.sad_user_reactions,
+        'angry': entity.angry_user_reactions,
     }
     showReactionsModal.value = true
     tabIndexReactionsModal.value = tabIndex

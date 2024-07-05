@@ -30,17 +30,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
 
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
-        Route::get('/{post}/all-reactions-users', [PostReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
-        Route::get('/{post}/type-reactions-users/{type}', [PostReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
 
         Route::post('/{post}/comment', [PostCommentController::class, 'store'])->name('comment.store');
-        Route::get('/{post}/all-comments-users', [PostCommentController::class, 'allCommentsUsers'])->name('all-comments-users');
     });
 
     Route::prefix('comment')->as('comment.')->group(function () {
         Route::post('/{comment}/reaction', [CommentReactionController::class, 'reaction'])->name('reaction');
-        Route::get('/{comment}/all-reactions-users', [CommentReactionController::class, 'allReactionsUsers'])->name('all-reactions-users');
-        Route::get('/{comment}/type-reactions-users/{type}', [CommentReactionController::class, 'typeReactionsUsers'])->name('type-reactions-users');
     });
 });
 

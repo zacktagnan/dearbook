@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
 
 defineProps({
-    reactionUsers: Object,
+    usersThatReacted: Object,
     title: {
         type: String,
         default: "",
@@ -94,9 +94,9 @@ const maxUsersIndex = maxUsersListed - 1;
                 </p>
             </template>
 
-            <template v-if="reactionUsers?.length > maxUsersListed">
+            <template v-if="usersThatReacted?.length > maxUsersListed">
                 <template
-                    v-for="(userThatReact, index) of reactionUsers?.slice(
+                    v-for="(userThatReact, index) of usersThatReacted?.slice(
                         0,
                         maxUsersListed
                     )"
@@ -104,10 +104,10 @@ const maxUsersIndex = maxUsersListed - 1;
                     <p
                         v-if="
                             index === maxUsersIndex &&
-                            reactionUsers.length > maxUsersListed
+                            usersThatReacted.length > maxUsersListed
                         "
                     >
-                        y {{ reactionUsers.length - maxUsersIndex }} más...
+                        y {{ usersThatReacted.length - maxUsersIndex }} más...
                     </p>
                     <p v-else>
                         {{ userThatReact.user?.name }}
@@ -115,7 +115,7 @@ const maxUsersIndex = maxUsersListed - 1;
                 </template>
             </template>
             <template v-else>
-                <p v-for="userThatReact of reactionUsers">
+                <p v-for="userThatReact of usersThatReacted">
                     {{ userThatReact.user?.name }}
                 </p>
             </template>

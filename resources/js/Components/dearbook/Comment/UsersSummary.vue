@@ -3,7 +3,7 @@ import { ref } from 'vue';
 import { usePage } from "@inertiajs/vue3";
 
 defineProps({
-    commentUsers: Object,
+    usersThatCommented: Object,
     currentUserHasComment: {
         type: Boolean,
         default: false,
@@ -52,9 +52,9 @@ const maxUsersIndex = maxUsersListed - 1;
                 </p>
             </template>
 
-            <template v-if="commentUsers?.length > maxUsersListed">
+            <template v-if="usersThatCommented?.length > maxUsersListed">
                 <template
-                    v-for="(userThatComment, index) of commentUsers?.slice(
+                    v-for="(userThatComment, index) of usersThatCommented?.slice(
                         0,
                         maxUsersListed
                     )"
@@ -62,10 +62,10 @@ const maxUsersIndex = maxUsersListed - 1;
                     <p
                         v-if="
                             index === maxUsersIndex &&
-                            commentUsers.length > maxUsersListed
+                            usersThatCommented.length > maxUsersListed
                         "
                     >
-                        y {{ commentUsers.length - maxUsersIndex }} más...
+                        y {{ usersThatCommented.length - maxUsersIndex }} más...
                     </p>
                     <p v-else>
                         {{ userThatComment.name }}
@@ -74,7 +74,7 @@ const maxUsersIndex = maxUsersListed - 1;
                 </template>
             </template>
             <template v-else>
-                <p v-for="userThatComment of commentUsers">
+                <p v-for="userThatComment of usersThatCommented">
                     {{ userThatComment.name }}
                     <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{ userThatComment.user_total_comments }}]</span>
                 </p>

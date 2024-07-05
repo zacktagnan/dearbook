@@ -104,7 +104,6 @@ const closeModal = () => {
                                                         <TabItem v-else :text="reactionType.reaction_modal_header_text" :total-of-reactions="totalOfReactions(index)" :reaction-type="index" :text-color="reactionType.classes" :selected="selected" />
                                                     </Tab>
                                                 </template>
-
                                             </TabList>
 
                                             <button

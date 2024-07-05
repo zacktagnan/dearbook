@@ -81,21 +81,4 @@ class CommentReactionController extends Controller
 
         $reaction->delete();
     }
-
-    public function allReactionsUsers(Comment $comment): JsonResource
-    {
-        $reactions = $comment->reactions()->where('user_id', '<>', auth()->id())
-            ->orderBy('created_at', 'DESC')->get();
-
-        return ReactionResource::collection($reactions);
-    }
-
-    public function typeReactionsUsers(Comment $comment, string $type): JsonResource
-    {
-        $reactions = $comment->reactions()->where('type', $type)
-            ->where('user_id', '<>', auth()->id())
-            ->orderBy('created_at', 'DESC')->get();
-
-        return ReactionResource::collection($reactions);
-    }
 }

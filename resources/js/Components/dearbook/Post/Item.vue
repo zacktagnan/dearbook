@@ -58,34 +58,22 @@ const openAttachmentPreview = (index) => {
     emit("callOpenAttachmentsModal", props.post, index);
 };
 
-import axiosClient from "@/axiosClient";
 import { onMounted } from "vue";
 
 onMounted(() => {
-    allReactionsUsersPost();
-    setTypeReactionsUsersPostByType()
-
-    allCommentsUsersPost();
+    setTypeUserReactionsPostByType()
 });
 
-const setTypeReactionsUsersPostByType = () => {
+const setTypeUserReactionsPostByType = () => {
     defaultTabIndex.value = 0
     defaultTabIndexObject.value = {}
 
-    Object.keys(reactionTypesFormat).forEach(element => {
-        return element !== 'all'
-            ? typeReactionsUsersPost(element)
-            : null
+    Object.keys(reactionTypesFormat).forEach(type => {
+        if (type !== 'all') {
+            typeUserReactionsPost(type)
+        }
     });
 }
-
-const allCommentsUsersPost = () => {
-    axiosClient
-        .get(route("post.all-comments-users", props.post))
-        .then(({ data }) => {
-            props.post.all_comments_users = data;
-        });
-};
 
 const defaultTabIndex = ref(0)
 const defaultTabIndexObject = ref({})
@@ -97,46 +85,35 @@ const setDefaultTabIndex = (data, type) => {
     }
 }
 
-const allReactionsUsersPost = () => {
-    axiosClient
-        .get(route("post.all-reactions-users", props.post))
-        .then(({ data }) => {
-            props.post.all_reactions_users = data;
-        });
-};
-
-const typeReactionsUsersPost = (type) => {
-    axiosClient
-        .get(route("post.type-reactions-users", [props.post, type]))
-        .then(({ data }) => {
-            switch (type) {
-                case "like":
-                    props.post.like_reactions_users = data;
-                    break;
-                case "love":
-                    props.post.love_reactions_users = data;
-                    break;
-                case "care":
-                    props.post.care_reactions_users = data;
-                    break;
-                case "haha":
-                    props.post.haha_reactions_users = data;
-                    break;
-                case "wow":
-                    props.post.wow_reactions_users = data;
-                    break;
-                case "sad":
-                    props.post.sad_reactions_users = data;
-                    break;
-                case "angry":
-                    props.post.angry_reactions_users = data;
-                    break;
-                default:
-                    break;
-            }
-            setDefaultTabIndex(data, type)
-        });
-};
+const typeUserReactionsPost = (type) => {
+    let data;
+    switch (type) {
+        case "like":
+                data = props.post.like_user_reactions
+            break;
+        case "love":
+                data = props.post.love_user_reactions
+            break;
+        case "care":
+                data = props.post.care_user_reactions
+            break;
+        case "haha":
+                data = props.post.haha_user_reactions
+            break;
+        case "wow":
+                data = props.post.wow_user_reactions
+            break;
+        case "sad":
+                data = props.post.sad_user_reactions
+            break;
+        case "angry":
+                data = props.post.angry_user_reactions
+            break;
+        default:
+            break;
+    }
+    setDefaultTabIndex(data, type)
+}
 
 // ============================================================================
 
@@ -339,13 +316,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'like' ||
-                                    (post.like_reactions_users &&
-                                        post.like_reactions_users.length > 0)
+                                    (post.like_user_reactions &&
+                                        post.like_user_reactions.length > 0)
                                 "
                                 :title="'Me gusta'"
                                 :type="'like'"
                                 :z-index-icon="'z-[7]'"
-                                :reaction-users="post.like_reactions_users"
+                                :users-that-reacted="post.like_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -355,13 +332,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'love' ||
-                                    (post.love_reactions_users &&
-                                        post.love_reactions_users.length > 0)
+                                    (post.love_user_reactions &&
+                                        post.love_user_reactions.length > 0)
                                 "
                                 :title="'Me encanta'"
                                 :type="'love'"
                                 :z-index-icon="'z-[6]'"
-                                :reaction-users="post.love_reactions_users"
+                                :users-that-reacted="post.love_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -371,13 +348,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'care' ||
-                                    (post.care_reactions_users &&
-                                        post.care_reactions_users.length > 0)
+                                    (post.care_user_reactions &&
+                                        post.care_user_reactions.length > 0)
                                 "
                                 :title="'Me importa'"
                                 :type="'care'"
                                 :z-index-icon="'z-[5]'"
-                                :reaction-users="post.care_reactions_users"
+                                :users-that-reacted="post.care_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -387,13 +364,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'haha' ||
-                                    (post.haha_reactions_users &&
-                                        post.haha_reactions_users.length > 0)
+                                    (post.haha_user_reactions &&
+                                        post.haha_user_reactions.length > 0)
                                 "
                                 :title="'Me divierte'"
                                 :type="'haha'"
                                 :z-index-icon="'z-[4]'"
-                                :reaction-users="post.haha_reactions_users"
+                                :users-that-reacted="post.haha_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -403,13 +380,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'wow' ||
-                                    (post.wow_reactions_users &&
-                                        post.wow_reactions_users.length > 0)
+                                    (post.wow_user_reactions &&
+                                        post.wow_user_reactions.length > 0)
                                 "
                                 :title="'Me asombra'"
                                 :type="'wow'"
                                 :z-index-icon="'z-[3]'"
-                                :reaction-users="post.wow_reactions_users"
+                                :users-that-reacted="post.wow_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -419,13 +396,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'sad' ||
-                                    (post.sad_reactions_users &&
-                                        post.sad_reactions_users.length > 0)
+                                    (post.sad_user_reactions &&
+                                        post.sad_user_reactions.length > 0)
                                 "
                                 :title="'Me entristece'"
                                 :type="'sad'"
                                 :z-index-icon="'z-[2]'"
-                                :reaction-users="post.sad_reactions_users"
+                                :users-that-reacted="post.sad_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -435,13 +412,13 @@ const focusCommentTextArea = () => {
                             <PostReactionTypeUsersSummary
                                 v-if="
                                     post.current_user_type_reaction === 'angry' ||
-                                    (post.angry_reactions_users &&
-                                        post.angry_reactions_users.length > 0)
+                                    (post.angry_user_reactions &&
+                                        post.angry_user_reactions.length > 0)
                                 "
                                 :title="'Me enoja'"
                                 :type="'angry'"
                                 :z-index-icon="'z-[1]'"
-                                :reaction-users="post.angry_reactions_users"
+                                :users-that-reacted="post.angry_user_reactions"
                                 :current-user-type-reaction="
                                     post.current_user_type_reaction
                                 "
@@ -450,7 +427,7 @@ const focusCommentTextArea = () => {
                         </div>
 
                         <PostReactionTypeUsersSummary
-                            :reaction-users="post.all_reactions_users"
+                            :users-that-reacted="post.all_user_reactions"
                             :current-user-has-reaction="
                                 post.current_user_has_reaction
                             "
@@ -464,7 +441,7 @@ const focusCommentTextArea = () => {
 
                     <PostCommentUsersSummary
                         v-if="post.total_of_comments > 0"
-                        :comment-users="post.all_comments_users"
+                        :users-that-commented="post.all_users_that_commented"
                         :current-user-has-comment="post.current_user_has_comment"
                         :current-user-total-of-comments="post.current_user_total_of_comments"
                         :total-of-comments="post.total_of_comments"
@@ -477,7 +454,7 @@ const focusCommentTextArea = () => {
             <div class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <PostReactionBox
                     :post="post"
-                    @callRestartDefaultTabIndex="setTypeReactionsUsersPostByType"
+                    @callRestartDefaultTabIndex="setTypeUserReactionsPostByType"
                     @callActiveShowNotificationToItem="activeShowNotification"
                 />
 

@@ -13,18 +13,17 @@ const props = defineProps({
 });
 
 onMounted(() => {
-    allReactionsUsersComment();
-    setTypeReactionsUsersCommentByType()
+    setTypeUserReactionsCommentByType()
 });
 
-const setTypeReactionsUsersCommentByType = () => {
+const setTypeUserReactionsCommentByType = () => {
     defaultTabIndex.value = 0
     defaultTabIndexObject.value = {}
 
-    Object.keys(reactionTypesFormat).forEach(element => {
-        return element !== 'all'
-            ? typeReactionsUsersComment(element)
-            : null
+    Object.keys(reactionTypesFormat).forEach(type => {
+        if (type !== 'all') {
+            typeUserReactionsComment(type)
+        }
     });
 }
 
@@ -47,46 +46,35 @@ const setDefaultTabIndex = (data, type) => {
     }
 }
 
-const allReactionsUsersComment = () => {
-    axiosClient
-        .get(route("comment.all-reactions-users", props.comment.id))
-        .then(({ data }) => {
-            props.comment.all_reactions_users = data;
-        });
-};
-
-const typeReactionsUsersComment = (type) => {
-    axiosClient
-        .get(route("comment.type-reactions-users", [props.comment.id, type]))
-        .then(({ data }) => {
-            switch (type) {
-                case "like":
-                    props.comment.like_reactions_users = data;
-                    break;
-                case "love":
-                    props.comment.love_reactions_users = data;
-                    break;
-                case "care":
-                    props.comment.care_reactions_users = data;
-                    break;
-                case "haha":
-                    props.comment.haha_reactions_users = data;
-                    break;
-                case "wow":
-                    props.comment.wow_reactions_users = data;
-                    break;
-                case "sad":
-                    props.comment.sad_reactions_users = data;
-                    break;
-                case "angry":
-                    props.comment.angry_reactions_users = data;
-                    break;
-                default:
-                    break;
-            }
-            setDefaultTabIndex(data, type)
-        });
-};
+const typeUserReactionsComment = (type) => {
+    let data;
+    switch (type) {
+        case "like":
+                data = props.comment.like_user_reactions
+            break;
+        case "love":
+                data = props.comment.love_user_reactions
+            break;
+        case "care":
+                data = props.comment.care_user_reactions
+            break;
+        case "haha":
+                data = props.comment.haha_user_reactions
+            break;
+        case "wow":
+                data = props.comment.wow_user_reactions
+            break;
+        case "sad":
+                data = props.comment.sad_user_reactions
+            break;
+        case "angry":
+                data = props.comment.angry_user_reactions
+            break;
+        default:
+            break;
+    }
+    setDefaultTabIndex(data, type)
+}
 
 const emit = defineEmits(['callActiveShowNotificationToLatestList', 'callOpenUserReactionsModalToLatestList',])
 
@@ -191,7 +179,7 @@ const activeShowNotificationToLatestList = (errors) => {
 
             <CommentReactionBox
                 :comment="comment"
-                @callRestartDefaultTabIndex="setTypeReactionsUsersCommentByType"
+                @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
                 @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList"
             />
 
@@ -203,7 +191,7 @@ const activeShowNotificationToLatestList = (errors) => {
 
             <div v-if="comment.total_of_reactions > 0" class="flex items-center">
                 <CommentReactionTypeUsersSummary
-                    :reaction-users="comment.all_reactions_users"
+                    :users-that-reacted="comment.all_user_reactions"
                     :current-user-has-reaction="
                         comment.current_user_has_reaction
                     "
@@ -217,13 +205,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'like' ||
-                            (comment.like_reactions_users &&
-                                comment.like_reactions_users.length > 0)
+                            (comment.like_user_reactions &&
+                                comment.like_user_reactions.length > 0)
                         "
                         :title="'Me gusta'"
                         :type="'like'"
                         :z-index-icon="'z-[7]'"
-                        :reaction-users="comment.like_reactions_users"
+                        :users-that-reacted="comment.like_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -233,13 +221,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'love' ||
-                            (comment.love_reactions_users &&
-                                comment.love_reactions_users.length > 0)
+                            (comment.love_user_reactions &&
+                                comment.love_user_reactions.length > 0)
                         "
                         :title="'Me encanta'"
                         :type="'love'"
                         :z-index-icon="'z-[6]'"
-                        :reaction-users="comment.love_reactions_users"
+                        :users-that-reacted="comment.love_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -249,13 +237,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'care' ||
-                            (comment.care_reactions_users &&
-                                comment.care_reactions_users.length > 0)
+                            (comment.care_user_reactions &&
+                                comment.care_user_reactions.length > 0)
                         "
                         :title="'Me importa'"
                         :type="'care'"
                         :z-index-icon="'z-[5]'"
-                        :reaction-users="comment.care_reactions_users"
+                        :users-that-reacted="comment.care_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -265,13 +253,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'haha' ||
-                            (comment.haha_reactions_users &&
-                                comment.haha_reactions_users.length > 0)
+                            (comment.haha_user_reactions &&
+                                comment.haha_user_reactions.length > 0)
                         "
                         :title="'Me divierte'"
                         :type="'haha'"
                         :z-index-icon="'z-[4]'"
-                        :reaction-users="comment.haha_reactions_users"
+                        :users-that-reacted="comment.haha_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -281,13 +269,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'wow' ||
-                            (comment.wow_reactions_users &&
-                                comment.wow_reactions_users.length > 0)
+                            (comment.wow_user_reactions &&
+                                comment.wow_user_reactions.length > 0)
                         "
                         :title="'Me asombra'"
                         :type="'wow'"
                         :z-index-icon="'z-[3]'"
-                        :reaction-users="comment.wow_reactions_users"
+                        :users-that-reacted="comment.wow_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -297,13 +285,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'sad' ||
-                            (comment.sad_reactions_users &&
-                                comment.sad_reactions_users.length > 0)
+                            (comment.sad_user_reactions &&
+                                comment.sad_user_reactions.length > 0)
                         "
                         :title="'Me entristece'"
                         :type="'sad'"
                         :z-index-icon="'z-[2]'"
-                        :reaction-users="comment.sad_reactions_users"
+                        :users-that-reacted="comment.sad_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "
@@ -313,13 +301,13 @@ const activeShowNotificationToLatestList = (errors) => {
                     <CommentReactionTypeUsersSummary
                         v-if="
                             comment.current_user_type_reaction === 'angry' ||
-                            (comment.angry_reactions_users &&
-                                comment.angry_reactions_users.length > 0)
+                            (comment.angry_user_reactions &&
+                                comment.angry_user_reactions.length > 0)
                         "
                         :title="'Me enoja'"
                         :type="'angry'"
                         :z-index-icon="'z-[1]'"
-                        :reaction-users="comment.angry_reactions_users"
+                        :users-that-reacted="comment.angry_user_reactions"
                         :current-user-type-reaction="
                             comment.current_user_type_reaction
                         "

@@ -3,7 +3,7 @@ import { computed, ref } from "vue";
 import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
-    reactionUsers: Object,
+    usersThatReacted: Object,
     title: {
         type: String,
         default: "",
@@ -49,13 +49,13 @@ const showUsersPopover = ref(false);
 const maxUsersListed = 4;
 const maxUsersIndex = maxUsersListed - 1;
 
-const reactionUsersLength = computed(() => {
+const usersThatReactedLength = computed(() => {
     let total = 0
     if (props.currentUserTypeReaction !== '' && props.currentUserTypeReaction === props.type) {
         total++
     }
-    if (props.reactionUsers?.length > 0) {
-        total += props.reactionUsers?.length
+    if (props.usersThatReacted?.length > 0) {
+        total += props.usersThatReacted?.length
     }
 
     return total
@@ -98,7 +98,7 @@ const reactionUsersLength = computed(() => {
                     class="w-4 h-4"
                 />
 
-                <span>{{ reactionUsersLength }}</span>
+                <span>{{ usersThatReactedLength }}</span>
             </h3>
 
             <template v-if="currentUserHasReaction">
@@ -112,9 +112,9 @@ const reactionUsersLength = computed(() => {
                 </p>
             </template>
 
-            <template v-if="reactionUsers?.length > maxUsersListed">
+            <template v-if="usersThatReacted?.length > maxUsersListed">
                 <template
-                    v-for="(userThatReact, index) of reactionUsers?.slice(
+                    v-for="(userThatReact, index) of usersThatReacted?.slice(
                         0,
                         maxUsersListed
                     )"
@@ -122,10 +122,10 @@ const reactionUsersLength = computed(() => {
                     <p
                         v-if="
                             index === maxUsersIndex &&
-                            reactionUsers.length > maxUsersListed
+                            usersThatReacted.length > maxUsersListed
                         "
                     >
-                        y {{ reactionUsers.length - maxUsersIndex }} más...
+                        y {{ usersThatReacted.length - maxUsersIndex }} más...
                     </p>
                     <p v-else>
                         {{ userThatReact.user?.name }}
@@ -133,7 +133,7 @@ const reactionUsersLength = computed(() => {
                 </template>
             </template>
             <template v-else>
-                <p v-for="userThatReact of reactionUsers">
+                <p v-for="userThatReact of usersThatReacted">
                     {{ userThatReact.user?.name }}
                 </p>
             </template>
