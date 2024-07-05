@@ -18,5 +18,11 @@ export default {
         },
     },
 
+    safelist: [
+        {
+            pattern: /text-(sky|rose|yellow|blue|orange)-(300|500|600)/,
+        },
+    ],
+
     plugins: [forms],
 };
