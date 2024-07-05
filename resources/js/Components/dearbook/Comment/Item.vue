@@ -1,6 +1,7 @@
 <script setup>
 import { EllipsisHorizontalIcon } from "@heroicons/vue/24/solid";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
+import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
 import { usePage } from "@inertiajs/vue3";
@@ -11,6 +12,8 @@ import { reactionTypesFormat, } from "@/Libs/helpers";
 const props = defineProps({
     comment: Object,
 });
+
+const maxCommentBodyLength = 100;
 
 onMounted(() => {
     setTypeUserReactionsCommentByType()
@@ -103,7 +106,9 @@ const activeShowNotificationToLatestList = (errors) => {
                 <a :href="route('profile.index', { username: comment.user.username })" class="text-[0.8125rem] font-semibold" :title="'Perfil de ' + comment.user.name">
                     {{ comment.user.name }}
                 </a>
-                <div class="text-sm text-justify whitespace-pre-line">{{ comment.comment }}</div>
+
+                <ReadMoreOrLess :content="comment.comment" :max-content-length="maxCommentBodyLength"
+                    :content-classes="'text-sm text-justify'" />
             </div>
 
             <Menu
