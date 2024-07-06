@@ -21,6 +21,10 @@ const resetCommentTextAreaOfCreate = () => {
     commentCreateRef.value.resetCommentTextArea()
 };
 
+const reInitAdjustHeightTextAreaOfCreate = () => {
+    commentCreateRef.value.reInitAdjustHeightTextArea()
+};
+
 const sendComment = (comment) => {
     axiosClient.post(route('post.comment.store', props.post), {
         comment: comment,
@@ -31,6 +35,7 @@ const sendComment = (comment) => {
             props.post.current_user_total_of_comments = data.current_user_total_of_comments
             props.post.latest_comments = data.latest_comments
             resetCommentTextAreaOfCreate()
+            reInitAdjustHeightTextAreaOfCreate()
         })
         .catch((error) => {
             emit('callActiveShowNotificationToItem', error.response.data.errors)

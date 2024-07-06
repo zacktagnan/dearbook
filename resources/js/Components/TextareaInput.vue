@@ -31,8 +31,6 @@ onMounted(() => {
     adjustHeight()
 });
 
-defineExpose({ focus: () => input.value.focus() });
-
 const emit = defineEmits(['update:modelValue'])
 
 const onInputChange = (event) => {
@@ -47,6 +45,14 @@ const adjustHeight = () => {
         input.value.style.height = input.value.scrollHeight + 'px'
     }
 }
+
+const reInitAdjustHeight = () => {
+    setTimeout(() => {
+        adjustHeight()
+    }, 10)
+}
+
+defineExpose({ focus: () => input.value.focus(), reInitAdjustHeight, });
 </script>
 
 <template>

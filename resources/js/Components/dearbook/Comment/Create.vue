@@ -23,8 +23,14 @@ const resetCommentTextArea = () => {
     }
 };
 
+const reInitAdjustHeightTextArea = () => {
+    if (commentTextAreaRef.value) {
+        commentTextAreaRef.value.reInitAdjustHeight();
+    }
+};
+
 defineExpose({
-    focusCommentTextArea, resetCommentTextArea,
+    focusCommentTextArea, resetCommentTextArea, reInitAdjustHeightTextArea,
 })
 </script>
 
