@@ -7,6 +7,8 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
+import ScrollToTop from '@/Components/dearbook/ScrollToTop.vue'
+
 const showingNavigationDropdown = ref(false);
 </script>
 
@@ -152,6 +154,8 @@ const showingNavigationDropdown = ref(false);
             <!-- Page Content -->
             <main>
                 <slot />
+
+                <ScrollToTop />
             </main>
         </div>
     </div>
