@@ -18,6 +18,7 @@ const emit = defineEmits([
     "callOpenEditModal",
     "callOpenAttachmentsModal",
     'callOpenUserReactionsModal',
+    'callConfirmPostDeletion',
     "callActiveShowNotificationFromItem",
 ]);
 
@@ -33,14 +34,6 @@ import { router, usePage } from "@inertiajs/vue3";
 
 const openEditModal = () => {
     emit("callOpenEditModal", props.post);
-};
-
-const deletePost = () => {
-    if (window.confirm("Are you sure you want to DELETE this post?")) {
-        router.delete(route("post.destroy", props.post), {
-            preserveScroll: true,
-        });
-    }
 };
 
 // =======================================================================================
@@ -197,7 +190,7 @@ const focusCommentTextArea = () => {
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
                                 <button
-                                    @click="deletePost"
+                                    @click="$emit('callConfirmPostDeletion', post)"
                                     :class="[
                                         active
                                             ? 'bg-indigo-100'
