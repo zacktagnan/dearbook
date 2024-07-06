@@ -63,6 +63,11 @@
     color: #4b9afa;
 }
 
+.ck-content {
+    overflow: auto;
+    height: 8rem;
+}
+
 .ck-content-output>blockquote,
 .ck-content-output>dl,
 .ck-content-output>dd,
