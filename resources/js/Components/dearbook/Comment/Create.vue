@@ -1,7 +1,7 @@
 <script setup>
 import { PaperAirplaneIcon, } from "@heroicons/vue/24/solid";
 import TextareaInput from '@/Components/TextareaInput.vue';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 const commentTextAreaRef = ref(null);
 
@@ -21,6 +21,26 @@ const resetCommentTextArea = () => {
     if (commentTextAreaRef.value) {
         comment.value = '';
     }
+};
+
+watch(
+    () => comment.value,
+    () => {
+        // console.log("COMMENT has changed...");
+        disableSendCommentButton()
+    }
+)
+
+const disableState = ref(true)
+let disableStateTitleDefaultValue = 'Especificar un contenido'
+const disableStateTitle = ref(disableStateTitleDefaultValue)
+const disableSendCommentButton = () => {
+    console.log('disableSendCommentButton...')
+    disableState.value = comment.value.length <= 0
+
+    disableStateTitle.value = disableState.value
+        ? disableStateTitleDefaultValue
+        : 'Comentar'
 };
 
 const reInitAdjustHeightTextArea = () => {
@@ -49,7 +69,7 @@ defineExpose({
             <div class="flex justify-end px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50">
                 <button
                     @click="$emit('callSendComment', comment)"
-                    :disabled="false" title="Comentar" class="text-cyan-700 hover:text-cyan-500 disabled:text-gray-400 disabled:cursor-not-allowed">
+                    :disabled="disableState" :title="disableStateTitle" class="text-cyan-700 hover:text-cyan-500 disabled:text-gray-400 disabled:cursor-not-allowed">
                     <PaperAirplaneIcon class="w-[18px] h-[18px]" />
                 </button>
             </div>
