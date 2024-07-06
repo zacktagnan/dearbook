@@ -81,6 +81,9 @@ const postForm = useForm({
     _method: "POST",
 });
 
+const currentPostBodyOnDB = ref('')
+const processWellDone = ref(false)
+
 const modalData = ref({
     dialogTitleText: "Crear publicación",
     submitButtonText: "Publicar",
@@ -101,6 +104,7 @@ watch(
         // ---------------------------------------------------------------------
         // postForm.body = props.post.body
         postForm.body = props.post.body || "";
+        currentPostBodyOnDB.value = props.post.body || "";
 
         modalData.value.dialogTitleText = "Editar publicación";
         modalData.value.submitButtonText = "Actualizar";
@@ -120,13 +124,20 @@ watch(
 const closeModal = () => {
     show.value = false;
     attachmentFiles.value = [];
+
     // ---------------------------------------------------------------------
     // postForm.reset()
     // props.post.attachments.forEach(file => file.deleted = false)
     // ---------------------------------------------------------------------
     if (!props.post.id) {
         postForm.reset();
+    } else {
+        if (!processWellDone.value) {
+            postForm.body = currentPostBodyOnDB.value
+        }
     }
+    processWellDone.value = false
+
     if (props.post.attachments) {
         props.post.attachments.forEach((file) => (file.deleted = false));
         postForm.deleted_file_ids = [];
@@ -179,6 +190,7 @@ const processStore = () => {
     postForm.post(route("post.store"), {
         preserveScroll: true,
         onSuccess: () => {
+            processWellDone.value = true
             closeModal();
         },
         onError: (errors) => {
@@ -192,6 +204,7 @@ const processUpdate = () => {
     postForm.post(route("post.update", props.post), {
         preserveScroll: true,
         onSuccess: () => {
+            processWellDone.value = true
             closeModal();
         },
         onError: (errors) => {
