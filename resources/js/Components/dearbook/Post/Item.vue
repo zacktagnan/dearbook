@@ -132,7 +132,7 @@ const focusCommentTextArea = () => {
 
 <template>
     <div
-        class="p-4 mt-4 mx-0.5 text- bg-white rounded shadow hover:shadow-cyan-900"
+        class="p-4 mt-4 mx-0.5 bg-white rounded shadow hover:shadow-cyan-900"
     >
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
