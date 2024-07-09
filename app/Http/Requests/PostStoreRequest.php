@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Libs\Utilities;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rules\File;
@@ -10,12 +11,13 @@ class PostStoreRequest extends FormRequest
 {
     public static int $maximumAmount = 28;
 
-    public static array $allowedMimeTypes = [
-        'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
-        'wav', 'mp3', 'mp4',
-        'doc', 'docx', 'xls', 'xlsx', 'txt',
-        'pdf', 'csv', 'zip', 'rar',
-    ];
+    // public static array $allowedMimeTypes = [
+    //     'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
+    //     'wav', 'mp3', 'mp4',
+    //     'doc', 'docx', 'xls', 'xlsx', 'txt',
+    //     'pdf', 'csv', 'zip', 'rar',
+    // ];
+    // Pasado a ... Utilities.php
 
     // private $maximumBytes = pow(1024, 3);
     // // 1GB ~= 1 * 1024 * 1024 * 1024 (1GB * 1024MB * 1024KBytes * 1024bytes)
@@ -69,7 +71,8 @@ class PostStoreRequest extends FormRequest
             ],
             'attachments.*' => [
                 'file',
-                File::types(self::$allowedMimeTypes),
+                // File::types(self::$allowedMimeTypes),
+                File::types(Utilities::$allowedMimeTypes),
             ],
         ];
     }

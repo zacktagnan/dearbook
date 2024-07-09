@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Resources\UserResource;
+use App\Libs\Utilities;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -48,7 +49,9 @@ class HandleInertiaRequests extends Middleware
             //     'allowedMimeTypes' => PostStoreRequest::$allowedMimeTypes,
             // ],
             'maximumAmount' => PostStoreRequest::$maximumAmount,
-            'allowedMimeTypes' => PostStoreRequest::$allowedMimeTypes,
+            // 'allowedMimeTypes' => PostStoreRequest::$allowedMimeTypes,
+            // Pasado a ...
+            'allowedMimeTypes' => Utilities::$allowedMimeTypes,
         ];
     }
 }
