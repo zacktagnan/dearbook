@@ -1,5 +1,9 @@
 <script setup>
-import { EllipsisHorizontalIcon } from "@heroicons/vue/24/solid";
+import {
+    EllipsisHorizontalIcon,
+    PaperClipIcon,
+    XMarkIcon,
+} from "@heroicons/vue/24/solid";
 import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
@@ -7,7 +11,8 @@ import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/React
 import { usePage } from "@inertiajs/vue3";
 import { ref, computed, onMounted } from "vue";
 import axiosClient from "@/axiosClient";
-import { reactionTypesFormat, } from "@/Libs/helpers";
+import { isImage, isVideo, reactionTypesFormat, } from "@/Libs/helpers";
+import InputError from "@/Components/InputError.vue";
 
 const props = defineProps({
     comment: Object,
@@ -87,6 +92,59 @@ const openUserReactionsModalToLatestList = (tabIndex) => {
 
 const activeShowNotificationToLatestList = (errors) => {
     emit("callActiveShowNotificationToLatestList", errors);
+};
+
+// ========================================================================================
+
+/**
+ * {
+ *      file: File,
+ *      url: '',
+ * }
+ */
+const attachmentFiles = ref([]);
+const attachmentFilesComputed = computed(() => {
+    return [...attachmentFiles.value, ...(props.comment.attachments || [])];
+});
+
+const attachmentErrors = ref([]);
+
+const allowedMimeTypes = usePage().props.allowedMimeTypes.join(", ") + ".";
+
+const showWarningExtensions = computed(() => {
+    for (let myFile of attachmentFiles.value) {
+        const file = myFile.file
+        let parts = file.name.split(".");
+        // se coge la última parte porque pudiera ser un nombre tal que así "name.xxx.ext"
+        let ext = parts.pop().toLowerCase();
+        if (!allowedMimeTypes.includes(ext)) {
+            return true;
+        }
+    }
+
+    return false
+})
+
+const maxFileNameLength = 15;
+const printFileName = (fileName) => {
+    if (fileName.length > maxFileNameLength) {
+        return fileName.substring(0, maxFileNameLength) + "...";
+    }
+    return fileName;
+};
+
+const removeFile = (myFile, index) => {
+    if (myFile.file) {
+        attachmentFiles.value = attachmentFiles.value.filter(
+            (f) => f !== myFile
+        );
+
+        showWarningExtensions.value = false;
+
+        if (attachmentErrors.value[index]) {
+            attachmentErrors.value = [];
+        }
+    }
 };
 </script>
 
@@ -175,6 +233,141 @@ const activeShowNotificationToLatestList = (errors) => {
                     </MenuItems>
                 </transition>
             </Menu>
+        </div>
+
+        <div v-if="attachmentFilesComputed.length > 0" class="mt-1.5">
+            <div v-for="(myFile, index) of attachmentFilesComputed" class="flex gap-4">
+                <div class="flex flex-col">
+                    <div class="flex gap-2">
+                        <div
+                            class="overflow-hidden text-gray-500 border w-fit rounded-2xl"
+                            :class="
+                                attachmentErrors[index]
+                                    ? 'border-red-400'
+                                    : 'border-gray-400'
+                            "
+                        >
+                            <template
+                                v-if="
+                                    isImage(
+                                        myFile.file ||
+                                            myFile
+                                    ) ||
+                                    isVideo(
+                                        myFile.file ||
+                                            myFile
+                                    )
+                                "
+                            >
+                                <img
+                                    v-if="
+                                        isImage(
+                                            myFile.file ||
+                                                myFile
+                                        )
+                                    "
+                                    :src="myFile.url"
+                                    :alt="
+                                        (
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                    "
+                                    :title="
+                                        (
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                    "
+                                    class="object-fill max-w-60"
+                                />
+                                <video
+                                    v-if="
+                                        isVideo(
+                                            myFile.file ||
+                                                myFile
+                                        )
+                                    "
+                                    :src="myFile.url"
+                                    controls
+                                    :alt="
+                                        (
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                    "
+                                    :title="
+                                        (
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                    "
+                                    class="object-fill h-20"
+                                ></video>
+                            </template>
+
+                            <template v-else>
+                                <div
+                                    class="flex flex-col items-center justify-center p-1 px-1 bg-cyan-100"
+                                >
+                                    <PaperClipIcon
+                                        class="w-9 h-9 lg:w-11 lg:h-11"
+                                    />
+
+                                    <span
+                                        class="text-xs text-center lg:text-sm"
+                                        :title="[
+                                            (
+                                                myFile.file ||
+                                                myFile
+                                            ).name.length >
+                                            maxFileNameLength
+                                                ? (
+                                                        myFile.file ||
+                                                        myFile
+                                                    ).name
+                                                : '',
+                                        ]"
+                                    >
+                                        {{
+                                            printFileName(
+                                                (
+                                                    myFile.file ||
+                                                    myFile
+                                                ).name
+                                            )
+                                        }}
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- <button
+                            @click="
+                                removeFile(
+                                    myFile,
+                                    index
+                                )
+                            "
+                            title="Excluir"
+                            class="flex items-center justify-center w-6 h-6 text-gray-100 transition-all bg-gray-300 rounded-full cursor-pointer hover:bg-gray-400"
+                        >
+                            <XMarkIcon
+                                class="w-4 h-4"
+                            />
+                        </button> -->
+                    </div>
+
+                    <InputError
+                        :message="
+                            attachmentErrors[index]
+                        "
+                        class="mt-0.5 *:text-xs"
+                    />
+                </div>
+
+                <!-- <div>otro adjunto</div> -->
+            </div>
         </div>
 
         <div class="flex items-center gap-4 px-3 mt-0.5 text-xs text-gray-600">
