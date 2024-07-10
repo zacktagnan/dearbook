@@ -160,7 +160,14 @@ const removeFile = (myFile, index) => {
 
     <div class="flex flex-col w-full group/block_comment">
         <div class="flex items-center gap-1">
-            <div class="px-3 py-1 rounded-lg bg-gray-200/50">
+            <div
+                class="px-3 py-1 rounded-lg"
+                :class="[
+                    comment.comment.length > 0
+                    ? 'bg-gray-200/50'
+                    : ''
+                ]"
+            >
                 <a :href="route('profile.index', { username: comment.user.username })" class="text-[0.8125rem] font-semibold" :title="'Perfil de ' + comment.user.name">
                     {{ comment.user.name }}
                 </a>
