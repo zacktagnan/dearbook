@@ -165,7 +165,8 @@ const removeFile = (myFile, index) => {
                     {{ comment.user.name }}
                 </a>
 
-                <ReadMoreOrLess :content="comment.comment" :max-content-length="maxCommentBodyLength"
+                <ReadMoreOrLess :content="comment.comment" :showing-banner-if-content-is-null="false"
+                    :max-content-length="maxCommentBodyLength"
                     :content-classes="'text-sm text-justify'" />
             </div>
 

@@ -5,6 +5,10 @@ import { ref, computed } from "vue";
 
 const props = defineProps({
     content: String,
+    showingBannerIfContentIsNull: {
+        type: Boolean,
+        default: true,
+    },
     maxContentLength: Number,
     contentClasses: String,
 })
@@ -22,7 +26,7 @@ const getContentExcerpt = computed(() => {
 
 <template>
     <Disclosure v-slot="{ open }">
-        <template v-if="!content">
+        <template v-if="!content && showingBannerIfContentIsNull">
             <div class="tooltip tooltip-right" data-tip="Nada reseñado aún...">
                 <p
                     class="inline-block px-1.5 py-0.5 text-white rounded-md bg-slate-500"
