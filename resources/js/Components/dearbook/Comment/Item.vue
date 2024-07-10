@@ -241,106 +241,108 @@ const removeFile = (myFile, index) => {
                 <div class="flex flex-col">
                     <div class="flex gap-2">
                         <div
-                            class="overflow-hidden text-gray-500 border w-fit rounded-2xl"
+                            class="p-1 border w-fit rounded-2xl"
                             :class="
                                 attachmentErrors[index]
                                     ? 'border-red-400'
                                     : 'border-gray-400'
                             "
                         >
-                            <template
-                                v-if="
-                                    isImage(
-                                        myFile.file ||
-                                            myFile
-                                    ) ||
-                                    isVideo(
-                                        myFile.file ||
-                                            myFile
-                                    )
-                                "
-                            >
-                                <img
+                            <div class="overflow-hidden rounded-2xl">
+                                <template
                                     v-if="
                                         isImage(
                                             myFile.file ||
                                                 myFile
-                                        )
-                                    "
-                                    :src="myFile.url"
-                                    :alt="
-                                        (
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                    "
-                                    :title="
-                                        (
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                    "
-                                    class="object-fill max-w-60"
-                                />
-                                <video
-                                    v-if="
+                                        ) ||
                                         isVideo(
                                             myFile.file ||
                                                 myFile
                                         )
                                     "
-                                    :src="myFile.url"
-                                    controls
-                                    :alt="
-                                        (
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                    "
-                                    :title="
-                                        (
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                    "
-                                    class="object-fill h-20"
-                                ></video>
-                            </template>
-
-                            <template v-else>
-                                <div
-                                    class="flex flex-col items-center justify-center p-1 px-1 bg-cyan-100"
                                 >
-                                    <PaperClipIcon
-                                        class="w-9 h-9 lg:w-11 lg:h-11"
-                                    />
-
-                                    <span
-                                        class="text-xs text-center lg:text-sm"
-                                        :title="[
+                                    <img
+                                        v-if="
+                                            isImage(
+                                                myFile.file ||
+                                                    myFile
+                                            )
+                                        "
+                                        :src="myFile.url"
+                                        :alt="
                                             (
                                                 myFile.file ||
                                                 myFile
-                                            ).name.length >
-                                            maxFileNameLength
-                                                ? (
-                                                        myFile.file ||
-                                                        myFile
-                                                    ).name
-                                                : '',
-                                        ]"
+                                            ).name
+                                        "
+                                        :title="
+                                            (
+                                                myFile.file ||
+                                                myFile
+                                            ).name
+                                        "
+                                        class="object-fill max-w-60"
+                                    />
+                                    <video
+                                        v-if="
+                                            isVideo(
+                                                myFile.file ||
+                                                    myFile
+                                            )
+                                        "
+                                        :src="myFile.url"
+                                        controls
+                                        :alt="
+                                            (
+                                                myFile.file ||
+                                                myFile
+                                            ).name
+                                        "
+                                        :title="
+                                            (
+                                                myFile.file ||
+                                                myFile
+                                            ).name
+                                        "
+                                        class="object-fill h-20"
+                                    ></video>
+                                </template>
+
+                                <template v-else>
+                                    <div
+                                        class="flex flex-col items-center justify-center p-1 px-1 bg-cyan-100"
                                     >
-                                        {{
-                                            printFileName(
+                                        <PaperClipIcon
+                                            class="w-9 h-9 lg:w-11 lg:h-11"
+                                        />
+
+                                        <span
+                                            class="text-xs text-center lg:text-sm"
+                                            :title="[
                                                 (
                                                     myFile.file ||
                                                     myFile
-                                                ).name
-                                            )
-                                        }}
-                                    </span>
-                                </div>
-                            </template>
+                                                ).name.length >
+                                                maxFileNameLength
+                                                    ? (
+                                                            myFile.file ||
+                                                            myFile
+                                                        ).name
+                                                    : '',
+                                            ]"
+                                        >
+                                            {{
+                                                printFileName(
+                                                    (
+                                                        myFile.file ||
+                                                        myFile
+                                                    ).name
+                                                )
+                                            }}
+                                        </span>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
 
                         <!-- <button
