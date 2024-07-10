@@ -179,10 +179,18 @@ const submitPost = () => {
     }
 };
 
-const buildErrors = (errorMsg) => {
-    const errors = {
-        attachments: errorMsg,
-    };
+const buildErrors = (key, errorMsg) => {
+    let errors
+    switch (key) {
+        case 'attachments':
+            errors = {
+                attachments: errorMsg,
+            };
+            break;
+        default:
+            break;
+    }
+
     return errors;
 };
 
@@ -218,9 +226,11 @@ const processErrors = (errors) => {
         if (key.includes(".")) {
             // const [field, index] = key.split('.')
             // const [, index] = key.split('.')
-            const [, index] = key.split(".");
-            attachmentErrors.value[index] = errors[key];
-            emit("callActiveShowNotification", buildErrors(errors[key]));
+            const [item, index] = key.split(".");
+            if (item === 'attachments') {
+                attachmentErrors.value[index] = errors[key];
+            }
+            emit("callActiveShowNotification", buildErrors(item, errors[key]));
         } else {
             emit("callActiveShowNotification", postForm.errors);
         }
