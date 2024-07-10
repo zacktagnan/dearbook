@@ -15,6 +15,7 @@ const props = defineProps({
         type: Array,
         required: true,
     },
+    entityPrefix: String,
     index: Number,
     modelValue: Boolean,
 })
@@ -116,7 +117,7 @@ const closeModal = () => {
                                     <div class="relative group">
                                         <a
                                             :href="
-                                                route('post.download-attachment', attachment)
+                                                route(entityPrefix + '.download-attachment', attachment)
                                             "
                                             title="Descargar"
                                             class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-600 rounded opacity-25 cursor-pointer w-14 h-14 group-hover:opacity-75 hover:bg-gray-900 right-9 top-8"
@@ -126,10 +127,16 @@ const closeModal = () => {
 
                                         <div class="flex items-center justify-center w-full h-screen p-4">
                                             <template v-if="isImage(attachment) || isVideo(attachment)">
-                                                <img v-if="isImage(attachment)" :src="attachment.url" :alt="attachment.name"
+                                                <img v-if="isImage(attachment)"
+                                                    :src="attachment.url"
+                                                    :alt="attachment.name"
+                                                    :title="attachment.name"
                                                     class="max-w-full max-h-full" />
-                                                <video v-if="isVideo(attachment)" :src="attachment.url" controls
-                                                    :alt="attachment.name" class="max-w-full max-h-full"></video>
+                                                <video v-if="isVideo(attachment)"
+                                                    :src="attachment.url" controls
+                                                    :alt="attachment.name"
+                                                    :title="attachment.name"
+                                                    class="max-w-full max-h-full"></video>
                                             </template>
 
                                             <template v-else>

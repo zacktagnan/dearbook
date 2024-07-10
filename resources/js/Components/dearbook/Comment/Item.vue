@@ -84,7 +84,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callActiveShowNotificationToLatestList', 'callOpenUserReactionsModalToLatestList',])
+const emit = defineEmits(['callActiveShowNotificationToLatestList', 'callOpenUserReactionsModalToLatestList', 'callOpenAttachmentsModalToLatestList',])
 
 const openUserReactionsModalToLatestList = (tabIndex) => {
     emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
@@ -145,6 +145,10 @@ const removeFile = (myFile, index) => {
             attachmentErrors.value = [];
         }
     }
+};
+
+const openAttachmentPreview = (index) => {
+    emit("callOpenAttachmentsModalToLatestList", props.comment, index, 'post.comment');
 };
 </script>
 
@@ -255,7 +259,11 @@ const removeFile = (myFile, index) => {
                                     : 'border-gray-400'
                             "
                         >
-                            <div class="overflow-hidden rounded-2xl">
+                            <div
+                                @click="openAttachmentPreview(index)"
+                                title="Ver en detalle"
+                                class="overflow-hidden cursor-pointer rounded-2xl"
+                            >
                                 <template
                                     v-if="
                                         isImage(
@@ -282,12 +290,6 @@ const removeFile = (myFile, index) => {
                                                 myFile
                                             ).name
                                         "
-                                        :title="
-                                            (
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                        "
                                         class="object-fill max-w-60"
                                     />
                                     <video
@@ -300,12 +302,6 @@ const removeFile = (myFile, index) => {
                                         :src="myFile.url"
                                         controls
                                         :alt="
-                                            (
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                        "
-                                        :title="
                                             (
                                                 myFile.file ||
                                                 myFile

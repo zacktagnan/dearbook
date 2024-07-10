@@ -48,8 +48,12 @@ const maxPreviewFiles = 6;
 const maxPreviewIndex = maxPreviewFiles - 1;
 
 const openAttachmentPreview = (index) => {
-    emit("callOpenAttachmentsModal", props.post, index);
+    emit("callOpenAttachmentsModal", props.post, index, 'post');
 };
+
+const openCommentAttachmentPreview = (comment, index, entityPrefix) => {
+    emit("callOpenAttachmentsModal", comment, index, entityPrefix);
+}
 
 import { onMounted } from "vue";
 
@@ -468,6 +472,7 @@ const focusCommentTextArea = () => {
                 <hr>
 
                 <PostCommentBox ref="postCommentBoxRef" :post="post"
+                    @callOpenAttachmentsModalToItem="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
                     @callActiveShowNotificationToItem="activeShowNotification" />
             </div>

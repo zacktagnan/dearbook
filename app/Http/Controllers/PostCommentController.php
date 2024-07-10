@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use Illuminate\Support\Facades\Storage;
@@ -63,5 +64,12 @@ class PostCommentController extends Controller
 
             return back();
         }
+    }
+
+    public function downloadAttachment(Attachment $attachment)
+    {
+        // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
+        // o, sino,
+        return response()->download(storage_path('app/public/' . $attachment->path), $attachment->name);
     }
 }

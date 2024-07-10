@@ -19,7 +19,7 @@ const showReactionsModal = ref(false)
 const tabIndexReactionsModal = ref(0)
 
 const postToEdit = ref({})
-const postWithAttachmentsToPreview = ref({})
+const entityWithAttachmentsToPreview = ref({})
 const entityWithReactions = ref({})
 
 const openEditModal = (post) => {
@@ -27,10 +27,11 @@ const openEditModal = (post) => {
     showEditModal.value = true
 }
 
-const openAttachmentsModal = (post, index) => {
-    postWithAttachmentsToPreview.value = {
-        post,
+const openAttachmentsModal = (entity, index, entityPrefix) => {
+    entityWithAttachmentsToPreview.value = {
+        entity,
         index,
+        entityPrefix,
     }
     showAttachmentsModal.value = true
 }
@@ -112,8 +113,9 @@ const closeShowNotification = () => {
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
-        <AttachmentModal :attachments="postWithAttachmentsToPreview.post?.attachments || []"
-            v-model:index="postWithAttachmentsToPreview.index" v-model="showAttachmentsModal" />
+        <AttachmentModal :attachments="entityWithAttachmentsToPreview.entity?.attachments || []"
+            :entity-prefix="entityWithAttachmentsToPreview.entityPrefix"
+            v-model:index="entityWithAttachmentsToPreview.index" v-model="showAttachmentsModal" />
 
         <UserReactionsModal v-model="showReactionsModal"
             :entity="entityWithReactions" :default-index="tabIndexReactionsModal" />

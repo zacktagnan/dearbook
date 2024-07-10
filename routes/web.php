@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
 
         Route::post('/{post}/comment', [PostCommentController::class, 'store'])->name('comment.store');
+        Route::get('/comment/download-attachment/{attachment}', [PostCommentController::class, 'downloadAttachment'])->name('comment.download-attachment');
     });
 
     Route::prefix('comment')->as('comment.')->group(function () {
