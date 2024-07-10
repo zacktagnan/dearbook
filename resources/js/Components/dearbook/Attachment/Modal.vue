@@ -94,23 +94,25 @@ const closeModal = () => {
                                 </div>
 
                                 <div class="relative flex items-center justify-center">
-                                    <div v-if="isFirstAttachmentIndex()"
-                                        class="absolute z-[100] left-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
-                                        <ChevronLeftIcon />
-                                    </div>
-                                    <div v-else @click="prevAttach" title="Previo"
-                                        class="absolute z-[100] left-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
-                                        <ChevronLeftIcon />
-                                    </div>
+                                    <template v-if="attachments.length > 1">
+                                        <div v-if="isFirstAttachmentIndex()"
+                                            class="absolute z-[100] left-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
+                                            <ChevronLeftIcon />
+                                        </div>
+                                        <div v-else @click="prevAttach" title="Previo"
+                                            class="absolute z-[100] left-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
+                                            <ChevronLeftIcon />
+                                        </div>
 
-                                    <div v-if="isLastAttachmentIndex()"
-                                        class="absolute z-[100] right-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
-                                        <ChevronRightIcon />
-                                    </div>
-                                    <div v-else @click="nextAttach" title="Siguiente"
-                                        class="absolute z-[100] right-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
-                                        <ChevronRightIcon />
-                                    </div>
+                                        <div v-if="isLastAttachmentIndex()"
+                                            class="absolute z-[100] right-0 flex items-center h-full cursor-not-allowed w-14 text-sky-200 bg-black/5">
+                                            <ChevronRightIcon />
+                                        </div>
+                                        <div v-else @click="nextAttach" title="Siguiente"
+                                            class="absolute z-[100] right-0 flex items-center h-full transition-colors duration-150 cursor-pointer w-14 hover:text-sky-400 hover:bg-black/10 text-sky-200 bg-black/5">
+                                            <ChevronRightIcon />
+                                        </div>
+                                    </template>
 
                                     <!-- <pre>{{ index }}</pre>
                                     <pre>{{ attachments }}</pre> -->
