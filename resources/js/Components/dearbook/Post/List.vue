@@ -152,6 +152,6 @@ const closeShowNotification = () => {
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPost.comment" :title="'Error'"
-            :message="errorsFromPost.comment[0]" />
+            :message="errorsFromPost.comment" />
     </div>
 </template>

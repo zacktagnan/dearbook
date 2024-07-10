@@ -35,6 +35,7 @@ class CommentResource extends JsonResource
                     : null,
             ],
 
+            'attachments' => AttachmentResource::collection($this->attachments),
             'total_of_reactions' => $this->reactions->count(),
             'current_user_has_reaction' => $this->authUserReactions($this->reactions())->count() > 0,
             'current_user_type_reaction' => $this->authUserReactions($this->reactions())->count() > 0

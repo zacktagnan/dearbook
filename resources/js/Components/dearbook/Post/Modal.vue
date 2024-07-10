@@ -229,7 +229,6 @@ const processErrors = (errors) => {
 
 const maximumAmount = usePage().props.maximumAmount;
 const allowedMimeTypes = usePage().props.allowedMimeTypes.join(", ") + ".";
-// const showWarningExtensions = ref(false);
 
 /**
  * {
@@ -276,8 +275,6 @@ const showWarningExtensions = computed(() => {
 })
 
 const uploadAttachmentSelected = async (event) => {
-    // showWarningExtensions.value = false;
-
     for (const file of event.target.files) {
         // let parts = file.name.split(".");
         // // se coge la última parte porque pudiera ser un nombre tal que así "name.xxx.ext"
@@ -343,7 +340,6 @@ const removeFile = (myFile, index) => {
             // attachmentErrors.value = attachmentErrors.value.filter(id => index !== id)
             attachmentErrors.value = [];
         }
-        // console.log("-removeFile > attachmentErrors", attachmentErrors.value);
     } else {
         postForm.deleted_file_ids.push(myFile.id);
         myFile.deleted = true;
