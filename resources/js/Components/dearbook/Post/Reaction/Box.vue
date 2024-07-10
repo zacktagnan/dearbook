@@ -30,11 +30,33 @@ const sendPostReaction = (from, type) => {
             emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {
-            // console.log('ERRORES: ', error.response.data.errors)
-            emit('callActiveShowNotificationToItem', error.response.data.errors)
+            processErrors(error.response.data.errors)
         })
     changeShowReactionTypeBar(false)
 }
+
+const processErrors = (errors) => {
+    let errorProcessed
+    for (const key in errors) {
+        errorProcessed = buildErrors(key, errors[key][0])
+    }
+    emit("callActiveShowNotificationToItem", errorProcessed);
+};
+
+const buildErrors = (key, errorMsg) => {
+    let errors
+    switch (key) {
+        case 'reaction_type':
+            errors = {
+                reaction_type: errorMsg,
+            };
+            break;
+        default:
+            break;
+    }
+
+    return errors;
+};
 </script>
 
 <template>

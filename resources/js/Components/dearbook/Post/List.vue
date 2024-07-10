@@ -148,7 +148,7 @@ const closeShowNotification = () => {
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPost.reaction_type" :title="'Error'"
-            :message="errorsFromPost.reaction_type[0]" />
+            :message="errorsFromPost.reaction_type" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPost.comment" :title="'Error'"

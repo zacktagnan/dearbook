@@ -30,10 +30,33 @@ const sendCommentReaction = (from, type) => {
             emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {
-            emit('callActiveShowNotificationToCommentItem', error.response.data.errors)
+            processErrors(error.response.data.errors)
         })
     changeShowReactionTypeBar(false)
 }
+
+const processErrors = (errors) => {
+    let errorProcessed
+    for (const key in errors) {
+        errorProcessed = buildErrors(key, errors[key][0])
+    }
+    emit("callActiveShowNotificationToCommentItem", errorProcessed);
+};
+
+const buildErrors = (key, errorMsg) => {
+    let errors
+    switch (key) {
+        case 'reaction_type':
+            errors = {
+                reaction_type: errorMsg,
+            };
+            break;
+        default:
+            break;
+    }
+
+    return errors;
+};
 </script>
 
 <template>
