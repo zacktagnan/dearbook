@@ -154,7 +154,9 @@ const openAttachmentPreview = (index) => {
 
 <template>
     <a :href="route('profile.index', { username: comment.user.username })"
-        :title="'Perfil de ' + comment.user.name">
+        :title="'Perfil de ' + comment.user.name"
+        class="h-fit"
+    >
         <div class="w-8 avatar offline">
             <img :src="comment.user.avatar_url ||
             '/img/default_avatar.png'" class="transition-all border-2 rounded-full hover:border-cyan-500"
