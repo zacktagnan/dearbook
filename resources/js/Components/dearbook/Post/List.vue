@@ -54,20 +54,23 @@ const openUserReactionsModal = (entity, tabIndex) => {
     tabIndexReactionsModal.value = tabIndex
 }
 
-const postToDelete = ref({})
-const showingConfirmPostDeletion = ref(false);
-const showConfirmPostDeletion = (post) => {
-    postToDelete.value = post
-    showingConfirmPostDeletion.value = true;
+const entityToDelete = ref({})
+const showingConfirmDeletion = ref(false);
+const showConfirmDeletion = (entity, entityPrefix) => {
+    entityToDelete.value = {
+        entity,
+        entityPrefix,
+    }
+    showingConfirmDeletion.value = true;
 };
-const closeConfirmPostDeletion = () => {
-    showingConfirmPostDeletion.value = false;
+const closeConfirmDeletion = () => {
+    showingConfirmDeletion.value = false;
 };
 
-const deletePost = () => {
-    router.delete(route("post.destroy", postToDelete.value), {
+const deleteEntity = () => {
+    router.delete(route(entityToDelete.value.entityPrefix + ".destroy", entityToDelete.value.entity), {
         preserveScroll: true,
-        onSuccess: () => closeConfirmPostDeletion(),
+        onSuccess: () => closeConfirmDeletion(),
     });
 };
 
@@ -108,7 +111,7 @@ const closeShowNotification = () => {
             @callOpenEditModal="openEditModal"
             @callOpenAttachmentsModal="openAttachmentsModal"
             @callOpenUserReactionsModal="openUserReactionsModal"
-            @callConfirmPostDeletion="showConfirmPostDeletion"
+            @callConfirmDeletion="showConfirmDeletion"
             @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
@@ -120,25 +123,45 @@ const closeShowNotification = () => {
         <UserReactionsModal v-model="showReactionsModal"
             :entity="entityWithReactions" :default-index="tabIndexReactionsModal" />
 
-        <ConfirmPostDeletionModal :show="showingConfirmPostDeletion" @close="closeConfirmPostDeletion">
+        <ConfirmPostDeletionModal :show="showingConfirmDeletion" @close="closeConfirmDeletion">
             <div class="p-6">
-                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ $t('dearbook.post.index.confirm_deletion.question') }}
-                </h2>
+                <template v-if="entityToDelete.entityPrefix === 'post'">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {{ $t('dearbook.post.index.confirm_deletion.question') }}
+                    </h2>
 
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {{ $t('dearbook.post.index.confirm_deletion.message') }}
-                </p>
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        {{ $t('dearbook.post.index.confirm_deletion.message') }}
+                    </p>
+                </template>
+                <template v-else-if="entityToDelete.entityPrefix === 'post.comment'">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        {{ $t('dearbook.comment.index.confirm_deletion.question') }}
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                        {{ $t('dearbook.comment.index.confirm_deletion.message') }}
+                    </p>
+                </template>
 
                 <div class="flex justify-end mt-6">
-                    <SecondaryButton @click="closeConfirmPostDeletion" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+                    <SecondaryButton @click="closeConfirmDeletion" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
 
                     <DangerButton
+                        v-if="entityToDelete.entityPrefix === 'post'"
                         class="ms-3"
-                        @click="deletePost"
+                        @click="deleteEntity"
                         :title="$t('dearbook.post.index.confirm_deletion.button_text')"
                     >
                         {{ $t('dearbook.post.index.confirm_deletion.button_text') }}
+                    </DangerButton>
+                    <DangerButton
+                        v-else-if="entityToDelete.entityPrefix === 'post.comment'"
+                        class="ms-3"
+                        @click="deleteEntity"
+                        :title="$t('dearbook.comment.index.confirm_deletion.button_text')"
+                    >
+                        {{ $t('dearbook.comment.index.confirm_deletion.button_text') }}
                     </DangerButton>
                 </div>
             </div>

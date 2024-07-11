@@ -15,7 +15,7 @@ const emit = defineEmits([
     "callOpenEditModal",
     "callOpenAttachmentsModal",
     'callOpenUserReactionsModal',
-    'callConfirmPostDeletion',
+    'callConfirmDeletion',
     "callActiveShowNotificationFromItem",
 ]);
 
@@ -139,7 +139,7 @@ const focusCommentTextArea = () => {
             <PostHeader :post="post" />
 
             <EditDeleteDropdown v-model="isPostAuthor"
-                @callEditItem="openEditModal" @callDeleteItem="$emit('callConfirmPostDeletion', post)"
+                @callEditItem="openEditModal" @callDeleteItem="$emit('callConfirmDeletion', post, 'post')"
                 :ellipsis-type-icon="'vertical'" :menu-items-classes="'w-28'" />
             <!-- =========================================================== -->
         </div>
