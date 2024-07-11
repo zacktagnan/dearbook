@@ -3,9 +3,6 @@ import { ref, computed } from "vue";
 import {
     ArrowDownTrayIcon,
     DocumentIcon,
-    EllipsisVerticalIcon,
-    PencilIcon,
-    TrashIcon,
 } from "@heroicons/vue/24/solid";
 import { ChatBubbleLeftRightIcon } from "@heroicons/vue/24/outline";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
@@ -28,9 +25,9 @@ import { isImage, isVideo, reactionTypesFormat, } from "@/Libs/helpers";
 
 // =======================================================================================
 
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
 import PostHeader from "@/Components/dearbook/Post/Header.vue";
-import { router, usePage } from "@inertiajs/vue3";
+import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
+import { usePage } from "@inertiajs/vue3";
 
 const openEditModal = () => {
     emit("callOpenEditModal", props.post);
@@ -141,80 +138,9 @@ const focusCommentTextArea = () => {
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <Menu
-                v-if="isPostAuthor"
-                as="div"
-                class="relative inline-block text-left"
-            >
-                <div>
-                    <MenuButton
-                        class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5"
-                        title="Ver opciones"
-                    >
-                        <EllipsisVerticalIcon
-                            class="w-5 h-5"
-                            aria-hidden="true"
-                        />
-                    </MenuButton>
-                </div>
-
-                <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"
-                >
-                    <MenuItems
-                        class="absolute right-0 z-10 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-28 ring-1 ring-black/5 focus:outline-none"
-                    >
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                                <button
-                                    @click="openEditModal"
-                                    :class="[
-                                        active
-                                            ? 'bg-indigo-100'
-                                            : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]"
-                                    title="Edit"
-                                >
-                                    <PencilIcon
-                                        :active="active"
-                                        class="w-5 h-5 mr-2 text-indigo-400"
-                                        aria-hidden="true"
-                                    />
-                                    Edit
-                                </button>
-                            </MenuItem>
-                        </div>
-
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                                <button
-                                    @click="$emit('callConfirmPostDeletion', post)"
-                                    :class="[
-                                        active
-                                            ? 'bg-indigo-100'
-                                            : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]"
-                                    title="Eliminar"
-                                >
-                                    <TrashIcon
-                                        :active="active"
-                                        class="w-5 h-5 mr-2 text-indigo-400"
-                                        aria-hidden="true"
-                                    />
-                                    Eliminar
-                                </button>
-                            </MenuItem>
-                        </div>
-                    </MenuItems>
-                </transition>
-            </Menu>
+            <EditDeleteDropdown v-model="isPostAuthor"
+                @callEditItem="openEditModal" @callDeleteItem="$emit('callConfirmPostDeletion', post)"
+                :ellipsis-type-icon="'vertical'" :menu-items-classes="'w-28'" />
             <!-- =========================================================== -->
         </div>
 

@@ -1,10 +1,9 @@
 <script setup>
 import {
-    EllipsisHorizontalIcon,
     PaperClipIcon,
     XMarkIcon,
 } from "@heroicons/vue/24/solid";
-import { Menu, MenuButton, MenuItems, MenuItem } from "@headlessui/vue";
+import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
@@ -183,70 +182,11 @@ const openAttachmentPreview = (index) => {
                     :content-classes="'text-sm text-justify'" />
             </div>
 
-            <Menu
-                v-if="isCommentAuthor"
-                as="div"
-                class="relative inline-block text-left"
-            >
-                <div>
-                    <MenuButton
-                        class="p-1 transition-colors duration-150 rounded-full opacity-0 hover:bg-black/5 group-hover/block_comment:opacity-100"
-                        title="Ver opciones"
-                    >
-                        <EllipsisHorizontalIcon
-                            class="w-5 h-5"
-                            aria-hidden="true"
-                        />
-                    </MenuButton>
-                </div>
-
-                <transition
-                    enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0"
-                    enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100"
-                    leave-to-class="transform scale-95 opacity-0"
-                >
-                    <MenuItems
-                        class="absolute right-0 z-10 w-24 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black/5 focus:outline-none"
-                    >
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                                <button
-                                    @click="openEditModal"
-                                    :class="[
-                                        active
-                                            ? 'bg-indigo-100'
-                                            : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]"
-                                    title="Edit"
-                                >
-                                    Edit
-                                </button>
-                            </MenuItem>
-                        </div>
-
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                                <button
-                                    @click="deleteComment"
-                                    :class="[
-                                        active
-                                            ? 'bg-indigo-100'
-                                            : 'text-gray-900',
-                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]"
-                                    title="Eliminar"
-                                >
-                                    Eliminar
-                                </button>
-                            </MenuItem>
-                        </div>
-                    </MenuItems>
-                </transition>
-            </Menu>
+            <EditDeleteDropdown v-model="isCommentAuthor"
+                @callEditItem="openEditModal" @callDeleteItem="$emit('callConfirmCommentDeletion', comment)"
+                :ellipsis-type-icon="'horizontal'"
+                :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
+                :menu-items-classes="'w-28'" :show-menu-item-icon="false" />
         </div>
 
         <div v-if="attachmentFilesComputed.length > 0" class="mt-1.5">
