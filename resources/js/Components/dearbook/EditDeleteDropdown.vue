@@ -70,7 +70,7 @@ const emit = defineEmits([
             leave-to-class="transform scale-95 opacity-0"
         >
             <MenuItems
-                class="absolute right-0 z-10 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg w-28 ring-1 ring-black/5 focus:outline-none"
+                class="absolute right-0 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg z-[11] w-28 ring-1 ring-black/5 focus:outline-none"
                 :class="menuItemsClasses"
             >
                 <div class="px-1 py-1">
