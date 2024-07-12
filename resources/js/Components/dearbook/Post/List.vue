@@ -68,6 +68,9 @@ const closeConfirmDeletion = () => {
 };
 
 const deleteEntity = () => {
+    if (entityToDelete.value.entityPrefix === 'post.comment') {
+        entityToDelete.value.entity = entityToDelete.value.entity.id
+    }
     router.delete(route(entityToDelete.value.entityPrefix + ".destroy", entityToDelete.value.entity), {
         preserveScroll: true,
         onSuccess: () => closeConfirmDeletion(),

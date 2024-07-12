@@ -66,6 +66,40 @@ class PostCommentController extends Controller
         }
     }
 
+    public function destroy(Comment $comment)
+    {
+        // dump('Borrando el COMMENT con ID', $comment->id, 'cuyo autor es el USER con ID', $comment->user_id, 'y siendo el AUTH->ID', auth()->id());
+        // dd('TOT_Attachments', $comment->attachments()->count(), 'TOT_Reactions', $comment->reactions()->count());
+
+        if ($comment->user_id !== auth()->id()) {
+            return response("You don't have permission to DELETE this comment", Response::HTTP_FORBIDDEN);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $this->processResources($comment);
+
+            $comment->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return back();
+        }
+    }
+
+    private function processResources(Comment $comment)
+    {
+        if ($comment->attachments()->count() > 0) {
+            $comment->attachments()->delete();
+        }
+        if ($comment->reactions()->count() > 0) {
+            $comment->reactions()->delete();
+        }
+    }
+
     public function downloadAttachment(Attachment $attachment)
     {
         // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);

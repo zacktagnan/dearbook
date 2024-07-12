@@ -5,7 +5,7 @@ defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callOpenAttachmentsModalToCommentBox', 'callOpenUserReactionsModalToCommentBox', 'callActiveShowNotificationToCommentBox',])
+const emit = defineEmits(['callOpenAttachmentsModalToCommentBox', 'callOpenUserReactionsModalToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
 
 const openAttachmentsModalToCommentBox = (comment, index, entityPrefix) => {
     emit('callOpenAttachmentsModalToCommentBox', comment, index, entityPrefix)
@@ -13,6 +13,10 @@ const openAttachmentsModalToCommentBox = (comment, index, entityPrefix) => {
 
 const openUserReactionsModalToCommentBox = (comment, tabIndex) => {
     emit("callOpenUserReactionsModalToCommentBox", comment, tabIndex);
+};
+
+const confirmDeletionToCommentBox = (comment, entityPrefix) => {
+    emit("callConfirmDeletionToCommentBox", comment, entityPrefix);
 };
 
 const activeShowNotificationToCommentBox = (errors) => {
@@ -26,6 +30,7 @@ const activeShowNotificationToCommentBox = (errors) => {
             <CommentItem :comment="latest_comment"
                 @callOpenAttachmentsModalToLatestList="openAttachmentsModalToCommentBox"
                 @callOpenUserReactionsModalToLatestList="openUserReactionsModalToCommentBox"
+                @callConfirmDeletionToLatestList="confirmDeletionToCommentBox"
                 @callActiveShowNotificationToLatestList="activeShowNotificationToCommentBox" />
         </div>
     </template>

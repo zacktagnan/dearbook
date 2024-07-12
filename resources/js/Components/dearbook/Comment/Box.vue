@@ -11,7 +11,7 @@ const props = defineProps({
     post: Object,
 });
 
-const emit = defineEmits(['callOpenAttachmentsModalToItem', 'callOpenUserReactionsModalToItem', 'callActiveShowNotificationToItem',])
+const emit = defineEmits(['callOpenAttachmentsModalToItem', 'callOpenUserReactionsModalToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -91,6 +91,10 @@ const openUserReactionsModalToItem = (comment, tabIndex) => {
     emit("callOpenUserReactionsModalToItem", comment, tabIndex);
 }
 
+const confirmDeletionToItem = (comment, entityPrefix) => {
+    emit("callConfirmDeletionToItem", comment, entityPrefix);
+}
+
 const activeShowNotificationToItem = (errors) => {
     emit("callActiveShowNotificationToItem", errors);
 };
@@ -104,6 +108,7 @@ defineExpose({
     <CommentLatestList :post="post"
         @callOpenAttachmentsModalToCommentBox="openAttachmentsModalToItem"
         @callOpenUserReactionsModalToCommentBox="openUserReactionsModalToItem"
+        @callConfirmDeletionToCommentBox="confirmDeletionToItem"
         @callActiveShowNotificationToCommentBox="activeShowNotificationToItem" />
 
     <CommentCreate ref="commentCreateRef" @callSendComment="sendComment" />

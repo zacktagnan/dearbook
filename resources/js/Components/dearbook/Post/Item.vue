@@ -118,6 +118,10 @@ const openUserReactionsModal = (entity, tabIndex) => {
     emit("callOpenUserReactionsModal", entity, tabIndex);
 };
 
+const confirmDeletion = (entity, entityPrefix) => {
+    emit("callConfirmDeletion", entity, entityPrefix);
+}
+
 const activeShowNotification = (errors) => {
     emit("callActiveShowNotificationFromItem", errors);
 };
@@ -143,6 +147,8 @@ const focusCommentTextArea = () => {
                 :ellipsis-type-icon="'vertical'" :menu-items-classes="'w-28'" />
             <!-- =========================================================== -->
         </div>
+
+        <!-- <pre>{{ post }}</pre> -->
 
         <div class="mt-1">
             <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength"
@@ -400,6 +406,7 @@ const focusCommentTextArea = () => {
                 <PostCommentBox ref="postCommentBoxRef" :post="post"
                     @callOpenAttachmentsModalToItem="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
+                    @callConfirmDeletionToItem="confirmDeletion"
                     @callActiveShowNotificationToItem="activeShowNotification" />
             </div>
         </div>

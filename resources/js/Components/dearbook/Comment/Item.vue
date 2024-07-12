@@ -83,7 +83,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callActiveShowNotificationToLatestList', 'callOpenUserReactionsModalToLatestList', 'callOpenAttachmentsModalToLatestList',])
+const emit = defineEmits(['callOpenAttachmentsModalToLatestList', 'callOpenUserReactionsModalToLatestList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
 
 const openUserReactionsModalToLatestList = (tabIndex) => {
     emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
@@ -149,6 +149,15 @@ const removeFile = (myFile, index) => {
 const openAttachmentPreview = (index) => {
     emit("callOpenAttachmentsModalToLatestList", props.comment, index, 'post.comment');
 };
+
+const editItem = () => {
+    let commentTxt = props.comment.comment.length > 0
+        ? props.comment.comment
+        : 'NULO'
+
+    console.log('Editando COMMENT seleccionado...')
+    console.log('ID:', props.comment.id, '| TXT:', commentTxt)
+}
 </script>
 
 <template>
@@ -177,13 +186,13 @@ const openAttachmentPreview = (index) => {
                     {{ comment.user.name }}
                 </a>
 
-                <ReadMoreOrLess :content="comment.comment" :showing-banner-if-content-is-null="false"
+                <ReadMoreOrLess v-if="comment.comment.length > 0" :content="comment.comment" :showing-banner-if-content-is-null="false"
                     :max-content-length="maxCommentBodyLength"
                     :content-classes="'text-sm text-justify'" />
             </div>
 
             <EditDeleteDropdown v-model="isCommentAuthor"
-                @callEditItem="openEditModal" @callDeleteItem="$emit('callConfirmCommentDeletion', comment)"
+                @callEditItem="editItem" @callDeleteItem="$emit('callConfirmDeletionToLatestList', comment, 'post.comment')"
                 :ellipsis-type-icon="'horizontal'"
                 :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
                 :menu-items-classes="'w-28'" :show-menu-item-icon="false" />
