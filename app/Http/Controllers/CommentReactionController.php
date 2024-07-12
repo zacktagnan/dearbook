@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ReactionRequest;
-use App\Http\Resources\ReactionResource;
-use Illuminate\Database\Eloquent\Collection;
+use App\Traits\UserReactions;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentReactionController extends Controller
 {
+    use UserReactions;
+
     public function reaction(ReactionRequest $request, Comment $comment): JsonResponse
     {
         if (!$request->current_reaction_type) {
@@ -42,6 +42,15 @@ class CommentReactionController extends Controller
             'total_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
             'current_user_type_reaction' => $type,
+
+            'all_user_reactions' => $this->allUserReactions(new Comment, $comment->id),
+            'like_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'like'),
+            'love_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'love'),
+            'care_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'care'),
+            'haha_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'haha'),
+            'wow_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'wow'),
+            'sad_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'sad'),
+            'angry_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'angry'),
         ], Response::HTTP_OK);
     }
 

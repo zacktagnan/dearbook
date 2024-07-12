@@ -27,6 +27,16 @@ const sendCommentReaction = (from, type) => {
             props.comment.current_user_type_reaction = data.current_user_type_reaction
             props.comment.current_user_has_reaction = data.current_user_has_reaction
             props.comment.total_of_reactions = data.total_of_reactions
+
+            props.comment.all_user_reactions = data.all_user_reactions
+            props.comment.like_user_reactions = data.like_user_reactions
+            props.comment.love_user_reactions = data.love_user_reactions
+            props.comment.care_user_reactions = data.care_user_reactions
+            props.comment.haha_user_reactions = data.haha_user_reactions
+            props.comment.wow_user_reactions = data.wow_user_reactions
+            props.comment.sad_user_reactions = data.sad_user_reactions
+            props.comment.angry_user_reactions = data.angry_user_reactions
+
             emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {

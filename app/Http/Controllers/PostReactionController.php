@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
-use App\Http\Requests\ReactionRequest;
-use App\Http\Resources\ReactionResource;
 use App\Models\Post;
+use App\Traits\UserReactions;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Requests\ReactionRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostReactionController extends Controller
 {
+    use UserReactions;
+
     public function reaction(ReactionRequest $request, Post $post): JsonResponse
     {
         if (!$request->current_reaction_type) {
@@ -42,6 +42,15 @@ class PostReactionController extends Controller
             'total_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
             'current_user_type_reaction' => $type,
+
+            'all_user_reactions' => $this->allUserReactions(new Post, $post->id),
+            'like_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'like'),
+            'love_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'love'),
+            'care_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'care'),
+            'haha_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'haha'),
+            'wow_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'wow'),
+            'sad_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'sad'),
+            'angry_user_reactions' => $this->typeUserReactions(new Post, $post->id, 'angry'),
         ], Response::HTTP_OK);
     }
 
@@ -80,22 +89,5 @@ class PostReactionController extends Controller
             ->first();
 
         $reaction->delete();
-    }
-
-    public function allReactionsUsers(Post $post): JsonResource
-    {
-        $reactions = $post->reactions()->where('user_id', '<>', auth()->id())
-            ->orderBy('created_at', 'DESC')->get();
-
-        return ReactionResource::collection($reactions);
-    }
-
-    public function typeReactionsUsers(Post $post, string $type): JsonResource
-    {
-        $reactions = $post->reactions()->where('type', $type)
-            ->where('user_id', '<>', auth()->id())
-            ->orderBy('created_at', 'DESC')->get();
-
-        return ReactionResource::collection($reactions);
     }
 }

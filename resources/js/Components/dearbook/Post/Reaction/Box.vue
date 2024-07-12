@@ -27,6 +27,15 @@ const sendPostReaction = (from, type) => {
             props.post.current_user_type_reaction = data.current_user_type_reaction
             props.post.current_user_has_reaction = data.current_user_has_reaction
             props.post.total_of_reactions = data.total_of_reactions
+
+            props.post.all_user_reactions = data.all_user_reactions
+            props.post.like_user_reactions = data.like_user_reactions
+            props.post.love_user_reactions = data.love_user_reactions
+            props.post.care_user_reactions = data.care_user_reactions
+            props.post.haha_user_reactions = data.haha_user_reactions
+            props.post.wow_user_reactions = data.wow_user_reactions
+            props.post.sad_user_reactions = data.sad_user_reactions
+            props.post.angry_user_reactions = data.angry_user_reactions
             emit('callRestartDefaultTabIndex')
         })
         .catch((error) => {
