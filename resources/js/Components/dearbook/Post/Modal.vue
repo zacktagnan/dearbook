@@ -706,7 +706,7 @@ const revertDeleteMode = (myFile) => {
                                                 type="file"
                                                 multiple
                                                 class="absolute inset-0 opacity-0 cursor-pointer"
-                                                title="Foto/video"
+                                                title="Foto/video/otros"
                                             />
                                         </button>
                                     </div>

@@ -260,7 +260,7 @@ defineExpose({
                             class="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed"
                             :title="
                                 attachmentFiles.length === 0
-                                    ? 'Foto/video'
+                                    ? 'Foto/video/otros'
                                     : 'Solo un archivo es admitido'
                             "
                         />
