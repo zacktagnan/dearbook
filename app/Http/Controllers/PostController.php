@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use App\Models\Attachment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\PostUpdateRequest;
+use App\Traits\StorageManagement;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
+    use StorageManagement;
+
     /**
      * Store a newly created resource in storage.
      */
@@ -24,15 +25,17 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
+        $destinationFolder = '';
 
         try {
             $post = Post::create($request->all());
+            $destinationFolder = 'attachments/post-' . $post->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
 
             foreach ($files as $file) {
-                $path = $file->store('attachments/post-' . $post->id, 'public');
+                $path = $file->store($destinationFolder, 'public');
                 $allFilePaths[] = $path;
                 $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
@@ -45,11 +48,9 @@ class PostController extends Controller
 
             DB::commit();
         } catch (\Exception $e) {
-            foreach ($allFilePaths as $path) {
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
+            $this->deleteAlreadyUploadedFiles($allFilePaths);
+            $this->deleteFolderIfEmpty($destinationFolder);
+
             DB::rollBack();
         }
 
@@ -64,6 +65,7 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
+        $destinationFolder = 'attachments/post-' . $post->id;
 
         try {
             // dd($request->all());
@@ -78,13 +80,15 @@ class PostController extends Controller
                 foreach ($attachmentsToDelete as $attachmentToDelete) {
                     $attachmentToDelete->delete();
                 }
+
+                $this->deleteFolderIfEmpty($destinationFolder);
             }
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
 
             foreach ($files as $file) {
-                $path = $file->store('attachments/post-' . $post->id, 'public');
+                $path = $file->store($destinationFolder, 'public');
                 $allFilePaths[] = $path;
                 $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
@@ -98,11 +102,9 @@ class PostController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             // dd($e->getMessage());
-            foreach ($allFilePaths as $path) {
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
+            $this->deleteAlreadyUploadedFiles($allFilePaths);
+            $this->deleteFolderIfEmpty($destinationFolder);
+
             DB::rollBack();
         }
     }
@@ -119,12 +121,5 @@ class PostController extends Controller
         return back();
         // Si no se establece el BACK(), no vale el RedirectResponse
         // y, entonces, mejor no establecer ningún tipo de RETURN
-    }
-
-    public function downloadAttachment(Attachment $attachment)
-    {
-        // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
-        // o, sino,
-        return response()->download(storage_path('app/public/' . $attachment->path), $attachment->name);
     }
 }

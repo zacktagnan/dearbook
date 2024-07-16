@@ -4,20 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\Comment;
-use App\Models\Attachment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CommentStoreRequest;
+use App\Traits\StorageManagement;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController extends Controller
 {
+    use StorageManagement;
+
     public function store(CommentStoreRequest $request, Post $post)
     {
         DB::beginTransaction();
 
         $allFilePaths = [];
+        $destinationFolder = '';
 
         try {
             $comment = Comment::create([
@@ -28,12 +30,13 @@ class PostCommentController extends Controller
             $hasComment = true;
 
             $comments = $post->comments()->count();
+            $destinationFolder = 'attachments/comment-' . $comment->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
 
             foreach ($files as $file) {
-                $path = $file->store('attachments/comment-' . $comment->id, 'public');
+                $path = $file->store($destinationFolder, 'public');
                 $allFilePaths[] = $path;
                 $comment->attachments()->create([
                     'name' => $file->getClientOriginalName(),
@@ -55,11 +58,9 @@ class PostCommentController extends Controller
                 ),
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            foreach ($allFilePaths as $path) {
-                if (Storage::disk('public')->exists($path)) {
-                    Storage::disk('public')->delete($path);
-                }
-            }
+            $this->deleteAlreadyUploadedFiles($allFilePaths);
+            $this->deleteFolderIfEmpty($destinationFolder);
+
             DB::rollBack();
 
             return back();
@@ -78,7 +79,7 @@ class PostCommentController extends Controller
         DB::beginTransaction();
 
         try {
-            $this->processResources($comment);
+            $this->deleteResources($comment);
 
             $comment->delete();
 
@@ -90,7 +91,7 @@ class PostCommentController extends Controller
         }
     }
 
-    private function processResources(Comment $comment)
+    private function deleteResources(Comment $comment)
     {
         if ($comment->attachments()->count() > 0) {
             $comment->attachments()->delete();
@@ -98,12 +99,5 @@ class PostCommentController extends Controller
         if ($comment->reactions()->count() > 0) {
             $comment->reactions()->delete();
         }
-    }
-
-    public function downloadAttachment(Attachment $attachment)
-    {
-        // return response()->download(Storage::disk('public')->path($attachment->path), $attachment->name);
-        // o, sino,
-        return response()->download(storage_path('app/public/' . $attachment->path), $attachment->name);
     }
 }
