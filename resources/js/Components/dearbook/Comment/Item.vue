@@ -188,7 +188,7 @@ const cancelEditingItemOnEscape = (e) => {
         @callActiveShowNotificationFromEdit="activeShowNotificationToLatestList"
     />
     <!--  -->
-    <div v-else class="flex gap-2 mt-3">
+    <div v-else class="flex gap-2 mt-2.5">
         <a :href="route('profile.index', { username: comment.user.username })"
             :title="'Perfil de ' + comment.user.name"
             class="h-fit"

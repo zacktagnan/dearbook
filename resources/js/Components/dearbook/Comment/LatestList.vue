@@ -25,6 +25,8 @@ const activeShowNotificationToCommentBox = (errors) => {
 </script>
 
 <template>
+    <button v-if="post.total_of_comments > 1" class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">Ver más comentarios</button>
+
     <template v-if="post.latest_comments.length > 0">
         <div v-for="latest_comment of post.latest_comments">
             <CommentItem :comment="latest_comment"

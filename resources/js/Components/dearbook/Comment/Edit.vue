@@ -268,7 +268,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="flex gap-2 mt-3">
+    <div class="flex gap-2 mt-2.5">
         <a :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name"
             class="h-fit"
