@@ -26,7 +26,7 @@ const activeShowNotificationToCommentBox = (errors) => {
 
 <template>
     <template v-if="post.latest_comments.length > 0">
-        <div v-for="latest_comment of post.latest_comments" class="flex gap-2 mt-3">
+        <div v-for="latest_comment of post.latest_comments">
             <CommentItem :comment="latest_comment"
                 @callOpenAttachmentsModalToLatestList="openAttachmentsModalToCommentBox"
                 @callOpenUserReactionsModalToLatestList="openUserReactionsModalToCommentBox"

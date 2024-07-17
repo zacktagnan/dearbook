@@ -7,6 +7,7 @@ use App\Models\Comment;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use App\Http\Requests\CommentStoreRequest;
+use App\Http\Requests\CommentUpdateRequest;
 use App\Traits\StorageManagement;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -22,6 +23,7 @@ class PostCommentController extends Controller
         $destinationFolder = '';
 
         try {
+            dd('POST', $post, 'POST_ID', $post->id, 'REQUEST', $request, 'REQUEST->ALL', $request->all());
             $comment = Comment::create([
                 'post_id' => $post->id,
                 'comment' => $request->comment,
@@ -67,11 +69,59 @@ class PostCommentController extends Controller
         }
     }
 
+    public function update(CommentUpdateRequest $request, Comment $comment) //: void
+    {
+        DB::beginTransaction();
+
+        $allFilePaths = [];
+        $destinationFolder = 'attachments/comment-' . $comment->id;
+
+        try {
+            $comment->update($request->all());
+
+            if ($request->deleted_file_ids) {
+                $attachmentsToDelete = $comment->attachments()
+                    ->whereIn('id', $request->deleted_file_ids)
+                    ->get();
+
+                foreach ($attachmentsToDelete as $attachmentToDelete) {
+                    $attachmentToDelete->delete();
+                }
+
+                $this->deleteFolderIfEmpty($destinationFolder);
+            }
+
+            /** @var \Illuminate\Http\UploadedFile[] $files */
+            $files = $request->attachments ?? [];
+
+            foreach ($files as $file) {
+                $path = $file->store($destinationFolder, 'public');
+                $allFilePaths[] = $path;
+                $comment->attachments()->create([
+                    'name' => $file->getClientOriginalName(),
+                    'path' => $path,
+                    'mime' => $file->getMimeType(),
+                    'size' => $file->getSize(),
+                    'created_by' => $request->user()->id,
+                ]);
+            }
+
+            DB::commit();
+
+            // return response(new CommentResource($comment), Response::HTTP_OK);
+            // o
+            return new CommentResource($comment);
+        } catch (\Exception $e) {
+            // dd($e->getMessage());
+            $this->deleteAlreadyUploadedFiles($allFilePaths);
+            $this->deleteFolderIfEmpty($destinationFolder);
+
+            DB::rollBack();
+        }
+    }
+
     public function destroy(Comment $comment)
     {
-        // dump('Borrando el COMMENT con ID', $comment->id, 'cuyo autor es el USER con ID', $comment->user_id, 'y siendo el AUTH->ID', auth()->id());
-        // dd('TOT_Attachments', $comment->attachments()->count(), 'TOT_Reactions', $comment->reactions()->count());
-
         if ($comment->user_id !== auth()->id()) {
             return response("You don't have permission to DELETE this comment", Response::HTTP_FORBIDDEN);
         }

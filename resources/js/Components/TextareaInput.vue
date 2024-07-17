@@ -19,7 +19,8 @@ const props = defineProps({
     rows : {
         type: String,
         default: '2',
-    }
+    },
+    blockItemClassName: String,
 })
 
 const input = ref(null);
@@ -31,7 +32,7 @@ onMounted(() => {
     adjustHeight()
 });
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'callFocusIn', 'callFocusOut',])
 
 const onInputChange = (event) => {
     emit('update:modelValue', event.target.value)
@@ -52,15 +53,62 @@ const reInitAdjustHeight = () => {
     }, 10)
 }
 
-defineExpose({ focus: () => input.value.focus(), reInitAdjustHeight, });
+// const cancelEditingItemOnEscape = (e) => {
+//     if (e.key === 'Escape') {
+//         emit('callCancelEditingItem');
+//     }
+// };
+
+const onFocusOut = (e) => {
+    console.log('EVENT', e)
+    // console.log(e.target.tagName)
+    // -------------------------------------------------------------------------------
+    // if (e.target.tagName === 'TEXTAREA') {
+    //     console.log('ES:', e.target.tagName)
+    //     console.log('ES-tabindex:', e.target.tabIndex)
+    // }
+    // -------------------------------------------------------------------------------
+    // console.log(props.blockItemClassName)
+    if (e.relatedTarget && e.relatedTarget.tagName == 'BUTTON' && e.relatedTarget.className.includes(props.blockItemClassName)) {
+        console.log('CLICK en BUTTON')
+        // console.log('ES-relatedTarget_tabindex:', e.relatedTarget.tabIndex)
+        return
+    } else if (e.relatedTarget === null || !e.target.className.includes(props.blockItemClassName)) {
+        // console.log('CLICK en BUTTON')
+        // console.log('ES-relatedTarget_difButton:', e.relatedTarget.tabIndex)
+        emit('callFocusOut')
+    }
+    // -------------------------------------------------------------------------------
+    // if (e.relatedTarget === null || (e.relatedTarget && e.relatedTarget.tagName !== 'BUTTON')) {
+    // if (e.relatedTarget === null || e.target.className !== props.blockItemClassName) {
+    //     // console.log('CLICK en BUTTON')
+    //     // console.log('ES-relatedTarget_difButton:', e.relatedTarget.tabIndex)
+    //     emit('callFocusOut')
+    // }
+}
+
+// const onBlur = (e) => {
+//     console.log('EVENT-Blur', e)
+//     // emit('callFocusOut')
+// }
+
+defineExpose({
+    focus: () => input.value.focus(),
+    reInitAdjustHeight,
+    input,
+    // No funciona...
+    // addEventListenerToCancelEditFromEsc: () => input.value.addEventListener('keydown', cancelEditingItemOnEscape),
+    // removeEventListenerToCancelEditFromEsc: () => input.value.removeEventListener('keydown', cancelEditingItemOnEscape),
+    // No funciona... Debido a que el sistema quiere interpretar el 2º párametro como si fuera un objeto
+    // cuando se trata de un método como demanda el addEventListener/removeEventListener
+    // addEventListenerToCancelEditFromEsc: (method) => input.value.addEventListener('keydown', method),
+    // removeEventListenerToCancelEditFromEsc: (method) => input.value.removeEventListener('keydown', method),
+});
 </script>
 
 <template>
     <textarea
-        :class="classes"
-        :rows="rows"
-        v-model="model"
-        ref="input"
-        :placeholder="placeholder"
-        @input="onInputChange"></textarea>
+        ref="input" v-model="model" :class="classes"
+        :rows="rows" :placeholder="placeholder"
+        @input="onInputChange" @focusin="$emit('callFocusIn')" @focusout="onFocusOut"></textarea>
 </template>
