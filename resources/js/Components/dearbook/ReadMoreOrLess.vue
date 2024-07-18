@@ -58,13 +58,22 @@ const getContentExcerpt = computed(() => {
             leave-active-class="transition duration-75 ease-out"
             leave-from-class="transform scale-100 opacity-100"
             leave-to-class="transform scale-95 opacity-0"> -->
-            <transition
+            <!-- <transition
                 enter-active-class="transition-opacity duration-75"
                 enter-from-class="opacity-0"
                 enter-to-class="opacity-100"
                 leave-active-class="transition-opacity duration-150"
                 leave-from-class="opacity-100"
                 leave-to-class="opacity-0"
+            > -->
+            <transition
+                enter-active-class="duration-300"
+                enter-from-class="opacity-0"
+                enter-to-class="opacity-100"
+                leave-active-class="duration-200 ease-in"
+                leave-from-class="scale-100 opacity-100"
+                leave-to-class="scale-95 opacity-0"
+
             >
                 <DisclosurePanel>
                     <!-- Sin estilar para el CKEditor -->
