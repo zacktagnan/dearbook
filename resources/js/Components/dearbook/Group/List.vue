@@ -5,7 +5,7 @@ import GroupListItems from '@/Components/dearbook/Group/ListItems.vue'
 </script>
 
 <template>
-    <div class="flex flex-col p-3 bg-white border rounded">
+    <div class="flex flex-col p-3 border rounded bg-sky-200">
         <div class="flex-1 block lg:hidden">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">

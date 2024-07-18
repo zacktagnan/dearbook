@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="rounded-md cursor-pointer hover:bg-gray-100">
+    <div class="rounded-md cursor-pointer hover:bg-white">
         <div class="flex items-center gap-2 px-2 py-1">
             <img :src="image" class="mt-1 w-[36px] rounded-full" :alt="title">
             <div>
