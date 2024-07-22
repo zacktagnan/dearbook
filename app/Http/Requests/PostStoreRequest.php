@@ -50,8 +50,9 @@ class PostStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'body' => 'nullable|string',
+            'body' => 'required_without:attachments|nullable|string',
             'attachments' => [
+                'required_without:body',
                 'array',
                 'max:' . self::$maximumAmount,
                 function ($attribute, $value, $fail) {
@@ -86,9 +87,11 @@ class PostStoreRequest extends FormRequest
     public function messages()
     {
         return [
+            'body.required_without' => 'Se requiere que el comentario esté constituido o por un texto o por un archivo adjunto.',
+            'attachments.required_without' => 'Se requiere que el comentario esté constituido o por un texto o por un archivo adjunto.',
             // 'attachments.*' => 'El adjunto elegido debe disponer de una de las siguientes extensiones: ' . implode(', ', self::$allowedMimeTypes),
             // mensaje demasiado largo
-            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . $this->maximumAmount . '.',
+            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '.',
             'attachments.*.file' => 'Cada adjunto debe ser un archivo.',
             'attachments.*.mimes' => 'Extensión no válida.',
         ];

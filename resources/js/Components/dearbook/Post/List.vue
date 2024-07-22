@@ -171,6 +171,10 @@ const closeShowNotification = () => {
         </ConfirmPostDeletionModal>
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            v-if="showNotification && errorsFromPost.body" :title="'Error'"
+            :message="errorsFromPost.body" />
+
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPost.attachments" :title="'Error'"
             :message="errorsFromPost.attachments" />
 
