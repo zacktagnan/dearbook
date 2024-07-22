@@ -2,8 +2,25 @@
 
 namespace App\Http\Requests;
 
-class PostUpdateRequest extends PostStoreRequest
+use Closure;
+use App\Libs\Utilities;
+use App\Rules\BodyOrAttachment;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Validation\Rules\File;
+use Illuminate\Foundation\Http\FormRequest;
+
+class PostUpdateRequest extends FormRequest
 {
+    public static int $maximumAmount = 2; //28;
+    private $maximumBytes;
+    private $maximumTotalBytes;
+
+    public function __construct()
+    {
+        $this->maximumBytes = pow(1024, 3); // 1GB en Bytes
+        $this->maximumTotalBytes = 1 * $this->maximumBytes;
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -14,9 +31,50 @@ class PostUpdateRequest extends PostStoreRequest
 
     public function rules(): array
     {
-        return array_merge(parent::rules(), [
+        return [
+            'body' => array_merge($this->body ? ['string'] : [], [
+                new BodyOrAttachment($this->route('post')),
+                // function (string $attribute, mixed $value, Closure $fail) {
+                //     $post = $this->route('post');
+                //     $currentAttachmentsOnBD = $post->attachments()->select('id')->get();
+
+                //     if ($value === null && $this->attachments === [] && (count($this->deleted_file_ids) === $currentAttachmentsOnBD->count())) {
+                //         $fail('Se requiere ya sea que haya un texto o un archivo adjunto.');
+                //     }
+                // },
+            ]),
+            'attachments' => [
+                'array',
+                'max:' . self::$maximumAmount,
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $totalSize = collect($value)->sum(fn (UploadedFile $file) => $file->getSize());
+
+                    // Total de tamaño en KB del conjunto de archivos subidos
+                    if ($totalSize > $this->maximumTotalBytes) {
+                        $fail('El tamaño total de todos los archivos no debe exceder de ' . ($this->maximumTotalBytes / $this->maximumBytes) . 'GB. Subido: ' . number_format($totalSize / $this->maximumBytes, 2) . 'GB.');
+                    }
+                },
+            ],
+            'attachments.*' => [
+                'file',
+                File::types(Utilities::$allowedMimeTypes),
+            ],
             'deleted_file_ids' => 'array',
             'deleted_file_ids.*' => 'numeric',
-        ]);
+        ];
+    }
+
+    protected function passedValidation(): void
+    {
+        $this->merge(['user_id' => auth()->id()]);
+    }
+
+    public function messages()
+    {
+        return [
+            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '.',
+            'attachments.*.file' => 'Cada adjunto debe ser un archivo.',
+            'attachments.*.mimes' => 'Extensión no válida.',
+        ];
     }
 }
