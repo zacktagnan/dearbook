@@ -23,7 +23,6 @@ class PostCommentController extends Controller
         $destinationFolder = '';
 
         try {
-            dd('POST', $post, 'POST_ID', $post->id, 'REQUEST', $request, 'REQUEST->ALL', $request->all());
             $comment = Comment::create([
                 'post_id' => $post->id,
                 'comment' => $request->comment,
