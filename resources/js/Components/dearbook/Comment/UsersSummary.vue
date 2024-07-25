@@ -18,6 +18,12 @@ defineProps({
     },
 })
 
+const emit = defineEmits(['callOpenDetailModalToItem'])
+
+const openDetailModalToItem = () => {
+    emit('callOpenDetailModalToItem')
+}
+
 const authUser = usePage().props.auth.user;
 
 const showUsersPopover = ref(false);
@@ -28,14 +34,15 @@ const maxUsersIndex = maxUsersListed - 1;
 
 <template>
     <div class="relative">
-        <span
+        <button
             v-if="totalOfComments > 0"
+            @click="openDetailModalToItem"
             class="cursor-pointer hover:underline text-[15px]"
             @mouseover="showUsersPopover = true"
             @mouseleave="showUsersPopover = false"
         >
             {{ totalOfComments }} {{ totalOfComments === 1 ? 'comentario' : 'comentarios' }}
-        </span>
+        </button>
 
         <div
             :class="[

@@ -57,6 +57,7 @@ class PostCommentController extends Controller
                 'latest_comments' => CommentResource::collection(
                     $post->latestComments()->latest()->limit(1)->get()
                 ),
+                'all_comments' => CommentResource::collection($post->comments()->get()),
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);
@@ -109,7 +110,23 @@ class PostCommentController extends Controller
 
             // return response(new CommentResource($comment), Response::HTTP_OK);
             // o
-            return new CommentResource($comment);
+            // return new CommentResource($comment);
+            // ---------------------------------------------------------------------------
+            // o, para poder devolver más datos...
+            // $post = Post::where('id', $comment->post_id)->get(); // Devuelve un ARRAY de resultados, uno en este caso
+            // // Por ello, para tener el primer objeto del ARRAY con el que poder sacar datos de relaciones que pasar al CommentResource
+            // $post = $post[0];
+            // Sino, en vez del GET, emplear el FIRST
+            $post = Post::where('id', $comment->post_id)->first();
+
+            return response()->json([
+                'commentUpdated' => new CommentResource($comment),
+
+                'latest_comments' => CommentResource::collection(
+                    $post->latestComments()->latest()->limit(1)->get()
+                ),
+                'all_comments' => CommentResource::collection($post->comments()->get()),
+            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             // dd($e->getMessage());
             $this->deleteAlreadyUploadedFiles($allFilePaths);

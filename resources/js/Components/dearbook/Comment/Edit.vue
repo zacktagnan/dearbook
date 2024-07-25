@@ -25,10 +25,6 @@ const commentTextAreaRef = ref(null);
 const commentToEditText = ref('')
 
 onMounted(() => {
-    console.log('onMounted CommentEdit...')
-    console.log('...COMMENT_TO_EDIT...', props.commentToEdit)
-    console.log('...COMMENT_TO_EDIT..._COMMENT', props.commentToEdit.comment)
-
     commentToEditText.value = props.commentToEdit.comment || "";
 })
 
@@ -157,9 +153,6 @@ const removeFile = (myFile, index) => {
         deleted_file_ids.value.push(myFile.id);
         myFile.deleted = true;
     }
-
-    console.log('deleted_file_ids', deleted_file_ids.value)
-
 };
 
 const revertDeleteMode = (myFile) => {
@@ -214,9 +207,15 @@ const updateCommentData = () => {
     })
         .then(({ data }) => {
             let dataUpdated = {
-                comment: data.comment,
-                attachments: data.attachments,
-                updated_at_large_format: data.updated_at_large_format,
+                // comment: data.comment,
+                // attachments: data.attachments,
+                // updated_at_large_format: data.updated_at_large_format,
+                comment: data.commentUpdated.comment,
+                attachments: data.commentUpdated.attachments,
+                updated_at_large_format: data.commentUpdated.updated_at_large_format,
+
+                latest_comments: data.latest_comments,
+                all_comments: data.all_comments,
             }
 
             cancellingEditingItem(true, dataUpdated)

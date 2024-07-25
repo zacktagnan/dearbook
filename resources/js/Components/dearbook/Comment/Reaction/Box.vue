@@ -11,7 +11,7 @@ const props = defineProps({
     comment: Object,
 });
 
-const emit = defineEmits(['callRestartDefaultTabIndex', 'callActiveShowNotificationToCommentItem'])
+const emit = defineEmits(['callRestartDefaultTabIndex', 'callRestartPostCommentList', 'callActiveShowNotificationToCommentItem'])
 
 const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
@@ -38,6 +38,8 @@ const sendCommentReaction = (from, type) => {
             props.comment.angry_user_reactions = data.angry_user_reactions
 
             emit('callRestartDefaultTabIndex')
+
+            emit('callRestartPostCommentList', data.latest_comments, data.all_comments)
         })
         .catch((error) => {
             processErrors(error.response.data.errors)

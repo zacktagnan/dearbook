@@ -60,7 +60,7 @@ const reInitAdjustHeight = () => {
 // };
 
 const onFocusOut = (e) => {
-    console.log('EVENT', e)
+    // console.log('EVENT', e)
     // console.log(e.target.tagName)
     // -------------------------------------------------------------------------------
     // if (e.target.tagName === 'TEXTAREA') {
@@ -70,7 +70,7 @@ const onFocusOut = (e) => {
     // -------------------------------------------------------------------------------
     // console.log(props.blockItemClassName)
     if (e.relatedTarget && e.relatedTarget.tagName == 'BUTTON' && e.relatedTarget.className.includes(props.blockItemClassName)) {
-        console.log('CLICK en BUTTON')
+        // console.log('CLICK en BUTTON')
         // console.log('ES-relatedTarget_tabindex:', e.relatedTarget.tabIndex)
         return
     } else if (e.relatedTarget === null || !e.target.className.includes(props.blockItemClassName)) {

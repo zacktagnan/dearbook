@@ -82,7 +82,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModalToLatestList', 'callOpenUserReactionsModalToLatestList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
+const emit = defineEmits(['callOpenAttachmentsModalToLatestList', 'callOpenUserReactionsModalToLatestList', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
 
 const openUserReactionsModalToLatestList = (tabIndex) => {
     emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
@@ -127,7 +127,7 @@ const startEditingItem = (comment) => {
 
     // --------------------------------------------------------------------
 
-    console.log('COMMENT llegado a startEditingItem', comment)
+    // console.log('COMMENT llegado a startEditingItem', comment)
     // editingItem.value = comment
     // Nueva instancia ... solo lo necesario
     editingItem.value = {
@@ -135,7 +135,7 @@ const startEditingItem = (comment) => {
         comment: comment.comment,
         attachments: comment.attachments,
     }
-    console.log('EDITING_ITEM tras serle asignado COMMENT', editingItem.value)
+    // console.log('EDITING_ITEM tras serle asignado COMMENT', editingItem.value)
 
     // if (inputToEditRef.value) {
     //     inputToEditRef.value.focus()
@@ -159,12 +159,17 @@ const cancelEditingItem = (isUpdated, dataUpdated) => {
     commentEditRef.value.commentTextAreaRef.input.removeEventListener('keydown', cancelEditingItemOnEscape)
     editingItem.value = null
 
-    console.log('isUpdated', isUpdated, 'dataUpdated', dataUpdated)
     if (isUpdated) {
         props.comment.comment = dataUpdated.comment
         props.comment.attachments = dataUpdated.attachments
         props.comment.updated_at_large_format = dataUpdated.updated_at_large_format
+
+        restartPostCommentList(dataUpdated.latest_comments, dataUpdated.all_comments)
     }
+}
+
+const restartPostCommentList = (latestComments, allComments) => {
+    emit('callRestartPostCommentList', latestComments, allComments)
 }
 
 const cancelEditingItemOnEscape = (e) => {
@@ -336,6 +341,7 @@ const cancelEditingItemOnEscape = (e) => {
                 <CommentReactionBox
                     :comment="comment"
                     @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
+                    @callRestartPostCommentList="restartPostCommentList"
                     @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList"
                 />
 

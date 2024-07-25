@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\Comment;
+use App\Traits\UserReactions;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ReactionRequest;
-use App\Traits\UserReactions;
+use App\Http\Resources\CommentResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentReactionController extends Controller
@@ -38,6 +40,10 @@ class CommentReactionController extends Controller
 
         $reactions = $comment->reactions()->count();
 
+        // Devolviendo más datos extra para actualización de los mismos
+        // tanto en listado principal, como dentro del ModalForDetail...
+        $post = Post::where('id', $comment->post_id)->first();
+
         return response()->json([
             'total_of_reactions' => $reactions,
             'current_user_has_reaction' => $hasReaction,
@@ -51,6 +57,11 @@ class CommentReactionController extends Controller
             'wow_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'wow'),
             'sad_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'sad'),
             'angry_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'angry'),
+
+            'latest_comments' => CommentResource::collection(
+                $post->latestComments()->latest()->limit(1)->get()
+            ),
+            'all_comments' => CommentResource::collection($post->comments()->get()),
         ], Response::HTTP_OK);
     }
 

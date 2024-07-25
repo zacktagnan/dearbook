@@ -1,6 +1,7 @@
 <script setup>
 import PostItem from '@/Components/dearbook/Post/Item.vue';
 import PostModal from "@/Components/dearbook/Post/Modal.vue";
+import PostDetailModal from "@/Components/dearbook/Post/ModalForDetail.vue";
 import AttachmentModal from "@/Components/dearbook/Attachment/Modal.vue";
 import UserReactionsModal from '@/Components/dearbook/Reaction/Modal.vue'
 import ConfirmPostDeletionModal from '@/Components/Modal.vue'
@@ -14,17 +15,24 @@ defineProps({
 })
 
 const showEditModal = ref(false)
+const showDetailModal = ref(false)
 const showAttachmentsModal = ref(false)
 const showReactionsModal = ref(false)
 const tabIndexReactionsModal = ref(0)
 
 const postToEdit = ref({})
+const postDetail = ref({})
 const entityWithAttachmentsToPreview = ref({})
 const entityWithReactions = ref({})
 
 const openEditModal = (post) => {
     postToEdit.value = post
     showEditModal.value = true
+}
+
+const openDetailModal = (post) => {
+    postDetail.value = post
+    showDetailModal.value = true
 }
 
 const openAttachmentsModal = (entity, index, entityPrefix) => {
@@ -54,6 +62,7 @@ const openUserReactionsModal = (entity, tabIndex) => {
     tabIndexReactionsModal.value = tabIndex
 }
 
+const postDetailModalRef = ref(null)
 const entityToDelete = ref({})
 const showingConfirmDeletion = ref(false);
 const showConfirmDeletion = (entity, entityPrefix) => {
@@ -73,7 +82,17 @@ const deleteEntity = () => {
     }
     router.delete(route(entityToDelete.value.entityPrefix + ".destroy", entityToDelete.value.entity), {
         preserveScroll: true,
-        onSuccess: () => closeConfirmDeletion(),
+        onSuccess: () => {
+            closeConfirmDeletion()
+
+            if (showDetailModal.value === true) {
+                if (entityToDelete.value.entityPrefix === 'post') {
+                    showDetailModal.value = false
+                } else if (entityToDelete.value.entityPrefix === 'post.comment') {
+                    postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
+                }
+            }
+        },
     });
 };
 
@@ -112,12 +131,21 @@ const closeShowNotification = () => {
     <div>
         <PostItem v-for="post in posts" :post="post"
             @callOpenEditModal="openEditModal"
+            @callOpenDetailModal="openDetailModal"
             @callOpenAttachmentsModal="openAttachmentsModal"
             @callOpenUserReactionsModal="openUserReactionsModal"
             @callConfirmDeletion="showConfirmDeletion"
             @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
+
+        <!-- <PostDetailModal :post="postDetail" v-model="showDetailModal" @callActiveShowNotification="activeShowNotification" /> -->
+        <PostDetailModal ref="postDetailModalRef" :post="postDetail" v-model="showDetailModal"
+            @callOpenEditModal="openEditModal"
+            @callOpenAttachmentsModal="openAttachmentsModal"
+            @callOpenUserReactionsModal="openUserReactionsModal"
+            @callConfirmDeletion="showConfirmDeletion"
+            @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <AttachmentModal :attachments="entityWithAttachmentsToPreview.entity?.attachments || []"
             :entity-prefix="entityWithAttachmentsToPreview.entityPrefix"

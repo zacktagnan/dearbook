@@ -9,10 +9,15 @@ import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 
 const props = defineProps({
     post: Object,
+    typeList: {
+        type: String,
+        default: 'latest',
+    },
 });
 
 const emit = defineEmits([
     "callOpenEditModal",
+    "callOpenDetailModal",
     "callOpenAttachmentsModal",
     'callOpenUserReactionsModal',
     'callConfirmDeletion',
@@ -31,6 +36,10 @@ import { usePage } from "@inertiajs/vue3";
 
 const openEditModal = () => {
     emit("callOpenEditModal", props.post);
+};
+
+const openDetailModal = () => {
+    emit("callOpenDetailModal", props.post);
 };
 
 // =======================================================================================
@@ -133,11 +142,25 @@ const postCommentBoxRef = ref(null)
 const focusCommentTextArea = () => {
     postCommentBoxRef.value.focusCommentTextAreaOfCreate()
 };
+
+const filterDeletedComment = (commentId) => {
+    props.post.all_comments = props.post.all_comments.filter(c => c.id != commentId)
+    props.post.total_of_comments--
+}
+
+defineExpose({
+    filterDeletedComment,
+})
 </script>
 
 <template>
     <div
-        class="p-4 mt-4 mx-0.5 bg-white rounded shadow hover:shadow-cyan-900"
+        class="p-4 mx-0.5 bg-white"
+        :class="[
+            typeList === 'latest'
+                ? 'mt-4 rounded shadow hover:shadow-cyan-900'
+                : ''
+        ]"
     >
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
@@ -375,6 +398,7 @@ const focusCommentTextArea = () => {
                         :current-user-has-comment="post.current_user_has_comment"
                         :current-user-total-of-comments="post.current_user_total_of_comments"
                         :total-of-comments="post.total_of_comments"
+                        @callOpenDetailModalToItem="openDetailModal"
                     />
                 </div>
 
@@ -403,7 +427,8 @@ const focusCommentTextArea = () => {
             <div>
                 <hr>
 
-                <PostCommentBox ref="postCommentBoxRef" :post="post"
+                <PostCommentBox ref="postCommentBoxRef" :post="post" :type-list="typeList"
+                    @callOpenDetailModalToItem="openDetailModal"
                     @callOpenAttachmentsModalToItem="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
                     @callConfirmDeletionToItem="confirmDeletion"
