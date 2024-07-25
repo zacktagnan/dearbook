@@ -118,9 +118,9 @@ const closeModal = () => {
                                         <TabPanels class="overflow-auto h-96">
                                             <template v-for="(reactionType, index) of reactionTypesFormat">
                                                 <TabPanel v-if="showTab(index)" class="w-full px-2 py-2 bg-white md:px-4">
-                                                    <UserListItem v-if="showCurrentUserReaction(index)" :user="$page.props.auth.user" :type="entity.current_user_type_reaction" />
+                                                    <UserListItem v-if="showCurrentUserReaction(index)" :user="$page.props.auth.user" :type="entity.current_user_type_reaction" :title="reactionTypesFormat[index].main_type_button_text" />
 
-                                                    <UserListItem v-for="element of entity[index]" :user="element.user" :type="element.type" />
+                                                    <UserListItem v-for="element of entity[index]" :user="element.user" :type="element.type" :title="reactionTypesFormat[index].main_type_button_text" />
                                                 </TabPanel>
                                             </template>
                                         </TabPanels>

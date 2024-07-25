@@ -4,6 +4,7 @@ import { UserPlusIcon, } from "@heroicons/vue/24/solid";
 defineProps({
     user: Object,
     type: String,
+    title: String,
 })
 </script>
 
@@ -19,7 +20,7 @@ defineProps({
 
                 <img
                 :src="'/img/emojis/' + type + '.png'"
-                :alt="text"
+                :alt="title"
                 class="absolute w-4 h-4 left-[26px] top-[26px]" />
             </a>
 
