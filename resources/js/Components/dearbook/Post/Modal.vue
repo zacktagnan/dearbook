@@ -362,6 +362,13 @@ const revertDeleteMode = (myFile) => {
     );
     myFile.deleted = false;
 };
+
+const inputAttachmentFileRef = ref(null)
+const openInputAttachmentFile = () => {
+    if (inputAttachmentFileRef.value) {
+        inputAttachmentFileRef.value.click()
+    }
+}
 </script>
 
 <template>
@@ -402,7 +409,7 @@ const revertDeleteMode = (myFile) => {
                                     <div class="w-full text-center">
                                         <DialogTitle
                                             as="h3"
-                                            class="text-lg font-medium leading-6 text-gray-900"
+                                            class="text-lg font-bold text-gray-900"
                                         >
                                             {{ modalData.dialogTitleText }}
                                         </DialogTitle>
@@ -640,6 +647,7 @@ const revertDeleteMode = (myFile) => {
 
                                     <div>
                                         <button
+                                            @click="openInputAttachmentFile"
                                             type="button"
                                             class="relative group/ico_attach_multimedia"
                                         >
@@ -704,6 +712,7 @@ const revertDeleteMode = (myFile) => {
                                                     uploadAttachmentSelected
                                                 "
                                                 type="file"
+                                                ref="inputAttachmentFileRef"
                                                 multiple
                                                 class="absolute inset-0 opacity-0 cursor-pointer"
                                                 title="Foto/video/otros"
