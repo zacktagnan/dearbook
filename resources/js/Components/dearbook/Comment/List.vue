@@ -1,37 +1,10 @@
 <script setup>
 import CommentItem from '@/Components/dearbook/Comment/Item.vue'
-import { onMounted, ref, watch } from 'vue';
 
 const props = defineProps({
-    post: Object,
+    commentsList: Array,
+    totalOfComments: Number,
     typeList: String,
-});
-
-watch(
-    () => props.post.all_comments,
-    () => {
-        // console.log('POST.all_comments - Listado de Comment ha cambiado tras añadir uno nuevo.')
-        setCommentsList()
-    }
-)
-
-const commentsList = ref({})
-
-const setCommentsList = () => {
-    switch (props.typeList) {
-        case 'latest':
-            commentsList.value = props.post.latest_comments
-            break;
-        case 'all':
-            commentsList.value = props.post.all_comments
-            break;
-        default:
-            break;
-    }
-}
-
-onMounted(() => {
-    setCommentsList()
 });
 
 const emit = defineEmits(['callOpenDetailModalToCommentBox', 'callOpenAttachmentsModalToCommentBox', 'callOpenUserReactionsModalToCommentBox', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
@@ -62,13 +35,14 @@ const activeShowNotificationToCommentBox = (errors) => {
 </script>
 
 <template>
-    <button v-if="typeList === 'latest' && post.total_of_comments > 1"
-        @click="openDetailModalToCommentBox"
-        class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">Ver más comentarios</button>
+    <button v-if="typeList === 'latest' && totalOfComments > 1" @click="openDetailModalToCommentBox"
+        class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">
+        Ver más comentarios
+    </button>
 
     <template v-if="commentsList.length > 0">
         <div v-for="comment_item of commentsList">
-            <CommentItem :comment="comment_item"
+            <CommentItem :comment="comment_item" :type-list="typeList"
                 @callOpenAttachmentsModalToLatestList="openAttachmentsModalToCommentBox"
                 @callOpenUserReactionsModalToLatestList="openUserReactionsModalToCommentBox"
                 @callRestartPostCommentList="restartPostCommentListToCommentBox"

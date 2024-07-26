@@ -1,7 +1,7 @@
 <script setup>
 import CommentList from '@/Components/dearbook/Comment/List.vue'
 import CommentCreate from '@/Components/dearbook/Comment/Create.vue'
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 const commentCreateRef = ref(null);
 
@@ -11,6 +11,35 @@ const props = defineProps({
     post: Object,
     typeList: String,
 });
+
+
+watch(
+    () => props.post.all_comments,
+    () => {
+        // console.log('POST.all_comments - Listado de Comment ha cambiado tras añadir uno nuevo.')
+        setCommentsList()
+    }
+)
+
+const commentsList = ref({})
+
+const setCommentsList = () => {
+    switch (props.typeList) {
+        case 'latest':
+            commentsList.value = props.post.latest_comments
+            break;
+        case 'all':
+            commentsList.value = props.post.all_comments
+            break;
+        default:
+            break;
+    }
+}
+
+onMounted(() => {
+    setCommentsList()
+});
+
 
 const emit = defineEmits(['callOpenDetailModalToItem', 'callOpenAttachmentsModalToItem', 'callOpenUserReactionsModalToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
 
@@ -116,7 +145,7 @@ defineExpose({
 </script>
 
 <template>
-    <CommentList :post="post" :type-list="typeList"
+    <CommentList :comments-list="commentsList" :total-of-comments="post.total_of_comments" :type-list="typeList"
         @callOpenDetailModalToCommentBox="openDetailModalToItem"
         @callOpenAttachmentsModalToCommentBox="openAttachmentsModalToItem"
         @callOpenUserReactionsModalToCommentBox="openUserReactionsModalToItem"
