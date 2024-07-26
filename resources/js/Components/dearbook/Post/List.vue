@@ -86,11 +86,15 @@ const deleteEntity = () => {
             closeConfirmDeletion()
 
             if (showDetailModal.value === true) {
-                if (entityToDelete.value.entityPrefix === 'post') {
-                    showDetailModal.value = false
-                } else if (entityToDelete.value.entityPrefix === 'post.comment') {
+                // if (entityToDelete.value.entityPrefix === 'post') {
+                //     showDetailModal.value = false
+                // } else if (entityToDelete.value.entityPrefix === 'post.comment') {
+                //     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
+                // }
+                if (entityToDelete.value.entityPrefix === 'post.comment') {
                     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
                 }
+                showDetailModal.value = false
             }
         },
     });
@@ -129,30 +133,24 @@ const closeShowNotification = () => {
 
 <template>
     <div>
-        <PostItem v-for="post in posts" :post="post"
-            @callOpenEditModal="openEditModal"
-            @callOpenDetailModal="openDetailModal"
-            @callOpenAttachmentsModal="openAttachmentsModal"
-            @callOpenUserReactionsModal="openUserReactionsModal"
-            @callConfirmDeletion="showConfirmDeletion"
+        <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal"
+            @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openAttachmentsModal"
+            @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
             @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
-        <!-- <PostDetailModal :post="postDetail" v-model="showDetailModal" @callActiveShowNotification="activeShowNotification" /> -->
         <PostDetailModal ref="postDetailModalRef" :post="postDetail" v-model="showDetailModal"
-            @callOpenEditModal="openEditModal"
-            @callOpenAttachmentsModal="openAttachmentsModal"
-            @callOpenUserReactionsModal="openUserReactionsModal"
-            @callConfirmDeletion="showConfirmDeletion"
+            @callOpenEditModal="openEditModal" @callOpenAttachmentsModal="openAttachmentsModal"
+            @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
             @callActiveShowNotificationFromItem="activeShowNotification" />
 
         <AttachmentModal :attachments="entityWithAttachmentsToPreview.entity?.attachments || []"
             :entity-prefix="entityWithAttachmentsToPreview.entityPrefix"
             v-model:index="entityWithAttachmentsToPreview.index" v-model="showAttachmentsModal" />
 
-        <UserReactionsModal v-model="showReactionsModal"
-            :entity="entityWithReactions" :default-index="tabIndexReactionsModal" />
+        <UserReactionsModal v-model="showReactionsModal" :entity="entityWithReactions"
+            :default-index="tabIndexReactionsModal" />
 
         <ConfirmPostDeletionModal :show="showingConfirmDeletion" @close="closeConfirmDeletion">
             <div class="p-6">
@@ -176,22 +174,15 @@ const closeShowNotification = () => {
                 </template>
 
                 <div class="flex justify-end mt-6">
-                    <SecondaryButton @click="closeConfirmDeletion" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+                    <SecondaryButton @click="closeConfirmDeletion" :title="$t('Cancel')"> {{ $t('Cancel') }}
+                    </SecondaryButton>
 
-                    <DangerButton
-                        v-if="entityToDelete.entityPrefix === 'post'"
-                        class="ms-3"
-                        @click="deleteEntity"
-                        :title="$t('dearbook.post.index.confirm_deletion.button_text')"
-                    >
+                    <DangerButton v-if="entityToDelete.entityPrefix === 'post'" class="ms-3" @click="deleteEntity"
+                        :title="$t('dearbook.post.index.confirm_deletion.button_text')">
                         {{ $t('dearbook.post.index.confirm_deletion.button_text') }}
                     </DangerButton>
-                    <DangerButton
-                        v-else-if="entityToDelete.entityPrefix === 'post.comment'"
-                        class="ms-3"
-                        @click="deleteEntity"
-                        :title="$t('dearbook.comment.index.confirm_deletion.button_text')"
-                    >
+                    <DangerButton v-else-if="entityToDelete.entityPrefix === 'post.comment'" class="ms-3"
+                        @click="deleteEntity" :title="$t('dearbook.comment.index.confirm_deletion.button_text')">
                         {{ $t('dearbook.comment.index.confirm_deletion.button_text') }}
                     </DangerButton>
                 </div>
@@ -199,8 +190,7 @@ const closeShowNotification = () => {
         </ConfirmPostDeletionModal>
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPost.body" :title="'Error'"
-            :message="errorsFromPost.body" />
+            v-if="showNotification && errorsFromPost.body" :title="'Error'" :message="errorsFromPost.body" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             v-if="showNotification && errorsFromPost.attachments" :title="'Error'"
@@ -211,7 +201,6 @@ const closeShowNotification = () => {
             :message="errorsFromPost.reaction_type" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPost.comment" :title="'Error'"
-            :message="errorsFromPost.comment" />
+            v-if="showNotification && errorsFromPost.comment" :title="'Error'" :message="errorsFromPost.comment" />
     </div>
 </template>
