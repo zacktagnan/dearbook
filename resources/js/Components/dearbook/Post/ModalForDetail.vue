@@ -61,59 +61,33 @@ defineExpose({
     <teleport to="body">
         <TransitionRoot appear :show="showDetail" as="template">
             <Dialog as="div" class="relative z-10">
-                <TransitionChild
-                    as="template"
-                    enter="duration-300 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-200 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                >
+                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0"
+                    enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black/25" />
                 </TransitionChild>
 
                 <div class="fixed inset-0 overflow-y-auto">
-                    <div
-                        class="flex items-center justify-center min-h-full p-4 text-center"
-                    >
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0 scale-95"
-                            enter-to="opacity-100 scale-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100 scale-100"
-                            leave-to="opacity-0 scale-95"
-                        >
+                    <div class="flex items-center justify-center min-h-full p-4 text-center">
+                        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100" leave="duration-200 ease-in"
+                            leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
                             <DialogPanel
-                                class="w-full max-w-2xl overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl mt-11"
-                            >
-                                <div
-                                    class="flex items-center justify-between px-3 py-2 border border-b-gray-300"
-                                >
+                                class="w-full max-w-2xl overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl mt-11">
+                                <div class="flex items-center justify-between px-3 py-2 border border-b-gray-300">
                                     <div class="w-full text-center">
-                                        <DialogTitle
-                                            as="h3"
-                                            class="text-lg font-bold text-gray-900"
-                                        >
+                                        <DialogTitle as="h3" class="text-lg font-bold text-gray-900">
                                             {{ 'Publicación de ' + post.user.name }}
                                         </DialogTitle>
                                     </div>
 
-                                    <button
-                                        @click="closeModalDetail"
+                                    <button @click="closeModalDetail"
                                         class="flex items-center p-1 font-bold text-gray-500 transition-colors duration-200 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-gray-700"
-                                        title="Cerrar"
-                                    >
+                                        title="Cerrar">
                                         <XMarkIcon class="w-5 h-5" />
                                     </button>
                                 </div>
 
-
-
                                 <div class="overflow-auto max-h-[747px]">
-                                    <!-- <PostDetailItem :post="post" :type-list="'all'" -->
                                     <PostDetailItem ref="postDetailItemRef" :post="post" :type-list="'all'"
                                         @callOpenEditModal="$emit('callOpenEditModal', post)"
                                         @callOpenAttachmentsModal="openAttachmentsModal"
@@ -121,9 +95,6 @@ defineExpose({
                                         @callConfirmDeletion="confirmDeletion"
                                         @callActiveShowNotificationFromItem="activeShowNotification" />
                                 </div>
-
-
-
                             </DialogPanel>
                         </TransitionChild>
                     </div>
