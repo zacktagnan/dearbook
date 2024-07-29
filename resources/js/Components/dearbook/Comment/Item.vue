@@ -208,7 +208,11 @@ const cancelEditingItemOnEscape = (e) => {
 import ChildrenCommentBox from '@/Components/dearbook/Comment/Box.vue'
 const childrenCommentBoxRef = ref(null)
 const focusChildCommentTextArea = () => {
-    childrenCommentBoxRef.value.focusCommentTextAreaOfCreate()
+    nextTick(() => {
+        if (childrenCommentBoxRef.value) {
+            childrenCommentBoxRef.value.focusCommentTextAreaOfCreate()
+        }
+    })
 };
 </script>
 
@@ -345,7 +349,7 @@ const focusChildCommentTextArea = () => {
                         @callRestartPostCommentList="restartPostCommentList"
                         @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList" />
 
-                    <DisclosureButton class="font-extrabold hover:underline">
+                    <DisclosureButton @click="focusChildCommentTextArea" class="font-extrabold hover:underline">
                         Responder
                         <span v-if="commentHasResponses()">
                             ({{ comment.total_of_comments || comment.all_child_comments.length }})
