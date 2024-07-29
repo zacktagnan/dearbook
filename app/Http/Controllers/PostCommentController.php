@@ -165,9 +165,14 @@ class PostCommentController extends Controller
         }
     }
 
-    private function deleteResources(Comment $comment)
+    private function deleteResources(Comment $comment): void
     {
         if ($comment->attachments()->count() > 0) {
+            foreach ($comment->attachments()->get() as $attachmentToDelete) {
+                $attachmentToDelete->delete();
+            }
+            $this->deleteFolderIfEmpty('attachments/comment-' . $comment->id);
+
             $comment->attachments()->delete();
         }
         if ($comment->reactions()->count() > 0) {
