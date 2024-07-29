@@ -15,6 +15,8 @@ class PostCommentController extends Controller
 {
     use StorageManagement;
 
+    protected string $rootFolderBaseName = 'attachments/comment-';
+
     public function store(CommentStoreRequest $request, Post $post)
     {
         DB::beginTransaction();
@@ -32,7 +34,7 @@ class PostCommentController extends Controller
             $hasComment = true;
 
             $comments = $post->comments()->count();
-            $destinationFolder = 'attachments/comment-' . $comment->id;
+            $destinationFolder = $this->rootFolderBaseName . $comment->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
@@ -83,7 +85,7 @@ class PostCommentController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
-        $destinationFolder = 'attachments/comment-' . $comment->id;
+        $destinationFolder = $this->rootFolderBaseName . $comment->id;
 
         try {
             $comment->update($request->all());
@@ -184,7 +186,7 @@ class PostCommentController extends Controller
             foreach ($comment->attachments()->get() as $attachmentToDelete) {
                 $attachmentToDelete->delete();
             }
-            $this->deleteFolderIfEmpty('attachments/comment-' . $comment->id);
+            $this->deleteFolderIfEmpty($this->rootFolderBaseName . $comment->id);
 
             $comment->attachments()->delete();
         }

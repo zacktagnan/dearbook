@@ -14,6 +14,8 @@ class PostController extends Controller
 {
     use StorageManagement;
 
+    protected string $rootFolderBaseName = 'attachments/post-';
+
     /**
      * Store a newly created resource in storage.
      */
@@ -29,7 +31,7 @@ class PostController extends Controller
 
         try {
             $post = Post::create($request->all());
-            $destinationFolder = 'attachments/post-' . $post->id;
+            $destinationFolder = $this->rootFolderBaseName . $post->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
@@ -65,7 +67,7 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
-        $destinationFolder = 'attachments/post-' . $post->id;
+        $destinationFolder = $this->rootFolderBaseName . $post->id;
 
         try {
             // dd($request->all());
