@@ -153,6 +153,7 @@ class PostCommentController extends Controller
         DB::beginTransaction();
 
         try {
+            $this->changeParentOrOrphan($comment);
             $this->deleteResources($comment);
 
             $comment->delete();
@@ -162,6 +163,18 @@ class PostCommentController extends Controller
             DB::rollBack();
 
             return back();
+        }
+    }
+
+    private function changeParentOrOrphan(Comment $comment): void
+    {
+        $childrenComment = Comment::where('parent_id', $comment->id)->get();
+        if ($childrenComment) {
+            foreach ($childrenComment as $childComment) {
+                $childComment->update([
+                    'parent_id' => !is_null($comment->parent_id) ? $comment->parent_id : null,
+                ]);
+            }
         }
     }
 
