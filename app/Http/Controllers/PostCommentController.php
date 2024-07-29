@@ -24,6 +24,7 @@ class PostCommentController extends Controller
 
         try {
             $comment = Comment::create([
+                'parent_id' => $request->parent_id ?: null,
                 'post_id' => $post->id,
                 'comment' => $request->comment,
                 'user_id' => auth()->id(),
@@ -50,6 +51,10 @@ class PostCommentController extends Controller
 
             DB::commit();
 
+            if (!is_null($request->parent_id)) {
+                $commentParent = Comment::find($request->parent_id);
+            }
+
             return response()->json([
                 'total_of_comments' => $comments,
                 'current_user_has_comment' => $hasComment,
@@ -57,7 +62,11 @@ class PostCommentController extends Controller
                 'latest_comments' => CommentResource::collection(
                     $post->latestComments()->latest()->limit(1)->get()
                 ),
-                'all_comments' => CommentResource::collection($post->comments()->get()),
+                'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+
+                'all_child_comments' => !is_null($request->parent_id)
+                    ? CommentResource::collection($commentParent->childComments()->get())
+                    : [],
             ], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);
@@ -125,10 +134,9 @@ class PostCommentController extends Controller
                 'latest_comments' => CommentResource::collection(
                     $post->latestComments()->latest()->limit(1)->get()
                 ),
-                'all_comments' => CommentResource::collection($post->comments()->get()),
+                'all_comments' => CommentResource::collection($post->comments()->root()->get()),
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
-            // dd($e->getMessage());
             $this->deleteAlreadyUploadedFiles($allFilePaths);
             $this->deleteFolderIfEmpty($destinationFolder);
 

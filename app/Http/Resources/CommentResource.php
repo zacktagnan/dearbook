@@ -35,6 +35,9 @@ class CommentResource extends JsonResource
                     : null,
             ],
 
+            'total_of_comments' => $this->child_comments_count,
+            'all_child_comments' => CommentResource::collection($this->childComments),
+
             'attachments' => AttachmentResource::collection($this->attachments),
             'total_of_reactions' => $this->reactions->count(),
             'current_user_has_reaction' => $this->authUserReactions($this->reactions())->count() > 0,

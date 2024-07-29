@@ -37,6 +37,7 @@ class CommentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'parent_id' => 'nullable|exists:comments,id',
             'comment' => 'max:' . self::$maximumLength,
             'attachments' => [
                 'array',

@@ -1,7 +1,7 @@
 <script setup>
 import CommentList from '@/Components/dearbook/Comment/List.vue'
 import CommentCreate from '@/Components/dearbook/Comment/Create.vue'
-import { onMounted, ref, watch } from 'vue';
+import { ref, } from 'vue';
 
 const commentCreateRef = ref(null);
 
@@ -9,39 +9,16 @@ import axiosClient from '@/axiosClient'
 
 const props = defineProps({
     post: Object,
+    commentsList: Object,
     typeList: String,
+    createAction: String,
+    parentId: {
+        type: [String, Number],
+        default: '',
+    },
 });
 
-
-watch(
-    () => props.post.all_comments,
-    () => {
-        // console.log('POST.all_comments - Listado de Comment ha cambiado tras añadir uno nuevo.')
-        setCommentsList()
-    }
-)
-
-const commentsList = ref({})
-
-const setCommentsList = () => {
-    switch (props.typeList) {
-        case 'latest':
-            commentsList.value = props.post.latest_comments
-            break;
-        case 'all':
-            commentsList.value = props.post.all_comments
-            break;
-        default:
-            break;
-    }
-}
-
-onMounted(() => {
-    setCommentsList()
-});
-
-
-const emit = defineEmits(['callOpenDetailModalToItem', 'callOpenAttachmentsModalToItem', 'callOpenUserReactionsModalToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
+const emit = defineEmits(['callOpenDetailModalToItem', 'callOpenAttachmentsModalToItem', 'callOpenUserReactionsModalToItem', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -57,6 +34,7 @@ const reInitAdjustHeightTextAreaOfCreate = () => {
 
 const sendComment = (comment, attachments) => {
     axiosClient.post(route('post.comment.store', props.post), {
+        parent_id: props.parentId || null,
         comment: comment,
         attachments: attachments,
     }, {
@@ -65,11 +43,15 @@ const sendComment = (comment, attachments) => {
         },
     })
         .then(({ data }) => {
-            props.post.total_of_comments = data.total_of_comments
-            props.post.current_user_has_comment = data.current_user_has_comment
-            props.post.current_user_total_of_comments = data.current_user_total_of_comments
-            props.post.latest_comments = data.latest_comments
-            props.post.all_comments = data.all_comments
+            let generalDataFromPostComments = {
+                total_of_comments: data.total_of_comments,
+                current_user_has_comment: data.current_user_has_comment,
+                current_user_total_of_comments: data.current_user_total_of_comments,
+
+                all_child_comments: data.all_child_comments,
+            }
+            emit('callRestartGeneralDataFromPostCommentsToItem', generalDataFromPostComments)
+            emit('callRestartPostCommentListToItem', data.latest_comments, data.all_comments)
             resetCommentDataOfCreate()
             reInitAdjustHeightTextAreaOfCreate()
         })
@@ -78,9 +60,12 @@ const sendComment = (comment, attachments) => {
         })
 }
 
+const restartGeneralDataFromPostCommentsDeeper = (generalData) => {
+    emit('callRestartGeneralDataFromPostCommentsToItem', generalData)
+}
+
 const restartPostCommentList = (latestComments, allComments) => {
-    props.post.latest_comments = latestComments
-    props.post.all_comments = allComments
+    emit('callRestartPostCommentListToItem', latestComments, allComments)
 }
 
 const processErrors = (errors) => {
@@ -145,13 +130,14 @@ defineExpose({
 </script>
 
 <template>
-    <CommentList :comments-list="commentsList" :total-of-comments="post.total_of_comments" :type-list="typeList"
+    <CommentList :post="post" :comments-list="commentsList" :type-list="typeList"
         @callOpenDetailModalToCommentBox="openDetailModalToItem"
         @callOpenAttachmentsModalToCommentBox="openAttachmentsModalToItem"
         @callOpenUserReactionsModalToCommentBox="openUserReactionsModalToItem"
+        @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostCommentsDeeper"
         @callRestartPostCommentListToCommentBox="restartPostCommentList"
         @callConfirmDeletionToCommentBox="confirmDeletionToItem"
         @callActiveShowNotificationToCommentBox="activeShowNotificationToItem" />
 
-    <CommentCreate ref="commentCreateRef" @callSendComment="sendComment" />
+    <CommentCreate ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />
 </template>

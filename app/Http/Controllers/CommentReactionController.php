@@ -61,7 +61,7 @@ class CommentReactionController extends Controller
             'latest_comments' => CommentResource::collection(
                 $post->latestComments()->latest()->limit(1)->get()
             ),
-            'all_comments' => CommentResource::collection($post->comments()->get()),
+            'all_comments' => CommentResource::collection($post->comments()->root()->get()),
         ], Response::HTTP_OK);
     }
 

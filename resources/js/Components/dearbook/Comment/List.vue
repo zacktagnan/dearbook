@@ -2,12 +2,12 @@
 import CommentItem from '@/Components/dearbook/Comment/Item.vue'
 
 const props = defineProps({
-    commentsList: Array,
-    totalOfComments: Number,
+    post: Object,
+    commentsList: Object,
     typeList: String,
 });
 
-const emit = defineEmits(['callOpenDetailModalToCommentBox', 'callOpenAttachmentsModalToCommentBox', 'callOpenUserReactionsModalToCommentBox', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
+const emit = defineEmits(['callOpenDetailModalToCommentBox', 'callOpenAttachmentsModalToCommentBox', 'callOpenUserReactionsModalToCommentBox', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
 
 const openDetailModalToCommentBox = () => {
     emit('callOpenDetailModalToCommentBox')
@@ -20,6 +20,10 @@ const openAttachmentsModalToCommentBox = (comment, index, entityPrefix) => {
 const openUserReactionsModalToCommentBox = (comment, tabIndex) => {
     emit("callOpenUserReactionsModalToCommentBox", comment, tabIndex);
 };
+
+const restartGeneralDataFromPostComments = (generalData) => {
+    emit('callRestartGeneralDataFromPostComments', generalData)
+}
 
 const restartPostCommentListToCommentBox = (latestComments, allComments) => {
     emit("callRestartPostCommentListToCommentBox", latestComments, allComments);
@@ -35,16 +39,17 @@ const activeShowNotificationToCommentBox = (errors) => {
 </script>
 
 <template>
-    <button v-if="typeList === 'latest' && totalOfComments > 1" @click="openDetailModalToCommentBox"
+    <button v-if="typeList === 'latest' && post.total_of_comments > 1" @click="openDetailModalToCommentBox"
         class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">
         Ver más comentarios
     </button>
 
     <template v-if="commentsList.length > 0">
         <div v-for="comment_item of commentsList">
-            <CommentItem :comment="comment_item" :type-list="typeList"
+            <CommentItem :post="post" :comment="comment_item" :type-list="typeList"
                 @callOpenAttachmentsModalToLatestList="openAttachmentsModalToCommentBox"
                 @callOpenUserReactionsModalToLatestList="openUserReactionsModalToCommentBox"
+                @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
                 @callRestartPostCommentList="restartPostCommentListToCommentBox"
                 @callConfirmDeletionToLatestList="confirmDeletionToCommentBox"
                 @callActiveShowNotificationToLatestList="activeShowNotificationToCommentBox" />

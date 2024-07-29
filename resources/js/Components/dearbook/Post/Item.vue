@@ -57,10 +57,34 @@ const openCommentAttachmentPreview = (comment, index, entityPrefix) => {
     emit("callOpenAttachmentsModal", comment, index, entityPrefix);
 }
 
-import { onMounted } from "vue";
+import { onMounted, watch } from "vue";
+
+watch(
+    () => props.post.all_comments,
+    () => {
+        // console.log('POST.all_comments - Listado de Comment ha cambiado tras añadir uno nuevo.')
+        setCommentsList()
+    }
+)
+
+const commentsList = ref({})
+
+const setCommentsList = () => {
+    switch (props.typeList) {
+        case 'latest':
+            commentsList.value = props.post.latest_comments
+            break;
+        case 'all':
+            commentsList.value = props.post.all_comments
+            break;
+        default:
+            break;
+    }
+}
 
 onMounted(() => {
     setTypeUserReactionsPostByType()
+    setCommentsList()
 });
 
 const setTypeUserReactionsPostByType = () => {
@@ -144,8 +168,19 @@ const filterDeletedComment = (commentId) => {
     props.post.total_of_comments--
 }
 
+const restartGeneralDataFromPostComments = (generalData) => {
+    props.post.total_of_comments = generalData.total_of_comments
+    props.post.current_user_has_comment = generalData.current_user_has_comment
+    props.post.current_user_total_of_comments = generalData.current_user_total_of_comments
+}
+
+const restartPostCommentList = (latestComments, allComments) => {
+    props.post.latest_comments = latestComments
+    props.post.all_comments = allComments
+}
+
 defineExpose({
-    filterDeletedComment,
+    filterDeletedComment, restartPostCommentList,
 })
 </script>
 
@@ -290,10 +325,12 @@ defineExpose({
             <div>
                 <hr>
 
-                <PostCommentBox ref="postCommentBoxRef" :post="post" :type-list="typeList"
+                <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
                     @callOpenDetailModalToItem="openDetailModal"
                     @callOpenAttachmentsModalToItem="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
+                    @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
+                    @callRestartPostCommentListToItem="restartPostCommentList"
                     @callConfirmDeletionToItem="confirmDeletion"
                     @callActiveShowNotificationToItem="activeShowNotification" />
             </div>

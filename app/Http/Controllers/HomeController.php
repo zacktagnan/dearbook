@@ -22,6 +22,12 @@ class HomeController extends Controller
                 'latestComments' => function ($query) {
                     $query->latest()->limit(1)->get();
                 },
+                'comments' => function ($query) {
+                    // $query->whereNull('parent_id');
+                    // o
+                    $query->root()
+                        ->withCount('childComments');
+                },
             ])
             ->latest()
             ->paginate(20);
