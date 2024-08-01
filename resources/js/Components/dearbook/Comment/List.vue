@@ -7,7 +7,7 @@ const props = defineProps({
     typeList: String,
 });
 
-const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModalToCommentBox', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
 
 const openDetailModal = () => {
     emit('callOpenDetailModal')
@@ -17,8 +17,8 @@ const openAttachmentsModal = (comment, index, entityPrefix) => {
     emit('callOpenAttachmentsModal', comment, index, entityPrefix)
 }
 
-const openUserReactionsModalToCommentBox = (comment, tabIndex) => {
-    emit("callOpenUserReactionsModalToCommentBox", comment, tabIndex);
+const openUserReactionsModal = (comment, tabIndex) => {
+    emit("callOpenUserReactionsModal", comment, tabIndex);
 };
 
 const restartGeneralDataFromPostComments = (generalData) => {
@@ -47,8 +47,7 @@ const activeShowNotificationToCommentBox = (errors) => {
     <template v-if="commentsList.length > 0">
         <div v-for="comment_item of commentsList">
             <CommentItem :post="post" :comment="comment_item" :type-list="typeList"
-                @callOpenAttachmentsModal="openAttachmentsModal"
-                @callOpenUserReactionsModalToLatestList="openUserReactionsModalToCommentBox"
+                @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
                 @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
                 @callRestartPostCommentList="restartPostCommentListToCommentBox"
                 @callConfirmDeletionToLatestList="confirmDeletionToCommentBox"

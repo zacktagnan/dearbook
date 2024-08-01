@@ -235,7 +235,7 @@ defineExpose({
                             " :title="'Me gusta'" :type="'like'" :z-index-icon="'z-[7]'"
                                 :users-that-reacted="post.like_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['like'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['like'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'love' ||
@@ -244,7 +244,7 @@ defineExpose({
                             " :title="'Me encanta'" :type="'love'" :z-index-icon="'z-[6]'"
                                 :users-that-reacted="post.love_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['love'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['love'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'care' ||
@@ -253,7 +253,7 @@ defineExpose({
                             " :title="'Me importa'" :type="'care'" :z-index-icon="'z-[5]'"
                                 :users-that-reacted="post.care_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['care'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['care'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'haha' ||
@@ -262,7 +262,7 @@ defineExpose({
                             " :title="'Me divierte'" :type="'haha'" :z-index-icon="'z-[4]'"
                                 :users-that-reacted="post.haha_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['haha'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['haha'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'wow' ||
@@ -271,7 +271,7 @@ defineExpose({
                             " :title="'Me asombra'" :type="'wow'" :z-index-icon="'z-[3]'"
                                 :users-that-reacted="post.wow_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['wow'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['wow'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'sad' ||
@@ -280,7 +280,7 @@ defineExpose({
                             " :title="'Me entristece'" :type="'sad'" :z-index-icon="'z-[2]'"
                                 :users-that-reacted="post.sad_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['sad'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['sad'])" />
 
                             <PostReactionTypeUsersSummary v-if="
                                 post.current_user_type_reaction === 'angry' ||
@@ -289,13 +289,13 @@ defineExpose({
                             " :title="'Me enoja'" :type="'angry'" :z-index-icon="'z-[1]'"
                                 :users-that-reacted="post.angry_user_reactions" :current-user-type-reaction="post.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToItem="openUserReactionsModal(post, defaultTabIndexObject['angry'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModal(post, defaultTabIndexObject['angry'])" />
                         </div>
 
                         <PostReactionTypeUsersSummary :users-that-reacted="post.all_user_reactions"
                             :current-user-has-reaction="post.current_user_has_reaction
                                 " :total-of-reactions="post.total_of_reactions" :show-type-icon="false"
-                            :show-header="false" @callOpenUserReactionsModalToItem="openUserReactionsModal(post, 0)" />
+                            :show-header="false" @callOpenUserReactionsModal="openUserReactionsModal(post, 0)" />
                     </div>
                     <div v-else />
 
@@ -327,7 +327,7 @@ defineExpose({
 
                 <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
                     @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openCommentAttachmentPreview"
-                    @callOpenUserReactionsModalToItem="openUserReactionsModal"
+                    @callOpenUserReactionsModal="openUserReactionsModal"
                     @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                     @callRestartPostCommentListToItem="restartPostCommentList"
                     @callConfirmDeletionToItem="confirmDeletion"

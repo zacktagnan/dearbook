@@ -90,10 +90,10 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModalToLatestList', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
+const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
 
-const openUserReactionsModalToLatestList = (tabIndex) => {
-    emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
+const openUserReactionsModalToCommentList = (tabIndex) => {
+    emit("callOpenUserReactionsModal", props.comment, tabIndex);
 };
 
 const confirmDeletionToLatestList = (comment, entityPrefix) => {
@@ -109,7 +109,7 @@ const openAttachmentPreview = (comment, index, entityPrefix) => {
 };
 
 const openUserReactionsModal = (comment, tabIndex) => {
-    emit("callOpenUserReactionsModalToLatestList", comment, tabIndex);
+    emit("callOpenUserReactionsModal", comment, tabIndex);
 };
 
 const restartGeneralDataFromPostComments = (generalData) => {
@@ -365,8 +365,7 @@ const focusChildCommentTextArea = () => {
                         <CommentReactionTypeUsersSummary :users-that-reacted="comment.all_user_reactions"
                             :current-user-has-reaction="comment.current_user_has_reaction
                                 " :total-of-reactions="comment.total_of_reactions" :show-type-icon="false"
-                            :show-header="false"
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(0)" />
+                            :show-header="false" @callOpenUserReactionsModal="openUserReactionsModalToCommentList(0)" />
 
                         <div class="flex items-center -space-x-0.5">
                             <CommentReactionTypeUsersSummary v-if="
@@ -376,7 +375,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me gusta'" :type="'like'" :z-index-icon="'z-[7]'"
                                 :users-that-reacted="comment.like_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['like'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['like'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'love' ||
@@ -385,7 +384,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me encanta'" :type="'love'" :z-index-icon="'z-[6]'"
                                 :users-that-reacted="comment.love_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['love'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['love'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'care' ||
@@ -394,7 +393,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me importa'" :type="'care'" :z-index-icon="'z-[5]'"
                                 :users-that-reacted="comment.care_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['care'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['care'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'haha' ||
@@ -403,7 +402,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me divierte'" :type="'haha'" :z-index-icon="'z-[4]'"
                                 :users-that-reacted="comment.haha_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['haha'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['haha'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'wow' ||
@@ -412,7 +411,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me asombra'" :type="'wow'" :z-index-icon="'z-[3]'"
                                 :users-that-reacted="comment.wow_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['wow'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['wow'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'sad' ||
@@ -421,7 +420,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me entristece'" :type="'sad'" :z-index-icon="'z-[2]'"
                                 :users-that-reacted="comment.sad_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['sad'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['sad'])" />
 
                             <CommentReactionTypeUsersSummary v-if="
                                 comment.current_user_type_reaction === 'angry' ||
@@ -430,7 +429,7 @@ const focusChildCommentTextArea = () => {
                             " :title="'Me enoja'" :type="'angry'" :z-index-icon="'z-[1]'"
                                 :users-that-reacted="comment.angry_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                     "
-                                @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['angry'])" />
+                                @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['angry'])" />
                         </div>
                     </div>
                 </div>
@@ -449,7 +448,7 @@ const focusChildCommentTextArea = () => {
                             :comments-list="comment.all_child_comments" :type-list="typeList"
                             :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
-                            @callOpenUserReactionsModalToItem="openUserReactionsModal"
+                            @callOpenUserReactionsModal="openUserReactionsModal"
                             @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                             @callRestartPostCommentListToItem="restartPostCommentList"
                             @callConfirmDeletionToItem="confirmDeletionToLatestList"
@@ -484,8 +483,7 @@ const focusChildCommentTextArea = () => {
                     <CommentReactionTypeUsersSummary :users-that-reacted="comment.all_user_reactions"
                         :current-user-has-reaction="comment.current_user_has_reaction
                             " :total-of-reactions="comment.total_of_reactions" :show-type-icon="false"
-                        :show-header="false"
-                        @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(0)" />
+                        :show-header="false" @callOpenUserReactionsModal="openUserReactionsModalToCommentList(0)" />
 
                     <div class="flex items-center -space-x-0.5">
                         <CommentReactionTypeUsersSummary v-if="
@@ -495,7 +493,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me gusta'" :type="'like'" :z-index-icon="'z-[7]'"
                             :users-that-reacted="comment.like_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['like'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['like'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'love' ||
@@ -504,7 +502,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me encanta'" :type="'love'" :z-index-icon="'z-[6]'"
                             :users-that-reacted="comment.love_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['love'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['love'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'care' ||
@@ -513,7 +511,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me importa'" :type="'care'" :z-index-icon="'z-[5]'"
                             :users-that-reacted="comment.care_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['care'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['care'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'haha' ||
@@ -522,7 +520,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me divierte'" :type="'haha'" :z-index-icon="'z-[4]'"
                             :users-that-reacted="comment.haha_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['haha'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['haha'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'wow' ||
@@ -531,7 +529,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me asombra'" :type="'wow'" :z-index-icon="'z-[3]'"
                             :users-that-reacted="comment.wow_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['wow'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['wow'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'sad' ||
@@ -540,7 +538,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me entristece'" :type="'sad'" :z-index-icon="'z-[2]'"
                             :users-that-reacted="comment.sad_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['sad'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['sad'])" />
 
                         <CommentReactionTypeUsersSummary v-if="
                             comment.current_user_type_reaction === 'angry' ||
@@ -549,7 +547,7 @@ const focusChildCommentTextArea = () => {
                         " :title="'Me enoja'" :type="'angry'" :z-index-icon="'z-[1]'"
                             :users-that-reacted="comment.angry_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
                                 "
-                            @callOpenUserReactionsModalToCommentItem="openUserReactionsModalToLatestList(defaultTabIndexObject['angry'])" />
+                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['angry'])" />
                     </div>
                 </div>
             </div>

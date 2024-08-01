@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModalToItem', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletionToItem', 'callActiveShowNotificationToItem',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -112,8 +112,8 @@ const openAttachmentsModal = (comment, index, entityPrefix) => {
     emit("callOpenAttachmentsModal", comment, index, entityPrefix);
 }
 
-const openUserReactionsModalToItem = (comment, tabIndex) => {
-    emit("callOpenUserReactionsModalToItem", comment, tabIndex);
+const openUserReactionsModal = (comment, tabIndex) => {
+    emit("callOpenUserReactionsModal", comment, tabIndex);
 }
 
 const confirmDeletionToItem = (comment, entityPrefix) => {
@@ -131,8 +131,7 @@ defineExpose({
 
 <template>
     <CommentList :post="post" :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
-        @callOpenAttachmentsModal="openAttachmentsModal"
-        @callOpenUserReactionsModalToCommentBox="openUserReactionsModalToItem"
+        @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
         @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostCommentsDeeper"
         @callRestartPostCommentListToCommentBox="restartPostCommentList"
         @callConfirmDeletionToCommentBox="confirmDeletionToItem"
