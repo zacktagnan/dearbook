@@ -328,8 +328,8 @@ defineExpose({
                 <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
                     @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModal="openUserReactionsModal"
-                    @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
-                    @callRestartPostCommentListToItem="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
+                    @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
+                    @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                     @callActiveShowNotification="activeShowNotification" />
             </div>
         </div>

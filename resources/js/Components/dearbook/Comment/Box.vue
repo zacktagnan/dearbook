@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletion', 'callActiveShowNotification',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -50,8 +50,8 @@ const sendComment = (comment, attachments) => {
 
                 all_child_comments: data.all_child_comments,
             }
-            emit('callRestartGeneralDataFromPostCommentsToItem', generalDataFromPostComments)
-            emit('callRestartPostCommentListToItem', data.latest_comments, data.all_comments)
+            emit('callRestartGeneralDataFromPostComments', generalDataFromPostComments)
+            emit('callRestartPostCommentList', data.latest_comments, data.all_comments)
             resetCommentDataOfCreate()
             reInitAdjustHeightTextAreaOfCreate()
         })
@@ -61,11 +61,11 @@ const sendComment = (comment, attachments) => {
 }
 
 const restartGeneralDataFromPostCommentsDeeper = (generalData) => {
-    emit('callRestartGeneralDataFromPostCommentsToItem', generalData)
+    emit('callRestartGeneralDataFromPostComments', generalData)
 }
 
 const restartPostCommentList = (latestComments, allComments) => {
-    emit('callRestartPostCommentListToItem', latestComments, allComments)
+    emit('callRestartPostCommentList', latestComments, allComments)
 }
 
 const processErrors = (errors) => {
@@ -133,7 +133,7 @@ defineExpose({
     <CommentList :post="post" :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
         @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
         @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostCommentsDeeper"
-        @callRestartPostCommentListToCommentBox="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
+        @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
         @callActiveShowNotification="activeShowNotification" />
 
     <CommentCreate ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />

@@ -441,15 +441,14 @@ const focusChildCommentTextArea = () => {
                     leave-to-class="translate-y-0 opacity-0">
                     <DisclosurePanel>
                         <!--
-                            @callOpenDetailModalToItem="openDetailModal" -->
+                            @callOpenDetailModal="openDetailModal" -->
                         <ChildrenCommentBox ref="childrenCommentBoxRef" :post="post"
                             :comments-list="comment.all_child_comments" :type-list="typeList"
                             :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
                             @callOpenUserReactionsModal="openUserReactionsModal"
-                            @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
-                            @callRestartPostCommentListToItem="restartPostCommentList"
-                            @callConfirmDeletion="confirmDeletion"
+                            @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
+                            @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification" />
 
                     </DisclosurePanel>
