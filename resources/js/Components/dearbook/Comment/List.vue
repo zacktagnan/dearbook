@@ -7,10 +7,10 @@ const props = defineProps({
     typeList: String,
 });
 
-const emit = defineEmits(['callOpenDetailModalToCommentBox', 'callOpenAttachmentsModal', 'callOpenUserReactionsModalToCommentBox', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModalToCommentBox', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotificationToCommentBox',])
 
-const openDetailModalToCommentBox = () => {
-    emit('callOpenDetailModalToCommentBox')
+const openDetailModal = () => {
+    emit('callOpenDetailModal')
 }
 
 const openAttachmentsModal = (comment, index, entityPrefix) => {
@@ -39,7 +39,7 @@ const activeShowNotificationToCommentBox = (errors) => {
 </script>
 
 <template>
-    <button v-if="typeList === 'latest' && post.total_of_comments > 1" @click="openDetailModalToCommentBox"
+    <button v-if="typeList === 'latest' && post.total_of_comments > 1" @click="openDetailModal"
         class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">
         Ver más comentarios
     </button>

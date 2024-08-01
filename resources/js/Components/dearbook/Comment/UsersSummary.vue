@@ -18,10 +18,10 @@ defineProps({
     },
 })
 
-const emit = defineEmits(['callOpenDetailModalToItem'])
+const emit = defineEmits(['callOpenDetailModal'])
 
-const openDetailModalToItem = () => {
-    emit('callOpenDetailModalToItem')
+const openDetailModal = () => {
+    emit('callOpenDetailModal')
 }
 
 const authUser = usePage().props.auth.user;
@@ -34,56 +34,48 @@ const maxUsersIndex = maxUsersListed - 1;
 
 <template>
     <div class="relative">
-        <button
-            v-if="totalOfComments > 0"
-            @click="openDetailModalToItem"
-            class="cursor-pointer hover:underline text-[15px]"
-            @mouseover="showUsersPopover = true"
-            @mouseleave="showUsersPopover = false"
-        >
+        <button v-if="totalOfComments > 0" @click="openDetailModal" class="cursor-pointer hover:underline text-[15px]"
+            @mouseover="showUsersPopover = true" @mouseleave="showUsersPopover = false">
             {{ totalOfComments }} {{ totalOfComments === 1 ? 'comentario' : 'comentarios' }}
         </button>
 
-        <div
-            :class="[
-                'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition- duration-500 whitespace-nowrap',
-                showUsersPopover
-                    ? 'opacity-100 visible'
-                    : 'opacity-0 invisible'
-            ]"
-        >
+        <div :class="[
+            'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition- duration-500 whitespace-nowrap',
+            showUsersPopover
+                ? 'opacity-100 visible'
+                : 'opacity-0 invisible'
+        ]">
             <template v-if="currentUserHasComment">
                 <p v-if="currentUserHasComment">
                     {{ authUser.name }}
-                    <span v-if="currentUserTotalOfComments > 1" class="text-xs"> [{{ currentUserTotalOfComments }}]</span>
+                    <span v-if="currentUserTotalOfComments > 1" class="text-xs"> [{{ currentUserTotalOfComments
+                        }}]</span>
                 </p>
             </template>
 
             <template v-if="usersThatCommented?.length > maxUsersListed">
-                <template
-                    v-for="(userThatComment, index) of usersThatCommented?.slice(
-                        0,
-                        maxUsersListed
-                    )"
-                >
-                    <p
-                        v-if="
-                            index === maxUsersIndex &&
-                            usersThatCommented.length > maxUsersListed
-                        "
-                    >
+                <template v-for="(userThatComment, index) of usersThatCommented?.slice(
+                    0,
+                    maxUsersListed
+                )">
+                    <p v-if="
+                        index === maxUsersIndex &&
+                        usersThatCommented.length > maxUsersListed
+                    ">
                         y {{ usersThatCommented.length - maxUsersIndex }} más...
                     </p>
                     <p v-else>
                         {{ userThatComment.name }}
-                        <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{ userThatComment.user_total_comments }}]</span>
+                        <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{
+                            userThatComment.user_total_comments }}]</span>
                     </p>
                 </template>
             </template>
             <template v-else>
                 <p v-for="userThatComment of usersThatCommented">
                     {{ userThatComment.name }}
-                    <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{ userThatComment.user_total_comments }}]</span>
+                    <span v-if="userThatComment.user_total_comments > 1" class="text-xs"> [{{
+                        userThatComment.user_total_comments }}]</span>
                 </p>
             </template>
         </div>

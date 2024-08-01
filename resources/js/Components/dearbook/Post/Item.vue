@@ -303,7 +303,7 @@ defineExpose({
                         :users-that-commented="post.all_users_that_commented"
                         :current-user-has-comment="post.current_user_has_comment"
                         :current-user-total-of-comments="post.current_user_total_of_comments"
-                        :total-of-comments="post.total_of_comments" @callOpenDetailModalToItem="openDetailModal" />
+                        :total-of-comments="post.total_of_comments" @callOpenDetailModal="openDetailModal" />
                 </div>
 
                 <hr />
@@ -326,8 +326,7 @@ defineExpose({
                 <hr>
 
                 <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
-                    @callOpenDetailModalToItem="openDetailModal"
-                    @callOpenAttachmentsModal="openCommentAttachmentPreview"
+                    @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
                     @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                     @callRestartPostCommentListToItem="restartPostCommentList"
