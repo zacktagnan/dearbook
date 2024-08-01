@@ -225,7 +225,7 @@ const focusChildCommentTextArea = () => {
         </button>
     </div> -->
     <CommentEdit v-if="editingItem && editingItem.id === comment.id" ref="commentEditRef" :comment-to-edit="editingItem"
-        @callCancelEditingItemFromEdit="cancelEditingItem" @callActiveShowNotification="activeShowNotification" />
+        @callCancelEditingItem="cancelEditingItem" @callActiveShowNotification="activeShowNotification" />
     <!--  -->
     <div v-else class="flex gap-2 mt-2.5">
         <a :href="route('profile.index', { username: comment.user.username })" :title="'Perfil de ' + comment.user.name"

@@ -39,7 +39,7 @@ const onFocusOut = () => {
 }
 
 const emit = defineEmits([
-    'callCancelEditingItemFromEdit',
+    'callCancelEditingItem',
     'callActiveShowNotification',
 ]);
 
@@ -179,7 +179,7 @@ const cancellingEditingItem = (isUpdated, dataUpdated) => {
     totalAttachment.value = 0;
     deleted_file_ids.value = []
 
-    emit('callCancelEditingItemFromEdit', isUpdated, dataUpdated)
+    emit('callCancelEditingItem', isUpdated, dataUpdated)
 }
 
 const reInitAdjustHeightTextArea = () => {
@@ -338,8 +338,8 @@ defineExpose({
                         <input @change="uploadAttachmentSelected
                             " :disabled="totalAttachment > 0" type="file"
                             class="absolute inset-0 opacity-0 cursor-pointer disabled:cursor-not-allowed" :title="totalAttachment === 0
-                                    ? 'Foto/video/otros'
-                                    : 'Solo un archivo es admitido'
+                                ? 'Foto/video/otros'
+                                : 'Solo un archivo es admitido'
                                 " />
                     </button>
                 </div>
@@ -373,8 +373,8 @@ defineExpose({
                     <div class="flex flex-col">
                         <div class="flex gap-2">
                             <div class="relative text-gray-500 border w-fit" :class="attachmentErrors[index]
-                                    ? 'border-red-400'
-                                    : ''
+                                ? 'border-red-400'
+                                : ''
                                 ">
                                 <!-- =============================================== -->
                                 <div v-if="myFile.deleted"
@@ -399,36 +399,36 @@ defineExpose({
                                             myFile
                                         )
                                     " :src="myFile.url" :alt="(
+                                        myFile.file ||
+                                        myFile
+                                    ).name
+                                        " :title="(
                                                 myFile.file ||
                                                 myFile
                                             ).name
-                                            " :title="(
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                            " class="h-20" :class="[
-                                            myFile.deleted
-                                                ? 'opacity-50'
-                                                : '',
-                                        ]" />
+                                                " class="h-20" :class="[
+                                                myFile.deleted
+                                                    ? 'opacity-50'
+                                                    : '',
+                                            ]" />
                                     <video v-if="
                                         isVideo(
                                             myFile.file ||
                                             myFile
                                         )
                                     " :src="myFile.url" controls :alt="(
+                                        myFile.file ||
+                                        myFile
+                                    ).name
+                                        " :title="(
                                                 myFile.file ||
                                                 myFile
                                             ).name
-                                            " :title="(
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                            " class="h-20" :class="[
-                                            myFile.deleted
-                                                ? 'opacity-50'
-                                                : '',
-                                        ]"></video>
+                                                " class="h-20" :class="[
+                                                myFile.deleted
+                                                    ? 'opacity-50'
+                                                    : '',
+                                            ]"></video>
                                 </template>
 
                                 <template v-else>
