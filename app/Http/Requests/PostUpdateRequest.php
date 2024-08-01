@@ -11,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PostUpdateRequest extends FormRequest
 {
-    public static int $maximumAmount = 2; //28;
+    public static int $maximumAmount = 15; // 25;
     private $maximumBytes;
     private $maximumTotalBytes;
 
@@ -45,9 +45,34 @@ class PostUpdateRequest extends FormRequest
             ]),
             'attachments' => [
                 'array',
-                'max:' . self::$maximumAmount,
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $post = $this->route('post');
+                    $currentAttachmentsOnBD = $post->attachments()->count();
+                    $totalOfDeletedFiles = ($this->deleted_file_ids) ? count($this->deleted_file_ids) : 0;
+                    $totalOfFiles = ($currentAttachmentsOnBD + count($value)) - $totalOfDeletedFiles;
+
+                    if ($totalOfFiles > self::$maximumAmount) {
+                        $fail('El máximo de adjuntos permitido por Post es de ' . self::$maximumAmount . '. Establecidos: ' . $totalOfFiles . '.');
+                    }
+                },
                 function (string $attribute, mixed $value, Closure $fail) {
                     $totalSize = collect($value)->sum(fn (UploadedFile $file) => $file->getSize());
+
+                    $post = $this->route('post');
+                    $currentAttachmentsOnBD = $post->attachments()->select('size')->get();
+                    foreach ($currentAttachmentsOnBD as $attachmentOnBD) {
+                        $totalSize += $attachmentOnBD->size;
+                    }
+
+                    if ($this->deleted_file_ids) {
+                        $attachmentsToDelete = $post->attachments()
+                            ->whereIn('id', $this->deleted_file_ids)
+                            ->get();
+
+                        foreach ($attachmentsToDelete as $attachmentToDelete) {
+                            $totalSize -= $attachmentToDelete->size;
+                        }
+                    }
 
                     // Total de tamaño en KB del conjunto de archivos subidos
                     if ($totalSize > $this->maximumTotalBytes) {
@@ -72,7 +97,6 @@ class PostUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '.',
             'attachments.*.file' => 'Cada adjunto debe ser un archivo.',
             'attachments.*.mimes' => 'Extensión no válida.',
         ];

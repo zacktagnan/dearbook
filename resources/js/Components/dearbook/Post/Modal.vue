@@ -143,37 +143,17 @@ const closeModal = () => {
         postForm.deleted_file_ids = [];
     }
     attachmentErrors.value = [];
-    totalAttachment.value = 0;
     // showWarningExtensions.value = false;
 };
 
 import InputError from "@/Components/InputError.vue";
 const attachmentErrors = ref([]);
 
-const totalAttachment = ref(0);
-const maxAttachmentExceededOnUpdating = () => {
-    totalAttachment.value =
-        props.post.attachments.length +
-        attachmentFiles.value.length -
-        postForm.deleted_file_ids.length;
-    return totalAttachment.value > maximumAmount;
-};
-
 const submitPost = () => {
     postForm.attachments = attachmentFiles.value.map((myFile) => myFile.file);
 
     if (props.post.id) {
-        if (maxAttachmentExceededOnUpdating()) {
-            let msg =
-                "Se excedió el máximo de adjuntos admitido de " +
-                maximumAmount +
-                ". Total actual: " +
-                totalAttachment.value +
-                ".";
-            emit("callActiveShowNotification", buildErrors(msg));
-        } else {
-            processUpdate();
-        }
+        processUpdate();
     } else {
         processStore();
     }
@@ -237,7 +217,6 @@ const processErrors = (errors) => {
     }
 };
 
-const maximumAmount = usePage().props.maximumAmount;
 const allowedMimeTypes = usePage().props.allowedMimeTypes.join(", ") + ".";
 
 /**
@@ -375,242 +354,154 @@ const openInputAttachmentFile = () => {
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
             <Dialog as="div" @close="closeModal" class="relative z-10">
-                <TransitionChild
-                    as="template"
-                    enter="duration-300 ease-out"
-                    enter-from="opacity-0"
-                    enter-to="opacity-100"
-                    leave="duration-200 ease-in"
-                    leave-from="opacity-100"
-                    leave-to="opacity-0"
-                >
+                <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0"
+                    enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black/25" />
                 </TransitionChild>
 
                 <div class="fixed inset-0 overflow-y-auto">
-                    <div
-                        class="flex items-center justify-center min-h-full p-4 text-center"
-                    >
-                        <TransitionChild
-                            as="template"
-                            enter="duration-300 ease-out"
-                            enter-from="opacity-0 scale-95"
-                            enter-to="opacity-100 scale-100"
-                            leave="duration-200 ease-in"
-                            leave-from="opacity-100 scale-100"
-                            leave-to="opacity-0 scale-95"
-                        >
+                    <div class="flex items-center justify-center min-h-full p-4 text-center">
+                        <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0 scale-95"
+                            enter-to="opacity-100 scale-100" leave="duration-200 ease-in"
+                            leave-from="opacity-100 scale-100" leave-to="opacity-0 scale-95">
                             <DialogPanel
-                                class="w-full max-w-lg overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl"
-                            >
-                                <div
-                                    class="flex items-center justify-between px-3 py-2 border border-b-gray-300"
-                                >
+                                class="w-full max-w-lg overflow-hidden text-left align-middle transition-all transform bg-white rounded-md shadow-xl">
+                                <div class="flex items-center justify-between px-3 py-2 border border-b-gray-300">
                                     <div class="w-full text-center">
-                                        <DialogTitle
-                                            as="h3"
-                                            class="text-lg font-bold text-gray-900"
-                                        >
+                                        <DialogTitle as="h3" class="text-lg font-bold text-gray-900">
                                             {{ modalData.dialogTitleText }}
                                         </DialogTitle>
                                     </div>
 
-                                    <button
-                                        @click="closeModal"
+                                    <button @click="closeModal"
                                         class="flex items-center p-1 font-bold text-gray-500 transition-colors duration-200 bg-gray-200 rounded-full hover:bg-gray-300 hover:text-gray-700"
-                                        title="Cerrar"
-                                    >
+                                        title="Cerrar">
                                         <XMarkIcon class="w-5 h-5" />
                                     </button>
                                 </div>
 
                                 <div class="px-[14px] pt-[14px]">
-                                    <PostHeader
-                                        :post="post"
-                                        :show-post-date="false"
-                                    />
-                                    <ckeditor
-                                        :editor="editor"
-                                        @ready="onEditorReady"
-                                        v-model="postForm.body"
-                                        :config="editorConfig"
-                                    >
+                                    <PostHeader :post="post" :show-post-date="false" />
+                                    <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
+                                        :config="editorConfig">
                                     </ckeditor>
                                     <!-- <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
                                         v-model="postForm.body" autofocus></TextareaInput> -->
                                 </div>
 
                                 <div v-if="showWarningExtensions" class="m-4">
-                                    <div
-                                        class="px-3 py-2 leading-4 border-l-4 border-amber-500 bg-amber-200"
-                                    >
-                                        <span class="font-bold text-amber-600"
-                                            >Extensiones permitidas:</span
-                                        ><br />
+                                    <div class="px-3 py-2 leading-4 border-l-4 border-amber-500 bg-amber-200">
+                                        <span class="font-bold text-amber-600">Extensiones permitidas:</span><br />
                                         <small>{{ allowedMimeTypes }}</small>
                                     </div>
                                 </div>
 
-                                <div
-                                    v-if="attachmentFilesComputed.length > 0"
-                                    class="m-[14px]"
-                                >
-                                    <div
-                                        class="grid gap-3 mt-1 overflow-auto h-60"
-                                        :class="[
-                                            attachmentFilesComputed.length === 1
-                                                ? 'grid-cols-1'
-                                                : 'grid-cols-2 lg:grid-cols-3',
-                                        ]"
-                                    >
-                                        <div
-                                            v-for="(
+                                <div v-if="attachmentFilesComputed.length > 0" class="m-[14px]">
+                                    <div class="grid gap-3 mt-1 overflow-auto h-60" :class="[
+                                        attachmentFilesComputed.length === 1
+                                            ? 'grid-cols-1'
+                                            : 'grid-cols-2 lg:grid-cols-3',
+                                    ]">
+                                        <div v-for="(
                                                 myFile, index
-                                            ) of attachmentFilesComputed"
-                                        >
-                                            <div
-                                                class="relative flex flex-col items-center justify-center text-gray-500 border-2 aspect-square bg-cyan-100 group"
-                                                :class="
-                                                    attachmentErrors[index]
-                                                        ? 'border-red-400'
-                                                        : ''
-                                                "
-                                            >
-                                                <div
-                                                    v-if="myFile.deleted"
-                                                    class="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75"
-                                                >
-                                                    <span class="text-sm"
-                                                        >to delete...</span
-                                                    >
+                                            ) of attachmentFilesComputed">
+                                            <div class="relative flex flex-col items-center justify-center text-gray-500 border-2 aspect-square bg-cyan-100 group"
+                                                :class="attachmentErrors[index]
+                                                    ? 'border-red-400'
+                                                    : ''
+                                                    ">
+                                                <div v-if="myFile.deleted"
+                                                    class="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75">
+                                                    <span class="text-sm">to delete...</span>
 
-                                                    <button
-                                                        @click="
-                                                            revertDeleteMode(
-                                                                myFile
-                                                            )
-                                                        "
-                                                        title="Revertir borrado"
-                                                        class="p-1 text-red-700 rounded-full cursor-pointer hover:bg-red-700 hover:text-white"
-                                                    >
-                                                        <ArrowUturnLeftIcon
-                                                            class="w-5 h-5"
-                                                        />
+                                                    <button @click="
+                                                        revertDeleteMode(
+                                                            myFile
+                                                        )
+                                                        " title="Revertir borrado"
+                                                        class="p-1 text-red-700 rounded-full cursor-pointer hover:bg-red-700 hover:text-white">
+                                                        <ArrowUturnLeftIcon class="w-5 h-5" />
                                                     </button>
                                                 </div>
 
-                                                <button
-                                                    @click="
-                                                        removeFile(
-                                                            myFile,
-                                                            index
-                                                        )
-                                                    "
-                                                    title="Excluir"
-                                                    class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-300 rounded-full opacity-0 cursor-pointer w-7 h-7 group-hover:opacity-100 hover:bg-gray-400 right-2 top-2"
-                                                >
-                                                    <XMarkIcon
-                                                        class="w-5 h-5"
-                                                    />
+                                                <button @click="
+                                                    removeFile(
+                                                        myFile,
+                                                        index
+                                                    )
+                                                    " title="Excluir"
+                                                    class="absolute flex items-center justify-center text-gray-100 transition-all bg-gray-300 rounded-full opacity-0 cursor-pointer w-7 h-7 group-hover:opacity-100 hover:bg-gray-400 right-2 top-2">
+                                                    <XMarkIcon class="w-5 h-5" />
                                                 </button>
 
-                                                <template
-                                                    v-if="
+                                                <template v-if="
+                                                    isImage(
+                                                        myFile.file ||
+                                                        myFile
+                                                    ) ||
+                                                    isVideo(
+                                                        myFile.file ||
+                                                        myFile
+                                                    )
+                                                ">
+                                                    <img v-if="
                                                         isImage(
                                                             myFile.file ||
-                                                                myFile
-                                                        ) ||
+                                                            myFile
+                                                        )
+                                                    " :src="myFile.url" :alt="(
+                                                        myFile.file ||
+                                                        myFile
+                                                    ).name
+                                                        " :title="(
+                                                            myFile.file ||
+                                                            myFile
+                                                        ).name
+                                                            " class="object-contain w-10/12 aspect-square" :class="[
+                                                                myFile.deleted
+                                                                    ? 'opacity-50'
+                                                                    : '',
+                                                            ]" />
+                                                    <video v-if="
                                                         isVideo(
                                                             myFile.file ||
-                                                                myFile
+                                                            myFile
                                                         )
-                                                    "
-                                                >
-                                                    <img
-                                                        v-if="
-                                                            isImage(
-                                                                myFile.file ||
-                                                                    myFile
-                                                            )
-                                                        "
-                                                        :src="myFile.url"
-                                                        :alt="
-                                                            (
-                                                                myFile.file ||
-                                                                myFile
-                                                            ).name
-                                                        "
-                                                        :title="
-                                                            (
-                                                                myFile.file ||
-                                                                myFile
-                                                            ).name
-                                                        "
-                                                        class="object-contain w-10/12 aspect-square"
-                                                        :class="[
-                                                            myFile.deleted
-                                                                ? 'opacity-50'
-                                                                : '',
-                                                        ]"
-                                                    />
-                                                    <video
-                                                        v-if="
-                                                            isVideo(
-                                                                myFile.file ||
-                                                                    myFile
-                                                            )
-                                                        "
-                                                        :src="myFile.url"
-                                                        controls
-                                                        :alt="
-                                                            (
-                                                                myFile.file ||
-                                                                myFile
-                                                            ).name
-                                                        "
-                                                        :title="
-                                                            (
-                                                                myFile.file ||
-                                                                myFile
-                                                            ).name
-                                                        "
-                                                        class="object-contain w-10/12 aspect-square"
-                                                        :class="[
-                                                            myFile.deleted
-                                                                ? 'opacity-50'
-                                                                : '',
-                                                        ]"
-                                                    ></video>
+                                                    " :src="myFile.url" controls :alt="(
+                                                        myFile.file ||
+                                                        myFile
+                                                    ).name
+                                                        " :title="(
+                                                            myFile.file ||
+                                                            myFile
+                                                        ).name
+                                                            " class="object-contain w-10/12 aspect-square" :class="[
+                                                                myFile.deleted
+                                                                    ? 'opacity-50'
+                                                                    : '',
+                                                            ]"></video>
                                                 </template>
 
                                                 <template v-else>
-                                                    <div
-                                                        class="flex flex-col items-center justify-center px-1"
-                                                        :class="[
-                                                            myFile.deleted
-                                                                ? 'opacity-50'
-                                                                : '',
-                                                        ]"
-                                                    >
-                                                        <PaperClipIcon
-                                                            class="w-10 h-10 lg:w-12 lg:h-12"
-                                                        />
+                                                    <div class="flex flex-col items-center justify-center px-1" :class="[
+                                                        myFile.deleted
+                                                            ? 'opacity-50'
+                                                            : '',
+                                                    ]">
+                                                        <PaperClipIcon class="w-10 h-10 lg:w-12 lg:h-12" />
 
-                                                        <span
-                                                            class="text-sm text-center lg:text-base"
-                                                            :title="[
-                                                                (
+                                                        <span class="text-sm text-center lg:text-base" :title="[
+                                                            (
+                                                                myFile.file ||
+                                                                myFile
+                                                            ).name.length >
+                                                                maxFileNameLength
+                                                                ? (
                                                                     myFile.file ||
                                                                     myFile
-                                                                ).name.length >
-                                                                maxFileNameLength
-                                                                    ? (
-                                                                          myFile.file ||
-                                                                          myFile
-                                                                      ).name
-                                                                    : '',
-                                                            ]"
-                                                        >
+                                                                ).name
+                                                                : '',
+                                                        ]">
                                                             <!-- {{ (myFile.file || myFile).name }} -->
                                                             {{
                                                                 printFileName(
@@ -628,66 +519,40 @@ const openInputAttachmentFile = () => {
                                             <!-- <div>
                                                 {{ attachmentErrors[index] }}
                                             </div> -->
-                                            <InputError
-                                                :message="
-                                                    attachmentErrors[index]
-                                                "
-                                                class="mt-1"
-                                            />
+                                            <InputError :message="attachmentErrors[index]
+                                                " class="mt-1" />
                                         </div>
                                     </div>
                                 </div>
 
                                 <div
-                                    class="flex p-[14px] mx-[14px] mt-[14px] border border-gray-300 rounded-md justify-between items-center"
-                                >
-                                    <span class="font-medium"
-                                        >Añadir a tu publicación</span
-                                    >
+                                    class="flex p-[14px] mx-[14px] mt-[14px] border border-gray-300 rounded-md justify-between items-center">
+                                    <span class="font-medium">Añadir a tu publicación</span>
 
                                     <div>
-                                        <button
-                                            @click="openInputAttachmentFile"
-                                            type="button"
-                                            class="relative group/ico_attach_multimedia"
-                                        >
-                                            <svg
-                                                viewBox="0 0 512 512"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="w-6 h-6"
-                                            >
+                                        <button @click="openInputAttachmentFile" type="button"
+                                            class="relative group/ico_attach_multimedia">
+                                            <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                                                class="w-6 h-6">
                                                 <path
                                                     d="M432,112V96a48.14,48.14,0,0,0-48-48H64A48.14,48.14,0,0,0,16,96V352a48.14,48.14,0,0,0,48,48H80"
                                                     class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
                                                     style="
                                                         stroke-linejoin: round;
                                                         stroke-width: 32px;
-                                                    "
-                                                ></path>
-                                                <rect
-                                                    x="96"
-                                                    y="128"
-                                                    width="400"
-                                                    height="336"
-                                                    rx="45.99"
-                                                    ry="45.99"
+                                                    "></path>
+                                                <rect x="96" y="128" width="400" height="336" rx="45.99" ry="45.99"
                                                     class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
                                                     style="
                                                         stroke-linejoin: round;
                                                         stroke-width: 32px;
-                                                    "
-                                                ></rect>
-                                                <ellipse
-                                                    cx="372.92"
-                                                    cy="219.64"
-                                                    rx="30.77"
-                                                    ry="30.55"
+                                                    "></rect>
+                                                <ellipse cx="372.92" cy="219.64" rx="30.77" ry="30.55"
                                                     class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
                                                     style="
                                                         stroke-miterlimit: 10;
                                                         stroke-width: 32px;
-                                                    "
-                                                ></ellipse>
+                                                    "></ellipse>
                                                 <path
                                                     d="M342.15,372.17,255,285.78a30.93,30.93,0,0,0-42.18-1.21L96,387.64"
                                                     class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
@@ -695,39 +560,27 @@ const openInputAttachmentFile = () => {
                                                         stroke-linecap: round;
                                                         stroke-linejoin: round;
                                                         stroke-width: 32px;
-                                                    "
-                                                ></path>
-                                                <path
-                                                    d="M265.23,464,383.82,346.27a31,31,0,0,1,41.46-1.87L496,402.91"
+                                                    "></path>
+                                                <path d="M265.23,464,383.82,346.27a31,31,0,0,1,41.46-1.87L496,402.91"
                                                     class="transition-colors duration-150 fill-none stroke-sky-300 group-hover/ico_attach_multimedia:stroke-sky-500"
                                                     style="
                                                         stroke-linecap: round;
                                                         stroke-linejoin: round;
                                                         stroke-width: 32px;
-                                                    "
-                                                ></path>
+                                                    "></path>
                                             </svg>
-                                            <input
-                                                @change="
-                                                    uploadAttachmentSelected
-                                                "
-                                                type="file"
-                                                ref="inputAttachmentFileRef"
-                                                multiple
+                                            <input @change="uploadAttachmentSelected
+                                                " type="file" ref="inputAttachmentFileRef" multiple
                                                 class="absolute inset-0 opacity-0 cursor-pointer"
-                                                title="Foto/video/otros"
-                                            />
+                                                title="Foto/video/otros" />
                                         </button>
                                     </div>
                                 </div>
 
                                 <div class="flex p-[14px]">
-                                    <button
-                                        type="button"
-                                        :title="modalData.submitButtonText"
+                                    <button type="button" :title="modalData.submitButtonText"
                                         class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-indigo-900 bg-indigo-100 border border-transparent rounded-md hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2"
-                                        @click="submitPost"
-                                    >
+                                        @click="submitPost">
                                         {{ modalData.submitButtonText }}
                                     </button>
                                 </div>

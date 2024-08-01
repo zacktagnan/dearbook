@@ -9,7 +9,7 @@ use Illuminate\Validation\Rules\File;
 
 class PostStoreRequest extends FormRequest
 {
-    public static int $maximumAmount = 28;
+    public static int $maximumAmount = 15; // 25;
 
     // public static array $allowedMimeTypes = [
     //     'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
