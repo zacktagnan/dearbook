@@ -176,7 +176,8 @@ const emit = defineEmits([
                 }" :auto-zoom="true" @change="change" :debounce="false" />
         </div>
 
-        <div class="flex items-center justify-between w-full px-4 py-3 my-4 sm:items-stretch sm:px-11 bg-slate-400 rounded-es-md rounded-ee-md">
+        <div
+            class="flex items-center justify-between w-full px-4 py-3 my-4 sm:items-stretch sm:px-11 bg-slate-400 rounded-es-md rounded-ee-md">
             <div class="border border-white rounded-full max-h-[118px] sm:max-h-max">
                 <Preview title="Preview" class="m-2 bg-white rounded-full" :width="100" :height="100"
                     :coordinates="resultPreview.coordinates" :image="resultPreview.image" />
@@ -184,7 +185,7 @@ const emit = defineEmits([
 
             <div
                 class="w-7/12 flex flex-col-reverse sm:flex-row justify-between gap-2 sm:gap-0.5 p-2 border border-white rounded-md">
-                <div class="flex flex-row justify-around sm:px-2 gap-x-2 sm:gap-x-0 sm:flex-col">
+                <div class="flex justify-around sm:px-2 gap-x-2 sm:gap-x-0 sm:flex-col">
                     <button title="Upload"
                         class="flex justify-center items-center gap-1.5 px-2 py-1 text-gray-400 transition-colors duration-200 delay-80 bg-gray-700 border border-gray-700 rounded-md cursor-pointer hover:text-white hover:bg-gray-800 hover:border-white group"
                         @click="$refs.file.click()">
