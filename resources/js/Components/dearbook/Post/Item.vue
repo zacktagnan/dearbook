@@ -329,8 +329,8 @@ defineExpose({
                     @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModal="openUserReactionsModal"
                     @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
-                    @callRestartPostCommentListToItem="restartPostCommentList"
-                    @callConfirmDeletionToItem="confirmDeletion" @callActiveShowNotification="activeShowNotification" />
+                    @callRestartPostCommentListToItem="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
+                    @callActiveShowNotification="activeShowNotification" />
             </div>
         </div>
     </div>

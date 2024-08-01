@@ -7,7 +7,7 @@ const props = defineProps({
     typeList: String,
 });
 
-const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletionToCommentBox', 'callActiveShowNotification',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentListToCommentBox', 'callConfirmDeletion', 'callActiveShowNotification',])
 
 const openDetailModal = () => {
     emit('callOpenDetailModal')
@@ -29,8 +29,8 @@ const restartPostCommentListToCommentBox = (latestComments, allComments) => {
     emit("callRestartPostCommentListToCommentBox", latestComments, allComments);
 };
 
-const confirmDeletionToCommentBox = (comment, entityPrefix) => {
-    emit("callConfirmDeletionToCommentBox", comment, entityPrefix);
+const confirmDeletion = (comment, entityPrefix) => {
+    emit("callConfirmDeletion", comment, entityPrefix);
 };
 
 const activeShowNotification = (errors) => {
@@ -49,8 +49,7 @@ const activeShowNotification = (errors) => {
             <CommentItem :post="post" :comment="comment_item" :type-list="typeList"
                 @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
                 @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
-                @callRestartPostCommentList="restartPostCommentListToCommentBox"
-                @callConfirmDeletionToLatestList="confirmDeletionToCommentBox"
+                @callRestartPostCommentList="restartPostCommentListToCommentBox" @callConfirmDeletion="confirmDeletion"
                 @callActiveShowNotification="activeShowNotification" />
         </div>
     </template>

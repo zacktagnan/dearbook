@@ -90,14 +90,14 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotification',])
+const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
 
 const openUserReactionsModalToCommentList = (tabIndex) => {
     emit("callOpenUserReactionsModal", props.comment, tabIndex);
 };
 
-const confirmDeletionToLatestList = (comment, entityPrefix) => {
-    emit("callConfirmDeletionToLatestList", comment, entityPrefix);
+const confirmDeletion = (comment, entityPrefix) => {
+    emit("callConfirmDeletion", comment, entityPrefix);
 };
 
 const activeShowNotification = (errors) => {
@@ -255,8 +255,7 @@ const focusChildCommentTextArea = () => {
                 </div>
 
                 <EditDeleteDropdown v-model="isCommentAuthor" @callEditItem="startEditingItem(comment)"
-                    @callDeleteItem="confirmDeletionToLatestList(comment, 'post.comment')"
-                    :ellipsis-type-icon="'horizontal'"
+                    @callDeleteItem="confirmDeletion(comment, 'post.comment')" :ellipsis-type-icon="'horizontal'"
                     :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
                     :menu-items-classes="'w-28'" :show-menu-item-icon="false" />
             </div>
@@ -450,7 +449,7 @@ const focusChildCommentTextArea = () => {
                             @callOpenUserReactionsModal="openUserReactionsModal"
                             @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                             @callRestartPostCommentListToItem="restartPostCommentList"
-                            @callConfirmDeletionToItem="confirmDeletionToLatestList"
+                            @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification" />
 
                     </DisclosurePanel>

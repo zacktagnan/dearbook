@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletionToItem', 'callActiveShowNotification',])
+const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostCommentsToItem', 'callRestartPostCommentListToItem', 'callConfirmDeletion', 'callActiveShowNotification',])
 
 const focusCommentTextAreaOfCreate = () => {
     commentCreateRef.value.focusCommentTextArea()
@@ -116,8 +116,8 @@ const openUserReactionsModal = (comment, tabIndex) => {
     emit("callOpenUserReactionsModal", comment, tabIndex);
 }
 
-const confirmDeletionToItem = (comment, entityPrefix) => {
-    emit("callConfirmDeletionToItem", comment, entityPrefix);
+const confirmDeletion = (comment, entityPrefix) => {
+    emit("callConfirmDeletion", comment, entityPrefix);
 }
 
 const activeShowNotification = (errors) => {
@@ -133,8 +133,8 @@ defineExpose({
     <CommentList :post="post" :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
         @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
         @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostCommentsDeeper"
-        @callRestartPostCommentListToCommentBox="restartPostCommentList"
-        @callConfirmDeletionToCommentBox="confirmDeletionToItem" @callActiveShowNotification="activeShowNotification" />
+        @callRestartPostCommentListToCommentBox="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
+        @callActiveShowNotification="activeShowNotification" />
 
     <CommentCreate ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />
 </template>
