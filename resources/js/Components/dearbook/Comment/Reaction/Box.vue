@@ -11,7 +11,7 @@ const props = defineProps({
     comment: Object,
 });
 
-const emit = defineEmits(['callRestartDefaultTabIndex', 'callRestartPostCommentList', 'callActiveShowNotificationToCommentItem'])
+const emit = defineEmits(['callRestartDefaultTabIndex', 'callRestartPostCommentList', 'callActiveShowNotification'])
 
 const changeShowReactionTypeBar = (value) => {
     showReactionTypeBar.value = value
@@ -52,7 +52,7 @@ const processErrors = (errors) => {
     for (const key in errors) {
         errorProcessed = buildErrors(key, errors[key][0])
     }
-    emit("callActiveShowNotificationToCommentItem", errorProcessed);
+    emit("callActiveShowNotification", errorProcessed);
 };
 
 const buildErrors = (key, errorMsg) => {
@@ -76,7 +76,7 @@ const buildErrors = (key, errorMsg) => {
         <ReactionTypeBar :showReactionTypeBar="showReactionTypeBar"
             @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendCommentReaction="sendCommentReaction" />
 
-        <ReactionMainTypeButton :comment="comment"
-            @callChangeShowReactionTypeBar="changeShowReactionTypeBar" @callSendCommentReaction="sendCommentReaction" />
+        <ReactionMainTypeButton :comment="comment" @callChangeShowReactionTypeBar="changeShowReactionTypeBar"
+            @callSendCommentReaction="sendCommentReaction" />
     </div>
 </template>

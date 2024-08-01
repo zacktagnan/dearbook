@@ -20,7 +20,7 @@ const props = defineProps({
     modelValue: Boolean,
 });
 
-const emit = defineEmits(["update:modelValue", 'callOpenEditModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callConfirmDeletion', 'callActiveShowNotificationFromItem']);
+const emit = defineEmits(["update:modelValue", 'callOpenEditModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callConfirmDeletion', 'callActiveShowNotification']);
 
 const showDetail = computed({
     get: () => props.modelValue,
@@ -44,7 +44,7 @@ const confirmDeletion = (entity, entityPrefix) => {
 }
 
 const activeShowNotification = (errors) => {
-    emit("callActiveShowNotificationFromItem", errors);
+    emit("callActiveShowNotification", errors);
 };
 
 const postDetailItemRef = ref(null)
@@ -93,7 +93,7 @@ defineExpose({
                                         @callOpenAttachmentsModal="openAttachmentsModal"
                                         @callOpenUserReactionsModal="openUserReactionsModal"
                                         @callConfirmDeletion="confirmDeletion"
-                                        @callActiveShowNotificationFromItem="activeShowNotification" />
+                                        @callActiveShowNotification="activeShowNotification" />
                                 </div>
                             </DialogPanel>
                         </TransitionChild>

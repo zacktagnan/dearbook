@@ -90,7 +90,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
+const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotification',])
 
 const openUserReactionsModalToCommentList = (tabIndex) => {
     emit("callOpenUserReactionsModal", props.comment, tabIndex);
@@ -100,8 +100,8 @@ const confirmDeletionToLatestList = (comment, entityPrefix) => {
     emit("callConfirmDeletionToLatestList", comment, entityPrefix);
 };
 
-const activeShowNotificationToLatestList = (errors) => {
-    emit("callActiveShowNotificationToLatestList", errors);
+const activeShowNotification = (errors) => {
+    emit("callActiveShowNotification", errors);
 };
 
 const openAttachmentPreview = (comment, index, entityPrefix) => {
@@ -225,8 +225,7 @@ const focusChildCommentTextArea = () => {
         </button>
     </div> -->
     <CommentEdit v-if="editingItem && editingItem.id === comment.id" ref="commentEditRef" :comment-to-edit="editingItem"
-        @callCancelEditingItemFromEdit="cancelEditingItem"
-        @callActiveShowNotificationFromEdit="activeShowNotificationToLatestList" />
+        @callCancelEditingItemFromEdit="cancelEditingItem" @callActiveShowNotification="activeShowNotification" />
     <!--  -->
     <div v-else class="flex gap-2 mt-2.5">
         <a :href="route('profile.index', { username: comment.user.username })" :title="'Perfil de ' + comment.user.name"
@@ -347,7 +346,7 @@ const focusChildCommentTextArea = () => {
                     <CommentReactionBox :comment="comment"
                         @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
                         @callRestartPostCommentList="restartPostCommentList"
-                        @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList" />
+                        @callActiveShowNotification="activeShowNotification" />
 
                     <DisclosureButton @click="focusChildCommentTextArea" class="font-extrabold hover:underline">
                         Responder
@@ -452,7 +451,7 @@ const focusChildCommentTextArea = () => {
                             @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                             @callRestartPostCommentListToItem="restartPostCommentList"
                             @callConfirmDeletionToItem="confirmDeletionToLatestList"
-                            @callActiveShowNotificationToItem="activeShowNotificationToLatestList" />
+                            @callActiveShowNotification="activeShowNotification" />
 
                     </DisclosurePanel>
                 </transition>
@@ -467,7 +466,7 @@ const focusChildCommentTextArea = () => {
 
                 <CommentReactionBox :comment="comment" @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
                     @callRestartPostCommentList="restartPostCommentList"
-                    @callActiveShowNotificationToCommentItem="activeShowNotificationToLatestList" />
+                    @callActiveShowNotification="activeShowNotification" />
 
                 <button class="font-extrabold hover:underline">
                     Responder

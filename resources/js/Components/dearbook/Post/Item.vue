@@ -17,7 +17,7 @@ const emit = defineEmits([
     "callOpenAttachmentsModal",
     'callOpenUserReactionsModal',
     'callConfirmDeletion',
-    "callActiveShowNotificationFromItem",
+    "callActiveShowNotification",
 ]);
 
 const maxPostBodyLength = 100;
@@ -152,7 +152,7 @@ const confirmDeletion = (entity, entityPrefix) => {
 }
 
 const activeShowNotification = (errors) => {
-    emit("callActiveShowNotificationFromItem", errors);
+    emit("callActiveShowNotification", errors);
 };
 
 import PostCommentUsersSummary from '@/Components/dearbook/Comment/UsersSummary.vue'
@@ -311,7 +311,7 @@ defineExpose({
 
             <div class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <PostReactionBox :post="post" @callRestartDefaultTabIndex="setTypeUserReactionsPostByType"
-                    @callActiveShowNotificationToItem="activeShowNotification" />
+                    @callActiveShowNotification="activeShowNotification" />
 
                 <div class="w-1/2">
                     <button title="Deja un comentario" @click="focusCommentTextArea"
@@ -330,8 +330,7 @@ defineExpose({
                     @callOpenUserReactionsModal="openUserReactionsModal"
                     @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                     @callRestartPostCommentListToItem="restartPostCommentList"
-                    @callConfirmDeletionToItem="confirmDeletion"
-                    @callActiveShowNotificationToItem="activeShowNotification" />
+                    @callConfirmDeletionToItem="confirmDeletion" @callActiveShowNotification="activeShowNotification" />
             </div>
         </div>
     </div>

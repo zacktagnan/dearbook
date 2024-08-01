@@ -170,14 +170,14 @@ const closeShowNotification = () => {
         <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal"
             @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openAttachmentsModal"
             @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
-            @callActiveShowNotificationFromItem="activeShowNotification" />
+            @callActiveShowNotification="activeShowNotification" />
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
         <PostDetailModal ref="postDetailModalRef" :post="postDetail" v-model="showDetailModal"
             @callOpenEditModal="openEditModal" @callOpenAttachmentsModal="openAttachmentsModal"
             @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
-            @callActiveShowNotificationFromItem="activeShowNotification" />
+            @callActiveShowNotification="activeShowNotification" />
 
         <AttachmentModal :attachments="entityWithAttachmentsToPreview.entity?.attachments || []"
             :entity-prefix="entityWithAttachmentsToPreview.entityPrefix"
