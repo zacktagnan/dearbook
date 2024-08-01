@@ -8,11 +8,8 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon } from "@heroicons/vue/24/outline";
-import { Head } from "@inertiajs/vue3";
-import { usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
-import { ref } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { computed, ref } from "vue";
+import { Head, useForm, usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
     success: {
@@ -44,16 +41,53 @@ const avatarImageSrc = ref("");
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
 
+const timer = ref(null)
+const timeOnSeconds = ref(0)
+const maxTimeOnSecondsForNotificationBox = usePage().props.maxTimeOnSecondsForNotificationBox;
+
 const activeShowNotification = () => {
     showNotification.value = true
 
-    setTimeout(() => {
-        closingNotification('notification')
-    }, 3000)
+    // setTimeout(() => {
+    //     closingNotification('notification')
+    // }, 3000)
+    startClosingNotification()
+}
+
+const startClosingNotification = () => {
+    timer.value = setInterval(() => {
+        // if (notificationBoxRef.value) {
+        //     timeOnSeconds.value++
+        //     console.log('timeOnSeconds', timeOnSeconds.value)
+
+        //     if (timeOnSeconds.value >= maxTimeOnSecondsForNotificationBox) {
+        //         stopClosingNotification()
+        //         closingNotification('notification')
+        //         console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
+        //     }
+        // }
+        if (notificationBoxRef.value && timeOnSeconds.value < maxTimeOnSecondsForNotificationBox) {
+            timeOnSeconds.value++
+            console.log('timeOnSeconds', timeOnSeconds.value)
+        } else {
+            stopClosingNotification()
+            closingNotification('notification')
+            console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
+        }
+    }, 1000)
+}
+
+const stopClosingNotification = () => {
+    clearInterval(timer.value)
 }
 
 const closingNotification = (className) => {
-    notificationBoxRef.value.fadeOutEffect(className)
+    timer.value = null
+    timeOnSeconds.value = 0
+    // notificationBoxRef.value.fadeOutEffect(className)
+    if (notificationBoxRef.value) {
+        notificationBoxRef.value.fadeOutEffect(className)
+    }
 }
 
 const closeShowNotification = () => {
@@ -94,9 +128,10 @@ const submitCoverImage = () => {
             showNotification.value = true
         },
         onFinish: () => {
-            setTimeout(() => {
-                closingNotification('notification')
-            }, 3000)
+            // setTimeout(() => {
+            //     closingNotification('notification')
+            // }, 3000)
+            startClosingNotification()
         }
     })
 }
@@ -122,12 +157,15 @@ const closeCropImageModal = () => {
     <AuthenticatedLayout>
         <div class="bg-white">
             <div class="lg:w-2/3 mx-auto pt-[58px] relative">
-                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-show="showNotification && success" :title="'Info'"
-                    :message="success" />
-                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-if="showNotification && errors.cover"
-                    :title="'Error'" :message="errors.cover" />
-                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification" v-if="showNotification && errors.avatar"
-                    :title="'Error'" :message="errors.avatar" />
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                    @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                    v-show="showNotification && success" :title="'Info'" :message="success" />
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                    @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                    v-if="showNotification && errors.cover" :title="'Error'" :message="errors.cover" />
+                <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                    @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                    v-else-if="showNotification && errors.avatar" :title="'Error'" :message="errors.avatar" />
 
                 <div class="relative bg-white">
                     <img :src="coverImageSrc || user.cover_url || '/img/default_cover.jpg'" alt="Cover"
@@ -167,9 +205,8 @@ const closeCropImageModal = () => {
                             <div class="flex justify-center lg:justify-start lg:static">
                                 <div
                                     class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
-                                    <img :src="
-                                            avatarImageSrc || user.avatar_url ||
-                                            '/img/default_avatar.png'
+                                    <img :src="avatarImageSrc || user.avatar_url ||
+                                        '/img/default_avatar.png'
                                         " alt=""
                                         class="rounded-full border-[1px] border-gray-200 w-[174px] h-[168px]" />
                                 </div>
@@ -286,8 +323,7 @@ const closeCropImageModal = () => {
 
         <Modal :show="showingCropImageModal" @close="closeCropImageModal">
             <CropperIndex @callCloseCropImageModal="closeCropImageModal"
-            @callActiveShowNotification="activeShowNotification"
-            :user="user" />
+                @callActiveShowNotification="activeShowNotification" :user="user" />
         </Modal>
     </AuthenticatedLayout>
 </template>

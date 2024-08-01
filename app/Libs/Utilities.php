@@ -10,4 +10,6 @@ class Utilities
         'doc', 'docx', 'xls', 'xlsx', 'txt',
         'pdf', 'csv', 'zip', 'rar',
     ];
+
+    public static int $maxTimeOnSecondsForNotificationBox = 3;
 }

@@ -58,7 +58,9 @@ const activeShowNotification = (errors) => {
 }
 
 const closingNotification = (className) => {
-    notificationBoxRef.value.fadeOutEffect(className)
+    if (notificationBoxRef.value) {
+        notificationBoxRef.value.fadeOutEffect(className)
+    }
 }
 
 const closeShowNotification = () => {
@@ -71,7 +73,7 @@ const closeShowNotification = () => {
         <a :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name">
             <img :src="$page.props.auth.user.avatar_url ||
-            '/img/default_avatar.png'" class="w-10 transition-all border-2 rounded-full hover:border-cyan-500"
+                '/img/default_avatar.png'" class="w-10 transition-all border-2 rounded-full hover:border-cyan-500"
                 :alt="$page.props.auth.user.name" />
         </a>
         <div @click="openCreateModal"

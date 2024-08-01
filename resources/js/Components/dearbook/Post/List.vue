@@ -7,7 +7,7 @@ import UserReactionsModal from '@/Components/dearbook/Reaction/Modal.vue'
 import ConfirmPostDeletionModal from '@/Components/Modal.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
-import { router } from "@inertiajs/vue3";
+import { router, usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
 
 defineProps({
@@ -109,13 +109,47 @@ const errorsFromPost = ref({})
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
 
+const timer = ref(null)
+const timeOnSeconds = ref(0)
+const maxTimeOnSecondsForNotificationBox = usePage().props.maxTimeOnSecondsForNotificationBox;
+
 const activeShowNotification = (errors) => {
     errorsFromPost.value = errors
     showNotification.value = true
 
-    setTimeout(() => {
-        closingNotification('notification')
-    }, 3000)
+    // setTimeout(() => {
+    //     closingNotification('notification')
+    // }, 3000)
+    timer.value = null
+    timeOnSeconds.value = 0
+    startClosingNotification()
+}
+
+const startClosingNotification = () => {
+    timer.value = setInterval(() => {
+        // if (notificationBoxRef.value) {
+        //     timeOnSeconds.value++
+        //     console.log('timeOnSeconds', timeOnSeconds.value)
+
+        //     if (timeOnSeconds.value >= maxTimeOnSecondsForNotificationBox) {
+        //         stopClosingNotification()
+        //         closingNotification('notification')
+        //         console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
+        //     }
+        // }
+        if (notificationBoxRef.value && timeOnSeconds.value < maxTimeOnSecondsForNotificationBox) {
+            timeOnSeconds.value++
+            console.log('timeOnSeconds', timeOnSeconds.value)
+        } else {
+            stopClosingNotification()
+            closingNotification('notification')
+            console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
+        }
+    }, 1000)
+}
+
+const stopClosingNotification = () => {
+    clearInterval(timer.value)
 }
 
 const closingNotification = (className) => {
@@ -190,17 +224,21 @@ const closeShowNotification = () => {
         </ConfirmPostDeletionModal>
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
             v-if="showNotification && errorsFromPost.body" :title="'Error'" :message="errorsFromPost.body" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPost.attachments" :title="'Error'"
+            @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+            v-else-if="showNotification && errorsFromPost.attachments" :title="'Error'"
             :message="errorsFromPost.attachments" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPost.reaction_type" :title="'Error'"
+            @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+            v-else-if="showNotification && errorsFromPost.reaction_type" :title="'Error'"
             :message="errorsFromPost.reaction_type" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
-            v-if="showNotification && errorsFromPost.comment" :title="'Error'" :message="errorsFromPost.comment" />
+            @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+            v-else-if="showNotification && errorsFromPost.comment" :title="'Error'" :message="errorsFromPost.comment" />
     </div>
 </template>

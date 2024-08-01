@@ -45,13 +45,12 @@ class HandleInertiaRequests extends Middleware
                 // : null,
             ],
             // 'upload' => [
-            //     'maximumAmount' => PostStoreRequest::$maximumAmount,
             //     'allowedMimeTypes' => PostStoreRequest::$allowedMimeTypes,
             // ],
-            'maximumAmount' => PostStoreRequest::$maximumAmount,
             // 'allowedMimeTypes' => PostStoreRequest::$allowedMimeTypes,
             // Pasado a ...
             'allowedMimeTypes' => Utilities::$allowedMimeTypes,
+            'maxTimeOnSecondsForNotificationBox' => Utilities::$maxTimeOnSecondsForNotificationBox,
         ];
     }
 }
