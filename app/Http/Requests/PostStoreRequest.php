@@ -91,7 +91,7 @@ class PostStoreRequest extends FormRequest
             'attachments.required_without' => 'Se requiere que el comentario esté constituido o por un texto o por un archivo adjunto.',
             // 'attachments.*' => 'El adjunto elegido debe disponer de una de las siguientes extensiones: ' . implode(', ', self::$allowedMimeTypes),
             // mensaje demasiado largo
-            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '.',
+            'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '. Agregados: ' . count($this->attachments) . '.',
             'attachments.*.file' => 'Cada adjunto debe ser un archivo.',
             'attachments.*.mimes' => 'Extensión no válida.',
         ];
