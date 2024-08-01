@@ -90,7 +90,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModalToLatestList', 'callOpenUserReactionsModalToLatestList', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
+const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModalToLatestList', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletionToLatestList', 'callActiveShowNotificationToLatestList',])
 
 const openUserReactionsModalToLatestList = (tabIndex) => {
     emit("callOpenUserReactionsModalToLatestList", props.comment, tabIndex);
@@ -105,7 +105,7 @@ const activeShowNotificationToLatestList = (errors) => {
 };
 
 const openAttachmentPreview = (comment, index, entityPrefix) => {
-    emit("callOpenAttachmentsModalToLatestList", comment, index, entityPrefix);
+    emit("callOpenAttachmentsModal", comment, index, entityPrefix);
 };
 
 const openUserReactionsModal = (comment, tabIndex) => {
@@ -448,7 +448,7 @@ const focusChildCommentTextArea = () => {
                         <ChildrenCommentBox ref="childrenCommentBoxRef" :post="post"
                             :comments-list="comment.all_child_comments" :type-list="typeList"
                             :create-action="'responding'" :parent-id="comment.id"
-                            @callOpenAttachmentsModalToItem="openAttachmentPreview"
+                            @callOpenAttachmentsModal="openAttachmentPreview"
                             @callOpenUserReactionsModalToItem="openUserReactionsModal"
                             @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                             @callRestartPostCommentListToItem="restartPostCommentList"

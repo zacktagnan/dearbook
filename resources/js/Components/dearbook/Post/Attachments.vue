@@ -11,7 +11,7 @@ const props = defineProps({
     maxPreviewFiles: Number,
 })
 
-defineEmits(['callOpenAttachmentsModalToItem'])
+defineEmits(['callOpenAttachmentsModal'])
 
 const maxPreviewIndex = props.maxPreviewFiles - 1;
 </script>
@@ -21,7 +21,7 @@ const maxPreviewIndex = props.maxPreviewFiles - 1;
         0,
         maxPreviewFiles
     )">
-        <div @click="$emit('callOpenAttachmentsModalToItem', index)" title="Ver en detalle"
+        <div @click="$emit('callOpenAttachmentsModal', index)" title="Ver en detalle"
             class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
             <div v-if="
                 index === maxPreviewIndex &&

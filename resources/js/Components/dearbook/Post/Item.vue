@@ -215,7 +215,7 @@ defineExpose({
                     : 'grid-cols-2 lg:grid-cols-3',
             ]">
                 <PostAttachments :attachments="post.attachments" :max-preview-files="maxPreviewFiles"
-                    @callOpenAttachmentsModalToItem="openAttachmentPreview" />
+                    @callOpenAttachmentsModal="openAttachmentPreview" />
             </div>
 
             <hr class="mx-0 mt-2" />
@@ -327,7 +327,7 @@ defineExpose({
 
                 <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
                     @callOpenDetailModalToItem="openDetailModal"
-                    @callOpenAttachmentsModalToItem="openCommentAttachmentPreview"
+                    @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModalToItem="openUserReactionsModal"
                     @callRestartGeneralDataFromPostCommentsToItem="restartGeneralDataFromPostComments"
                     @callRestartPostCommentListToItem="restartPostCommentList"
