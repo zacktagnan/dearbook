@@ -17,7 +17,7 @@ const props = defineProps({
         default: '',
     },
     allChildCommentsTotal: {
-        type: Object,
+        type: Number,
         default: 0,
     },
     showMoreCommentsLink: {

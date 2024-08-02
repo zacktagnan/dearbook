@@ -1,16 +1,14 @@
 <script setup>
-import {
-    PaperClipIcon,
-} from "@heroicons/vue/24/solid";
 import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
 import { usePage } from "@inertiajs/vue3";
 import { ref, computed, onMounted, nextTick } from "vue";
-import { isImage, isVideo, reactionTypesFormat, } from "@/Libs/helpers";
+import { reactionTypesFormat, } from "@/Libs/helpers";
 
 import CommentEdit from '@/Components/dearbook/Comment/Edit.vue'
+import CommentAttachments from '@/Components/dearbook/Comment/Attachments.vue'
 
 import {
     Disclosure,
@@ -265,78 +263,9 @@ const openDetailModal = () => {
             </div>
 
             <div v-if="attachmentFilesComputed.length > 0" class="mt-1.5">
-                <div v-for="(myFile, index) of attachmentFilesComputed" class="flex gap-4">
-                    <div class="flex flex-col">
-                        <div class="flex gap-2">
-                            <div class="p-1 border w-fit rounded-2xl">
-                                <div @click="openAttachmentPreview(comment, index, 'post.comment')"
-                                    title="Ver en detalle" class="overflow-hidden cursor-pointer rounded-2xl">
-                                    <template v-if="
-                                        isImage(
-                                            myFile.file ||
-                                            myFile
-                                        ) ||
-                                        isVideo(
-                                            myFile.file ||
-                                            myFile
-                                        )
-                                    ">
-                                        <img v-if="
-                                            isImage(
-                                                myFile.file ||
-                                                myFile
-                                            )
-                                        " :src="myFile.url" :alt="(
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                            " class="object-fill max-w-60" />
-                                        <video v-if="
-                                            isVideo(
-                                                myFile.file ||
-                                                myFile
-                                            )
-                                        " :src="myFile.url" controls :alt="(
-                                            myFile.file ||
-                                            myFile
-                                        ).name
-                                            " class="object-fill h-20"></video>
-                                    </template>
-
-                                    <template v-else>
-                                        <div class="flex flex-col items-center justify-center p-1 px-1 bg-cyan-100">
-                                            <PaperClipIcon class="w-9 h-9 lg:w-11 lg:h-11" />
-
-                                            <span class="text-xs text-center lg:text-sm" :title="[
-                                                (
-                                                    myFile.file ||
-                                                    myFile
-                                                ).name.length >
-                                                    maxFileNameLength
-                                                    ? (
-                                                        myFile.file ||
-                                                        myFile
-                                                    ).name
-                                                    : '',
-                                            ]">
-                                                {{
-                                                    printFileName(
-                                                        (
-                                                            myFile.file ||
-                                                            myFile
-                                                        ).name
-                                                    )
-                                                }}
-                                            </span>
-                                        </div>
-                                    </template>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- <div>otro adjunto</div> -->
-                </div>
+                <CommentAttachments :comment="comment" :attachments="attachmentFilesComputed"
+                    :max-file-name-length="maxFileNameLength" @callOpenAttachmentsModal="openAttachmentPreview"
+                    @callPrintFileName="printFileName" />
             </div>
 
             <Disclosure v-if="typeList === 'all' || typeList === 'latest'">
