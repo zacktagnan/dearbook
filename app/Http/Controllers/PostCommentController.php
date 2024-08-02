@@ -62,7 +62,7 @@ class PostCommentController extends Controller
                 'current_user_has_comment' => $hasComment,
                 'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
                 'latest_comments' => CommentResource::collection(
-                    $post->latestComments()->latest()->limit(1)->get()
+                    $post->latestComments()->root()->latest()->limit(1)->get()
                 ),
                 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
 
@@ -134,7 +134,7 @@ class PostCommentController extends Controller
                 'commentUpdated' => new CommentResource($comment),
 
                 'latest_comments' => CommentResource::collection(
-                    $post->latestComments()->latest()->limit(1)->get()
+                    $post->latestComments()->root()->latest()->limit(1)->get()
                 ),
                 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
             ], Response::HTTP_OK);

@@ -20,7 +20,8 @@ class HomeController extends Controller
                     $query->where('user_id', $userId);
                 },
                 'latestComments' => function ($query) {
-                    $query->latest()->limit(1)->get();
+                    $query->root()
+                        ->latest()->limit(1)->get();
                 },
                 'comments' => function ($query) {
                     // $query->whereNull('parent_id');

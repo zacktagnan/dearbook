@@ -16,6 +16,14 @@ const props = defineProps({
         type: [String, Number],
         default: '',
     },
+    allChildCommentsTotal: {
+        type: Object,
+        default: 0,
+    },
+    showMoreCommentsLink: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
@@ -130,11 +138,17 @@ defineExpose({
 </script>
 
 <template>
-    <CommentList :post="post" :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
+    <CommentList :post="post" :comments-list="commentsList" :type-list="typeList"
+        :show-more-comments-link="showMoreCommentsLink" @callOpenDetailModal="openDetailModal"
         @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
         @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostCommentsDeeper"
         @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
         @callActiveShowNotification="activeShowNotification" />
+
+    <button v-if="typeList === 'latest' && allChildCommentsTotal > 1" @click="openDetailModal"
+        class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todas las respuestas disponibles">
+        Ver más respuestas
+    </button>
 
     <CommentCreate ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />
 </template>

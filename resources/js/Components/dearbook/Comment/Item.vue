@@ -90,7 +90,7 @@ const typeUserReactionsComment = (type) => {
     setDefaultTabIndex(data, type)
 }
 
-const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
+const emit = defineEmits(['callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification', 'callOpenDetailModal',])
 
 const openUserReactionsModalToCommentList = (tabIndex) => {
     emit("callOpenUserReactionsModal", props.comment, tabIndex);
@@ -214,6 +214,10 @@ const focusChildCommentTextArea = () => {
         }
     })
 };
+
+const openDetailModal = () => {
+    emit("callOpenDetailModal");
+}
 </script>
 
 <template>
@@ -335,7 +339,7 @@ const focusChildCommentTextArea = () => {
                 </div>
             </div>
 
-            <Disclosure v-if="typeList === 'all'">
+            <Disclosure v-if="typeList === 'all' || typeList === 'latest'">
                 <div class="flex items-center gap-4 px-3 mt-0.5 text-xs text-gray-600">
                     <div class="z-10 tooltip tooltip-right" :data-tip="comment.created_at_large_format">
                         <small class="text-xs hover:cursor-pointer hover:underline">{{ comment.created_at_formatted
@@ -440,9 +444,7 @@ const focusChildCommentTextArea = () => {
                     leave-active-class="duration-75 ease-out" leave-from-class="-translate-y-2 opacity-100"
                     leave-to-class="translate-y-0 opacity-0">
                     <DisclosurePanel>
-                        <!--
-                            @callOpenDetailModal="openDetailModal" -->
-                        <ChildrenCommentBox ref="childrenCommentBoxRef" :post="post"
+                        <ChildrenCommentBox v-if="typeList === 'all'" ref="childrenCommentBoxRef" :post="post"
                             :comments-list="comment.all_child_comments" :type-list="typeList"
                             :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
@@ -451,103 +453,20 @@ const focusChildCommentTextArea = () => {
                             @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification" />
 
+                        <ChildrenCommentBox v-else-if="typeList === 'latest'" ref="childrenCommentBoxRef" :post="post"
+                            :comments-list="comment.latest_child_comments" :type-list="typeList"
+                            :all-child-comments-total="comment.all_child_comments.length"
+                            :show-more-comments-link="false" :create-action="'responding'" :parent-id="comment.id"
+                            @callOpenAttachmentsModal="openAttachmentPreview"
+                            @callOpenUserReactionsModal="openUserReactionsModal"
+                            @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
+                            @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
+                            @callActiveShowNotification="activeShowNotification"
+                            @callOpenDetailModal="openDetailModal" />
+
                     </DisclosurePanel>
                 </transition>
             </Disclosure>
-
-            <div v-else class="flex items-center gap-4 px-3 mt-0.5 text-xs text-gray-600">
-                <div class="z-10 tooltip tooltip-right" :data-tip="comment.created_at_large_format">
-                    <small class="text-xs hover:cursor-pointer hover:underline">
-                        {{ comment.created_at_formatted }}
-                    </small>
-                </div>
-
-                <CommentReactionBox :comment="comment" @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
-                    @callRestartPostCommentList="restartPostCommentList"
-                    @callActiveShowNotification="activeShowNotification" />
-
-                <button class="font-extrabold hover:underline">
-                    Responder
-                    <span>:) ({{ comment.total_of_comments }})</span>
-                </button>
-
-                <div v-if="comment.created_at != comment.updated_at" class="tooltip tooltip-top"
-                    :data-tip="comment.updated_at_large_format">
-                    <small class="text-xs italic hover:cursor-pointer hover:underline">Editado</small>
-                </div>
-
-                <div v-if="comment.total_of_reactions > 0" class="flex items-center">
-                    <CommentReactionTypeUsersSummary :users-that-reacted="comment.all_user_reactions"
-                        :current-user-has-reaction="comment.current_user_has_reaction
-                            " :total-of-reactions="comment.total_of_reactions" :show-type-icon="false"
-                        :show-header="false" @callOpenUserReactionsModal="openUserReactionsModalToCommentList(0)" />
-
-                    <div class="flex items-center -space-x-0.5">
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'like' ||
-                            (comment.like_user_reactions &&
-                                comment.like_user_reactions.length > 0)
-                        " :title="'Me gusta'" :type="'like'" :z-index-icon="'z-[7]'"
-                            :users-that-reacted="comment.like_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['like'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'love' ||
-                            (comment.love_user_reactions &&
-                                comment.love_user_reactions.length > 0)
-                        " :title="'Me encanta'" :type="'love'" :z-index-icon="'z-[6]'"
-                            :users-that-reacted="comment.love_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['love'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'care' ||
-                            (comment.care_user_reactions &&
-                                comment.care_user_reactions.length > 0)
-                        " :title="'Me importa'" :type="'care'" :z-index-icon="'z-[5]'"
-                            :users-that-reacted="comment.care_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['care'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'haha' ||
-                            (comment.haha_user_reactions &&
-                                comment.haha_user_reactions.length > 0)
-                        " :title="'Me divierte'" :type="'haha'" :z-index-icon="'z-[4]'"
-                            :users-that-reacted="comment.haha_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['haha'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'wow' ||
-                            (comment.wow_user_reactions &&
-                                comment.wow_user_reactions.length > 0)
-                        " :title="'Me asombra'" :type="'wow'" :z-index-icon="'z-[3]'"
-                            :users-that-reacted="comment.wow_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['wow'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'sad' ||
-                            (comment.sad_user_reactions &&
-                                comment.sad_user_reactions.length > 0)
-                        " :title="'Me entristece'" :type="'sad'" :z-index-icon="'z-[2]'"
-                            :users-that-reacted="comment.sad_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['sad'])" />
-
-                        <CommentReactionTypeUsersSummary v-if="
-                            comment.current_user_type_reaction === 'angry' ||
-                            (comment.angry_user_reactions &&
-                                comment.angry_user_reactions.length > 0)
-                        " :title="'Me enoja'" :type="'angry'" :z-index-icon="'z-[1]'"
-                            :users-that-reacted="comment.angry_user_reactions" :current-user-type-reaction="comment.current_user_type_reaction
-                                "
-                            @callOpenUserReactionsModal="openUserReactionsModalToCommentList(defaultTabIndexObject['angry'])" />
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </template>

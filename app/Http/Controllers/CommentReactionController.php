@@ -59,7 +59,7 @@ class CommentReactionController extends Controller
             'angry_user_reactions' => $this->typeUserReactions(new Comment, $comment->id, 'angry'),
 
             'latest_comments' => CommentResource::collection(
-                $post->latestComments()->latest()->limit(1)->get()
+                $post->latestComments()->root()->latest()->limit(1)->get()
             ),
             'all_comments' => CommentResource::collection($post->comments()->root()->get()),
         ], Response::HTTP_OK);

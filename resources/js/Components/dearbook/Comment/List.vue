@@ -5,6 +5,10 @@ const props = defineProps({
     post: Object,
     commentsList: Object,
     typeList: String,
+    showMoreCommentsLink: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
@@ -39,7 +43,7 @@ const activeShowNotification = (errors) => {
 </script>
 
 <template>
-    <button v-if="typeList === 'latest' && post.total_of_comments > 1" @click="openDetailModal"
+    <button v-if="typeList === 'latest' && showMoreCommentsLink && post.total_of_comments > 1" @click="openDetailModal"
         class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">
         Ver más comentarios
     </button>
@@ -50,7 +54,7 @@ const activeShowNotification = (errors) => {
                 @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
                 @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
                 @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
-                @callActiveShowNotification="activeShowNotification" />
+                @callActiveShowNotification="activeShowNotification" @callOpenDetailModal="openDetailModal" />
         </div>
     </template>
 </template>

@@ -42,6 +42,11 @@ class Comment extends Model
         return $this->hasMany(self::class, 'parent_id');
     }
 
+    public function latestChildComments(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id');
+    }
+
     public function scopeRoot(Builder $query)
     {
         $query->whereNull('parent_id');
