@@ -61,4 +61,12 @@ const reactionTypesFormat = {
     },
 };
 
-export { isImage, isVideo, reactionTypesFormat, }
+/**
+ * Strip HTML tags from a content.
+*/
+const strippedContent = (content) => {
+    let regex = /(<([^>]+)>)/ig;
+    return content.replace(regex, "");
+}
+
+export { isImage, isVideo, reactionTypesFormat, strippedContent, }
