@@ -35,6 +35,7 @@ class HandleInertiaRequests extends Middleware
         // dd('REQUEST->USER', $request->user());
         return [
             ...parent::share($request),
+            'appName' => env('APP_NAME'),
             'auth' => [
                 // 'user' => $request->user(),
                 // 'user' => new UserResource($request->user()),
