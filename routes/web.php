@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchiveManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\CommentReactionController;
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/u/{user:username}/posts/{id}', [PostController::class, 'show'])->name('post.show');
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,6 +41,10 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('comment')->as('comment.')->group(function () {
         Route::post('/{comment}/reaction', [CommentReactionController::class, 'reaction'])->name('reaction');
+    });
+
+    Route::prefix('archive-management')->as('archive-management.')->group(function () {
+        Route::get('/', [ArchiveManagementController::class, 'index'])->name('index');
     });
 });
 

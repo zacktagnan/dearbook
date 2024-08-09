@@ -41,11 +41,15 @@ const setTypeUserReactionsCommentByType = () => {
 
 const authUser = usePage().props.auth.user;
 
+const isTrashed = computed(
+    () => props.post.deleted_at !== ''
+);
+
 // const isCommentAuthor = () => authUser && authUser.id === props.comment.user.id
 // Sin el COMPUTED, funciona y debe ser llamado como método >> isCommentAuthor()
 // Con el COMPUTED, funciona como una simple variable computada y debe ser llamado como tal
 const isCommentAuthor = computed(
-    () => authUser && authUser.id === props.comment.user.id
+    () => authUser && authUser.id === props.comment.user.id && !isTrashed.value
 )
 
 const defaultTabIndex = ref(0)
@@ -259,7 +263,7 @@ const openDetailModal = () => {
                 <EditDeleteDropdown v-model="isCommentAuthor" @callEditItem="startEditingItem(comment)"
                     @callDeleteItem="confirmDeletion(comment, 'post.comment')" :ellipsis-type-icon="'horizontal'"
                     :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
-                    :menu-items-classes="'w-28'" :show-menu-item-icon="false" />
+                    :show-menu-item-icon="false" :item-type="'comment'" />
             </div>
 
             <div v-if="attachmentFilesComputed.length > 0" class="mt-1.5">
@@ -275,13 +279,20 @@ const openDetailModal = () => {
                             }}</small>
                     </div>
 
-                    <CommentReactionBox :comment="comment"
+                    <CommentReactionBox v-if="!isTrashed" :comment="comment"
                         @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
                         @callRestartPostCommentList="restartPostCommentList"
                         @callActiveShowNotification="activeShowNotification" />
 
-                    <DisclosureButton @click="focusChildCommentTextArea" class="font-extrabold hover:underline">
-                        Responder
+                    <DisclosureButton v-if="!isTrashed" @click="focusChildCommentTextArea"
+                        class="font-extrabold hover:underline">
+                        Respuestas
+                        <span v-if="commentHasResponses()">
+                            ({{ comment.total_of_comments || comment.all_child_comments.length }})
+                        </span>
+                    </DisclosureButton>
+                    <DisclosureButton v-else class="font-extrabold hover:underline">
+                        Respuestas
                         <span v-if="commentHasResponses()">
                             ({{ comment.total_of_comments || comment.all_child_comments.length }})
                         </span>
@@ -373,18 +384,18 @@ const openDetailModal = () => {
                     leave-active-class="duration-75 ease-out" leave-from-class="-translate-y-2 opacity-100"
                     leave-to-class="translate-y-0 opacity-0">
                     <DisclosurePanel>
-                        <ChildrenCommentBox v-if="typeList === 'all'" ref="childrenCommentBoxRef" :post="post"
-                            :comments-list="comment.all_child_comments" :type-list="typeList"
-                            :create-action="'responding'" :parent-id="comment.id"
+                        <ChildrenCommentBox :is-trashed="isTrashed" v-if="typeList === 'all'"
+                            ref="childrenCommentBoxRef" :post="post" :comments-list="comment.all_child_comments"
+                            :type-list="typeList" :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
                             @callOpenUserReactionsModal="openUserReactionsModal"
                             @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
                             @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification" />
 
-                        <ChildrenCommentBox v-else-if="typeList === 'latest'" ref="childrenCommentBoxRef" :post="post"
-                            :comments-list="comment.latest_child_comments" :type-list="typeList"
-                            :all-child-comments-total="comment.all_child_comments.length"
+                        <ChildrenCommentBox :is-trashed="isTrashed" v-else-if="typeList === 'latest'"
+                            ref="childrenCommentBoxRef" :post="post" :comments-list="comment.latest_child_comments"
+                            :type-list="typeList" :all-child-comments-total="comment.all_child_comments.length"
                             :show-more-comments-link="false" :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
                             @callOpenUserReactionsModal="openUserReactionsModal"

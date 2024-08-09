@@ -9,7 +9,7 @@ trait UsersThatCommented
 {
     public function allUsersThatCommented(int $id): array
     {
-        $post = Post::find($id);
+        $post = Post::withTrashed()->find($id);
         // -> Para solo el dato del ID del User
         // $comments = $post->comments()->where('user_id', '<>', auth()->id())
         //     ->distinct()

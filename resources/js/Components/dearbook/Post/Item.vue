@@ -47,6 +47,10 @@ const isPostAuthor = computed(
     () => authUser && authUser.id === props.post.user.id
 );
 
+const isTrashed = computed(
+    () => props.post.deleted_at !== ''
+);
+
 const maxPreviewFiles = 6;
 
 const openAttachmentPreview = (index) => {
@@ -193,9 +197,9 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <EditDeleteDropdown v-model="isPostAuthor" @callEditItem="openEditModal"
+            <EditDeleteDropdown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="openEditModal"
                 @callDeleteItem="$emit('callConfirmDeletion', post, 'post')" :ellipsis-type-icon="'vertical'"
-                :menu-items-classes="'w-28'" />
+                :item-type="'post'" />
             <!-- =========================================================== -->
         </div>
 
@@ -309,7 +313,7 @@ defineExpose({
                 <hr />
             </div>
 
-            <div class="flex gap-2 my-1.5 font-bold text-gray-500">
+            <div v-if="!isTrashed" class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <PostReactionBox :post="post" @callRestartDefaultTabIndex="setTypeUserReactionsPostByType"
                     @callActiveShowNotification="activeShowNotification" />
 
@@ -323,10 +327,11 @@ defineExpose({
             </div>
 
             <div>
-                <hr>
+                <hr v-if="!isTrashed">
 
-                <PostCommentBox ref="postCommentBoxRef" :post="post" :comments-list="commentsList" :type-list="typeList"
-                    @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openCommentAttachmentPreview"
+                <PostCommentBox :is-trashed="isTrashed" ref="postCommentBoxRef" :post="post"
+                    :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
+                    @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModal="openUserReactionsModal"
                     @callRestartGeneralDataFromPostComments="restartGeneralDataFromPostComments"
                     @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"

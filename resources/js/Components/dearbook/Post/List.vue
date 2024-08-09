@@ -139,11 +139,9 @@ const startClosingNotification = () => {
         // }
         if (notificationBoxRef.value && timeOnSeconds.value < maxTimeOnSecondsForNotificationBox) {
             timeOnSeconds.value++
-            console.log('timeOnSeconds', timeOnSeconds.value)
         } else {
             stopClosingNotification()
             closingNotification('notification')
-            console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
         }
     }, 1000)
 }

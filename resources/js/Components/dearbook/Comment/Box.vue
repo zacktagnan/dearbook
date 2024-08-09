@@ -24,6 +24,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    isTrashed: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits(['callOpenDetailModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callRestartGeneralDataFromPostComments', 'callRestartPostCommentList', 'callConfirmDeletion', 'callActiveShowNotification',])
@@ -150,5 +154,5 @@ defineExpose({
         Ver más respuestas
     </button>
 
-    <CommentCreate ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />
+    <CommentCreate v-if="!isTrashed" ref="commentCreateRef" :action="createAction" @callSendComment="sendComment" />
 </template>

@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
+use Inertia\Inertia;
+use App\Traits\StorageManagement;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
-use App\Traits\StorageManagement;
+use App\Http\Resources\PostResource;
+use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
@@ -16,14 +20,40 @@ class PostController extends Controller
 
     protected string $rootFolderBaseName = 'attachments/post-';
 
+    public function show(User $user, int $id): InertiaResponse
+    {
+        $userId = auth()->id();
+        $post = Post::withCount(['reactions', 'comments',])
+            ->with([
+                'reactions' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'currentUserComments' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'latestComments' => function ($query) {
+                    $query->root()
+                        ->latest()->limit(1)->get();
+                },
+                'comments' => function ($query) {
+                    // $query->whereNull('parent_id');
+                    // o
+                    $query->root()
+                        ->withCount('childComments');
+                },
+            ])
+            ->withTrashed()
+            ->find($id);
+        return Inertia::render('Post/Detail', [
+            'post' => new PostResource($post),
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(PostStoreRequest $request): RedirectResponse
     {
-        // dd($request);
-        // dd($request->attachments);
-
         DB::beginTransaction();
 
         $allFilePaths = [];

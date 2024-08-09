@@ -43,6 +43,9 @@ class PostResource extends JsonResource
                 ?: '',
             'user' => new UserResource($this->user),
 
+            'deleted_at' => $this->deleted_at
+                ?: '',
+
             // Cargando a través del nombre de la relación con Post,
             'group' => $this->group,
             'attachments' => AttachmentResource::collection($this->attachments),

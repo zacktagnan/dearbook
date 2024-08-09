@@ -1,4 +1,6 @@
 <script setup>
+import { ArrowLeftStartOnRectangleIcon, UserCircleIcon } from "@heroicons/vue/24/solid";
+import { ArchiveBoxIcon } from "@heroicons/vue/24/outline";
 import { ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -67,7 +69,8 @@ const showingNavigationDropdown = ref(false);
                                         <div class="p-1.5">
                                             <DropdownLink
                                                 :href="route('profile.index', { username: $page.props.auth.user.username })"
-                                                :title="$t('Profile')" class="flex items-center gap-1.5 group/menu_user_profile_item">
+                                                :title="$t('Profile')"
+                                                class="flex items-center gap-1.5 group/menu_user_profile_item">
                                                 <!-- {{ $t('Profile') }} -->
                                                 <img :src="$page.props.auth.user.avatar_url ||
                                                     '/img/default_avatar.png'"
@@ -75,8 +78,16 @@ const showingNavigationDropdown = ref(false);
                                                     :alt="$page.props.auth.user.name" />
                                                 <span class="font-bold">{{ $page.props.auth.user.name }}</span>
                                             </DropdownLink>
-                                            <DropdownLink class="border-t border-t-gray-200" :href="route('logout')"
-                                                method="post" as="button" :title="$t('Log Out')">
+                                            <DropdownLink class="flex items-center gap-1 border-t border-t-gray-200"
+                                                :href="route('archive-management.index')"
+                                                :title="$t('dearbook.archive_management.section_label')">
+                                                <ArchiveBoxIcon class="w-4 h-4" />
+                                                {{ $t('dearbook.archive_management.section_label') }}
+                                            </DropdownLink>
+                                            <DropdownLink class="flex items-center gap-1 border-t border-t-gray-200"
+                                                :href="route('logout')" method="post" as="button"
+                                                :title="$t('Log Out')">
+                                                <ArrowLeftStartOnRectangleIcon class="w-4 h-4" />
                                                 {{ $t('Log Out') }}
                                             </DropdownLink>
                                         </div>
@@ -91,14 +102,14 @@ const showingNavigationDropdown = ref(false);
                                 class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400">
                                 <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex': !showingNavigationDropdown,
-                                        }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        hidden: showingNavigationDropdown,
+                                        'inline-flex': !showingNavigationDropdown,
+                                    }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 6h16M4 12h16M4 18h16" />
                                     <path :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex': showingNavigationDropdown,
-                                        }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        hidden: !showingNavigationDropdown,
+                                        'inline-flex': showingNavigationDropdown,
+                                    }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
@@ -132,11 +143,20 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink
+                            <ResponsiveNavLink class="flex items-center gap-1"
                                 :href="route('profile.index', { username: $page.props.auth.user.username })"
-                                :title="$t('Profile')"> {{ $t('Profile') }}
+                                :title="$t('Profile')">
+                                <UserCircleIcon class="w-4 h-4" />
+                                {{ $t('Profile') }}
                             </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button" :title="$t('Log Out')">
+                            <ResponsiveNavLink class="flex items-center gap-1" :href="route('archive-management.index')"
+                                :title="$t('dearbook.archive_management.section_label')">
+                                <ArchiveBoxIcon class="w-4 h-4" />
+                                {{ $t('dearbook.archive_management.section_label') }}
+                            </ResponsiveNavLink>
+                            <ResponsiveNavLink class="flex items-center gap-1" :href="route('logout')" method="post"
+                                as="button" :title="$t('Log Out')">
+                                <ArrowLeftStartOnRectangleIcon class="w-4 h-4" />
                                 {{ $t('Log Out') }}
                             </ResponsiveNavLink>
                         </div>
