@@ -1,5 +1,5 @@
 <script setup>
-import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
+import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
@@ -260,7 +260,7 @@ const openDetailModal = () => {
                         :content-classes="'text-sm text-justify'" />
                 </div>
 
-                <EditDeleteDropdown v-model="isCommentAuthor" @callEditItem="startEditingItem(comment)"
+                <OptionsDropDown v-model="isCommentAuthor" @callEditItem="startEditingItem(comment)"
                     @callDeleteItem="confirmDeletion(comment, 'post.comment')" :ellipsis-type-icon="'horizontal'"
                     :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
                     :show-menu-item-icon="false" :item-type="'comment'" />

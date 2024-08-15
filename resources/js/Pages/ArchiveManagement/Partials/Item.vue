@@ -1,5 +1,5 @@
 <script setup>
-import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
+import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 
@@ -57,7 +57,7 @@ const checkedIds = ref('')
         </div>
 
         <div class="pr-2">
-            <EditDeleteDropdown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="''" @callDeleteItem="''"
+            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="''" @callDeleteItem="''"
                 :ellipsis-type-icon="'vertical'" :item-type="'post'" />
         </div>
     </div>

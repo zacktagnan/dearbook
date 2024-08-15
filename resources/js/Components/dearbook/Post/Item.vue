@@ -27,7 +27,7 @@ import { reactionTypesFormat, } from "@/Libs/helpers";
 // =======================================================================================
 
 import PostHeader from "@/Components/dearbook/Post/Header.vue";
-import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
+import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { usePage } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
@@ -197,7 +197,7 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <EditDeleteDropdown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="openEditModal"
+            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="openEditModal"
                 @callDeleteItem="$emit('callConfirmDeletion', post, 'post')" :ellipsis-type-icon="'vertical'"
                 :item-type="'post'" />
             <!-- =========================================================== -->

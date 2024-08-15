@@ -87,7 +87,7 @@ const loadCurrentTrashedPosts = async (hasToReset) => {
 }
 
 // ====================================================================================================================
-import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
+import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { Link, usePage } from "@inertiajs/vue3";
 import { computed } from "vue";
 
@@ -213,7 +213,7 @@ const checkItem = () => {
                     </div>
 
                     <div class="pr-2">
-                        <EditDeleteDropdown v-model="showOptions" :is-trashed="isTrashed(post)" @callEditItem="''"
+                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)" @callEditItem="''"
                             @callDeleteItem="''" :ellipsis-type-icon="'vertical'" :item-type="'post'" />
                     </div>
                 </div>
