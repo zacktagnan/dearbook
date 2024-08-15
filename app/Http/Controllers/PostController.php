@@ -11,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostResource;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
 use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -153,5 +155,56 @@ class PostController extends Controller
         return back();
         // Si no se establece el BACK(), no vale el RedirectResponse
         // y, entonces, mejor no establecer ningún tipo de RETURN
+    }
+
+    public function trashedPostsCollection(): Collection
+    {
+        return Post::with(['user', 'attachments' => function ($query) {
+            $query->limit(1)->orderBy('id')->get();
+        }])->select('id', 'body', 'user_id', 'created_at')
+            // ->select('id', 'body', 'user_id', 'created_at')
+            ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
+            ->onlyTrashed()->latest()
+            // ->groupBy('user_id', 'created_at', 'id')
+            ->where('user_id', auth()->id())
+            ->get()
+            // ->groupBy([fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'), 'user_id', 'id']);
+            // ->groupBy([fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'), 'id'])
+            // Buen resultado
+            // ->groupBy(fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'));
+            ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+        // ->all();
+    }
+
+    public function trashedPosts()
+    {
+        // Ejecutando método de otro controlador...
+        // return response()->json([
+        //     'current_trashed_posts' => (new ArchiveManagementController)->trashedPosts(),
+        // ], Response::HTTP_OK);
+
+        return response()->json([
+            'current_trashed_posts' => $this->trashedPostsCollection(),
+        ], Response::HTTP_OK);
+    }
+
+    public function restoreAllSelected(Request $request)
+    {
+        if ($request->checked_ids) {
+            $postsToRestore = Post::withTrashed()
+                ->whereIn('id', $request->checked_ids)
+                ->get();
+
+            foreach ($postsToRestore as $post) {
+                $post->restore();
+            }
+        }
+        // return back();
+
+        return response()->json([
+            'message_ok' => 'Proceso de RESTORE efectuado.',
+            // 'current_trashed_posts' => (new ArchiveManagementController)->trashedPosts(),
+            'current_trashed_posts' => $this->trashedPostsCollection(),
+        ], Response::HTTP_OK);
     }
 }

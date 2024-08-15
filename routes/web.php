@@ -29,6 +29,9 @@ Route::middleware('auth')->group(function () {
         Route::post('', [PostController::class, 'store'])->name('store');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+        Route::get('/trashed-posts', [PostController::class, 'trashedPosts'])->name('trashed-posts');
+        Route::post('/restore-all-selected', [PostController::class, 'restoreAllSelected'])->name('restore-all-selected');
+
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
 
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');

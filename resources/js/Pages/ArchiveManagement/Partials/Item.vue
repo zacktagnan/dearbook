@@ -1,7 +1,7 @@
 <script setup>
 import EditDeleteDropdown from "@/Components/dearbook/EditDeleteDropdown.vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
     post: Object,
@@ -31,13 +31,15 @@ const loadImage = (post) => {
     }
     return null
 }
+
+const checkedIds = ref('')
 </script>
 
 <template>
     <div class="flex items-center justify-between py-2 gap-7" :class="index > 0 ? 'border-t border-slate-300' : ''">
         <div class="flex items-center">
             <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-black/5">
-                <input type="checkbox" name="check_all" id="check_all"
+                <input type="checkbox" :value="post.id" v-model="checkedIds"
                     class="w-[22px] h-[22px] rounded group-hover/check_all:bg-black/5">
             </div>
         </div>

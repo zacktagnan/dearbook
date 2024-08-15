@@ -1,8 +1,5 @@
 <script setup>
 
-defineProps({
-    posts: [String, Object],
-});
 </script>
 
 <template>
@@ -10,8 +7,5 @@ defineProps({
         Archive - Pages
         <br>
         <br>
-        <pre>
-            {{ posts }}
-        </pre>
     </div>
 </template>
