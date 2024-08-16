@@ -191,20 +191,31 @@ class PostController extends Controller
     public function restoreAllSelected(Request $request)
     {
         if ($request->checked_ids) {
-            $postsToRestore = Post::withTrashed()
+            $postsToRestore = Post::onlyTrashed()
                 ->whereIn('id', $request->checked_ids)
                 ->get();
 
             foreach ($postsToRestore as $post) {
-                $post->restore();
+                $this->applyRestoration($post);
             }
         }
-        // return back();
 
-        return response()->json([
-            'message_ok' => 'Proceso de RESTORE efectuado.',
-            // 'current_trashed_posts' => (new ArchiveManagementController)->trashedPosts(),
-            'current_trashed_posts' => $this->trashedPostsCollection(),
-        ], Response::HTTP_OK);
+        return back();
+    }
+
+    public function restore(int $id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $this->applyRestoration($post);
+
+        return back();
+    }
+
+    public function applyRestoration(Post $post)
+    {
+        if ($post->user_id !== auth()->id()) {
+            return response("You don't have permission to PROCESS the Restoration of this post", Response::HTTP_FORBIDDEN);
+        }
+        $post->restore();
     }
 }

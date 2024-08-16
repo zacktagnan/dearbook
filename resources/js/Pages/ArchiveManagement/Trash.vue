@@ -42,15 +42,31 @@ const buttonDisabled = computed(
     () => checkedIds.value.length === 0
 );
 
-const submitProcess = (processType) => {
-    postIdsForm.checked_ids = checkedIds
-
+const submitProcess = (processType, postId) => {
     if (processType === 'restore') {
-        processRestore()
+        processRestore(postId)
     }
 }
 
-const processRestore = () => {
+const processRestore = (postId) => {
+    axiosClient.get(route('post.restore', postId))
+        .then(() => {
+            loadCurrentTrashedPosts(true)
+        })
+        .catch((error) => {
+            console.log('ERRORS-RESTORE', error.response.data.errors)
+        })
+}
+
+const submitGlobalProcess = (processType) => {
+    postIdsForm.checked_ids = checkedIds
+
+    if (processType === 'restore') {
+        processGlobalRestore()
+    }
+}
+
+const processGlobalRestore = () => {
     axiosClient.post(route('post.restore-all-selected'), postIdsForm)
         .then(() => {
             loadCurrentTrashedPosts(true)
@@ -160,7 +176,7 @@ const checkItem = () => {
                     <ArchiveBoxIcon class="w-5 h-5" />
                     Archivar
                 </button>
-                <button @click="submitProcess('restore')" :disabled="buttonDisabled"
+                <button @click="submitGlobalProcess('restore')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
                     class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
@@ -213,8 +229,8 @@ const checkItem = () => {
                     </div>
 
                     <div class="pr-2">
-                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)" @callEditItem="''"
-                            @callDeleteItem="''" :ellipsis-type-icon="'vertical'" :item-type="'post'" />
+                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)" @callRestoreItem="submitProcess('restore', post.id)"
+                            @callForceDeleteItem="''" :ellipsis-type-icon="'vertical'" :item-type="'post'" />
                     </div>
                 </div>
             </div>

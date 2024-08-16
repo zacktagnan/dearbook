@@ -35,6 +35,8 @@ const show = computed({
 const emit = defineEmits([
     "callEditItem",
     "callDeleteItem",
+    "callRestoreItem",
+    "callForceDeleteItem",
 ]);
 </script>
 
@@ -94,7 +96,7 @@ const emit = defineEmits([
                 <template v-else>
                     <div class="px-1 py-1">
                         <MenuItem v-slot="{ active }">
-                        <button @click="$emit('')" :class="[
+                        <button @click="$emit('callRestoreItem')" :class="[
                             active
                                 ? 'bg-indigo-100'
                                 : 'text-gray-900',
@@ -109,7 +111,7 @@ const emit = defineEmits([
 
                     <div class="px-1 py-1">
                         <MenuItem v-slot="{ active }">
-                        <button @click="$emit('')" :class="[
+                        <button @click="$emit('callForceDeleteItem')" :class="[
                             active
                                 ? 'bg-indigo-100'
                                 : 'text-gray-900',

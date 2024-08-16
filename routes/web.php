@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
         Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
         Route::get('/trashed-posts', [PostController::class, 'trashedPosts'])->name('trashed-posts');
+        Route::get('/{post}', [PostController::class, 'restore'])->name('restore');
         Route::post('/restore-all-selected', [PostController::class, 'restoreAllSelected'])->name('restore-all-selected');
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
