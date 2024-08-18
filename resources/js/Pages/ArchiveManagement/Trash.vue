@@ -42,9 +42,14 @@ const buttonDisabled = computed(
     () => checkedIds.value.length === 0
 );
 
+const emit = defineEmits(['callConfirmForceDeletion'])
+
 const submitProcess = (processType, postId) => {
     if (processType === 'restore') {
         processRestore(postId)
+    } else if (processType === 'force_delete') {
+        // processForceDelete(postId)
+        emit('callConfirmForceDeletion', 'force_delete', postId)
     }
 }
 
@@ -58,11 +63,24 @@ const processRestore = (postId) => {
         })
 }
 
+const processForceDelete = (postId) => {
+    axiosClient.get(route('post.force-destroy', postId))
+        .then(() => {
+            loadCurrentTrashedPosts(true)
+        })
+        .catch((error) => {
+            console.log('ERRORS-FORCE_DELETE', error.response.data.errors)
+        })
+}
+
 const submitGlobalProcess = (processType) => {
     postIdsForm.checked_ids = checkedIds
 
-    if (processType === 'restore') {
+    if (processType === 'restore_all_selected') {
         processGlobalRestore()
+    } else if (processType === 'force_delete_all_selected') {
+        // processGlobalForceDelete()
+        emit('callConfirmForceDeletion', 'force_delete_all_selected', checkedIds.value)
     }
 }
 
@@ -74,7 +92,17 @@ const processGlobalRestore = () => {
         .catch((error) => {
             console.log('ERRORS-RESTORE_ALL', error.response.data.errors)
         })
-};
+}
+
+const processGlobalForceDelete = () => {
+    axiosClient.post(route('post.force-destroy-all-selected'), postIdsForm)
+        .then(() => {
+            loadCurrentTrashedPosts(true)
+        })
+        .catch((error) => {
+            console.log('ERRORS-FORCE_DELETE_ALL', error.response.data.errors)
+        })
+}
 
 const unMarkAll = () => {
     checkedAll.value = false
@@ -101,6 +129,8 @@ const loadCurrentTrashedPosts = async (hasToReset) => {
         console.log('ERRORS-loadCurrentTrashedPosts', error)
     }
 }
+
+defineExpose({ loadCurrentTrashedPosts, })
 
 // ====================================================================================================================
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
@@ -176,13 +206,14 @@ const checkItem = () => {
                     <ArchiveBoxIcon class="w-5 h-5" />
                     Archivar
                 </button>
-                <button @click="submitGlobalProcess('restore')" :disabled="buttonDisabled"
+                <button @click="submitGlobalProcess('restore_all_selected')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
                     class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
                     Restaurar
                 </button>
-                <button :disabled="buttonDisabled" :title="!buttonDisabled ? 'Eliminar seleccionado(s)' : ''"
+                <button @click="submitGlobalProcess('force_delete_all_selected')" :disabled="buttonDisabled"
+                    :title="!buttonDisabled ? 'Eliminar seleccionado(s)' : ''"
                     class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <TrashIcon class="w-5 h-5" />
                     Eliminar
@@ -229,8 +260,10 @@ const checkItem = () => {
                     </div>
 
                     <div class="pr-2">
-                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)" @callRestoreItem="submitProcess('restore', post.id)"
-                            @callForceDeleteItem="''" :ellipsis-type-icon="'vertical'" :item-type="'post'" />
+                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)"
+                            @callRestoreItem="submitProcess('restore', post.id)"
+                            @callForceDeleteItem="submitProcess('force_delete', post.id)"
+                            :ellipsis-type-icon="'vertical'" :item-type="'post'" />
                     </div>
                 </div>
             </div>

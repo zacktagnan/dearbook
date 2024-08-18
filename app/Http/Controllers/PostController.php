@@ -11,6 +11,8 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostResource;
+use App\Libs\Utilities;
+use App\Traits\ResourcesDeletion;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Inertia\Response as InertiaResponse;
@@ -19,8 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PostController extends Controller
 {
     use StorageManagement;
-
-    protected string $rootFolderBaseName = 'attachments/post-';
+    use ResourcesDeletion;
 
     public function show(User $user, int $id): InertiaResponse
     {
@@ -45,7 +46,7 @@ class PostController extends Controller
                 },
             ])
             ->withTrashed()
-            ->find($id);
+            ->findOrFail($id);
         return Inertia::render('Post/Detail', [
             'post' => new PostResource($post),
         ]);
@@ -63,7 +64,7 @@ class PostController extends Controller
 
         try {
             $post = Post::create($request->all());
-            $destinationFolder = $this->rootFolderBaseName . $post->id;
+            $destinationFolder = Utilities::$postRootFolderBaseName . $post->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
@@ -99,7 +100,7 @@ class PostController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
-        $destinationFolder = $this->rootFolderBaseName . $post->id;
+        $destinationFolder = Utilities::$postRootFolderBaseName . $post->id;
 
         try {
             // dd($request->all());
@@ -217,5 +218,52 @@ class PostController extends Controller
             return response("You don't have permission to PROCESS the Restoration of this post", Response::HTTP_FORBIDDEN);
         }
         $post->restore();
+    }
+
+    public function forceDestroyAllSelected(Request $request)
+    {
+        if ($request->checked_ids) {
+            $postsToForceDelete = Post::onlyTrashed()
+                ->whereIn('id', $request->checked_ids)
+                ->get();
+
+            foreach ($postsToForceDelete as $post) {
+                $this->applyForceDeletion($post);
+            }
+        }
+
+        return back()->with('success', 'Conjunto de publicaciones y recursos eliminados satisfactoriamente.');
+    }
+
+    public function forceDestroy(int $id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $this->applyForceDeletion($post);
+
+        return back()->with('success', 'Publicación y recursos eliminados satisfactoriamente.');
+    }
+
+    public function applyForceDeletion(Post $post)
+    {
+        if ($post->user_id !== auth()->id()) {
+            return response("You don't have permission to PROCESS the Total Deletion of this post", Response::HTTP_FORBIDDEN);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $this->deleteResources($post);
+
+            $post->forceDelete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
+    }
+
+    private function deleteResources(Post $post): void
+    {
+        $this->processingDeleteResources(new Post, $post->id);
     }
 }

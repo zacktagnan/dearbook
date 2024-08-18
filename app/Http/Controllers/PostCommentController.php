@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Libs\Utilities;
 use App\Models\Comment;
+use App\Traits\ResourcesDeletion;
+use App\Traits\StorageManagement;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
-use App\Traits\StorageManagement;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController extends Controller
 {
     use StorageManagement;
-
-    protected string $rootFolderBaseName = 'attachments/comment-';
+    use ResourcesDeletion;
 
     public function store(CommentStoreRequest $request, Post $post)
     {
@@ -34,7 +35,7 @@ class PostCommentController extends Controller
             $hasComment = true;
 
             $comments = $post->comments()->count();
-            $destinationFolder = $this->rootFolderBaseName . $comment->id;
+            $destinationFolder = Utilities::$commentRootFolderBaseName . $comment->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
             $files = $request->attachments ?? [];
@@ -85,7 +86,7 @@ class PostCommentController extends Controller
         DB::beginTransaction();
 
         $allFilePaths = [];
-        $destinationFolder = $this->rootFolderBaseName . $comment->id;
+        $destinationFolder = Utilities::$commentRootFolderBaseName . $comment->id;
 
         try {
             $comment->update($request->all());
@@ -182,16 +183,6 @@ class PostCommentController extends Controller
 
     private function deleteResources(Comment $comment): void
     {
-        if ($comment->attachments()->count() > 0) {
-            foreach ($comment->attachments()->get() as $attachmentToDelete) {
-                $attachmentToDelete->delete();
-            }
-            $this->deleteFolderIfEmpty($this->rootFolderBaseName . $comment->id);
-
-            $comment->attachments()->delete();
-        }
-        if ($comment->reactions()->count() > 0) {
-            $comment->reactions()->delete();
-        }
+        $this->processingDeleteResources(new Comment, $comment->id);
     }
 }

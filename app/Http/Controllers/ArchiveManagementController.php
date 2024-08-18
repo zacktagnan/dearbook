@@ -8,6 +8,8 @@ class ArchiveManagementController extends Controller
 {
     public function index()
     {
-        return Inertia::render('ArchiveManagement/Index');
+        return Inertia::render('ArchiveManagement/Index', [
+            'success' => session('success'),
+        ]);
     }
 }
