@@ -18,6 +18,8 @@ const emit = defineEmits([
     'callOpenUserReactionsModal',
     'callConfirmDeletion',
     "callActiveShowNotification",
+    'callRestoreItem',
+    'callForceDeleteItem',
 ]);
 
 const maxPostBodyLength = 100;
@@ -198,7 +200,8 @@ defineExpose({
             <PostHeader :post="post" />
 
             <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="openEditModal"
-                @callDeleteItem="$emit('callConfirmDeletion', post, 'post')" :ellipsis-type-icon="'vertical'"
+                @callDeleteItem="$emit('callConfirmDeletion', post, 'post')" @callRestoreItem="$emit('callRestoreItem')"
+                @callForceDeleteItem="$emit('callForceDeleteItem')" :ellipsis-type-icon="'vertical'"
                 :item-type="'post'" />
             <!-- =========================================================== -->
         </div>

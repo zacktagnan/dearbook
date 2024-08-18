@@ -33,6 +33,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/restore/{id}', [PostController::class, 'restore'])->name('restore');
         Route::post('/restore-all-selected', [PostController::class, 'restoreAllSelected'])->name('restore-all-selected');
         Route::get('/force-destroy/{id}', [PostController::class, 'forceDestroy'])->name('force-destroy');
+        Route::get('/force-destroy-from-detail/{id}', [PostController::class, 'forceDestroyFromDetail'])->name('force-destroy-from-detail');
         Route::post('/force-destroy-all-selected', [PostController::class, 'forceDestroyAllSelected'])->name('force-destroy-all-selected');
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');

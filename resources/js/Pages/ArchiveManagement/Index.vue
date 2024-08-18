@@ -68,7 +68,7 @@ const forceDeleting = () => {
             },
         })
     }
-    if (registerBoxToProcess.value.processType === 'force_delete_all_selected') {
+    else if (registerBoxToProcess.value.processType === 'force_delete_all_selected') {
         router.post(route('post.force-destroy-all-selected'), registerBoxToProcess.value.entityIds, {
             onSuccess: () => {
                 closeConfirmProcess()

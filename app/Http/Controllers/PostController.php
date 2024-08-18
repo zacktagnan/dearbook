@@ -243,6 +243,16 @@ class PostController extends Controller
         return back()->with('success', 'Publicación y recursos eliminados satisfactoriamente.');
     }
 
+    public function forceDestroyFromDetail(int $id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $this->applyForceDeletion($post);
+
+        // return Redirect::route('home');
+        // return redirect()->route('home');
+        return to_route('home');
+    }
+
     public function applyForceDeletion(Post $post)
     {
         if ($post->user_id !== auth()->id()) {

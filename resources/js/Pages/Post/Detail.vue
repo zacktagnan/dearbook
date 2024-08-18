@@ -7,10 +7,13 @@ import PostItemDetail from '@/Components/dearbook/Post/Item.vue'
 import AttachmentModal from "@/Components/dearbook/Attachment/Modal.vue";
 import UserReactionsModal from '@/Components/dearbook/Reaction/Modal.vue'
 import ConfirmPostDeletionModal from '@/Components/Modal.vue'
+import ConfirmProcessModal from '@/Components/Modal.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import PostModal from "@/Components/dearbook/Post/Modal.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
+
+import axiosClient from '@/axiosClient'
 
 const props = defineProps({
     post: Object,
@@ -157,6 +160,57 @@ const closingNotification = (className) => {
 const closeShowNotification = () => {
     showNotification.value = false
 }
+
+const submitProcess = (processType, postId) => {
+    if (processType === 'restore') {
+        processRestore(postId)
+    } else if (processType === 'force_delete') {
+        showConfirmProcess(processType, postId)
+    }
+}
+
+const processRestore = (postId) => {
+    axiosClient.get(route('post.restore', postId))
+        .then(() => {
+            // router.visit(route('home'))
+            // o, sino,
+            router.get(route('home'))
+        })
+        .catch((error) => {
+            console.log('ERRORS-RESTORE-FROM-DETAIL', error.response.data.errors)
+        })
+}
+
+const registerBoxToProcess = ref({})
+const showingConfirmProcess = ref(false)
+
+const showConfirmProcess = (processType, postId) => {
+    if (processType === 'force_delete') {
+        registerBoxToProcess.value = {
+            entityId: postId,
+            processType,
+        }
+    }
+
+    showingConfirmProcess.value = true
+}
+
+const closeConfirmProcess = () => {
+    showingConfirmProcess.value = false;
+}
+
+const processing = () => {
+    if (registerBoxToProcess.value.processType === 'force_delete') {
+        router.get(route('post.force-destroy-from-detail', registerBoxToProcess.value.entityId), {
+            onSuccess: () => {
+                console.log('OK-PostDetail-force_delete')
+            },
+            onError: (errors) => {
+                console.log('ERRORES-PostDetail-force_delete', errors);
+            },
+        })
+    }
+}
 </script>
 
 <template>
@@ -168,7 +222,8 @@ const closeShowNotification = () => {
             <PostItemDetail ref="postItemDetailRef" :post="post" :type-list="'all'" @callOpenEditModal="openEditModal"
                 @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
                 @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification"
-                :class="'rounded shadow'" />
+                @callRestoreItem="submitProcess('restore', post.id)"
+                @callForceDeleteItem="submitProcess('force_delete', post.id)" :class="'rounded shadow'" />
 
             <PostModal :post="postToEdit" v-model="showEditModal"
                 @callActiveShowNotification="activeShowNotification" />
@@ -216,6 +271,44 @@ const closeShowNotification = () => {
                     </div>
                 </div>
             </ConfirmPostDeletionModal>
+
+            <ConfirmProcessModal :show="showingConfirmProcess" @close="closeConfirmProcess">
+                <div class="p-6">
+                    <template v-if="registerBoxToProcess.processType === 'force_delete'">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $t('dearbook.post.index.confirm_force_deletion.question') }}
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            {{ $t('dearbook.post.index.confirm_force_deletion.message') }}
+                        </p>
+                    </template>
+                    <template v-else-if="registerBoxToProcess.processType === 'force_delete_all_selected'">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.question') }}
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.message') }}
+                        </p>
+                    </template>
+
+                    <div class="flex justify-end mt-6">
+                        <SecondaryButton @click="closeConfirmProcess" :title="$t('Cancel')"> {{ $t('Cancel') }}
+                        </SecondaryButton>
+
+                        <DangerButton v-if="registerBoxToProcess.processType === 'force_delete'" class="ms-3"
+                            @click="processing" :title="$t('dearbook.post.index.confirm_force_deletion.button_text')">
+                            {{ $t('dearbook.post.index.confirm_force_deletion.button_text') }}
+                        </DangerButton>
+                        <DangerButton v-else-if="registerBoxToProcess.processType === 'force_delete_all_selected'"
+                            class="ms-3" @click="processing"
+                            :title="$t('dearbook.post.index.confirm_force_deletion_collection.button_text')">
+                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.button_text') }}
+                        </DangerButton>
+                    </div>
+                </div>
+            </ConfirmProcessModal>
 
             <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                 @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
