@@ -1,7 +1,7 @@
 <script setup>
 import { ArchiveBoxIcon, ArrowUturnLeftIcon, TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import TrashedItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
-import { ref, onMounted } from 'vue';
+import { computed, ref, onMounted } from 'vue';
 import { useForm } from "@inertiajs/vue3";
 
 import axiosClient from '@/axiosClient'
@@ -132,44 +132,6 @@ const loadCurrentTrashedPosts = async (hasToReset) => {
 
 defineExpose({ loadCurrentTrashedPosts, })
 
-// ====================================================================================================================
-import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
-import { Link, usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
-
-const authUser = usePage().props.auth.user;
-
-const showOptions = ref(true)
-const isPostAuthor = computed(
-    (post) => {
-        showOptions.value = authUser && authUser.id === post.user.id
-    }
-    // () => {
-    //     return (post) => authUser && authUser.id === post.user.id
-    // }
-);
-
-const isTrashed = computed(
-    // (post) => post.deleted_at !== ''
-    () => {
-        return (post) => post.deleted_at !== ''
-    }
-);
-
-const loadImage = (post) => {
-    let image = ''
-    if (post.attachments.length > 0) {
-        image = post.attachments[0].path
-    } else {
-        image = post.user.avatar_path
-    }
-
-    if (image) {
-        return 'storage/' + image
-    }
-    return null
-}
-
 const checkItem = () => {
     if (checkedIds.value.length === allTrashedPostIds.value.length) {
         checkedAll.value = true
@@ -221,11 +183,6 @@ const checkItem = () => {
             </div>
         </div>
 
-        <!-- <span>allTrashedPostIds: {{ allTrashedPostIds }}</span>
-        <br>
-        <span>checkedIds: {{ checkedIds }}</span>
-        <pre>{{ posts }}</pre> -->
-
         <template v-if="posts.length === 0">
             <div class="px-3 py-4 mt-4 text-center bg-white rounded-lg">
                 No hay registros
@@ -235,37 +192,8 @@ const checkItem = () => {
             <div v-for="(postsPerDay, day) of posts" class="px-3 py-4 mt-4 bg-white rounded-lg">
                 <h4 class="ml-1.5 text-lg font-bold">{{ day }} <small>({{ postsPerDay.length }})</small></h4>
 
-                <!-- <TrashedItem v-for="(post, index) of postsPerDay" :post="post" :index="index" /> -->
-                <div v-for="(post, index) of postsPerDay" class="flex items-center justify-between py-2 gap-7"
-                    :class="index > 0 ? 'border-t border-slate-300' : ''">
-                    <div class="flex items-center">
-                        <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-black/5">
-                            <input type="checkbox" :value="post.id" v-model="checkedIds" @change="checkItem"
-                                class="w-[22px] h-[22px] rounded group-hover/check_all:bg-black/5">
-                        </div>
-                    </div>
-
-                    <div class="w-full p-2 rounded-lg hover:bg-black/5">
-                        <!-- <pre>{{ loadImage(post) }}</pre> -->
-                        <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle"
-                            class="flex items-center w-full gap-2 p-1">
-                        <img :src="loadImage(post) || '/img/default_avatar.png'"
-                            class="w-[60px] h-[60px] border-2 rounded-full" />
-                        <div class="text-sm text-left">
-                            <div v-html="post.body || '(sin texto)'"></div>
-                            <small class="lowercase">{{ post.created_at_time }}</small>
-                        </div>
-                        <!-- <span>{{ post.id }}</span> -->
-                        </Link>
-                    </div>
-
-                    <div class="pr-2">
-                        <OptionsDropDown v-model="showOptions" :is-trashed="isTrashed(post)"
-                            @callRestoreItem="submitProcess('restore', post.id)"
-                            @callForceDeleteItem="submitProcess('force_delete', post.id)"
-                            :ellipsis-type-icon="'vertical'" :item-type="'post'" />
-                    </div>
-                </div>
+                <TrashedItem v-for="(post, index) of postsPerDay" :post="post" :index="index" v-model="checkedIds"
+                    @callCheckItem="checkItem" @callSubmitProcess="submitProcess" />
             </div>
         </template>
     </div>
