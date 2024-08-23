@@ -1,6 +1,6 @@
 <script setup>
-import { ArchiveBoxIcon, ArrowUturnLeftIcon, TrashIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import TrashedItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
+import NavBar from '@/Pages/ArchiveManagement/Partials/NavBar.vue'
+import ListItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
 import { computed, ref, onMounted } from 'vue';
 import { useForm } from "@inertiajs/vue3";
 
@@ -23,9 +23,12 @@ const getAllTrashedPostIds = () => {
 
 const postIdsForm = useForm({
     checked_ids: [],
-});
+})
 
-const checkAllTrashedRef = ref(null)
+const managementType = 'trash'
+
+const navBarRef = ref(null)
+
 const checkedAll = ref(false)
 const checkedIds = ref([])
 
@@ -40,7 +43,7 @@ const checkAll = () => {
 
 const buttonDisabled = computed(
     () => checkedIds.value.length === 0
-);
+)
 
 const emit = defineEmits(['callConfirmForceDeletion'])
 
@@ -107,7 +110,7 @@ const processGlobalForceDelete = () => {
 const unMarkAll = () => {
     checkedAll.value = false
     checkedIds.value = []
-    checkAllTrashedRef.value.checked = checkedAll.value
+    navBarRef.value.checkAllRef.checked = checkedAll.value
 }
 
 const reset = () => {
@@ -138,13 +141,17 @@ const checkItem = () => {
     } else {
         checkedAll.value = false
     }
-    checkAllTrashedRef.value.checked = checkedAll.value
+    navBarRef.value.checkAllRef.checked = checkedAll.value
 }
 </script>
 
 <template>
     <div>
-        <div class="flex items-center justify-between px-3 py-5 bg-white rounded-lg">
+        <NavBar ref="navBarRef" :button-disabled="buttonDisabled" :checked-ids-length="checkedIds.length"
+            :management-type="managementType" @callCheckAll="checkAll" @callUnMarkAll="unMarkAll"
+            @callSubmitGlobalProcess="submitGlobalProcess" />
+
+        <!-- <div class="flex items-center justify-between px-3 py-5 bg-white rounded-lg">
             <div class="flex items-center">
                 <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-slate-200">
                     <input type="checkbox" ref="checkAllTrashedRef" @change="checkAll" name="check_all" id="check_all"
@@ -181,7 +188,7 @@ const checkItem = () => {
                     Eliminar
                 </button>
             </div>
-        </div>
+        </div> -->
 
         <template v-if="posts.length === 0">
             <div class="px-3 py-4 mt-4 text-center bg-white rounded-lg">
@@ -192,7 +199,7 @@ const checkItem = () => {
             <div v-for="(postsPerDay, day) of posts" class="px-3 py-4 mt-4 bg-white rounded-lg">
                 <h4 class="ml-1.5 text-lg font-bold">{{ day }} <small>({{ postsPerDay.length }})</small></h4>
 
-                <TrashedItem v-for="(post, index) of postsPerDay" :post="post" :index="index" v-model="checkedIds"
+                <ListItem v-for="(post, index) of postsPerDay" :post="post" :index="index" v-model="checkedIds"
                     @callCheckItem="checkItem" @callSubmitProcess="submitProcess" />
             </div>
         </template>
