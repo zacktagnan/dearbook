@@ -151,45 +151,6 @@ const checkItem = () => {
             :management-type="managementType" @callCheckAll="checkAll" @callUnMarkAll="unMarkAll"
             @callSubmitGlobalProcess="submitGlobalProcess" />
 
-        <!-- <div class="flex items-center justify-between px-3 py-5 bg-white rounded-lg">
-            <div class="flex items-center">
-                <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-slate-200">
-                    <input type="checkbox" ref="checkAllTrashedRef" @change="checkAll" name="check_all" id="check_all"
-                        class="w-[22px] h-[22px] rounded group-hover/check_all:bg-slate-200">
-                </div>
-                <label for="check_all" class="ml-1 font-bold hover:cursor-pointer">Todo</label>
-                <button v-if="!buttonDisabled" title="Desmarcar toda casilla marcada" @click="unMarkAll"
-                    class="ml-5 flex items-center gap-1 pl-2 pr-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300">
-                    <XMarkIcon class="w-5 h-5" />
-                    Desmarcar
-                </button>
-            </div>
-
-            <div v-if="checkedIds.length > 0">
-                [ {{ checkedIds.length }} ]
-            </div>
-
-            <div class="flex items-center gap-5 pr-2">
-                <button :disabled="buttonDisabled" :title="!buttonDisabled ? 'Archivar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
-                    <ArchiveBoxIcon class="w-5 h-5" />
-                    Archivar
-                </button>
-                <button @click="submitGlobalProcess('restore_all_selected')" :disabled="buttonDisabled"
-                    :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
-                    <ArrowUturnLeftIcon class="w-5 h-5" />
-                    Restaurar
-                </button>
-                <button @click="submitGlobalProcess('force_delete_all_selected')" :disabled="buttonDisabled"
-                    :title="!buttonDisabled ? 'Eliminar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
-                    <TrashIcon class="w-5 h-5" />
-                    Eliminar
-                </button>
-            </div>
-        </div> -->
-
         <template v-if="posts.length === 0">
             <div class="px-3 py-4 mt-4 text-center bg-white rounded-lg">
                 No hay registros

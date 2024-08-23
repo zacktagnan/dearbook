@@ -1,7 +1,7 @@
 <script setup>
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
     post: Object,
@@ -40,9 +40,9 @@ const checkedId = defineModel()
 <template>
     <div class="flex items-center justify-between py-2 gap-7" :class="index > 0 ? 'border-t border-slate-300' : ''">
         <div class="flex items-center">
-            <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-black/5">
+            <div class="pl-1.5 pt-1 pb-1.5 pr-1.5 rounded-full group/check_all hover:bg-sky-200">
                 <input type="checkbox" :value="post.id" v-model="checkedId" @change="$emit('callCheckItem')"
-                    class="w-[22px] h-[22px] rounded group-hover/check_all:bg-black/5">
+                    class="w-[22px] h-[22px] rounded group-hover/check_all:bg-sky-200 checked:bg-sky-300 focus:checked:bg-sky-300 focus:ring-0 focus:ring-offset-0">
             </div>
         </div>
 
