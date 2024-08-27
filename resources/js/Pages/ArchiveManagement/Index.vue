@@ -9,7 +9,7 @@ import { onMounted, ref, shallowRef } from "vue";
 
 const props = defineProps({
     success: {
-        type: String,
+        type: Object,
     },
 });
 
@@ -37,10 +37,27 @@ const registerBoxToProcess = ref({})
 const showingConfirmProcess = ref(false);
 const componentRef = ref(null)
 
-const showConfirmProcess = (processType, entityIdOrEntityIds) => {
-    if (processType === 'force_delete') {
+const showConfirmProcess = (processType, entityIdOrEntityIds, from) => {
+    if (processType === 'delete') {
         registerBoxToProcess.value = {
             entityId: entityIdOrEntityIds,
+            from,
+            processType,
+        }
+    }
+    else if (processType === 'delete_all_selected') {
+        registerBoxToProcess.value = {
+            entityIds: {
+                checked_ids: entityIdOrEntityIds,
+                from,
+            },
+            processType,
+        }
+    }
+    else if (processType === 'force_delete') {
+        registerBoxToProcess.value = {
+            entityId: entityIdOrEntityIds,
+            from,
             processType,
         }
     }
@@ -48,6 +65,7 @@ const showConfirmProcess = (processType, entityIdOrEntityIds) => {
         registerBoxToProcess.value = {
             entityIds: {
                 checked_ids: entityIdOrEntityIds,
+                from,
             },
             processType,
         }
@@ -60,9 +78,38 @@ const closeConfirmProcess = () => {
     showingConfirmProcess.value = false;
 }
 
+const deleting = () => {
+    if (registerBoxToProcess.value.processType === 'delete') {
+        router.get(route('post.destroy-from-management', {
+            id: registerBoxToProcess.value.entityId,
+            from: registerBoxToProcess.value.from,
+        }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                closeConfirmProcess()
+            },
+        })
+    }
+    else if (registerBoxToProcess.value.processType === 'delete_all_selected') {
+        router.post(route('post.destroy-from-management-all-selected'), registerBoxToProcess.value.entityIds, {
+            onSuccess: () => {
+                closeConfirmProcess()
+                activeShowNotification()
+                componentRef.value.loadCurrentArchivedPosts(true)
+
+                reInitDataAfterProcess(registerBoxToProcess.value.processType)
+            },
+        })
+    }
+}
+
 const forceDeleting = () => {
     if (registerBoxToProcess.value.processType === 'force_delete') {
-        router.get(route('post.force-destroy', registerBoxToProcess.value.entityId), {
+        router.get(route('post.force-destroy', {
+            id: registerBoxToProcess.value.entityId,
+            from: registerBoxToProcess.value.from,
+        }), {
+            preserveScroll: true,
             onSuccess: () => {
                 closeConfirmProcess()
             },
@@ -84,12 +131,21 @@ const forceDeleting = () => {
 }
 
 const reInitDataAfterProcess = (processType) => {
-    selectedComponent.value = componentList['ManageTrash']
-    archiveMenuListRef.value.setSelectedMenuItem('ManageTrash')
+    if (processType === 'delete_all_selected') {
+        selectedComponent.value = componentList['ManageArchive']
+        archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+    }
+    else if (processType === 'force_delete_all_selected') {
+        selectedComponent.value = componentList['ManageTrash']
+        archiveMenuListRef.value.setSelectedMenuItem('ManageTrash')
+    }
 
     activeShowNotification()
 
-    if (processType === 'force_delete_all_selected') {
+    if (processType === 'delete_all_selected') {
+        componentRef.value.loadCurrentArchivedPosts(true)
+    }
+    else if (processType === 'force_delete_all_selected') {
         componentRef.value.loadCurrentTrashedPosts(true)
     }
 }
@@ -139,6 +195,8 @@ const startClosingNotification = () => {
 
 const stopClosingNotification = () => {
     clearInterval(timer.value)
+    props.success.from = null
+    props.success.message = null
 }
 
 const closingNotification = (className) => {
@@ -155,12 +213,39 @@ const closeShowNotification = () => {
     stopClosingNotification()
 }
 
+const notifyProcessEnding = (processType) => {
+    console.log('notifyProcessEnding...')
+
+    // props.success.from = 'trash'
+    // props.success.message = 'Archivado en conjunto - OK'
+
+    // activeShowNotification()
+    // showNotification.value = true
+
+    router.get(route('archive-management.notify.process.ending', processType), {
+        preserveScroll: true,
+        onSuccess: () => {
+            // Parece ser que, al haber un "return->back()" tras terminar la petición demandada,
+            // en vez de imprimirse esto, directamente, se pasa al onMounted de este archivo.
+            console.log('OK - notifyProcessEnding...NOTIFICANDO.')
+            // Por otro lado, al NotificationBox no se le llega a aplicar el efecto de FADEOUT al desaparecer.
+        },
+    })
+}
+
 onMounted(() => {
-    if (props.success && props.success !== '') {
-        // para procesos unitarios...
+    // para procesos unitarios...
+    if (props.success && props.success.from === 'trash') {
         selectedComponent.value = componentList['ManageTrash']
         archiveMenuListRef.value.setSelectedMenuItem('ManageTrash')
+    }
+    else if (props.success && props.success.from === 'archive') {
+        selectedComponent.value = componentList['ManageArchive']
+        archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+    }
 
+    if (props.success) {
+        console.log('HAY SUCCESS...:)')
         activeShowNotification()
         showNotification.value = true
     }
@@ -179,15 +264,39 @@ onMounted(() => {
 
             <div class="ml-[315px] px-20 pt-4 pb-4 lg:pt-20 lg:col-span-10">
                 <!-- Parte Central -->
-                <KeepAlive>
+                <template v-if="success">
                     <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
-                        @callConfirmForceDeletion="showConfirmProcess" />
-                </KeepAlive>
+                        @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding" />
+                </template>
+                <template v-else>
+                    <KeepAlive>
+                        <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
+                            @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding" />
+                    </KeepAlive>
+                </template>
             </div>
 
             <ConfirmPostForceDeletionModal :show="showingConfirmProcess" @close="closeConfirmProcess">
                 <div class="p-6">
-                    <template v-if="registerBoxToProcess.processType === 'force_delete'">
+                    <template v-if="registerBoxToProcess.processType === 'delete'">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $t('dearbook.post.index.confirm_deletion.question') }}
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            {{ $t('dearbook.post.index.confirm_deletion.message') }}
+                        </p>
+                    </template>
+                    <template v-else-if="registerBoxToProcess.processType === 'delete_all_selected'">
+                        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                            {{ $t('dearbook.post.index.confirm_deletion_collection.question') }}
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                            {{ $t('dearbook.post.index.confirm_deletion_collection.message') }}
+                        </p>
+                    </template>
+                    <template v-else-if="registerBoxToProcess.processType === 'force_delete'">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                             {{ $t('dearbook.post.index.confirm_force_deletion.question') }}
                         </h2>
@@ -210,7 +319,16 @@ onMounted(() => {
                         <SecondaryButton @click="closeConfirmProcess" :title="$t('Cancel')"> {{ $t('Cancel') }}
                         </SecondaryButton>
 
-                        <DangerButton v-if="registerBoxToProcess.processType === 'force_delete'" class="ms-3"
+                        <DangerButton v-if="registerBoxToProcess.processType === 'delete'" class="ms-3"
+                            @click="deleting" :title="$t('dearbook.post.index.confirm_deletion.button_text')">
+                            {{ $t('dearbook.post.index.confirm_deletion.button_text') }}
+                        </DangerButton>
+                        <DangerButton v-else-if="registerBoxToProcess.processType === 'delete_all_selected'"
+                            class="ms-3" @click="deleting"
+                            :title="$t('dearbook.post.index.confirm_deletion_collection.button_text')">
+                            {{ $t('dearbook.post.index.confirm_deletion_collection.button_text') }}
+                        </DangerButton>
+                        <DangerButton v-else-if="registerBoxToProcess.processType === 'force_delete'" class="ms-3"
                             @click="forceDeleting"
                             :title="$t('dearbook.post.index.confirm_force_deletion.button_text')">
                             {{ $t('dearbook.post.index.confirm_force_deletion.button_text') }}
@@ -226,7 +344,10 @@ onMounted(() => {
 
             <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                 @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
-                v-show="showNotification && success" :title="'Info'" :message="success" />
+                v-show="showNotification && success?.from === 'trash'" :title="'Info'" :message="success?.message" />
+            <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                v-show="showNotification && success?.from === 'archive'" :title="'Info'" :message="success?.message" />
         </div>
     </AuthenticatedLayout>
 </template>

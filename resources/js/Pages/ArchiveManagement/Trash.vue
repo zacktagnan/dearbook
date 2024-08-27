@@ -2,7 +2,7 @@
 import NavBar from '@/Pages/ArchiveManagement/Partials/NavBar.vue'
 import ListItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
 import { computed, ref, onMounted } from 'vue';
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 
 import axiosClient from '@/axiosClient'
 
@@ -23,6 +23,7 @@ const getAllTrashedPostIds = () => {
 
 const postIdsForm = useForm({
     checked_ids: [],
+    from: '',
 })
 
 const managementType = 'trash'
@@ -45,19 +46,41 @@ const buttonDisabled = computed(
     () => checkedIds.value.length === 0
 )
 
-const emit = defineEmits(['callConfirmForceDeletion'])
+const emit = defineEmits(['callConfirmProcess', 'callNotifyProcessEnding'])
 
 const submitProcess = (processType, postId) => {
-    if (processType === 'restore') {
-        processRestore(postId)
+    if (processType === 'archive') {
+        processArchive(postId, managementType)
+    } else if (processType === 'restore_from_trash') {
+        processRestore(postId, managementType)
     } else if (processType === 'force_delete') {
         // processForceDelete(postId)
-        emit('callConfirmForceDeletion', 'force_delete', postId)
+        emit('callConfirmProcess', 'force_delete', postId, managementType)
     }
 }
 
-const processRestore = (postId) => {
-    axiosClient.get(route('post.restore', postId))
+const processArchive = (postId, from) => {
+    // Con un único parámetro para la ruta de GET...
+    // axiosClient.get(route('post.restore', postId))
+    // Con varios parámetros para la ruta de GET...
+    axiosClient.get(route('post.archive', {
+        id: postId,
+        // Cuando el nombre del parámetro de ruta y el nombre de la variable que da el valor es el mismo...
+        from,
+    }))
+        .then(() => {
+            loadCurrentTrashedPosts(true)
+        })
+        .catch((error) => {
+            console.log('ERRORS-ARCHIVE', error.response.data.errors)
+        })
+}
+
+const processRestore = (postId, from) => {
+    axiosClient.get(route('post.restore', {
+        id: postId,
+        from,
+    }))
         .then(() => {
             loadCurrentTrashedPosts(true)
         })
@@ -79,12 +102,28 @@ const processForceDelete = (postId) => {
 const submitGlobalProcess = (processType) => {
     postIdsForm.checked_ids = checkedIds
 
-    if (processType === 'restore_all_selected') {
+    if (processType === 'archive_all_selected') {
+        postIdsForm.from = managementType
+        processGlobalArchive()
+    } else if (processType === 'restore_from_trash_all_selected') {
+        postIdsForm.from = managementType
         processGlobalRestore()
     } else if (processType === 'force_delete_all_selected') {
         // processGlobalForceDelete()
-        emit('callConfirmForceDeletion', 'force_delete_all_selected', checkedIds.value)
+        emit('callConfirmProcess', 'force_delete_all_selected', checkedIds.value, managementType)
     }
+}
+
+const processGlobalArchive = () => {
+    axiosClient.post(route('post.archive-all-selected'), postIdsForm)
+        .then(() => {
+            loadCurrentTrashedPosts(true)
+            emit('callNotifyProcessEnding', 'archive_all_selected_from_trash')
+        })
+        .catch((error) => {
+            // console.log('ERRORS-ARCHIVE_ALL', error.response.data.errors)
+            console.log('ERRORS-ARCHIVE_ALL', error)
+        })
 }
 
 const processGlobalRestore = () => {

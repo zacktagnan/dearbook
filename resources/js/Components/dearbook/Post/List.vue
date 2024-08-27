@@ -66,9 +66,18 @@ const postDetailModalRef = ref(null)
 const entityToDelete = ref({})
 const showingConfirmDeletion = ref(false);
 const showConfirmDeletion = (entity, entityPrefix) => {
+    let to = 'none'
+    if (entityPrefix !== 'post.comment') {
+        if (entity.deleted_at === '' && entity.archived_at === '') {
+            to = 'home'
+        } else if (entity.archived_at !== '') {
+            to = 'archive'
+        }
+    }
     entityToDelete.value = {
         entity,
         entityPrefix,
+        to,
     }
     showingConfirmDeletion.value = true;
 };
@@ -77,10 +86,14 @@ const closeConfirmDeletion = () => {
 };
 
 const deleteEntity = () => {
-    if (entityToDelete.value.entityPrefix === 'post.comment') {
+    // Se ha hecho necesario pasar el ID de la entidad en vez de toda la entidad en ambos casos
+    if (entityToDelete.value.entityPrefix === 'post.comment' || entityToDelete.value.entityPrefix === 'post') {
         entityToDelete.value.entity = entityToDelete.value.entity.id
     }
-    router.delete(route(entityToDelete.value.entityPrefix + ".destroy", entityToDelete.value.entity), {
+    router.delete(route(entityToDelete.value.entityPrefix + ".destroy", {
+        entity: entityToDelete.value.entity,
+        to: entityToDelete.value.to,
+    }), {
         preserveScroll: true,
         onSuccess: () => {
             closeConfirmDeletion()
@@ -99,6 +112,23 @@ const deleteEntity = () => {
         },
     });
 };
+
+const archiveItem = (postId) => {
+    let from = 'home'
+
+    router.get(route('post.archive', {
+        id: postId,
+        from,
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            console.log('OK-Archivation')
+        },
+        onError: (errors) => {
+            console.log('ERRORES-Archivation', errors);
+        },
+    })
+}
 
 // -------------------------------------
 
@@ -165,7 +195,7 @@ const closeShowNotification = () => {
 
 <template>
     <div>
-        <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal"
+        <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem"
             @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openAttachmentsModal"
             @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
             @callActiveShowNotification="activeShowNotification" />
@@ -173,9 +203,9 @@ const closeShowNotification = () => {
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
         <PostDetailModal ref="postDetailModalRef" :post="postDetail" v-model="showDetailModal"
-            @callOpenEditModal="openEditModal" @callOpenAttachmentsModal="openAttachmentsModal"
-            @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
-            @callActiveShowNotification="activeShowNotification" />
+            @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem"
+            @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
+            @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification" />
 
         <AttachmentModal :attachments="entityWithAttachmentsToPreview.entity?.attachments || []"
             :entity-prefix="entityWithAttachmentsToPreview.entityPrefix"

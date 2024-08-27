@@ -16,9 +16,11 @@ const emit = defineEmits([
     "callOpenDetailModal",
     "callOpenAttachmentsModal",
     'callOpenUserReactionsModal',
+    'callArchiveItem',
     'callConfirmDeletion',
     "callActiveShowNotification",
-    'callRestoreItem',
+    'callRestoreItemFromArchive',
+    'callRestoreItemFromTrash',
     'callForceDeleteItem',
 ]);
 
@@ -51,6 +53,10 @@ const isPostAuthor = computed(
 
 const isTrashed = computed(
     () => props.post.deleted_at !== ''
+);
+
+const isArchived = computed(
+    () => props.post.archived_at !== ''
 );
 
 const maxPreviewFiles = 6;
@@ -199,8 +205,11 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" @callEditItem="openEditModal"
-                @callDeleteItem="$emit('callConfirmDeletion', post, 'post')" @callRestoreItem="$emit('callRestoreItem')"
+            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" :is-archived="isArchived"
+                @callEditItem="openEditModal" @callArchiveItem="$emit('callArchiveItem', post.id)"
+                @callDeleteItem="$emit('callConfirmDeletion', post, 'post')"
+                @callRestoreItemFromArchive="$emit('callRestoreItemFromArchive')"
+                @callRestoreItemFromTrash="$emit('callRestoreItemFromTrash')"
                 @callForceDeleteItem="$emit('callForceDeleteItem')" :ellipsis-type-icon="'vertical'"
                 :item-type="'post'" />
             <!-- =========================================================== -->
@@ -316,7 +325,7 @@ defineExpose({
                 <hr />
             </div>
 
-            <div v-if="!isTrashed" class="flex gap-2 my-1.5 font-bold text-gray-500">
+            <div v-if="!isTrashed && !isArchived" class="flex gap-2 my-1.5 font-bold text-gray-500">
                 <PostReactionBox :post="post" @callRestartDefaultTabIndex="setTypeUserReactionsPostByType"
                     @callActiveShowNotification="activeShowNotification" />
 
@@ -330,9 +339,9 @@ defineExpose({
             </div>
 
             <div>
-                <hr v-if="!isTrashed">
+                <hr v-if="!isTrashed && !isArchived">
 
-                <PostCommentBox :is-trashed="isTrashed" ref="postCommentBoxRef" :post="post"
+                <PostCommentBox :is-trashed="isTrashed" :is-archived="isArchived" ref="postCommentBoxRef" :post="post"
                     :comments-list="commentsList" :type-list="typeList" @callOpenDetailModal="openDetailModal"
                     @callOpenAttachmentsModal="openCommentAttachmentPreview"
                     @callOpenUserReactionsModal="openUserReactionsModal"

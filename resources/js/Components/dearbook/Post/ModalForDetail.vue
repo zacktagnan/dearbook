@@ -20,7 +20,7 @@ const props = defineProps({
     modelValue: Boolean,
 });
 
-const emit = defineEmits(["update:modelValue", 'callOpenEditModal', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callConfirmDeletion', 'callActiveShowNotification']);
+const emit = defineEmits(["update:modelValue", 'callOpenEditModal', 'callArchiveItem', 'callOpenAttachmentsModal', 'callOpenUserReactionsModal', 'callConfirmDeletion', 'callActiveShowNotification']);
 
 const showDetail = computed({
     get: () => props.modelValue,
@@ -90,6 +90,7 @@ defineExpose({
                                 <div class="overflow-auto max-h-[747px]">
                                     <PostDetailItem ref="postDetailItemRef" :post="post" :type-list="'all'"
                                         @callOpenEditModal="$emit('callOpenEditModal', post)"
+                                        @callArchiveItem="$emit('callArchiveItem', post.id, 'home')"
                                         @callOpenAttachmentsModal="openAttachmentsModal"
                                         @callOpenUserReactionsModal="openUserReactionsModal"
                                         @callConfirmDeletion="confirmDeletion"

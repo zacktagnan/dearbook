@@ -147,8 +147,9 @@ class PostCommentController extends Controller
         }
     }
 
-    public function destroy(Comment $comment)
+    public function destroy(int $id, string $to)
     {
+        $comment = Comment::findOrFail($id);
         if ($comment->user_id !== auth()->id()) {
             return response("You don't have permission to DELETE this comment", Response::HTTP_FORBIDDEN);
         }

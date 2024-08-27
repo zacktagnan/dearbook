@@ -17,7 +17,11 @@ const isPostAuthor = computed(
 );
 
 const isTrashed = computed(
-    () => props.post.deleted_at !== ''
+    () => props.post.deleted_at !== null
+);
+
+const isArchived = computed(
+    () => props.post.archived_at !== null
 );
 
 const loadImage = (post) => {
@@ -58,8 +62,11 @@ const checkedId = defineModel()
         </div>
 
         <div class="pr-2">
-            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed"
-                @callRestoreItem="$emit('callSubmitProcess', 'restore', post.id)"
+            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" :is-archived="isArchived"
+                @callArchiveItem="$emit('callSubmitProcess', 'archive', post.id)"
+                @callDeleteItem="$emit('callSubmitProcess', 'delete', post.id)"
+                @callRestoreItemFromArchive="$emit('callSubmitProcess', 'restore_from_archive', post.id)"
+                @callRestoreItemFromTrash="$emit('callSubmitProcess', 'restore_from_trash', post.id)"
                 @callForceDeleteItem="$emit('callSubmitProcess', 'force_delete', post.id)"
                 :ellipsis-type-icon="'vertical'" :item-type="'post'" />
         </div>

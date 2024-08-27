@@ -36,8 +36,8 @@ defineExpose({ checkAllRef, })
 
         <div class="flex items-center gap-5 pr-2">
             <template v-if="managementType === 'archive'">
-                <button @click="$emit('callSubmitGlobalProcess', 'restore_all_selected')" :disabled="buttonDisabled"
-                    :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
+                <button @click="$emit('callSubmitGlobalProcess', 'restore_from_archive_all_selected')"
+                    :disabled="buttonDisabled" :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
                     class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
                     Restaurar
@@ -56,8 +56,8 @@ defineExpose({ checkAllRef, })
                     <ArchiveBoxIcon class="w-5 h-5" />
                     Archivar
                 </button>
-                <button @click="$emit('callSubmitGlobalProcess', 'restore_all_selected')" :disabled="buttonDisabled"
-                    :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
+                <button @click="$emit('callSubmitGlobalProcess', 'restore_from_trash_all_selected')"
+                    :disabled="buttonDisabled" :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
                     class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
                     Restaurar

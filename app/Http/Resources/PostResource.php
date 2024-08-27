@@ -45,6 +45,8 @@ class PostResource extends JsonResource
 
             'deleted_at' => $this->deleted_at
                 ?: '',
+            'archived_at' => $this->archived_at
+                ?: '',
 
             // Cargando a través del nombre de la relación con Post,
             'group' => $this->group,

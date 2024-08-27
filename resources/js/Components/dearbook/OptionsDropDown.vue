@@ -5,7 +5,8 @@ import {
     EllipsisHorizontalIcon,
     PencilIcon,
     TrashIcon,
-    ArrowUturnLeftIcon
+    ArrowUturnLeftIcon,
+    ArchiveBoxIcon,
 } from "@heroicons/vue/24/solid";
 import { computed } from "vue";
 
@@ -24,6 +25,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    isArchived: {
+        type: Boolean,
+        default: false,
+    },
     itemType: String,
 });
 
@@ -34,8 +39,10 @@ const show = computed({
 
 const emit = defineEmits([
     "callEditItem",
+    "callArchiveItem",
     "callDeleteItem",
-    "callRestoreItem",
+    "callRestoreItemFromArchive",
+    "callRestoreItemFromTrash",
     "callForceDeleteItem",
 ]);
 </script>
@@ -62,18 +69,33 @@ const emit = defineEmits([
                         ? 'w-36'
                         : 'w-[74px]'
                 ]">
-                <template v-if="!isTrashed">
+                <template v-if="!isTrashed && !isArchived">
                     <div class="px-1 py-1">
                         <MenuItem v-slot="{ active }">
                         <button @click="$emit('callEditItem')" :class="[
                             active
-                                ? 'bg-indigo-100'
+                                ? 'bg-sky-100'
                                 : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                         ]" :title="itemType === 'post' ? 'Editar publicación' : 'Editar comentario'">
-                            <PencilIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-indigo-400"
+                            <PencilIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-sky-400"
                                 aria-hidden="true" />
                             Editar
+                        </button>
+                        </MenuItem>
+                    </div>
+
+                    <div v-if="itemType === 'post'" class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="$emit('callArchiveItem')" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Mover al archivo">
+                            <ArchiveBoxIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                aria-hidden="true" />
+                            Al archivo
                         </button>
                         </MenuItem>
                     </div>
@@ -82,11 +104,11 @@ const emit = defineEmits([
                         <MenuItem v-slot="{ active }">
                         <button @click="$emit('callDeleteItem')" :class="[
                             active
-                                ? 'bg-indigo-100'
+                                ? 'bg-sky-100'
                                 : 'text-gray-900',
                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                         ]" :title="itemType === 'post' ? 'Mover a la papelera' : 'Eliminar'">
-                            <TrashIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-indigo-400"
+                            <TrashIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-sky-400"
                                 aria-hidden="true" />
                             {{ itemType === 'post' ? 'A la papelera' : 'Eliminar' }}
                         </button>
@@ -94,35 +116,83 @@ const emit = defineEmits([
                     </div>
                 </template>
                 <template v-else>
-                    <div class="px-1 py-1">
-                        <MenuItem v-slot="{ active }">
-                        <button @click="$emit('callRestoreItem')" :class="[
-                            active
-                                ? 'bg-indigo-100'
-                                : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]" title="Restaurar publicación">
-                            <ArrowUturnLeftIcon v-if="showMenuItemIcon" :active="active"
-                                class="w-5 h-5 mr-2 text-indigo-400" aria-hidden="true" />
-                            Restaurar
-                        </button>
-                        </MenuItem>
-                    </div>
+                    <template v-if="isTrashed">
+                        <div v-if="itemType === 'post'" class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callArchiveItem')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Mover al archivo">
+                                <ArchiveBoxIcon v-if="showMenuItemIcon" :active="active"
+                                    class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Al archivo
+                            </button>
+                            </MenuItem>
+                        </div>
 
-                    <div class="px-1 py-1">
-                        <MenuItem v-slot="{ active }">
-                        <button @click="$emit('callForceDeleteItem')" :class="[
-                            active
-                                ? 'bg-indigo-100'
-                                : 'text-gray-900',
-                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]" title="Eliminar del todo">
-                            <TrashIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-indigo-400"
-                                aria-hidden="true" />
-                            Eliminar
-                        </button>
-                        </MenuItem>
-                    </div>
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callRestoreItemFromTrash')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Restaurar publicación">
+                                <ArrowUturnLeftIcon v-if="showMenuItemIcon" :active="active"
+                                    class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Restaurar
+                            </button>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callForceDeleteItem')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Eliminar del todo">
+                                <TrashIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                    aria-hidden="true" />
+                                Eliminar
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </template>
+                    <template v-if="isArchived">
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callRestoreItemFromArchive')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Restaurar publicación">
+                                <ArrowUturnLeftIcon v-if="showMenuItemIcon" :active="active"
+                                    class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Restaurar
+                            </button>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callDeleteItem')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Mover a la papelera">
+                                <TrashIcon v-if="showMenuItemIcon" :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                    aria-hidden="true" />
+                                A la papelera
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </template>
                 </template>
             </MenuItems>
         </transition>

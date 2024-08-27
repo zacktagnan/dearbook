@@ -28,13 +28,18 @@ Route::middleware('auth')->group(function () {
     Route::prefix('post')->as('post.')->group(function () {
         Route::post('', [PostController::class, 'store'])->name('store');
         Route::put('/{post}', [PostController::class, 'update'])->name('update');
-        Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+        Route::delete('/{entity}/{to}', [PostController::class, 'destroy'])->name('destroy');
+        Route::get('/destroy-from-management/{id}/{from}', [PostController::class, 'destroyFromManagement'])->name('destroy-from-management');
+        Route::post('/destroy-from-management-all-selected', [PostController::class, 'destroyFromManagementAllSelected'])->name('destroy-from-management-all-selected');
         Route::get('/trashed-posts', [PostController::class, 'trashedPosts'])->name('trashed-posts');
-        Route::get('/restore/{id}', [PostController::class, 'restore'])->name('restore');
+        Route::get('/restore/{id}/{from}', [PostController::class, 'restore'])->name('restore');
         Route::post('/restore-all-selected', [PostController::class, 'restoreAllSelected'])->name('restore-all-selected');
         Route::get('/force-destroy/{id}', [PostController::class, 'forceDestroy'])->name('force-destroy');
         Route::get('/force-destroy-from-detail/{id}', [PostController::class, 'forceDestroyFromDetail'])->name('force-destroy-from-detail');
         Route::post('/force-destroy-all-selected', [PostController::class, 'forceDestroyAllSelected'])->name('force-destroy-all-selected');
+        Route::get('/archive/{id}/{from}', [PostController::class, 'archive'])->name('archive');
+        Route::post('/archive-all-selected', [PostController::class, 'archiveAllSelected'])->name('archive-all-selected');
+        Route::get('/archived-posts', [PostController::class, 'archivedPosts'])->name('archived-posts');
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
 
@@ -42,7 +47,7 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/{post}/comment', [PostCommentController::class, 'store'])->name('comment.store');
         Route::put('/comment/{comment}', [PostCommentController::class, 'update'])->name('comment.update');
-        Route::delete('/comment/{comment}', [PostCommentController::class, 'destroy'])->name('comment.destroy');
+        Route::delete('/comment/{entity}/{to}', [PostCommentController::class, 'destroy'])->name('comment.destroy');
         Route::get('/comment/download-attachment/{attachment}', [PostCommentController::class, 'downloadAttachment'])->name('comment.download-attachment');
     });
 
@@ -52,6 +57,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('archive-management')->as('archive-management.')->group(function () {
         Route::get('/', [ArchiveManagementController::class, 'index'])->name('index');
+        Route::get('/notify-process-ending/{processType}', [ArchiveManagementController::class, 'notifyProcessEnding'])->name('notify.process.ending');
     });
 });
 

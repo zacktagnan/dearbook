@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use LaravelArchivable\Archivable;
 
 class Post extends Model
 {
@@ -18,6 +19,7 @@ class Post extends Model
     use Attachmentable;
     use Reactionable;
     use CustomDateFormatting;
+    use Archivable;
 
     protected $fillable = [
         'body',

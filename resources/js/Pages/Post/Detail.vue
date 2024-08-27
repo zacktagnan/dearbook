@@ -56,12 +56,43 @@ const openAttachmentsModal = (entity, index, entityPrefix) => {
     showAttachmentsModal.value = true
 }
 
+const archiveItem = (postId) => {
+    let from = ''
+    if (props.post.deleted_at === '' && props.post.archived_at === '') {
+        from = 'detail'
+    } else if (props.post.deleted_at !== '') {
+        from = 'trash'
+    }
+
+    router.get(route('post.archive', {
+        id: postId,
+        from,
+    }), {
+        preserveScroll: true,
+        onSuccess: () => {
+            console.log('OK-Archivation')
+        },
+        onError: (errors) => {
+            console.log('ERRORES-Archivation', errors);
+        },
+    })
+}
+
 const entityToDelete = ref({})
 const showingConfirmDeletion = ref(false);
 const showConfirmDeletion = (entity, entityPrefix) => {
+    let to = ''
+    if (entityPrefix !== 'post.comment') {
+        if (props.post.deleted_at === '' && props.post.archived_at === '') {
+            to = 'home'
+        } else if (props.post.archived_at !== '') {
+            to = 'archive'
+        }
+    }
     entityToDelete.value = {
         entity,
         entityPrefix,
+        to,
     }
     showingConfirmDeletion.value = true;
 };
@@ -70,10 +101,14 @@ const closeConfirmDeletion = () => {
 };
 
 const deleteEntity = () => {
-    if (entityToDelete.value.entityPrefix === 'post.comment') {
+    // Se ha hecho necesario pasar el ID de la entidad en vez de toda la entidad en ambos casos
+    if (entityToDelete.value.entityPrefix === 'post.comment' || entityToDelete.value.entityPrefix === 'post') {
         entityToDelete.value.entity = entityToDelete.value.entity.id
     }
-    router.delete(route(entityToDelete.value.entityPrefix + ".destroy", entityToDelete.value.entity), {
+    router.delete(route(entityToDelete.value.entityPrefix + ".destroy", {
+        entity: entityToDelete.value.entity,
+        to: entityToDelete.value.to,
+    }), {
         preserveScroll: true,
         onSuccess: () => {
             closeConfirmDeletion()
@@ -162,15 +197,20 @@ const closeShowNotification = () => {
 }
 
 const submitProcess = (processType, postId) => {
-    if (processType === 'restore') {
-        processRestore(postId)
+    if (processType === 'restore_from_archive') {
+        processRestore(postId, 'archive')
+    } else if (processType === 'restore_from_trash') {
+        processRestore(postId, 'trash')
     } else if (processType === 'force_delete') {
         showConfirmProcess(processType, postId)
     }
 }
 
-const processRestore = (postId) => {
-    axiosClient.get(route('post.restore', postId))
+const processRestore = (postId, from) => {
+    axiosClient.get(route('post.restore', {
+        id: postId,
+        from,
+    }))
         .then(() => {
             // router.visit(route('home'))
             // o, sino,
@@ -220,9 +260,11 @@ const processing = () => {
     <AuthenticatedLayout>
         <div class="mx-auto pt-20 pb-5 w-[690px]">
             <PostItemDetail ref="postItemDetailRef" :post="post" :type-list="'all'" @callOpenEditModal="openEditModal"
-                @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
-                @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification"
-                @callRestoreItem="submitProcess('restore', post.id)"
+                @callArchiveItem="archiveItem" @callOpenAttachmentsModal="openAttachmentsModal"
+                @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
+                @callActiveShowNotification="activeShowNotification"
+                @callRestoreItemFromArchive="submitProcess('restore_from_archive', post.id)"
+                @callRestoreItemFromTrash="submitProcess('restore_from_trash', post.id)"
                 @callForceDeleteItem="submitProcess('force_delete', post.id)" :class="'rounded shadow'" />
 
             <PostModal :post="postToEdit" v-model="showEditModal"

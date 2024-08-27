@@ -17,7 +17,7 @@ trait UserReactions
     public function allUserReactions(Model $model, int $id): JsonResource
     {
         $model = ($model instanceof Post)
-            ? $model::withTrashed()->find($id)
+            ? $model::withArchived()->withTrashed()->find($id)
             : $model::find($id);
         // dump('MODEL', $model);
         // dd();
@@ -30,7 +30,7 @@ trait UserReactions
     public function typeUserReactions(Model $model, int $id, string $type): JsonResource
     {
         $model = ($model instanceof Post)
-            ? $model::withTrashed()->find($id)
+            ? $model::withArchived()->withTrashed()->find($id)
             : $model::find($id);
         $reactions = $model->reactions()->where('type', $type)
             ->where('user_id', '<>', auth()->id())

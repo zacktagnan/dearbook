@@ -45,11 +45,15 @@ const isTrashed = computed(
     () => props.post.deleted_at !== ''
 );
 
+const isArchived = computed(
+    () => props.post.archived_at !== ''
+);
+
 // const isCommentAuthor = () => authUser && authUser.id === props.comment.user.id
 // Sin el COMPUTED, funciona y debe ser llamado como método >> isCommentAuthor()
 // Con el COMPUTED, funciona como una simple variable computada y debe ser llamado como tal
-const isCommentAuthor = computed(
-    () => authUser && authUser.id === props.comment.user.id && !isTrashed.value
+const isCommentAuthorAndEditable = computed(
+    () => authUser && authUser.id === props.comment.user.id && !isTrashed.value && !isArchived.value
 )
 
 const defaultTabIndex = ref(0)
@@ -260,7 +264,7 @@ const openDetailModal = () => {
                         :content-classes="'text-sm text-justify'" />
                 </div>
 
-                <OptionsDropDown v-model="isCommentAuthor" @callEditItem="startEditingItem(comment)"
+                <OptionsDropDown v-model="isCommentAuthorAndEditable" @callEditItem="startEditingItem(comment)"
                     @callDeleteItem="confirmDeletion(comment, 'post.comment')" :ellipsis-type-icon="'horizontal'"
                     :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
                     :show-menu-item-icon="false" :item-type="'comment'" />
@@ -279,12 +283,12 @@ const openDetailModal = () => {
                             }}</small>
                     </div>
 
-                    <CommentReactionBox v-if="!isTrashed" :comment="comment"
+                    <CommentReactionBox v-if="!isTrashed && !isArchived" :comment="comment"
                         @callRestartDefaultTabIndex="setTypeUserReactionsCommentByType"
                         @callRestartPostCommentList="restartPostCommentList"
                         @callActiveShowNotification="activeShowNotification" />
 
-                    <DisclosureButton v-if="!isTrashed" @click="focusChildCommentTextArea"
+                    <DisclosureButton v-if="!isTrashed && !isArchived" @click="focusChildCommentTextArea"
                         class="font-extrabold hover:underline">
                         Respuestas
                         <span v-if="commentHasResponses()">
@@ -384,7 +388,7 @@ const openDetailModal = () => {
                     leave-active-class="duration-75 ease-out" leave-from-class="-translate-y-2 opacity-100"
                     leave-to-class="translate-y-0 opacity-0">
                     <DisclosurePanel>
-                        <ChildrenCommentBox :is-trashed="isTrashed" v-if="typeList === 'all'"
+                        <ChildrenCommentBox :is-trashed="isTrashed" :is-archived="isArchived" v-if="typeList === 'all'"
                             ref="childrenCommentBoxRef" :post="post" :comments-list="comment.all_child_comments"
                             :type-list="typeList" :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
@@ -393,9 +397,10 @@ const openDetailModal = () => {
                             @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification" />
 
-                        <ChildrenCommentBox :is-trashed="isTrashed" v-else-if="typeList === 'latest'"
-                            ref="childrenCommentBoxRef" :post="post" :comments-list="comment.latest_child_comments"
-                            :type-list="typeList" :all-child-comments-total="comment.all_child_comments.length"
+                        <ChildrenCommentBox :is-trashed="isTrashed" :is-archived="isArchived"
+                            v-else-if="typeList === 'latest'" ref="childrenCommentBoxRef" :post="post"
+                            :comments-list="comment.latest_child_comments" :type-list="typeList"
+                            :all-child-comments-total="comment.all_child_comments.length"
                             :show-more-comments-link="false" :create-action="'responding'" :parent-id="comment.id"
                             @callOpenAttachmentsModal="openAttachmentPreview"
                             @callOpenUserReactionsModal="openUserReactionsModal"
@@ -403,7 +408,6 @@ const openDetailModal = () => {
                             @callRestartPostCommentList="restartPostCommentList" @callConfirmDeletion="confirmDeletion"
                             @callActiveShowNotification="activeShowNotification"
                             @callOpenDetailModal="openDetailModal" />
-
                     </DisclosurePanel>
                 </transition>
             </Disclosure>
