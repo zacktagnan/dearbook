@@ -118,7 +118,7 @@ const processGlobalArchive = () => {
     axiosClient.post(route('post.archive-all-selected'), postIdsForm)
         .then(() => {
             loadCurrentTrashedPosts(true)
-            emit('callNotifyProcessEnding', 'archive_all_selected_from_trash')
+            emit('callNotifyProcessEnding', 'archive_all_selected_from_' + managementType)
         })
         .catch((error) => {
             // console.log('ERRORS-ARCHIVE_ALL', error.response.data.errors)
@@ -159,7 +159,7 @@ const reset = () => {
 
 const loadCurrentTrashedPosts = async (hasToReset) => {
     try {
-        const response = await axiosClient.get(route('post.trashed-posts'))
+        const response = await axiosClient.get(route('archive-management.trashed-posts'))
         posts.value = response.data.current_trashed_posts
 
         if (hasToReset) {

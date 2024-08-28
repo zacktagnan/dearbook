@@ -52,7 +52,6 @@ const submitProcess = (processType, postId) => {
     if (processType === 'restore_from_archive') {
         processRestore(postId, managementType)
     } else if (processType === 'delete') {
-        // processForceDelete(postId)
         emit('callConfirmProcess', 'delete', postId, managementType)
     }
 }
@@ -70,16 +69,6 @@ const processRestore = (postId, from) => {
         })
 }
 
-const processForceDelete = (postId) => {
-    axiosClient.get(route('post.force-destroy', postId))
-        .then(() => {
-            loadCurrentArchivedPosts(true)
-        })
-        .catch((error) => {
-            console.log('ERRORS-FORCE_DELETE', error.response.data.errors)
-        })
-}
-
 const submitGlobalProcess = (processType) => {
     postIdsForm.checked_ids = checkedIds
 
@@ -87,7 +76,6 @@ const submitGlobalProcess = (processType) => {
         postIdsForm.from = managementType
         processGlobalRestore()
     } else if (processType === 'delete_all_selected') {
-        // processGlobalForceDelete()
         emit('callConfirmProcess', 'delete_all_selected', checkedIds.value, managementType)
     }
 }
@@ -99,16 +87,6 @@ const processGlobalRestore = () => {
         })
         .catch((error) => {
             console.log('ERRORS-RESTORE_ALL', error.response.data.errors)
-        })
-}
-
-const processGlobalForceDelete = () => {
-    axiosClient.post(route('post.force-destroy-all-selected'), postIdsForm)
-        .then(() => {
-            loadCurrentArchivedPosts(true)
-        })
-        .catch((error) => {
-            console.log('ERRORS-FORCE_DELETE_ALL', error.response.data.errors)
         })
 }
 
@@ -125,7 +103,7 @@ const reset = () => {
 
 const loadCurrentArchivedPosts = async (hasToReset) => {
     try {
-        const response = await axiosClient.get(route('post.archived-posts'))
+        const response = await axiosClient.get(route('archive-management.archived-posts'))
         posts.value = response.data.current_archived_posts
 
         if (hasToReset) {

@@ -29,6 +29,10 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    isActivityLog: {
+        type: Boolean,
+        default: false,
+    },
     itemType: String,
 });
 
@@ -70,7 +74,7 @@ const emit = defineEmits([
                         : 'w-[74px]'
                 ]">
                 <template v-if="!isTrashed && !isArchived">
-                    <div class="px-1 py-1">
+                    <div v-if="!isActivityLog" class="px-1 py-1">
                         <MenuItem v-slot="{ active }">
                         <button @click="$emit('callEditItem')" :class="[
                             active

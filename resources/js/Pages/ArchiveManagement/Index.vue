@@ -95,9 +95,14 @@ const deleting = () => {
             onSuccess: () => {
                 closeConfirmProcess()
                 activeShowNotification()
-                componentRef.value.loadCurrentArchivedPosts(true)
+                if (registerBoxToProcess.value.entityIds.from === 'activity_log') {
+                    componentRef.value.loadCurrentActivityLogPosts(true)
+                }
+                if (registerBoxToProcess.value.entityIds.from === 'archive') {
+                    componentRef.value.loadCurrentArchivedPosts(true)
+                }
 
-                reInitDataAfterProcess(registerBoxToProcess.value.processType)
+                reInitDataAfterProcess(registerBoxToProcess.value.processType, registerBoxToProcess.value.entityIds.from)
             },
         })
     }
@@ -130,10 +135,16 @@ const forceDeleting = () => {
     }
 }
 
-const reInitDataAfterProcess = (processType) => {
+const reInitDataAfterProcess = (processType, from = '') => {
     if (processType === 'delete_all_selected') {
-        selectedComponent.value = componentList['ManageArchive']
-        archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+        if (from === 'activity_log') {
+            selectedComponent.value = componentList['ManageActivityLog']
+            archiveMenuListRef.value.setSelectedMenuItem('ManageActivityLog')
+        }
+        if (from === 'archive') {
+            selectedComponent.value = componentList['ManageArchive']
+            archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+        }
     }
     else if (processType === 'force_delete_all_selected') {
         selectedComponent.value = componentList['ManageTrash']
@@ -143,7 +154,12 @@ const reInitDataAfterProcess = (processType) => {
     activeShowNotification()
 
     if (processType === 'delete_all_selected') {
-        componentRef.value.loadCurrentArchivedPosts(true)
+        if (from === 'activity_log') {
+            componentRef.value.loadCurrentActivityLogPosts(true)
+        }
+        if (from === 'archive') {
+            componentRef.value.loadCurrentArchivedPosts(true)
+        }
     }
     else if (processType === 'force_delete_all_selected') {
         componentRef.value.loadCurrentTrashedPosts(true)
@@ -242,6 +258,10 @@ onMounted(() => {
     else if (props.success && props.success.from === 'archive') {
         selectedComponent.value = componentList['ManageArchive']
         archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+    }
+    else if (props.success && props.success.from === 'activity_log') {
+        selectedComponent.value = componentList['ManageActivityLog']
+        archiveMenuListRef.value.setSelectedMenuItem('ManageActivityLog')
     }
 
     if (props.success) {
@@ -348,6 +368,10 @@ onMounted(() => {
             <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                 @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                 v-show="showNotification && success?.from === 'archive'" :title="'Info'" :message="success?.message" />
+            <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                v-show="showNotification && success?.from === 'activity_log'" :title="'Info'"
+                :message="success?.message" />
         </div>
     </AuthenticatedLayout>
 </template>

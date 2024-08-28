@@ -31,7 +31,6 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{entity}/{to}', [PostController::class, 'destroy'])->name('destroy');
         Route::get('/destroy-from-management/{id}/{from}', [PostController::class, 'destroyFromManagement'])->name('destroy-from-management');
         Route::post('/destroy-from-management-all-selected', [PostController::class, 'destroyFromManagementAllSelected'])->name('destroy-from-management-all-selected');
-        Route::get('/trashed-posts', [PostController::class, 'trashedPosts'])->name('trashed-posts');
         Route::get('/restore/{id}/{from}', [PostController::class, 'restore'])->name('restore');
         Route::post('/restore-all-selected', [PostController::class, 'restoreAllSelected'])->name('restore-all-selected');
         Route::get('/force-destroy/{id}', [PostController::class, 'forceDestroy'])->name('force-destroy');
@@ -39,7 +38,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/force-destroy-all-selected', [PostController::class, 'forceDestroyAllSelected'])->name('force-destroy-all-selected');
         Route::get('/archive/{id}/{from}', [PostController::class, 'archive'])->name('archive');
         Route::post('/archive-all-selected', [PostController::class, 'archiveAllSelected'])->name('archive-all-selected');
-        Route::get('/archived-posts', [PostController::class, 'archivedPosts'])->name('archived-posts');
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
 
@@ -57,6 +55,9 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('archive-management')->as('archive-management.')->group(function () {
         Route::get('/', [ArchiveManagementController::class, 'index'])->name('index');
+        Route::get('/activity-log-posts', [ArchiveManagementController::class, 'activityLogPosts'])->name('activity-log-posts');
+        Route::get('/archived-posts', [ArchiveManagementController::class, 'archivedPosts'])->name('archived-posts');
+        Route::get('/trashed-posts', [ArchiveManagementController::class, 'trashedPosts'])->name('trashed-posts');
         Route::get('/notify-process-ending/{processType}', [ArchiveManagementController::class, 'notifyProcessEnding'])->name('notify.process.ending');
     });
 });

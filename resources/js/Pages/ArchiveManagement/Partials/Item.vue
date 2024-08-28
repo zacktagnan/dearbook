@@ -6,6 +6,10 @@ import { computed } from "vue";
 const props = defineProps({
     post: Object,
     index: Number,
+    isActivityLog: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const emit = defineEmits(['callCheckItem', 'callSubmitProcess'])
@@ -24,18 +28,48 @@ const isArchived = computed(
     () => props.post.archived_at !== null
 );
 
+import { isImage, isVideo, } from "@/Libs/helpers";
+
 const loadImage = (post) => {
+    let imagePreviewData = []
     let image = ''
+    let isImageFile = false
     if (post.attachments.length > 0) {
-        image = post.attachments[0].path
+        // image = post.attachments[0].path
+        imagePreviewData = getImagePreviewData(post.attachments[0])
+        image = imagePreviewData[0]
+        isImageFile = imagePreviewData[1]
     } else {
         image = post.user.avatar_path
+        isImageFile = true
     }
 
-    if (image) {
+    // if (image) {
+    //     return 'storage/' + image
+    // }
+    // return null
+
+    if (image && isImageFile) {
         return 'storage/' + image
+    } else if (image && !isImageFile) {
+        return image
+    } else {
+        return null
     }
-    return null
+}
+
+const getImagePreviewData = (firstAttachment) => {
+    let imagePreviewUrl = ''
+    let isImageFile = false
+    if (isImage(firstAttachment)) {
+        imagePreviewUrl = firstAttachment.path
+        isImageFile = true
+    } else if (isVideo(firstAttachment)) {
+        imagePreviewUrl = '/img/default_video_file.png'
+    } else {
+        imagePreviewUrl = '/img/default_attachment_file.png'
+    }
+    return [imagePreviewUrl, isImageFile]
 }
 
 const checkedId = defineModel()
@@ -63,7 +97,7 @@ const checkedId = defineModel()
 
         <div class="pr-2">
             <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" :is-archived="isArchived"
-                @callArchiveItem="$emit('callSubmitProcess', 'archive', post.id)"
+                :is-activity-log="isActivityLog" @callArchiveItem="$emit('callSubmitProcess', 'archive', post.id)"
                 @callDeleteItem="$emit('callSubmitProcess', 'delete', post.id)"
                 @callRestoreItemFromArchive="$emit('callSubmitProcess', 'restore_from_archive', post.id)"
                 @callRestoreItemFromTrash="$emit('callSubmitProcess', 'restore_from_trash', post.id)"
