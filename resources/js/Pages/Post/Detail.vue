@@ -81,7 +81,7 @@ const archiveItem = (postId) => {
 const entityToDelete = ref({})
 const showingConfirmDeletion = ref(false);
 const showConfirmDeletion = (entity, entityPrefix) => {
-    let to = ''
+    let to = 'none'
     if (entityPrefix !== 'post.comment') {
         if (props.post.deleted_at === '' && props.post.archived_at === '') {
             to = 'home'
