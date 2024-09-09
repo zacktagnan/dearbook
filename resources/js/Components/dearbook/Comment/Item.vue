@@ -224,6 +224,10 @@ const focusChildCommentTextArea = () => {
 const openDetailModal = () => {
     emit("callOpenDetailModal");
 }
+
+const limitingLatestCommentsListHigh = computed(
+    () => props.typeList === 'latest' && !props.comment.parent_id && props.comment.total_of_direct_child_comments > 3
+);
 </script>
 
 <template>
@@ -387,7 +391,11 @@ const openDetailModal = () => {
                 <transition enter-active-class="duration-300" enter-from-class="opacity-0" enter-to-class="opacity-100"
                     leave-active-class="duration-75 ease-out" leave-from-class="-translate-y-2 opacity-100"
                     leave-to-class="translate-y-0 opacity-0">
-                    <DisclosurePanel>
+                    <DisclosurePanel :class="[
+                        limitingLatestCommentsListHigh
+                            ? 'children-comment-box max-h-[400px] overflow-auto'
+                            : ''
+                    ]">
                         <ChildrenCommentBox :is-trashed="isTrashed" :is-archived="isArchived" v-if="typeList === 'all'"
                             ref="childrenCommentBoxRef" :post="post" :comments-list="comment.all_child_comments"
                             :type-list="typeList" :create-action="'responding'" :parent-id="comment.id"

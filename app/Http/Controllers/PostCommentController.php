@@ -11,12 +11,14 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
+use App\Traits\CommentsTree;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController extends Controller
 {
-    use StorageManagement;
+    use CommentsTree;
     use ResourcesDeletion;
+    use StorageManagement;
 
     public function store(CommentStoreRequest $request, Post $post)
     {
@@ -62,10 +64,14 @@ class PostCommentController extends Controller
                 'total_of_comments' => $comments,
                 'current_user_has_comment' => $hasComment,
                 'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
-                'latest_comments' => CommentResource::collection(
-                    $post->latestComments()->root()->latest()->limit(1)->get()
-                ),
-                'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+                // -> Sin el commentTree
+                // 'latest_comments' => CommentResource::collection(
+                //     $post->latestComments()->root()->latest()->limit(1)->get()
+                // ),
+                // 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+                // -> Con el commentTree
+                'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
+                'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
 
                 'all_child_comments' => !is_null($request->parent_id)
                     ? CommentResource::collection($commentParent->childComments()->get())
@@ -134,10 +140,14 @@ class PostCommentController extends Controller
             return response()->json([
                 'commentUpdated' => new CommentResource($comment),
 
-                'latest_comments' => CommentResource::collection(
-                    $post->latestComments()->root()->latest()->limit(1)->get()
-                ),
-                'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+                // -> Sin el commentTree
+                // 'latest_comments' => CommentResource::collection(
+                //     $post->latestComments()->root()->latest()->limit(1)->get()
+                // ),
+                // 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+                // -> Con el commentTree
+                'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
+                'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);

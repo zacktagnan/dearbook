@@ -21,7 +21,6 @@ class CommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'comment' => $this->comment,
             'comment' => $this->comment
                 ?: '',
             // 'user' => new UserResource($this->user),
@@ -35,11 +34,20 @@ class CommentResource extends JsonResource
                     : null,
             ],
 
-            'total_of_comments' => $this->child_comments_count,
-            'all_child_comments' => CommentResource::collection($this->childComments),
-            'latest_child_comments' => CommentResource::collection(
-                $this->latestChildComments()->latest()->limit(1)->get()
-            ),
+            'total_of_comments' => $this->totalOfComments,
+            'all_child_comments' => $this->childCommentsArr,
+
+            'total_of_direct_child_comments' => $this->totalOfDirectChildComments,
+
+            // 'latest_child_comments' => CommentResource::collection(
+            //     $this->latestChildComments()->latest()->limit(1)->get()
+            // ),
+            // Para que salgan todos los comentarios HIJO del último comentario visible del Post
+            // 'latest_child_comments' => CommentResource::collection(
+            //     $this->latestChildComments()->get()
+            // ),
+            // Ahora, a través del árbol generado...
+            'latest_child_comments' => $this->childCommentsArr,
 
             'attachments' => AttachmentResource::collection($this->attachments),
             'total_of_reactions' => $this->reactions->count(),
@@ -62,6 +70,9 @@ class CommentResource extends JsonResource
             'created_at_formatted' => $this->createdAtShortAbsDiffForHumans(),
             'created_at_large_format' => $this->createdAtWithLargeFormat(),
             'updated_at_large_format' => $this->updatedAtWithLargeFormat(),
+
+            'parent_id' => $this->parent_id
+                ?: '',
         ];
     }
 }

@@ -138,3 +138,28 @@
     color: #4156e2;
 }
 /* == CKEditor :: fin ================================ */
+
+/* == Para ChildrenCommentBox :: ini ================= */
+/*
+    Para establecer estos estilos para un DIV con una determinada CLASS como "children-comment-box",
+    se pone dicha CLASS delante de los ::.
+    Para establecerlos de forma general para todas las posibles barras de desplazamiento, no se indica nada
+    delante de los ::.
+*/
+.children-comment-box::-webkit-scrollbar {
+    width: 4px;
+}
+.children-comment-box::-webkit-scrollbar-thumb {
+    background-color: transparent;
+}
+.children-comment-box::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.children-comment-box:hover::-webkit-scrollbar-thumb {
+    background-color: #0099ce;
+}
+.children-comment-box:hover::-webkit-scrollbar-track {
+    background-color: #e4e4e4;
+}
+/* == Para ChildrenCommentBox :: fin ================= */

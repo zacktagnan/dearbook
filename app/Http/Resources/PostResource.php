@@ -2,9 +2,8 @@
 
 namespace App\Http\Resources;
 
-// use App\Models\PostReaction;
-
 use App\Models\Post;
+use App\Traits\CommentsTree;
 use Illuminate\Http\Request;
 use App\Traits\UserReactions;
 use App\Traits\UsersThatCommented;
@@ -12,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
 {
+    use CommentsTree;
     use UserReactions;
     use UsersThatCommented;
 
@@ -22,21 +22,6 @@ class PostResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // [ Pasado a nivel de PostReactionController, llamado desde onMounted del Post/Item ]
-        // -> Consulta desde el Resource - Sacar datos
-        // $postReactions = $post->reactions()->where('user_id', '<>', $this->user_id)->get();
-        // $usersThatReactToPost = [];
-        // foreach ($postReactions as $postReaction) {
-        //     // $usersThatReactToPost[] = $postReaction->user->name;
-        //     $usersThatReactToPost[] = [
-        //         'name' => $postReaction->user->name,
-        //     ];
-        // }
-        // -------------------------------------------
-        // dd($usersThatReactToPost);
-
-        // dd('authUser-reaction-type', $this->reactions[0]->type);
-
         return [
             'id' => $this->id,
             'body' => $this->body
@@ -68,11 +53,11 @@ class PostResource extends JsonResource
             'sad_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'sad'),
             'angry_user_reactions' => $this->typeUserReactions(new Post, $this->id, 'angry'),
 
-            'total_of_comments' => $this->comments_count,
+            'total_of_comments' => count($this->comments),
             'current_user_has_comment' => $this->currentUserComments->count() > 0,
             'current_user_total_of_comments' => $this->currentUserComments->count(),
-            'latest_comments' => CommentResource::collection($this->latestComments),
-            'all_comments' => CommentResource::collection($this->comments),
+            'latest_comments' => $this->convertLatestCommentsIntoTree($this->latestComments),
+            'all_comments' => $this->convertCommentsIntoTree($this->comments),
             'all_users_that_commented' => $this->allUsersThatCommented($this->id),
 
             // 'created_at' => $this->created_at->format(config('app.format.' . app()->getLocale() . '.datetime')),

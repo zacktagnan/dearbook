@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function index()
     {
         $userId = auth()->id();
-        $posts = Post::withCount(['reactions', 'comments',])
+        $posts = Post::withCount(['reactions',])
             ->with([
                 'reactions' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
@@ -19,23 +19,13 @@ class HomeController extends Controller
                 'currentUserComments' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 },
-                'latestComments' => function ($query) {
-                    $query->root()
-                        ->latest()->limit(1)->get();
-                },
-                'comments' => function ($query) {
-                    // $query->whereNull('parent_id');
-                    // o
-                    $query->root()
-                        ->withCount('childComments');
-                },
+                'latestComments',
+                'comments',
             ])
             ->latest()
             ->paginate(20);
-        // $posts = PostResource::collection($posts);
-        // return Inertia::render('Home', compact('posts'));
+
         return Inertia::render('Home', [
-            // 'posts' => $posts,
             'posts' => PostResource::collection($posts),
         ]);
     }

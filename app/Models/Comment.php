@@ -18,6 +18,10 @@ class Comment extends Model
     use Reactionable;
     use CustomDateFormatting;
 
+    public array $childCommentsArr = [];
+    public int $totalOfComments = 0;
+    public int $totalOfDirectChildComments = 0;
+
     protected $fillable = [
         'parent_id',
         'post_id',

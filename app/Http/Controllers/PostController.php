@@ -25,7 +25,7 @@ class PostController extends Controller
     public function show(User $user, int $id): InertiaResponse
     {
         $userId = auth()->id();
-        $post = Post::withCount(['reactions', 'comments',])
+        $post = Post::withCount(['reactions',])
             ->with([
                 'reactions' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
@@ -33,20 +33,13 @@ class PostController extends Controller
                 'currentUserComments' => function ($query) use ($userId) {
                     $query->where('user_id', $userId);
                 },
-                'latestComments' => function ($query) {
-                    $query->root()
-                        ->latest()->limit(1)->get();
-                },
-                'comments' => function ($query) {
-                    // $query->whereNull('parent_id');
-                    // o
-                    $query->root()
-                        ->withCount('childComments');
-                },
+                'latestComments',
+                'comments',
             ])
             ->withArchived()
             ->withTrashed()
             ->findOrFail($id);
+
         return Inertia::render('Post/Detail', [
             'post' => new PostResource($post),
         ]);
