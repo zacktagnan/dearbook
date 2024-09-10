@@ -8,9 +8,9 @@ import ConfirmPostDeletionModal from '@/Components/Modal.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { router, usePage } from "@inertiajs/vue3";
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
-defineProps({
+const props = defineProps({
     'posts': Array,
 })
 
@@ -191,14 +191,56 @@ const closingNotification = (className) => {
 const closeShowNotification = () => {
     showNotification.value = false
 }
+
+
+import axiosClient from '@/axiosClient'
+
+const page = usePage()
+
+const allPosts = ref({
+    data: page.props.posts.data,
+    next: page.props.posts.links.next,
+})
+
+const loadMoreIntersectRef = ref(null)
+
+const loadMore = () => {
+    // console.log('Loading more Posts...')
+
+    if (!allPosts.value.next) {
+        return
+    }
+
+    axiosClient.get(allPosts.value.next)
+        // .then(res => {
+        //     debugger
+        //     allPosts.value.data = [...allPosts.value.data, ...res.data]
+        //     allPosts.value.next = res.links.next
+        // })
+        .then(({ data }) => {
+            allPosts.value.data = [...allPosts.value.data, ...data.data]
+            allPosts.value.next = data.links.next
+        })
+}
+
+onMounted(() => {
+    const observer = new IntersectionObserver(
+        (entries) => entries.forEach(entry => entry.isIntersecting && loadMore()), {
+        rootMargin: '-250px 0px 0px 0px'
+    })
+
+    observer.observe(loadMoreIntersectRef.value)
+})
 </script>
 
 <template>
     <div>
-        <PostItem v-for="post in posts" :post="post" @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem"
-            @callOpenDetailModal="openDetailModal" @callOpenAttachmentsModal="openAttachmentsModal"
-            @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
-            @callActiveShowNotification="activeShowNotification" />
+        <PostItem v-for="post in allPosts.data" :post="post" @callOpenEditModal="openEditModal"
+            @callArchiveItem="archiveItem" @callOpenDetailModal="openDetailModal"
+            @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
+            @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification" />
+
+        <div ref="loadMoreIntersectRef"></div>
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 
