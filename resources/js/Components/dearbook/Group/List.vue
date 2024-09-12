@@ -6,7 +6,7 @@ import GroupModal from '@/Components/dearbook/Group/Modal.vue'
 import { usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
 
-defineProps({
+const props = defineProps({
     'groups': Array,
 })
 
@@ -22,6 +22,10 @@ const showCreateGroupModal = ref(false)
 
 const openCreateGroupModal = () => {
     showCreateGroupModal.value = true
+}
+
+const onGroupCreated = (group) => {
+    props.groups.unshift(group)
 }
 </script>
 
@@ -55,5 +59,5 @@ const openCreateGroupModal = () => {
         </div>
     </div>
 
-    <GroupModal :group="groupToCreate" v-model="showCreateGroupModal" />
+    <GroupModal :group="groupToCreate" v-model="showCreateGroupModal" @callGroupCreated="onGroupCreated" />
 </template>

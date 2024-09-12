@@ -47,7 +47,7 @@ const show = computed({
     set: (value) => emit("update:modelValue", value),
 });
 
-const emit = defineEmits(["update:modelValue", "callActiveShowNotification"]);
+const emit = defineEmits(["update:modelValue", "callGroupCreated", "callActiveShowNotification"]);
 
 // watch(
 //     () => props.group,
@@ -134,6 +134,7 @@ const processStore = () => {
         .then(({ data }) => {
             console.log(data)
             closeModal()
+            emit('callGroupCreated', data)
         })
         .catch((error) => {
             console.log('ERROR al crear un Grupo', error.response.data.errors)
