@@ -8,6 +8,7 @@ import { Head } from "@inertiajs/vue3";
 
 defineProps({
     posts: Object,
+    groups: Array, // ¿Por qué, en este caso, Array y no Object como para el "posts" o viceversa?
 });
 </script>
 
@@ -18,7 +19,7 @@ defineProps({
     <AuthenticatedLayout>
         <div class="grid gap-3 px-4 pt-20 pb-4 lg:grid-cols-12">
             <div class="lg:col-span-3 lg:order-1">
-                <GroupList />
+                <GroupList :groups="groups" />
             </div>
 
             <div class="overflow-hidden lg:col-span-3 lg:order-3">

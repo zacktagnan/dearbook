@@ -17,14 +17,23 @@ return [
                 'placeholder' => 'Breve descripción',
             ],
         ],
-        'btn_init_creation' => 'Crear nuevo grupo'
+        'btn_init_creation' => 'Crear nuevo grupo',
     ],
 
     'search' => [
-        'placeholder' => 'Teclea el grupo a buscar'
+        'placeholder' => 'Teclea el grupo a buscar',
     ],
 
     'list' => [
-        'no_registers' => 'No estás unido a ningún grupo.'
+        'no_registers' => 'No estás unido a ningún grupo.',
+        'no_description' => 'Descripción no disponible aún.',
+        'title' => [
+            'role' => [
+                'admin' => 'Eres ADMIN del grupo',
+            ],
+            'status' => [
+                'pending' => 'Solicitud pendiente de ser aprobada',
+            ],
+        ],
     ],
 ];

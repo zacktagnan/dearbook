@@ -17,14 +17,23 @@ return [
                 'placeholder' => 'Short description',
             ],
         ],
-        'btn_init_creation' => 'Create new group'
+        'btn_init_creation' => 'Create new group',
     ],
 
     'search' => [
-        'placeholder' => 'Type the group to search'
+        'placeholder' => 'Type the group to search',
     ],
 
     'list' => [
-        'no_registers' => 'You are not joined to any group.'
+        'no_registers' => 'You are not joined to any group.',
+        'no_description' => 'Description not available yet.',
+        'title' => [
+            'role' => [
+                'admin' => 'You\'re ADMIN of the group',
+            ],
+            'status' => [
+                'pending' => 'Request pending to be approval',
+            ],
+        ],
     ],
 ];

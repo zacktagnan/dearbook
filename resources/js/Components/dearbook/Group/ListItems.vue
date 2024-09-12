@@ -4,6 +4,10 @@ import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 import { PlusIcon } from "@heroicons/vue/24/outline";
 
+defineProps({
+    'groups': Array,
+})
+
 defineEmits([
     "callOpenCreateGroupModal",
 ])
@@ -31,19 +35,7 @@ const searchKeyword = ref('')
         </div>
 
         <div v-else>
-            <GroupItem image="https://picsum.photos/100" title="Laravel Fans"
-                description="Lorem ipsum dolor sit amet consectetur adipisicing elit." :class="{ 'mt-1': false }" />
-            <GroupItem image="https://picsum.photos/100" title="Backenderos"
-                description="Reprehenderit, inventore excepturi aut, explicabo unde, id et accusantium dolor."
-                :class="{ 'mt-1': true }" />
-            <GroupItem image="https://picsum.photos/100" title="Donostiarras"
-                description="Tempore deserunt suscipit ratione numquam dolores maiores." :class="{ 'mt-1': true }" />
-            <GroupItem image="https://picsum.photos/100" title="Donostiarras"
-                description="Tempore deserunt suscipit ratione numquam dolores maiores." :class="{ 'mt-1': true }" />
-            <GroupItem image="https://picsum.photos/100" title="Donostiarras"
-                description="Tempore deserunt suscipit ratione numquam dolores maiores." :class="{ 'mt-1': true }" />
-            <GroupItem image="https://picsum.photos/100" title="Donostiarras"
-                description="Tempore deserunt suscipit ratione numquam dolores maiores." :class="{ 'mt-1': true }" />
+            <GroupItem v-for="(group, index) in groups" :group="group" :class="{ 'mt-1': index > 0 }" />
         </div>
     </div>
 </template>

@@ -131,16 +131,16 @@ const processStore = () => {
     // En este caso, se consigue más optimización de la petición y de lo que devuelve ésta
     // mediante el uso de AXIOS en vez de a través del ruteo de Inertia
     axiosClient.post(route('group.store'), groupForm)
-        .then(({data}) => {
+        .then(({ data }) => {
             console.log(data)
             closeModal()
         })
         .catch((error) => {
             console.log('ERROR al crear un Grupo', error.response.data.errors)
         })
-        // .catch((error) => {
-        //     processErrors(error.response.data.errors)
-        // })
+    // .catch((error) => {
+    //     processErrors(error.response.data.errors)
+    // })
 };
 
 const processUpdate = () => {
@@ -205,11 +205,13 @@ const processErrors = (errors) => {
                                 </div>
 
                                 <div class="flex px-[14px] mt-5 gap-3">
-                                    <TextInput type="text" class="block w-full" v-model="groupForm.name" required autofocus :placeholder="$t('dearbook.group.create.fields.name.placeholder')" />
+                                    <TextInput type="text" class="block w-full" v-model="groupForm.name" required
+                                        autofocus :placeholder="$t('dearbook.group.create.fields.name.placeholder')" />
 
                                     <label class="flex items-center whitespace-nowrap">
                                         <Checkbox v-model:checked="groupForm.auto_approval" />
-                                        <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{ $t('dearbook.group.create.fields.auto_approval.label') }}</span>
+                                        <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                                            $t('dearbook.group.create.fields.auto_approval.label') }}</span>
                                     </label>
                                 </div>
 
@@ -221,8 +223,7 @@ const processErrors = (errors) => {
                                 <div class="px-[14px] mt-5">
                                     <TextareaInput ref="commentTextAreaRef" v-model="groupForm.about"
                                         :placeholder="$t('dearbook.group.create.fields.about.placeholder')"
-                                        :class="'block w-full max-h-28'"
-                                        rows="2" />
+                                        :class="'block w-full max-h-28'" rows="2" />
 
                                     <InputError class="mt-2" :message="groupForm.errors.about" />
                                 </div>

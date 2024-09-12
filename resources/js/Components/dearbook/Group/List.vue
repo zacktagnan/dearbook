@@ -6,6 +6,10 @@ import GroupModal from '@/Components/dearbook/Group/Modal.vue'
 import { usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
 
+defineProps({
+    'groups': Array,
+})
+
 const groupToCreate = ref({
     id: null,
     name: '',
@@ -39,7 +43,7 @@ const openCreateGroupModal = () => {
                 </DisclosureButton>
 
                 <DisclosurePanel>
-                    <GroupListItems @callOpenCreateGroupModal="openCreateGroupModal" />
+                    <GroupListItems :groups="groups" @callOpenCreateGroupModal="openCreateGroupModal" />
                 </DisclosurePanel>
             </Disclosure>
         </div>
@@ -47,7 +51,7 @@ const openCreateGroupModal = () => {
         <div class="flex-col flex-1 hidden lg:block">
             <GroupListTitle />
 
-            <GroupListItems @callOpenCreateGroupModal="openCreateGroupModal" />
+            <GroupListItems :groups="groups" @callOpenCreateGroupModal="openCreateGroupModal" />
         </div>
     </div>
 
