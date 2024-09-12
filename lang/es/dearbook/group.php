@@ -5,6 +5,21 @@ declare(strict_types=1);
 return [
     'section_label' => 'Grupos',
 
+    'create' => [
+        'fields' => [
+            'name' => [
+                'placeholder' => 'Nombre del grupo',
+            ],
+            'auto_approval' => [
+                'label' => 'Aprobación automática',
+            ],
+            'about' => [
+                'placeholder' => 'Breve descripción',
+            ],
+        ],
+        'btn_init_creation' => 'Crear nuevo grupo'
+    ],
+
     'search' => [
         'placeholder' => 'Teclea el grupo a buscar'
     ],

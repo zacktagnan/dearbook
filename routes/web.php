@@ -8,6 +8,7 @@ use App\Http\Controllers\PostCommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\CommentReactionController;
+use App\Http\Controllers\GroupController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -59,6 +60,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/archived-posts', [ArchiveManagementController::class, 'archivedPosts'])->name('archived-posts');
         Route::get('/trashed-posts', [ArchiveManagementController::class, 'trashedPosts'])->name('trashed-posts');
         Route::get('/notify-process-ending/{processType}', [ArchiveManagementController::class, 'notifyProcessEnding'])->name('notify.process.ending');
+    });
+
+    Route::prefix('group')->as('group.')->group(function () {
+        Route::post('', [GroupController::class, 'store'])->name('store');
     });
 });
 

@@ -2,6 +2,23 @@
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
 import GroupListTitle from '@/Components/dearbook/Group/ListTitle.vue'
 import GroupListItems from '@/Components/dearbook/Group/ListItems.vue'
+import GroupModal from '@/Components/dearbook/Group/Modal.vue'
+import { usePage } from "@inertiajs/vue3";
+import { ref } from 'vue';
+
+const groupToCreate = ref({
+    id: null,
+    name: '',
+    auto_approval: true,
+    about: '',
+    user: usePage().props.auth.user,
+})
+
+const showCreateGroupModal = ref(false)
+
+const openCreateGroupModal = () => {
+    showCreateGroupModal.value = true
+}
 </script>
 
 <template>
@@ -22,7 +39,7 @@ import GroupListItems from '@/Components/dearbook/Group/ListItems.vue'
                 </DisclosureButton>
 
                 <DisclosurePanel>
-                    <GroupListItems />
+                    <GroupListItems @callOpenCreateGroupModal="openCreateGroupModal" />
                 </DisclosurePanel>
             </Disclosure>
         </div>
@@ -30,7 +47,9 @@ import GroupListItems from '@/Components/dearbook/Group/ListItems.vue'
         <div class="flex-col flex-1 hidden lg:block">
             <GroupListTitle />
 
-            <GroupListItems />
+            <GroupListItems @callOpenCreateGroupModal="openCreateGroupModal" />
         </div>
     </div>
+
+    <GroupModal :group="groupToCreate" v-model="showCreateGroupModal" />
 </template>
