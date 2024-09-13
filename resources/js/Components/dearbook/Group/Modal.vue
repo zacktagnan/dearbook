@@ -2,6 +2,7 @@
 // import TextareaInput from '@/Components/TextareaInput.vue';
 import TextInput from '@/Components/TextInput.vue'
 import Checkbox from '@/Components/Checkbox.vue'
+import Radiobutton from '@/Components/Radiobutton.vue'
 import TextareaInput from '@/Components/TextareaInput.vue'
 import InputError from '@/Components/InputError.vue'
 import {
@@ -30,6 +31,7 @@ const props = defineProps({
 const groupForm = useForm({
     name: "",
     auto_approval: true,
+    type: "public",
     about: "",
     // _method: "POST",
 });
@@ -136,12 +138,14 @@ const processStore = () => {
             closeModal()
             emit('callGroupCreated', data)
         })
+        // .catch((error) => {
+        //     console.log('ERROR al crear un Grupo', error.response.data.errors)
+        // })
+        // Con AXIOS, los ERRORES de Form no vienen incluidos con el groupForm
+        // Por eso, deben de tratarse por separado
         .catch((error) => {
-            console.log('ERROR al crear un Grupo', error.response.data.errors)
+            processErrors(error.response.data.errors)
         })
-    // .catch((error) => {
-    //     processErrors(error.response.data.errors)
-    // })
 };
 
 const processUpdate = () => {
@@ -158,18 +162,22 @@ const processUpdate = () => {
     });
 };
 
+const errorsForm = ref({})
 const processErrors = (errors) => {
     for (const key in errors) {
-        if (key.includes(".")) {
-            // const [field, index] = key.split('.')
-            // const [, index] = key.split('.')
-            const [item, index] = key.split(".");
-            if (item === 'attachments') {
-                attachmentErrors.value[index] = errors[key];
-            }
-            emit("callActiveShowNotification", buildErrors(item, errors[key]));
-        } else {
-            emit("callActiveShowNotification", groupForm.errors);
+        switch (key) {
+            case 'name':
+                errorsForm.value = {
+                    name: errors[key][0]
+                }
+                break;
+            case 'about':
+                errorsForm.value = {
+                    about: errors[key][0]
+                }
+                break;
+            default:
+                break;
         }
     }
 };
@@ -208,16 +216,32 @@ const processErrors = (errors) => {
                                 <div class="flex px-[14px] mt-5 gap-3">
                                     <TextInput type="text" class="block w-full" v-model="groupForm.name" required
                                         autofocus :placeholder="$t('dearbook.group.create.fields.name.placeholder')" />
+                                </div>
 
+                                <div class="px-[14px]">
+                                    <!-- <InputError class="mt-2" :message="groupForm.errors.name" /> -->
+                                    <InputError class="mt-2" :message="errorsForm.name" />
+                                </div>
+
+
+                                <div class="flex justify-center gap-11 px-[14px] mt-5">
                                     <label class="flex items-center whitespace-nowrap">
                                         <Checkbox v-model:checked="groupForm.auto_approval" />
                                         <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
                                             $t('dearbook.group.create.fields.auto_approval.label') }}</span>
                                     </label>
-                                </div>
 
-                                <div class="px-[14px]">
-                                    <InputError class="mt-2" :message="groupForm.errors.name" />
+                                    <div class="flex gap-4">
+                                        <label class="flex items-center">
+                                            <Radiobutton v-model:checked="groupForm.type" :value="'public'" />
+                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">Público</span>
+                                        </label>
+
+                                        <label class="flex items-center">
+                                            <Radiobutton v-model:checked="groupForm.type" :value="'private'" />
+                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">Privado</span>
+                                        </label>
+                                    </div>
                                 </div>
 
 

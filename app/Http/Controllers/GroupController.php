@@ -26,6 +26,8 @@ class GroupController extends Controller
      */
     public function store(StoreGroupRequest $request)
     {
+        // dump('request->all', $request->all());
+        // dd();
         $request->merge(['user_id' => $request->user()->id]);
         $group = Group::create($request->all());
 

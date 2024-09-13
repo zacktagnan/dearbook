@@ -20,6 +20,7 @@ class GroupResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'type' => $this->type,
 
             'status' => $this->status,
             'role' => $this->role,

@@ -18,6 +18,7 @@ class Group extends Model
     protected $fillable = [
         'name',
         'auto_approval',
+        'type',
         'about',
         'user_id',
     ];
