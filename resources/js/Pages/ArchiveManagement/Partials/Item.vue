@@ -1,7 +1,7 @@
 <script setup>
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 const props = defineProps({
     post: Object,
@@ -73,6 +73,17 @@ const getImagePreviewData = (firstAttachment) => {
 }
 
 const checkedId = defineModel()
+
+const maxPostBodyLength = 100
+const contentExcerpt = ref("");
+const getContentExcerpt = (content) => {
+    if (content) {
+        const ellipsis = content.length > maxPostBodyLength ? "..." : "";
+        contentExcerpt.value =
+            content.substring(0, maxPostBodyLength) + ellipsis;
+    }
+    return contentExcerpt.value;
+}
 </script>
 
 <template>
@@ -89,7 +100,7 @@ const checkedId = defineModel()
                 class="flex items-center w-full gap-2 p-1">
             <img :src="loadImage(post) || '/img/default_avatar.png'" class="w-[60px] h-[60px] border-2 rounded-full" />
             <div class="text-sm text-left">
-                <div v-html="post.body || '(sin texto)'"></div>
+                <div v-html="getContentExcerpt(post.body) || '(sin texto)'"></div>
                 <small class="lowercase">{{ post.created_at_time }}</small>
             </div>
             </Link>
