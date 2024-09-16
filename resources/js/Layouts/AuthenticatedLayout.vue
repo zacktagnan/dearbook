@@ -16,9 +16,9 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <div>
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen bg-[beige] dark:bg-[#b4b440]">
             <nav
-                class="fixed z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
+                class="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto sm:px-6 lg:px-8">
                     <div class="flex justify-between h-14">

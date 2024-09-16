@@ -156,7 +156,7 @@ const closeCropImageModal = () => {
 
     <AuthenticatedLayout>
         <div class="bg-white">
-            <div class="lg:w-2/3 mx-auto pt-[58px] relative">
+            <div class="lg:w-2/3 mx-auto relative">
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                     v-show="showNotification && success" :title="'Info'" :message="success" />
@@ -271,7 +271,7 @@ const closeCropImageModal = () => {
         <div class="">
             <div class="mt-0">
                 <TabGroup>
-                    <div class="bg-white shadow">
+                    <div class="bg-white shadow sticky top-[57px]">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }">
                                 <TabItem text="Publicaciones" :selected="selected" />

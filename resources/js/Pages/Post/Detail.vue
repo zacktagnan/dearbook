@@ -258,7 +258,7 @@ const processing = () => {
     <Head :title="getTitlePage" />
 
     <AuthenticatedLayout>
-        <div class="mx-auto pt-20 pb-5 w-[690px]">
+        <div class="mx-auto top-5 relative pb-5 lg:w-[690px] lg:px-0 px-4">
             <PostItemDetail ref="postItemDetailRef" :post="post" :type-list="'all'" @callOpenEditModal="openEditModal"
                 @callArchiveItem="archiveItem" @callOpenAttachmentsModal="openAttachmentsModal"
                 @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"

@@ -17,7 +17,7 @@ defineProps({
     <Head :title="$t('Home')" />
 
     <AuthenticatedLayout>
-        <div class="grid gap-3 px-4 pt-20 pb-4 lg:grid-cols-12">
+        <div class="grid gap-3 px-4 top-5 relative pb-4 lg:grid-cols-12">
             <div class="lg:col-span-3 lg:order-1">
                 <GroupList :groups="groups" />
             </div>

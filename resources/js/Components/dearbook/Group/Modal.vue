@@ -250,7 +250,8 @@ const processErrors = (errors) => {
                                         :placeholder="$t('dearbook.group.create.fields.about.placeholder')"
                                         :class="'block w-full max-h-28'" rows="2" />
 
-                                    <InputError class="mt-2" :message="groupForm.errors.about" />
+                                    <!-- <InputError class="mt-2" :message="groupForm.errors.about" /> -->
+                                    <InputError class="mt-2" :message="errorsForm.about" />
                                 </div>
 
                                 <div class="flex p-[14px] gap-3">
