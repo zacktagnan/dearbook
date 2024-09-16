@@ -1,4 +1,5 @@
 <script setup>
+import ResponsiveDropDownMenu from '@/Components/dearbook/ArchiveManagement/DropDownMenu/Index.vue'
 import NavBar from '@/Pages/ArchiveManagement/Partials/NavBar.vue'
 import ListItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
 import { computed, ref, onMounted } from 'vue';
@@ -46,7 +47,7 @@ const buttonDisabled = computed(
     () => checkedIds.value.length === 0
 );
 
-const emit = defineEmits(['callConfirmProcess', 'callNotifyProcessEnding'])
+const emit = defineEmits(['callLoadComponent', 'callConfirmProcess', 'callNotifyProcessEnding'])
 
 const submitProcess = (processType, postId) => {
     if (processType === 'archive') {
@@ -120,8 +121,6 @@ const loadCurrentActivityLogPosts = async (hasToReset) => {
     }
 }
 
-defineExpose({ loadCurrentActivityLogPosts, })
-
 const checkItem = () => {
     if (checkedIds.value.length === allActivityLogPostIds.value.length) {
         checkedAll.value = true
@@ -130,10 +129,18 @@ const checkItem = () => {
     }
     navBarRef.value.checkAllRef.checked = checkedAll.value
 }
+
+const loadComponent = (componentName) => {
+    emit('callLoadComponent', componentName)
+}
+
+defineExpose({ loadCurrentActivityLogPosts, })
 </script>
 
 <template>
     <div>
+        <ResponsiveDropDownMenu :management-type="managementType" @callLoadComponent="loadComponent" />
+
         <NavBar ref="navBarRef" :button-disabled="buttonDisabled" :checked-ids-length="checkedIds.length"
             :management-type="managementType" @callCheckAll="checkAll" @callUnMarkAll="unMarkAll"
             @callSubmitGlobalProcess="submitGlobalProcess" />

@@ -24,9 +24,9 @@ defineExpose({ checkAllRef, })
             </div>
             <label for="check_all" class="ml-1 font-bold hover:cursor-pointer">Todo</label>
             <button v-if="!buttonDisabled" title="Desmarcar toda casilla marcada" @click="$emit('callUnMarkAll')"
-                class="ml-5 flex items-center gap-1 pl-2 pr-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300">
+                class="ml-3 md:ml-5 flex items-center md:gap-1 pl-2 pr-2 md:pr-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300">
                 <XMarkIcon class="w-5 h-5" />
-                Desmarcar
+                <span class="hidden md:block">Desmarcar</span>
             </button>
         </div>
 
@@ -34,53 +34,53 @@ defineExpose({ checkAllRef, })
             [ <span class="font-black text-[#0099ce]">{{ checkedIdsLength }}</span> ]
         </div>
 
-        <div class="flex items-center gap-5 pr-2">
+        <div class="flex items-center gap-4 md:gap-5 pr-2">
             <template v-if="managementType === 'archive'">
                 <button @click="$emit('callSubmitGlobalProcess', 'restore_from_archive_all_selected')"
                     :disabled="buttonDisabled" :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
-                    Restaurar
+                    <span class="hidden md:block">Restaurar</span>
                 </button>
                 <button @click="$emit('callSubmitGlobalProcess', 'delete_all_selected')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Mover a la papelera los elegido(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <TrashIcon class="w-5 h-5" />
-                    Mover a la papelera
+                    <span class="hidden md:block">Mover a la papelera</span>
                 </button>
             </template>
             <template v-else-if="managementType === 'trash'">
                 <button @click="$emit('callSubmitGlobalProcess', 'archive_all_selected')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Archivar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArchiveBoxIcon class="w-5 h-5" />
-                    Archivar
+                    <span class="hidden md:block">Archivar</span>
                 </button>
                 <button @click="$emit('callSubmitGlobalProcess', 'restore_from_trash_all_selected')"
                     :disabled="buttonDisabled" :title="!buttonDisabled ? 'Restaurar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArrowUturnLeftIcon class="w-5 h-5" />
-                    Restaurar
+                    <span class="hidden md:block">Restaurar</span>
                 </button>
                 <button @click="$emit('callSubmitGlobalProcess', 'force_delete_all_selected')"
                     :disabled="buttonDisabled" :title="!buttonDisabled ? 'Eliminar seleccionado(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <TrashIcon class="w-5 h-5" />
-                    Eliminar
+                    <span class="hidden md:block">Eliminar</span>
                 </button>
             </template>
             <template v-else>
                 <button @click="$emit('callSubmitGlobalProcess', 'archive_all_selected')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Mover al archivo los elegido(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <ArchiveBoxIcon class="w-5 h-5" />
-                    Mover al archivo
+                    <span class="hidden md:block">Mover al archivo</span>
                 </button>
                 <button @click="$emit('callSubmitGlobalProcess', 'delete_all_selected')" :disabled="buttonDisabled"
                     :title="!buttonDisabled ? 'Mover a la papelera los elegido(s)' : ''"
-                    class="flex items-center gap-1 px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
+                    class="flex items-center md:gap-1 px-2 md:px-3 py-2 font-bold rounded-lg bg-slate-200 hover:bg-slate-300 disabled:bg-slate-100 disabled:text-gray-400">
                     <TrashIcon class="w-5 h-5" />
-                    Mover a la papelera
+                    <span class="hidden md:block">Mover a la papelera</span>
                 </button>
             </template>
         </div>

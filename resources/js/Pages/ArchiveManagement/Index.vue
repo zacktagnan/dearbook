@@ -20,6 +20,7 @@ const componentList = {
 }
 
 const selectedComponent = shallowRef(null)
+const componentRef = ref(null)
 const archiveMenuListRef = ref(null)
 
 const loadComponent = (index) => {
@@ -35,7 +36,6 @@ import DangerButton from '@/Components/DangerButton.vue';
 
 const registerBoxToProcess = ref({})
 const showingConfirmProcess = ref(false);
-const componentRef = ref(null)
 
 const showConfirmProcess = (processType, entityIdOrEntityIds, from) => {
     if (processType === 'delete') {
@@ -278,20 +278,23 @@ onMounted(() => {
 
     <AuthenticatedLayout>
         <div>
-            <div class="fixed px-4 pt-20 pb-4 bg-white shadow-lg lg:min-h-full w-[315px] lg:col-span-2">
+            <div
+                class="hidden md:block md:fixed px-4 pt-5 pb-4 bg-white shadow-lg lg:min-h-full w-[315px] lg:col-span-2">
                 <ArchiveMenuList ref="archiveMenuListRef" @callLoadComponent="loadComponent" />
             </div>
 
-            <div class="ml-[315px] px-20 pt-4 pb-4 lg:pt-20 lg:col-span-10">
+            <div class="md:ml-[315px] px-4 md:px-20 pt-4 pb-4 lg:pt-5 lg:col-span-10">
                 <!-- Parte Central -->
                 <template v-if="success">
                     <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
-                        @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding" />
+                        @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding"
+                        @callLoadComponent="loadComponent" />
                 </template>
                 <template v-else>
                     <KeepAlive>
                         <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
-                            @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding" />
+                            @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding"
+                            @callLoadComponent="loadComponent" />
                     </KeepAlive>
                 </template>
             </div>
