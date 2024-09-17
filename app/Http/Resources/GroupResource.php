@@ -22,21 +22,33 @@ class GroupResource extends JsonResource
             'slug' => $this->slug,
             'type' => $this->type,
 
-            'status' => $this->status,
-            'role' => $this->role,
+            // 'status' => $this->status,
+            // 'role' => $this->role,
+            'status' => $this->currentGroupUser?->status,
+            'role' => $this->currentGroupUser?->role,
 
             // 'cover_path' => $this->cover_path,
             // 'thumbnail_path' => $this->thumbnail_path,
 
             // 'thumbnail_url' => 'https://picsum.photos/100',
             // -> Si existe y no es NULL, se trata, sino, se devuelve NULL
+            'cover_url' => $this->cover_path
+                ? Storage::url($this->cover_path)
+                : null,
             'thumbnail_url' => $this->thumbnail_path
                 ? Storage::url($this->thumbnail_path)
                 : null,
             'auto_approval' => $this->auto_approval,
             // 'about' => $this->about,
             'description' => Str::words($this->about, 11, '...'),
-            'user_id' => $this->user_id,
+
+            // 'user_id' => $this->user_id,
+            'user' => [
+                'id' => $this->user->id,
+                'name' => $this->user->name,
+                'username' => $this->user->username,
+            ],
+
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,

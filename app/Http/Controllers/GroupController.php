@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Group;
+use App\Models\GroupUser;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
-use App\Models\Group;
+use App\Http\Resources\GroupResource;
 use App\Http\Requests\StoreGroupRequest;
 use App\Http\Requests\UpdateGroupRequest;
-use App\Http\Resources\GroupResource;
-use App\Models\GroupUser;
 use Symfony\Component\HttpFoundation\Response;
 
 class GroupController extends Controller
@@ -16,9 +17,15 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function profile(Group $group)
     {
-        //
+        $group->load('currentGroupUser');
+
+        return Inertia::render('Group/Index', [
+            // 'status' => session('status'),
+            // 'success' => session('success'),
+            'group' => new GroupResource($group),
+        ]);
     }
 
     /**
