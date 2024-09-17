@@ -78,5 +78,7 @@
     "You're logged in!": "You're logged in!",
     "Your email address is unverified.": "Your email address is unverified.",
 
-    "current_language_code": "en"
+    "current_language_code": "en",
+    "About": "About",
+    "Information": "Information"
 }

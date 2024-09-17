@@ -78,5 +78,7 @@
     "You're logged in!": "¡Usted está conectado!",
     "Your email address is unverified.": "Su dirección de correo electrónico no está verificada.",
 
-    "current_language_code": "es"
+    "current_language_code": "es",
+    "About": "Acerca de",
+    "Information": "Información"
 }

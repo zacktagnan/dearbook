@@ -36,4 +36,12 @@ return [
             ],
         ],
     ],
+
+    'info' => [
+        'members' => 'members',
+        'type' => [
+            'public' => 'Public group',
+            'private' => 'Private group',
+        ],
+    ],
 ];

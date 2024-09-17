@@ -1,42 +1,49 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import Edit from "@/Pages/Profile/Edit.vue";
-import Show from "@/Pages/Profile/Show.vue";
+import Edit from "@/Pages/Group/Edit.vue";
+import Show from "@/Pages/Group/Show.vue";
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, EyeIcon, EyeSlashIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
+    errors: Object,
     success: {
         type: String,
     },
-    errors: Object,
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
-    user: {
+    // status: {
+    //     type: String,
+    // },
+    group: {
         type: Object,
     },
 });
 
 const authUser = usePage().props.auth.user;
 
-const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
+// const isMyGroupProfile = computed(() => authUser && authUser.id === props.group.user.id);
+// o
+const isAdminGroup = computed(() => props.group.role === 'admin');
+const isUserGroup = computed(() => props.group.role === 'user')
+const isNotMemberAndGroupAutoApproval = computed(() => !props.group.role && props.group.auto_approval)
+const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !props.group.auto_approval)
+const isPrivateGroup = computed(() => props.group.type === 'private');
+
+// const groupNameTopLength = 52
+// const extraName = ' fadsfa sdf fasdfasd fasdf asdfgh'
+// const isGroupNameLengthGreaterThanTop = (groupName) => (groupName.length + extraName.length) > groupNameTopLength
 
 const imagesForm = useForm({
     cover: null,
 })
 
 const coverImageSrc = ref("");
-const avatarImageSrc = ref("");
+const thumbnailImageSrc = ref("");
 
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
@@ -139,7 +146,7 @@ const submitCoverImage = () => {
 // -----------------------------------------------
 
 import Modal from '@/Components/Modal.vue';
-import CropperIndex from '@/Pages/Cropper/User/Index.vue'
+import CropperIndex from '@/Pages/Cropper/Group/Index.vue'
 
 const showingCropImageModal = ref(false);
 const showCropImageModal = () => {
@@ -152,7 +159,7 @@ const closeCropImageModal = () => {
 
 <template>
 
-    <Head :title="$t('Profile')" />
+    <Head :title="group.name" />
 
     <AuthenticatedLayout>
         <div class="bg-white">
@@ -168,18 +175,39 @@ const closeCropImageModal = () => {
                     v-else-if="showNotification && errors.avatar" :title="'Error'" :message="errors.avatar" />
 
                 <div class="relative bg-white">
-                    <img :src="coverImageSrc || user.cover_url || '/img/default_cover.jpg'" alt="Cover"
-                        class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
+                    <div class="relative">
+                        <div
+                            class="w-full py-3.5 md:py-4 md:rounded-es-lg md:rounded-ee-lg bg-cyan-600 text-white absolute bottom-0">
+                            <div class="pl-4 md:hidden text-xs leading-tight">
+                                Grupo de
+                                <span class="font-bold">
+                                    <a :href="route('profile.index', { username: group.user.username })"
+                                        class="hover:underline" :title="'Perfil de ' + group.user.name">{{
+                                            group.user.name }}</a>
+                                </span>
+                            </div>
+                            <div class="hidden md:block md:pl-[228px]">
+                                Grupo de
+                                <span class="font-bold">
+                                    <a :href="route('profile.index', { username: group.user.username })"
+                                        class="hover:underline" :title="'Perfil de ' + group.user.name">{{
+                                            group.user.name }}</a>
+                                </span>
+                            </div>
+                        </div>
+                        <img :src="coverImageSrc || group.cover_url || '/img/default_cover_group.jpg'" alt="Cover"
+                            class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
+                    </div>
 
-                    <div class="absolute lg:right-5 lg:bottom-[172px] right-5 top-28 md:top-72 lg:top-auto">
+                    <div class="absolute lg:right-5 lg:bottom-[172px] right-4 top-[120px] md:top-72">
                         <button v-if="!coverImageSrc"
                             class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
-                            title="Actualizar foto de portada">
+                            title="Actualizar imagen de portada">
                             <CameraIcon class="w-5 h-5 lg:mr-1" />
 
-                            <span class="hidden lg:block mt-[2px]">Actualizar foto de portada</span>
+                            <span class="hidden lg:block mt-[2px]">Actualizar imagen de portada</span>
                             <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onCoverChange"
-                                title="Actualizar foto de portada" />
+                                title="Actualizar imagen de portada" />
                         </button>
 
                         <div v-else class="flex gap-2">
@@ -200,33 +228,38 @@ const closeCropImageModal = () => {
                         </div>
                     </div>
 
-                    <div class="flex flex-col items-center justify-between bg-white lg:flex-row">
-                        <div class="flex flex-col w-full lg:block">
-                            <div class="flex justify-center lg:justify-start lg:static">
+                    <div class="flex flex-col lg:flex-row items-center justify-between bg-white px-3 md:px-0">
+                        <div class="flex lg:flex-col w-full lg:block mt-4 lg:mt-0 gap-1 lg:gap-0">
+                            <div class="">
                                 <div
-                                    class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
-                                    <img :src="avatarImageSrc || user.avatar_url ||
-                                        '/img/default_avatar.png'
+                                    class="md:absolute p-1 bg-white rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
+                                    <img :src="thumbnailImageSrc || group.thumbnail_url ||
+                                        '/img/default_thumbnail_group.png'
                                         " alt=""
-                                        class="rounded-full border-[1px] border-gray-200 w-[174px] h-[168px]" />
+                                        class="rounded-md border-[1px] border-gray-200 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
                                 </div>
 
                                 <div
-                                    class="absolute right-[135px] md:right-[314px] lg:right-auto lg:left-[164px] top-[200px] md:top-[369px] lg:top-auto lg:bottom-7">
+                                    class="absolute left-[85px] md:right-[314px] lg:right-auto lg:left-[164px] top-[235px] md:top-[369px] lg:top-[427px] lg:bottom-7">
                                     <button @click="showCropImageModal"
                                         class="flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300"
-                                        title="Actualizar foto de perfil">
+                                        title="Actualizar imagen de grupo">
                                         <CameraIcon class="w-5 h-5" />
                                     </button>
                                 </div>
                             </div>
 
-                            <div
-                                class="lg:pl-[228px] pt-[16px] mb-4 lg:mb-0 flex flex-col items-center lg:items-start lg:mt-0 mt-20">
-                                <h1 class="text-[32px] font-extrabold">
-                                    {{ user.name }}
+                            <div class="lg:pl-[228px] lg:pt-[16px] mb-4 lg:mb-0 flex flex-col items-start">
+                                <!-- <pre>trerte rt {{ isGroupNameLengthGreaterThanTop(group.name) }}  {{ group.name.length + extraName.length }}</pre> -->
+                                <h1 class="text-[28px] md:text-[32px] font-extrabold mt-2 leading-none">
+                                    {{ group.name }} {{ extraName }}
                                 </h1>
-                                <small class="font-bold text-gray-600">69 seguidores</small>
+                                <small class="text-gray-600 flex items-center gap-1 mt-2">
+                                    <EyeSlashIcon v-if="isPrivateGroup" class="w-4 h-4" />
+                                    <EyeIcon v-else class="w-4 h-4" /> {{
+                                        $t('dearbook.group.info.type.' + group.type) }} · <span class="font-bold">74 {{
+                                        $t('dearbook.group.info.members') }}</span>
+                                </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
                                     <div
@@ -254,10 +287,33 @@ const closeCropImageModal = () => {
                             </div>
                         </div>
 
-                        <div v-if="isMyProfile" class="flex items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0">
-                            <PrimaryButton class="lg:mr-[47px] bg-cyan-600 hover:bg-cyan-500" title="Editar">
+                        <div class="flex gap-2 items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0 lg:mr-[47px]">
+                            <button v-if="isAdminGroup"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
+                                title="Invitar usuarios">
+                                <UserPlusIcon class="w-5 h-5 mr-1" />
+                                Invitar
+                            </button>
+                            <button v-if="isNotMemberAndGroupAutoApproval"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
+                                title="Unirte al grupo">
+                                <UserGroupIcon class="w-5 h-5 mr-1" />
+                                Unirte al grupo
+                            </button>
+                            <button v-if="isNotMemberAndGroupNotAutoApproval"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
+                                title="Solicitar unirte al grupo">
+                                <UserGroupIcon class="w-5 h-5 mr-1" />
+                                Solicitar unirte al grupo
+                            </button>
+                            <button v-if="isUserGroup"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
+                                title="Detalles de Miembro">
+                                <UserGroupIcon class="w-5 h-5 mr-1" />
+                                Detalles de Miembro
+                            </button>
+                            <PrimaryButton v-if="isAdminGroup" class="bg-cyan-600 hover:bg-cyan-500" title="Editar">
                                 <PencilSquareIcon class="w-5 h-5 mr-1" />
-
                                 Editar
                             </PrimaryButton>
                         </div>
@@ -274,11 +330,11 @@ const closeCropImageModal = () => {
                     <div class="bg-white shadow sticky top-[57px]">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }">
-                                <TabItem text="Publicaciones" :selected="selected" />
+                                <TabItem text="Conversación" :selected="selected" />
                             </Tab>
 
                             <Tab as="template" v-slot="{ selected }">
-                                <TabItem text="Acerca de" :selected="selected" />
+                                <TabItem text="Información" :selected="selected" />
                             </Tab>
 
                             <Tab as="template" v-slot="{ selected }">
@@ -297,11 +353,11 @@ const closeCropImageModal = () => {
 
                     <TabPanels class="px-4 mx-auto my-4 lg:px-0 lg:w-2/3">
                         <TabPanel :key="posts" class="p-3 bg-white shadow">
-                            Contenido de Publicaciones
+                            Contenido de Conversación
                         </TabPanel>
 
                         <TabPanel :key="followers" class="">
-                            <Edit v-if="isMyProfile" :mustVerifyEmail="mustVerifyEmail" :status="status" />
+                            <Edit v-if="isAdminGroup" :status="status" />
                             <Show v-else :user="user" />
                         </TabPanel>
 
@@ -323,7 +379,7 @@ const closeCropImageModal = () => {
 
         <Modal :show="showingCropImageModal" @close="closeCropImageModal">
             <CropperIndex @callCloseCropImageModal="closeCropImageModal"
-                @callActiveShowNotification="activeShowNotification" :user="user" />
+                @callActiveShowNotification="activeShowNotification" :group="group" />
         </Modal>
     </AuthenticatedLayout>
 </template>
