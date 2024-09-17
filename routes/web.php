@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/u/{user:username}/posts/{id}', [PostController::class, 'show'])->name('post.show');
+    Route::get('/g/{group:slug}', [GroupController::class, 'profile'])->name('group.profile');
 });
 
 Route::middleware('auth')->group(function () {
