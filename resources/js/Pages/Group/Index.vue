@@ -6,6 +6,8 @@ import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
+import PublicAccessIcon from '@/Components/Icons/PublicAccess.vue'
+import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon, EyeIcon, EyeSlashIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
@@ -39,6 +41,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private');
 // const isGroupNameLengthGreaterThanTop = (groupName) => (groupName.length + extraName.length) > groupNameTopLength
 
 const imagesForm = useForm({
+    group_id: props.group.id,
     cover: null,
 })
 
@@ -126,7 +129,7 @@ const submitCoverImage = () => {
     var fadeTarget = document.getElementById("notification-box");
     fadeTarget.style.removeProperty("opacity");
 
-    imagesForm.post(route('profile.update-cover-image'), {
+    imagesForm.post(route('group.update-cover-image'), {
         onSuccess: () => {
             showNotification.value = true
             resetCoverImage()
@@ -172,7 +175,7 @@ const closeCropImageModal = () => {
                     v-if="showNotification && errors.cover" :title="'Error'" :message="errors.cover" />
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
-                    v-else-if="showNotification && errors.avatar" :title="'Error'" :message="errors.avatar" />
+                    v-else-if="showNotification && errors.thumbnail" :title="'Error'" :message="errors.thumbnail" />
 
                 <div class="relative bg-white">
                     <div class="relative">
@@ -254,9 +257,11 @@ const closeCropImageModal = () => {
                                 <h1 class="text-[28px] md:text-[32px] font-extrabold mt-2 leading-none">
                                     {{ group.name }} {{ extraName }}
                                 </h1>
+
                                 <small class="text-gray-600 flex items-center gap-1 mt-2">
-                                    <EyeSlashIcon v-if="isPrivateGroup" class="w-4 h-4" />
-                                    <EyeIcon v-else class="w-4 h-4" /> {{
+                                    <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
+                                        fill-content="#4b5563" />
+                                    <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
                                         $t('dearbook.group.info.type.' + group.type) }} · <span class="font-bold">74 {{
                                         $t('dearbook.group.info.members') }}</span>
                                 </small>

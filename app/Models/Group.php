@@ -23,6 +23,8 @@ class Group extends Model
         'type',
         'about',
         'user_id',
+        'cover_path',
+        'thumbnail_path',
     ];
 
     public function getSlugOptions(): SlugOptions

@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('group')->as('group.')->group(function () {
         Route::post('', [GroupController::class, 'store'])->name('store');
+        Route::post('/update-cover-image', [GroupController::class, 'updateCoverImage'])->name('update-cover-image');
+        Route::post('/update-thumbnail-image', [GroupController::class, 'updateThumbnailImage'])->name('update-thumbnail-image');
     });
 });
 

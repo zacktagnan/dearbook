@@ -6,14 +6,15 @@ import { Cropper, Preview } from 'vue-advanced-cropper'
 import 'vue-advanced-cropper/dist/style.css'
 import { useForm } from "@inertiajs/vue3";
 
-defineProps({
+const props = defineProps({
     group: {
         type: Object,
     },
 });
 
 const imagesForm = useForm({
-    avatar: null,
+    group_id: props.group.id,
+    thumbnail: null,
 })
 
 const image = ref('')
@@ -39,9 +40,9 @@ const saveImage = () => {
         var fadeTarget = document.getElementById("notification-box");
         fadeTarget.style.removeProperty("opacity");
 
-        imagesForm.avatar = blob
+        imagesForm.thumbnail = blob
 
-        imagesForm.post(route('profile.update-avatar-image'), {
+        imagesForm.post(route('group.update-thumbnail-image'), {
             onSuccess: () => {
                 emit('callCloseCropImageModal')
                 emit('callActiveShowNotification')
