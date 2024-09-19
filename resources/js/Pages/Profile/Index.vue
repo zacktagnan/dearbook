@@ -172,7 +172,7 @@ const closeCropImageModal = () => {
                         class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
 
                     <div class="absolute lg:right-5 lg:bottom-[172px] right-5 top-28 md:top-72 lg:top-auto">
-                        <button v-if="!coverImageSrc"
+                        <button v-if="!coverImageSrc && isMyProfile"
                             class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
                             title="Actualizar foto de portada">
                             <CameraIcon class="w-5 h-5 lg:mr-1" />
@@ -182,7 +182,7 @@ const closeCropImageModal = () => {
                                 title="Actualizar foto de portada" />
                         </button>
 
-                        <div v-else class="flex gap-2">
+                        <div v-else-if="isMyProfile" class="flex gap-2">
                             <button @click="resetCoverImage"
                                 class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
                                 title="Cancelar">
@@ -213,7 +213,7 @@ const closeCropImageModal = () => {
 
                                 <div
                                     class="absolute right-[135px] md:right-[314px] lg:right-auto lg:left-[164px] top-[200px] md:top-[369px] lg:top-auto lg:bottom-7">
-                                    <button @click="showCropImageModal"
+                                    <button v-if="isMyProfile" @click="showCropImageModal"
                                         class="flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300"
                                         title="Actualizar foto de perfil">
                                         <CameraIcon class="w-5 h-5" />

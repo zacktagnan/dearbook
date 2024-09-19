@@ -49,4 +49,9 @@ class Group extends Model
     {
         return $this->hasMany(Post::class);
     }
+
+    public function isAdminOfTheGroup(int $userId): bool
+    {
+        return $this->currentGroupUser->user_id === $userId;
+    }
 }

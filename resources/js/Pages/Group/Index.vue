@@ -203,7 +203,7 @@ const closeCropImageModal = () => {
                     </div>
 
                     <div class="absolute lg:right-5 lg:bottom-[172px] right-4 top-[120px] md:top-72">
-                        <button v-if="!coverImageSrc"
+                        <button v-if="!coverImageSrc && isAdminGroup"
                             class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
                             title="Actualizar imagen de portada">
                             <CameraIcon class="w-5 h-5 lg:mr-1" />
@@ -213,7 +213,7 @@ const closeCropImageModal = () => {
                                 title="Actualizar imagen de portada" />
                         </button>
 
-                        <div v-else class="flex gap-2">
+                        <div v-else-if="isAdminGroup" class="flex gap-2">
                             <button @click="resetCoverImage"
                                 class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
                                 title="Cancelar">
@@ -233,7 +233,7 @@ const closeCropImageModal = () => {
 
                     <div class="flex flex-col lg:flex-row items-center justify-between bg-white px-3 md:px-0">
                         <div class="flex lg:flex-col w-full lg:block mt-4 lg:mt-0 gap-1 lg:gap-0">
-                            <div class="">
+                            <div>
                                 <div
                                     class="md:absolute p-1 bg-white rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
                                     <img :src="thumbnailImageSrc || group.thumbnail_url ||
@@ -242,7 +242,7 @@ const closeCropImageModal = () => {
                                         class="rounded-md border-[1px] border-gray-200 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
                                 </div>
 
-                                <div
+                                <div v-if="isAdminGroup"
                                     class="absolute left-[85px] md:right-[314px] lg:right-auto lg:left-[164px] top-[235px] md:top-[369px] lg:top-[427px] lg:bottom-7">
                                     <button @click="showCropImageModal"
                                         class="flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300"

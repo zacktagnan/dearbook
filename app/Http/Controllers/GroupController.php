@@ -97,6 +97,11 @@ class GroupController extends Controller
     private function updateImage(int $groupId, object $file, string $type): RedirectResponse
     {
         $group = Group::findOrFail($groupId);
+
+        if (!$group->isAdminOfTheGroup(auth()->id())) {
+            return response("You don't have permission to UPDATE images of this group", Response::HTTP_FORBIDDEN);
+        }
+
         if ($type === 'cover') {
             $previousImageFile = $group->cover_path;
         } else if ($type === 'thumbnail') {
