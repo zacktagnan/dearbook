@@ -37,11 +37,40 @@ return [
         ],
     ],
 
-    'info' => [
+    'general_info' => [
         'members' => 'members',
         'type' => [
             'public' => 'Public group',
             'private' => 'Private group',
+        ],
+    ],
+
+    'tab_info' => [
+        'info_block' => [
+            'header' => 'Information about this group',
+            'features' => [
+                'public' => [
+                    'title' => 'Public',
+                    'description' => 'Anyone can see who is a member of the group and everything posted.',
+                ],
+                'private' => [
+                    'title' => 'Private',
+                    'description' => 'Only members can see who is a member of the group and what was posted.',
+                ],
+                'visible' => [
+                    'title' => 'Visible',
+                    'description' => 'Anyone can find the group.',
+                ],
+                'history' => [
+                    'title' => 'History',
+                    'description_1_2' => 'Group created on :date',
+                    'description_2_2' => 'by',
+                ],
+            ],
+        ],
+        'members_block' => [
+            'header' => 'Members',
+            'admin_text' => 'is the group admin.',
         ],
     ],
 ];

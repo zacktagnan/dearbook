@@ -40,19 +40,26 @@ class GroupResource extends JsonResource
                 : null,
             'auto_approval' => $this->auto_approval,
             // 'about' => $this->about,
-            'description' => Str::words($this->about, 11, '...'),
+            'short_description' => Str::words($this->about, 11, '...'),
+            'full_description' => $this->about,
 
             // 'user_id' => $this->user_id,
             'user' => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
+                'avatar_url' => $this->avatar_path
+                    ? Storage::url($this->avatar_path)
+                    : null,
             ],
+
+            'total_group_user' => count($this->allGroupUser),
 
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'created_at_formatted' => $this->createdAtWithFormat(),
         ];
     }
 }

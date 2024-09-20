@@ -29,7 +29,7 @@ defineProps({
                     </span>
                 </div>
             </div>
-            <div class="text-xs text-gray-500">{{ group.description ||
+            <div class="text-xs text-gray-500">{{ group.short_description ||
                 $t('dearbook.group.list.no_description') }}
             </div>
         </div>

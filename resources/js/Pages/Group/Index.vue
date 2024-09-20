@@ -262,8 +262,9 @@ const closeCropImageModal = () => {
                                     <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
                                         fill-content="#4b5563" />
                                     <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
-                                        $t('dearbook.group.info.type.' + group.type) }} · <span class="font-bold">74 {{
-                                        $t('dearbook.group.info.members') }}</span>
+                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span class="font-bold">74
+                                        {{
+                                            $t('dearbook.group.general_info.members') }}</span>
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
@@ -363,7 +364,7 @@ const closeCropImageModal = () => {
 
                         <TabPanel :key="followers" class="">
                             <Edit v-if="isAdminGroup" :status="status" />
-                            <Show v-else :user="user" />
+                            <Show v-else :group="group" />
                         </TabPanel>
 
                         <TabPanel :key="followers" class="p-3 bg-white shadow">

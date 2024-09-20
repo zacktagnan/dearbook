@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\CustomDateFormatting;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +17,7 @@ class Group extends Model
     use HasFactory;
     use SoftDeletes;
     use HasSlug;
+    use CustomDateFormatting;
 
     protected $fillable = [
         'name',
@@ -43,6 +45,11 @@ class Group extends Model
     {
         // return $this->hasOne(GroupUser::class);
         return $this->hasOne(GroupUser::class)->where('user_id', auth()->id());
+    }
+
+    public function allGroupUser(): HasMany
+    {
+        return $this->hasMany(GroupUser::class);
     }
 
     public function posts(): HasMany
