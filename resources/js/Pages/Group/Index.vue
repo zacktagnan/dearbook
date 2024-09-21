@@ -24,6 +24,10 @@ const props = defineProps({
     group: {
         type: Object,
     },
+    defaultIndex: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const authUser = usePage().props.auth.user;
@@ -36,9 +40,18 @@ const isNotMemberAndGroupAutoApproval = computed(() => !props.group.role && prop
 const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !props.group.auto_approval)
 const isPrivateGroup = computed(() => props.group.type === 'private');
 
-// const groupNameTopLength = 52
-// const extraName = ' fadsfa sdf fasdfasd fasdf asdfgh'
-// const isGroupNameLengthGreaterThanTop = (groupName) => (groupName.length + extraName.length) > groupNameTopLength
+const theSelectedIndex = ref(0)
+const getSetSelectedIndex = computed({
+    get() {
+        return theSelectedIndex.value
+    },
+    set(newIndex) {
+        theSelectedIndex.value = newIndex
+    }
+})
+const asignSelectedIndex = (index) => {
+    getSetSelectedIndex.value = index
+}
 
 const imagesForm = useForm({
     group_id: props.group.id,
@@ -58,24 +71,11 @@ const maxTimeOnSecondsForNotificationBox = usePage().props.maxTimeOnSecondsForNo
 const activeShowNotification = () => {
     showNotification.value = true
 
-    // setTimeout(() => {
-    //     closingNotification('notification')
-    // }, 3000)
     startClosingNotification()
 }
 
 const startClosingNotification = () => {
     timer.value = setInterval(() => {
-        // if (notificationBoxRef.value) {
-        //     timeOnSeconds.value++
-        //     console.log('timeOnSeconds', timeOnSeconds.value)
-
-        //     if (timeOnSeconds.value >= maxTimeOnSecondsForNotificationBox) {
-        //         stopClosingNotification()
-        //         closingNotification('notification')
-        //         console.log('timeOnSeconds tras CLOSING', timeOnSeconds.value)
-        //     }
-        // }
         if (notificationBoxRef.value && timeOnSeconds.value < maxTimeOnSecondsForNotificationBox) {
             timeOnSeconds.value++
             console.log('timeOnSeconds', timeOnSeconds.value)
@@ -94,7 +94,7 @@ const stopClosingNotification = () => {
 const closingNotification = (className) => {
     timer.value = null
     timeOnSeconds.value = 0
-    // notificationBoxRef.value.fadeOutEffect(className)
+
     if (notificationBoxRef.value) {
         notificationBoxRef.value.fadeOutEffect(className)
     }
@@ -138,9 +138,6 @@ const submitCoverImage = () => {
             showNotification.value = true
         },
         onFinish: () => {
-            // setTimeout(() => {
-            //     closingNotification('notification')
-            // }, 3000)
             startClosingNotification()
         }
     })
@@ -253,18 +250,18 @@ const closeCropImageModal = () => {
                             </div>
 
                             <div class="lg:pl-[228px] lg:pt-[16px] mb-4 lg:mb-0 flex flex-col items-start">
-                                <!-- <pre>trerte rt {{ isGroupNameLengthGreaterThanTop(group.name) }}  {{ group.name.length + extraName.length }}</pre> -->
                                 <h1 class="text-[28px] md:text-[32px] font-extrabold mt-2 leading-none">
-                                    {{ group.name }} {{ extraName }}
+                                    {{ group.name }}
                                 </h1>
 
                                 <small class="text-gray-600 flex items-center gap-1 mt-2">
                                     <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
                                         fill-content="#4b5563" />
                                     <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
-                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span class="font-bold">74
-                                        {{
-                                            $t('dearbook.group.general_info.members') }}</span>
+                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span class="font-bold">{{
+                                        $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                            'total': group.total_group_user
+                                        }) }}</span>
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
@@ -318,7 +315,8 @@ const closeCropImageModal = () => {
                                 <UserGroupIcon class="w-5 h-5 mr-1" />
                                 Detalles de Miembro
                             </button>
-                            <PrimaryButton v-if="isAdminGroup" class="bg-cyan-600 hover:bg-cyan-500" title="Editar">
+                            <PrimaryButton v-if="isAdminGroup" @click="asignSelectedIndex(1)"
+                                class="bg-cyan-600 hover:bg-cyan-500" title="Editar">
                                 <PencilSquareIcon class="w-5 h-5 mr-1" />
                                 Editar
                             </PrimaryButton>
@@ -332,26 +330,26 @@ const closeCropImageModal = () => {
 
         <div class="">
             <div class="mt-0">
-                <TabGroup>
+                <TabGroup :selectedIndex="getSetSelectedIndex">
                     <div class="bg-white shadow sticky top-[57px]">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Conversación" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(1)">
                                 <TabItem text="Información" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(2)">
                                 <TabItem text="Seguidores" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(3)">
                                 <TabItem text="Seguidos" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(4)">
                                 <TabItem text="Fotos" :selected="selected" />
                             </Tab>
                         </TabList>
@@ -363,7 +361,7 @@ const closeCropImageModal = () => {
                         </TabPanel>
 
                         <TabPanel :key="followers" class="">
-                            <Edit v-if="isAdminGroup" :status="status" />
+                            <Edit v-if="isAdminGroup" :group="group" />
                             <Show v-else :group="group" />
                         </TabPanel>
 

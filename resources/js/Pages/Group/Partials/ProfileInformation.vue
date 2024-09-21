@@ -5,12 +5,15 @@ import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import HistoryIcon from '@/Components/Icons/History.vue'
 import { EyeIcon, } from "@heroicons/vue/24/outline"
 import { computed, } from "vue"
+import { usePage } from '@inertiajs/vue3'
 
 const props = defineProps({
     group: {
         type: Object,
     },
 });
+
+const user = usePage().props.auth.user;
 
 const maxContentLength = 140
 const isPrivateGroup = computed(() => props.group.type === 'private')
@@ -29,12 +32,16 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                 <hr class="mt-3 mb-4 border-gray-400">
 
                 <div class="px-2">
-                    <ReadMoreOrLess :content="group.full_description" :max-content-length="maxContentLength" />
+                    <ReadMoreOrLess v-if="group.full_description && group.full_description.length > 0"
+                        :content="group.full_description" :max-content-length="maxContentLength"
+                        :showing-banner-if-content-is-null="false" />
+                    <div v-else-if="!group.full_description" class="text-sm italic"
+                        v-html="$t('dearbook.group.tab_info.info_block.no_intro')" />
                 </div>
 
                 <div class="mt-4 px-2 mb-2">
                     <div class="flex gap-3">
-                        <div class="mt-1.5">
+                        <div class="mt-1 md:mt-1.5">
                             <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-[18px] h-[18px]"
                                 fill-content="#9ca3af" />
                             <PublicAccessIcon v-else class-content="w-[18px] h-[18px]" fill-content="#9ca3af" />
@@ -51,7 +58,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                     </div>
 
                     <div class="flex gap-3 mt-1.5">
-                        <div class="mt-1.5">
+                        <div class="mt-0.5 md:mt-1">
                             <EyeIcon class="w-5 h-5 text-gray-400" />
                         </div>
                         <div class="flex-col">
@@ -64,20 +71,24 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                     </div>
 
                     <div class="flex gap-3 mt-1.5">
-                        <div class="mt-1.5">
+                        <div class="mt-1 md:mt-1.5">
                             <HistoryIcon class-content="w-5 h-5" fill-content="#9ca3af" />
                         </div>
                         <div class="flex-col">
                             <h3 class="lg:text-lg">{{ $t('dearbook.group.tab_info.info_block.features.history.title') }}
                             </h3>
                             <p class="text-[13px] leading-none">{{
-                                $t('dearbook.group.tab_info.info_block.features.history.description_1_2', {
+                                $t('dearbook.group.tab_info.info_block.features.history.description.1_3', {
                                     'date': group.created_at_formatted
                                 }) }} {{
-                                    $t('dearbook.group.tab_info.info_block.features.history.description_2_2') }} <a
+                                    $t('dearbook.group.tab_info.info_block.features.history.description.2_3') }} <a
                                     :href="route('profile.index', { username: group.user.username })"
-                                    class="hover:underline font-medium" :title="'Perfil de ' + group.user.name">{{
-                                        group.user.name }}</a>.
+                                    class="hover:underline font-medium" :title="'Perfil de ' + group.user.name">
+                                    <span v-if="group.user.id === user.id">{{
+                                        $t('dearbook.group.tab_info.info_block.features.history.description.3_3')
+                                    }}</span>
+                                    <span v-else>{{ group.user.name }}</span>
+                                </a>.
                             </p>
                         </div>
                     </div>

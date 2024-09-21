@@ -19,11 +19,11 @@ const searchKeyword = ref('')
     <TextInput class="w-full mt-2" :model-value="searchKeyword"
         :placeholder="$t('dearbook.group.search.placeholder')" />
 
-    <button @click="$emit('callOpenCreateGroupModal')" :title="$t('dearbook.group.create.btn_init_creation')"
+    <button @click="$emit('callOpenCreateGroupModal')" :title="$t('dearbook.group.form.btn_init_creation')"
         class="w-full bg-sky-400 text-gray-200 transition-colors delay-150 flex justify-center items-center rounded-md mt-3 hover:bg-[#0099ce] hover:text-white">
         <div class="flex py-1 gap-2">
             <PlusIcon class="w-4 h-4 mt-1" />
-            {{ $t('dearbook.group.create.btn_init_creation') }}
+            {{ $t('dearbook.group.form.btn_init_creation') }}
         </div>
     </button>
 

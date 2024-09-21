@@ -24,14 +24,25 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profile(Group $group)
+    public function profile(Group $group, ?string $tabIndex = 'conversation')
     {
+        // dump('num', $num);
+        // dd();
         $group->load('currentGroupUser');
+
+        $defaultIndex = match ($tabIndex) {
+            'conversation' => 0,
+            'info' => 1,
+            'followers' => 2,
+            'followed' => 3,
+            'photos' => 4,
+        };
 
         return Inertia::render('Group/Index', [
             // 'status' => session('status'),
             'success' => session('success'),
             'group' => new GroupResource($group),
+            'defaultIndex' => $defaultIndex,
         ]);
     }
 

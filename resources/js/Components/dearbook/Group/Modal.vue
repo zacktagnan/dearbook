@@ -92,6 +92,7 @@ const closeModal = () => {
     }
     processWellDone.value = false
     groupForm.errors = []
+    errorsForm.value = {}
 };
 
 const submitGroup = () => {
@@ -215,7 +216,7 @@ const processErrors = (errors) => {
 
                                 <div class="flex px-[14px] mt-5 gap-3">
                                     <TextInput type="text" class="block w-full" v-model="groupForm.name" required
-                                        autofocus :placeholder="$t('dearbook.group.create.fields.name.placeholder')" />
+                                        autofocus :placeholder="$t('dearbook.group.form.fields.name.placeholder')" />
                                 </div>
 
                                 <div class="px-[14px]">
@@ -228,26 +229,28 @@ const processErrors = (errors) => {
                                     <label class="flex items-center whitespace-nowrap">
                                         <Checkbox v-model:checked="groupForm.auto_approval" />
                                         <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
-                                            $t('dearbook.group.create.fields.auto_approval.label') }}</span>
+                                            $t('dearbook.group.form.fields.auto_approval.label') }}</span>
                                     </label>
 
                                     <div class="flex gap-4">
                                         <label class="flex items-center">
                                             <Radiobutton v-model:checked="groupForm.type" :value="'public'" />
-                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">Público</span>
+                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                                                $t('dearbook.group.form.fields.type.label.public') }}</span>
                                         </label>
 
                                         <label class="flex items-center">
                                             <Radiobutton v-model:checked="groupForm.type" :value="'private'" />
-                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">Privado</span>
+                                            <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                                                $t('dearbook.group.form.fields.type.label.private') }}</span>
                                         </label>
                                     </div>
                                 </div>
 
 
                                 <div class="px-[14px] mt-5">
-                                    <TextareaInput ref="commentTextAreaRef" v-model="groupForm.about"
-                                        :placeholder="$t('dearbook.group.create.fields.about.placeholder')"
+                                    <TextareaInput v-model="groupForm.about"
+                                        :placeholder="$t('dearbook.group.form.fields.about.placeholder')"
                                         :class="'block w-full max-h-28'" rows="2" />
 
                                     <!-- <InputError class="mt-2" :message="groupForm.errors.about" /> -->

@@ -5,19 +5,29 @@ declare(strict_types=1);
 return [
     'section_label' => 'Grupos',
 
-    'create' => [
+    'form' => [
         'fields' => [
             'name' => [
+                'label' => 'Nombre del grupo',
                 'placeholder' => 'Nombre del grupo',
             ],
             'auto_approval' => [
                 'label' => 'Aprobación automática',
             ],
+            'type' => [
+                'label' => [
+                    'public' => 'Público',
+                    'private' => 'Privado',
+                ],
+            ],
             'about' => [
+                'label' => 'Breve descripción',
                 'placeholder' => 'Breve descripción',
             ],
         ],
         'btn_init_creation' => 'Crear nuevo grupo',
+        'btn_init_update' => 'Actualizar grupo',
+        'btn_init_updated' => 'Actualizado.',
     ],
 
     'search' => [
@@ -38,7 +48,8 @@ return [
     ],
 
     'general_info' => [
-        'members' => 'miembros',
+        // 'x_members' => ':total miembros',
+        'x_members' => '{0} :total miembros|{1} :total miembro|[2,*] :total miembros',
         'type' => [
             'public' => 'Grupo público',
             'private' => 'Grupo privado',
@@ -48,6 +59,8 @@ return [
     'tab_info' => [
         'info_block' => [
             'header' => 'Información sobre este grupo',
+            'intro' => 'Actualice los datos de su grupo de la manera que más le convenga.',
+            'no_intro' => '(descripción introductoria no disponible)',
             'features' => [
                 'public' => [
                     'title' => 'Público',
@@ -63,8 +76,11 @@ return [
                 ],
                 'history' => [
                     'title' => 'Historial',
-                    'description_1_2' => 'Grupo creado el :date',
-                    'description_2_2' => 'por',
+                    'description' => [
+                        '1_3' => 'Grupo creado el :date',
+                        '2_3' => 'por',
+                        '3_3' => 'tí',
+                    ],
                 ],
             ],
         ],

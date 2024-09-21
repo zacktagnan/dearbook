@@ -5,19 +5,29 @@ declare(strict_types=1);
 return [
     'section_label' => 'Groups',
 
-    'create' => [
+    'form' => [
         'fields' => [
             'name' => [
+                'label' => 'Group name',
                 'placeholder' => 'Group name',
             ],
             'auto_approval' => [
                 'label' => 'Auto approval',
             ],
+            'type' => [
+                'label' => [
+                    'public' => 'Public',
+                    'private' => 'Private',
+                ],
+            ],
             'about' => [
+                'label' => 'Short description',
                 'placeholder' => 'Short description',
             ],
         ],
         'btn_init_creation' => 'Create new group',
+        'btn_init_update' => 'Update group',
+        'btn_init_updated' => 'Updated.',
     ],
 
     'search' => [
@@ -38,7 +48,8 @@ return [
     ],
 
     'general_info' => [
-        'members' => 'members',
+        // 'x_members' => ':total members',
+        'x_members' => '{0} :total members|{1} :total member|[2,*] :total members',
         'type' => [
             'public' => 'Public group',
             'private' => 'Private group',
@@ -48,6 +59,8 @@ return [
     'tab_info' => [
         'info_block' => [
             'header' => 'Information about this group',
+            'intro' => 'Update your group data in a way that suits you best.',
+            'no_intro' => '(introductory description not available)',
             'features' => [
                 'public' => [
                     'title' => 'Public',
@@ -63,8 +76,11 @@ return [
                 ],
                 'history' => [
                     'title' => 'History',
-                    'description_1_2' => 'Group created on :date',
-                    'description_2_2' => 'by',
+                    'description' => [
+                        '1_3' => 'Group created on :date',
+                        '2_3' => 'by',
+                        '3_3' => 'you',
+                    ],
                 ],
             ],
         ],

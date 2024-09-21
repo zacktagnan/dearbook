@@ -14,7 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/u/{user:username}/posts/{id}', [PostController::class, 'show'])->name('post.show');
-    Route::get('/g/{group:slug}', [GroupController::class, 'profile'])->name('group.profile');
+    Route::get('/g/{group:slug}/{tabIndex?}', [GroupController::class, 'profile'])->name('group.profile');
 });
 
 Route::middleware('auth')->group(function () {
@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
         Route::post('', [GroupController::class, 'store'])->name('store');
         Route::post('/update-cover-image', [GroupController::class, 'updateCoverImage'])->name('update-cover-image');
         Route::post('/update-thumbnail-image', [GroupController::class, 'updateThumbnailImage'])->name('update-thumbnail-image');
+        Route::patch('{group}', [GroupController::class, 'update'])->name('update');
+        Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
     });
 });
 
