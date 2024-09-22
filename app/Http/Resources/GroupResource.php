@@ -53,7 +53,12 @@ class GroupResource extends JsonResource
                     : null,
             ],
 
-            'total_group_user' => count($this->allGroupUser),
+            // 'total_group_user' => count($this->allGroupUser), //OK
+            // 'all_group_users' => UserResource::collection($this->allGroupUser),
+            // 'all_group_users' => $this->allGroupUser,
+            // ------------------------------------------------------------------------------
+            'total_group_user' => count($this->users),
+            'all_group_users' => UserResource::collection($this->users),
 
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,

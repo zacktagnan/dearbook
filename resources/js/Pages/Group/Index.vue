@@ -9,7 +9,7 @@ import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import PublicAccessIcon from '@/Components/Icons/PublicAccess.vue'
 import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon, EyeIcon, EyeSlashIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 
@@ -30,8 +30,7 @@ const props = defineProps({
     },
 });
 
-const authUser = usePage().props.auth.user;
-
+// const authUser = usePage().props.auth.user;
 // const isMyGroupProfile = computed(() => authUser && authUser.id === props.group.user.id);
 // o
 const isAdminGroup = computed(() => props.group.role === 'admin');
@@ -39,6 +38,34 @@ const isUserGroup = computed(() => props.group.role === 'user')
 const isNotMemberAndGroupAutoApproval = computed(() => !props.group.role && props.group.auto_approval)
 const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !props.group.auto_approval)
 const isPrivateGroup = computed(() => props.group.type === 'private');
+
+const maxGroupUsersIconsToList = 5
+
+const zIndex = ref(20)
+// const loadZIndex = () => {
+//     --zIndex.value
+//     console.log('devuelto:', 'z-' + zIndex.value)
+//     return 'z-' + zIndex.value
+// }
+// ---------------------------------------------------------
+// const loadZIndex = (index) => 'z-[' + (20 - index) + ']'
+// const loadZIndex = (index) => 20 - index
+// ---------------------------------------------------------
+// const loadZIndex = (index) => {
+//     zIndex.value = zIndex.value - index
+//     return 'z-[' + zIndex.value + ']'
+// }
+// Mejor manera de plasmar el z-index dinámicamente según el index recibido
+const loadZIndex = (index) => {
+    return {
+        0: 'z-[20]',
+        1: 'z-[19]',
+        2: 'z-[18]',
+        3: 'z-[17]',
+        4: 'z-[16]',
+        '+': 'z-[15]',
+    }[index];
+}
 
 const theSelectedIndex = ref(0)
 const getSetSelectedIndex = computed({
@@ -265,18 +292,30 @@ const closeCropImageModal = () => {
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
-                                    <div
+                                    <div v-if="group.total_group_user === 0" class="h-[30px]" />
+                                    <div v-else
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
-                                        <div class="z-20 flex items-center justify-center w-[30px] h-[30px] shadow-lg">
-                                            <a href="#">
-                                                <img src="/img/demo/avatar.png" alt=""
-                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900" />
+                                        <div v-for="(groupUser, index) of group.all_group_users?.slice(
+                                            0,
+                                            maxGroupUsersIconsToList
+                                        )" :class="loadZIndex(index)"
+                                            class="flex items-center justify-center w-[30px] h-[30px] shadow-lg">
+                                            <a :href="route('profile.index', { username: groupUser.username })"
+                                                :title="'Perfil de ' + groupUser.name">
+                                                <img :src="groupUser.avatar_url || '/img/default_avatar.png'"
+                                                    :alt="groupUser.name"
+                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-white hover:ring-[#0099ce]" />
                                             </a>
                                         </div>
-                                        <div
-                                            class="z-[19] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
-                                            04</div>
-                                        <div
+                                        <div v-if="group.total_group_user > maxGroupUsersIconsToList"
+                                            :class="loadZIndex('+')"
+                                            class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            <a href="#" title="Ver más miembros">
+                                                <PlusIcon class="w-5 h-5" />
+                                            </a>
+                                        </div>
+                                        <!-- Muestra de iconos de usuario de z-20 a z-16 -->
+                                        <!-- <div
                                             class="z-[18] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             03</div>
                                         <div
@@ -284,7 +323,7 @@ const closeCropImageModal = () => {
                                             02</div>
                                         <div
                                             class="z-[16] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
-                                            01</div>
+                                            01</div> -->
                                     </div>
                                 </div>
                             </div>
