@@ -31,6 +31,19 @@ const authUser = usePage().props.auth.user;
 
 const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
 
+const theSelectedIndex = ref(0)
+const getSetSelectedIndex = computed({
+    get() {
+        return theSelectedIndex.value
+    },
+    set(newIndex) {
+        theSelectedIndex.value = newIndex
+    }
+})
+const asignSelectedIndex = (index) => {
+    getSetSelectedIndex.value = index
+}
+
 const imagesForm = useForm({
     cover: null,
 })
@@ -226,7 +239,11 @@ const closeCropImageModal = () => {
                                 <h1 class="text-[32px] font-extrabold">
                                     {{ user.name }}
                                 </h1>
-                                <small class="font-bold text-gray-600">69 seguidores</small>
+                                <small v-if="true" class="font-bold text-gray-600">69 seguidores</small>
+                                <button v-else @click="asignSelectedIndex(2)" class="hover:underline"
+                                    title="Listar seguidor(es)">
+                                    <small class="font-bold text-gray-600">69 seguidores</small>
+                                </button>
 
                                 <div class="relative mt-2.5 lg:mb-6">
                                     <div
@@ -255,9 +272,9 @@ const closeCropImageModal = () => {
                         </div>
 
                         <div v-if="isMyProfile" class="flex items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0">
-                            <PrimaryButton class="lg:mr-[47px] bg-cyan-600 hover:bg-cyan-500" title="Editar">
+                            <PrimaryButton @click="asignSelectedIndex(1)"
+                                class="lg:mr-[47px] bg-cyan-600 hover:bg-cyan-500" title="Editar">
                                 <PencilSquareIcon class="w-5 h-5 mr-1" />
-
                                 Editar
                             </PrimaryButton>
                         </div>
@@ -270,26 +287,26 @@ const closeCropImageModal = () => {
 
         <div class="">
             <div class="mt-0">
-                <TabGroup>
+                <TabGroup :selectedIndex="getSetSelectedIndex">
                     <div class="bg-white shadow sticky top-[57px]">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Publicaciones" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(1)">
                                 <TabItem text="Acerca de" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(2)">
                                 <TabItem text="Seguidores" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(3)">
                                 <TabItem text="Seguidos" :selected="selected" />
                             </Tab>
 
-                            <Tab as="template" v-slot="{ selected }">
+                            <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(4)">
                                 <TabItem text="Fotos" :selected="selected" />
                             </Tab>
                         </TabList>
