@@ -206,18 +206,22 @@ const closeCropImageModal = () => {
                         <div
                             class="w-full py-3.5 md:py-4 md:rounded-es-lg md:rounded-ee-lg bg-cyan-600 text-white absolute bottom-0">
                             <div class="pl-4 md:hidden text-xs leading-tight">
-                                Grupo de
+                                {{ $t('dearbook.group.general_info.group_by') }}
                                 <span class="font-bold">
                                     <a :href="route('profile.index', { username: group.user.username })"
-                                        class="hover:underline" :title="'Perfil de ' + group.user.name">{{
+                                        class="hover:underline" :title="$t('Profile of', {
+                                            'name': group.user.name
+                                        })">{{
                                             group.user.name }}</a>
                                 </span>
                             </div>
                             <div class="hidden md:block md:pl-[228px]">
-                                Grupo de
+                                {{ $t('dearbook.group.general_info.group_by') }}
                                 <span class="font-bold">
                                     <a :href="route('profile.index', { username: group.user.username })"
-                                        class="hover:underline" :title="'Perfil de ' + group.user.name">{{
+                                        class="hover:underline" :title="$t('Profile of', {
+                                            'name': group.user.name
+                                        })">{{
                                             group.user.name }}</a>
                                 </span>
                             </div>
@@ -229,28 +233,29 @@ const closeCropImageModal = () => {
                     <div class="absolute lg:right-5 lg:bottom-[172px] right-4 top-[120px] md:top-72">
                         <button v-if="!coverImageSrc && isAdminGroup"
                             class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
-                            title="Actualizar imagen de portada">
+                            :title="$t('dearbook.profile_images.group.cover.update_cover_image')">
                             <CameraIcon class="w-5 h-5 lg:mr-1" />
 
-                            <span class="hidden lg:block mt-[2px]">Actualizar imagen de portada</span>
+                            <span class="hidden lg:block mt-[2px]">{{
+                                $t('dearbook.profile_images.group.cover.update_cover_image') }}</span>
                             <input type="file" class="absolute inset-0 opacity-0 cursor-pointer" @change="onCoverChange"
-                                title="Actualizar imagen de portada" />
+                                :title="$t('dearbook.profile_images.group.cover.update_cover_image')" />
                         </button>
 
                         <div v-else-if="isAdminGroup" class="flex gap-2">
                             <button @click="resetCoverImage"
                                 class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-700 rounded bg-gray-50 hover:bg-gray-200"
-                                title="Cancelar">
+                                :title="$t('Cancel')">
                                 <XMarkIcon class="w-5 h-5 lg:mr-1" />
 
-                                <span class="hidden lg:block mt-[2px]">Cancelar</span>
+                                <span class="hidden lg:block mt-[2px]">{{ $t('Cancel') }}</span>
                             </button>
                             <button @click="submitCoverImage"
                                 class="flex items-center px-2 pt-[2px] pb-1 text-sm font-semibold text-gray-100 rounded bg-gray-500 hover:bg-gray-600"
-                                title="Enviar">
+                                :title="$t('Send')">
                                 <CheckIcon class="w-5 h-5 lg:mr-1" />
 
-                                <span class="hidden lg:block mt-[2px]">Enviar</span>
+                                <span class="hidden lg:block mt-[2px]">{{ $t('Send') }}</span>
                             </button>
                         </div>
                     </div>
@@ -270,7 +275,7 @@ const closeCropImageModal = () => {
                                     class="absolute left-[85px] md:right-[314px] lg:right-auto lg:left-[164px] top-[235px] md:top-[369px] lg:top-[427px] lg:bottom-7">
                                     <button @click="showCropImageModal"
                                         class="flex items-center p-[6px] text-sm font-semibold text-gray-700 bg-gray-200 rounded-full hover:bg-gray-300"
-                                        title="Actualizar imagen de grupo">
+                                        :title="$t('dearbook.profile_images.group.thumbnail.update_thumbnail_image')">
                                         <CameraIcon class="w-5 h-5" />
                                     </button>
                                 </div>
@@ -285,10 +290,18 @@ const closeCropImageModal = () => {
                                     <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
                                         fill-content="#4b5563" />
                                     <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
-                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span class="font-bold">{{
-                                        $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
-                                            'total': group.total_group_user
-                                        }) }}</span>
+                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span
+                                        v-if="group.total_group_user === 0" class="font-bold">{{
+                                            $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                                'total': group.total_group_user
+                                            }) }}</span><button v-else @click="asignSelectedIndex(2)"
+                                        class="hover:underline"
+                                        :title="$tChoice('dearbook.group.general_info.title_list_members', group.total_group_user)">
+                                        <span class="font-bold">{{
+                                            $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                                'total': group.total_group_user
+                                            }) }}</span>
+                                    </button>
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
@@ -300,8 +313,9 @@ const closeCropImageModal = () => {
                                             maxGroupUsersIconsToList
                                         )" :class="loadZIndex(index)"
                                             class="flex items-center justify-center w-[30px] h-[30px] shadow-lg">
-                                            <a :href="route('profile.index', { username: groupUser.username })"
-                                                :title="'Perfil de ' + groupUser.name">
+                                            <a :href="route('profile.index', { username: groupUser.username })" :title="$t('Profile of', {
+                                                'name': groupUser.name
+                                            })">
                                                 <img :src="groupUser.avatar_url || '/img/default_avatar.png'"
                                                     :alt="groupUser.name"
                                                     class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-white hover:ring-[#0099ce]" />
@@ -310,7 +324,8 @@ const closeCropImageModal = () => {
                                         <div v-if="group.total_group_user > maxGroupUsersIconsToList"
                                             :class="loadZIndex('+')"
                                             class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
-                                            <a href="#" title="Ver más miembros">
+                                            <a href="#"
+                                                :title="$t('dearbook.group.general_info.see_more_members') + ' :: (+' + (group.total_group_user - maxGroupUsersIconsToList) + ')'">
                                                 <PlusIcon class="w-5 h-5" />
                                             </a>
                                         </div>
