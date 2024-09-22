@@ -78,7 +78,10 @@
     "You're logged in!": "¡Usted está conectado!",
     "Your email address is unverified.": "Su dirección de correo electrónico no está verificada.",
 
+    "OK": "Aceptar",
+    "Send": "Enviar",
     "current_language_code": "es",
     "About": "Acerca de",
-    "Information": "Información"
+    "Information": "Información",
+    "Profile of": "Perfil de :name"
 }

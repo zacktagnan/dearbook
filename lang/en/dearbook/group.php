@@ -50,10 +50,13 @@ return [
     'general_info' => [
         // 'x_members' => ':total members',
         'x_members' => '{0} :total members|{1} :total member|[2,*] :total members',
+        'title_list_members' => '{1} List member|[2,*] List members',
+        'group_by' => 'Group by',
         'type' => [
             'public' => 'Public group',
             'private' => 'Private group',
         ],
+        'see_more_members' => 'See more members',
     ],
 
     'tab_info' => [
@@ -88,5 +91,10 @@ return [
             'header' => 'Members',
             'admin_text' => 'is the group admin.',
         ],
+    ],
+
+    'delete_option' => [
+        'intro' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.',
+        'conformation' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
     ],
 ];

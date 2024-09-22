@@ -50,10 +50,13 @@ return [
     'general_info' => [
         // 'x_members' => ':total miembros',
         'x_members' => '{0} :total miembros|{1} :total miembro|[2,*] :total miembros',
+        'title_list_members' => '{1} Listar miembro|[2,*] Listar miembros',
+        'group_by' => 'Grupo de',
         'type' => [
             'public' => 'Grupo público',
             'private' => 'Grupo privado',
         ],
+        'see_more_members' => 'Ver más miembros',
     ],
 
     'tab_info' => [
@@ -88,5 +91,10 @@ return [
             'header' => 'Miembros',
             'admin_text' => 'es el administrador del grupo.',
         ],
+    ],
+
+    'delete_option' => [
+        'intro' => 'Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán de forma permanente. Antes de borrar su cuenta, por favor descargue cualquier dato o información que desee conservar.',
+        'conformation' => 'Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán de forma permanente. Ingrese su contraseña para confirmar que desea eliminar su cuenta de forma permanente.',
     ],
 ];
