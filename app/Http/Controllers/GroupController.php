@@ -11,12 +11,13 @@ use App\Http\Enums\GroupUserStatus;
 use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\StoreGroupRequest;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\UpdateGroupRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
+use App\Http\Requests\GroupDeleteRequest;
+use App\Http\Requests\GroupStoreRequest;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use App\Http\Requests\GroupUpdateRequest;
 
 class GroupController extends Controller
 {
@@ -50,7 +51,7 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreGroupRequest $request)
+    public function store(GroupStoreRequest $request)
     {
         $request->merge(['user_id' => $request->user()->id]);
         $group = Group::create($request->all());
@@ -83,11 +84,8 @@ class GroupController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateGroupRequest $request, Group $group)
+    public function update(GroupUpdateRequest $request, Group $group)
     {
-        // dump('request->all', $request->all());
-        // dump('group', $group);
-        // dd();
         $group->update($request->all());
 
         return Redirect::route('group.profile', [
@@ -96,11 +94,17 @@ class GroupController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the user's group.
      */
-    public function destroy(Group $group)
+    public function destroy(GroupDeleteRequest $request, Group $group): RedirectResponse
     {
-        //
+        $group->update([
+            'deleted_by' => $request->user()->id,
+        ]);
+
+        $group->delete();
+
+        return Redirect::to('/');
     }
 
     public function updateCoverImage(GroupCoverImageUpdateRequest $request): void

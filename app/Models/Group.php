@@ -28,6 +28,7 @@ class Group extends Model
         'user_id',
         'cover_path',
         'thumbnail_path',
+        'deleted_by',
     ];
 
     public function getSlugOptions(): SlugOptions
