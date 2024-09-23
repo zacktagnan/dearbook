@@ -415,7 +415,8 @@ const closeCropImageModal = () => {
                         </TabPanel>
 
                         <TabPanel :key="followers" class="">
-                            <Edit v-if="isAdminGroup" :group="group" />
+                            <Edit v-if="isAdminGroup" @callActiveShowNotification="activeShowNotification"
+                                :group="group" />
                             <Show v-else :group="group" />
                         </TabPanel>
 

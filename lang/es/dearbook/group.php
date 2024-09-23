@@ -28,6 +28,11 @@ return [
         'btn_init_creation' => 'Crear nuevo grupo',
         'btn_init_update' => 'Actualizar grupo',
         'btn_init_updated' => 'Actualizado.',
+        'extra' => [
+            'date_of_creation' => 'Fecha de creación:',
+            'created_by' => 'Creado por:',
+            'you' => 'tí',
+        ],
     ],
 
     'search' => [
@@ -94,7 +99,11 @@ return [
     ],
 
     'delete_option' => [
-        'intro' => 'Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán de forma permanente. Antes de borrar su cuenta, por favor descargue cualquier dato o información que desee conservar.',
-        'conformation' => 'Una vez que se elimine su cuenta, todos sus recursos y datos se eliminarán de forma permanente. Ingrese su contraseña para confirmar que desea eliminar su cuenta de forma permanente.',
+        'header' => 'Borrar grupo',
+        'intro' => 'Una vez que se elimine su grupo, todos sus recursos y datos se eliminarán de forma permanente. Antes de borrar su grupo, por favor, descargue cualquier dato o información que desee conservar.',
+        'confirmation' => [
+            'question' => '¿Está seguro que quiere eliminar su grupo?',
+            'text' => 'Una vez que se elimine su grupo, todos sus recursos y datos se eliminarán de forma permanente. Ingrese su contraseña para confirmar que desea eliminar su grupo de forma permanente.',
+        ],
     ],
 ];

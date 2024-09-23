@@ -83,7 +83,9 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                                 }) }} {{
                                     $t('dearbook.group.tab_info.info_block.features.history.description.2_3') }} <a
                                     :href="route('profile.index', { username: group.user.username })"
-                                    class="hover:underline font-medium" :title="'Perfil de ' + group.user.name">
+                                    class="hover:underline font-medium" :title="$t('Profile of', {
+                                        'name': group.user.name
+                                    })">
                                     <span v-if="group.user.id === user.id">{{
                                         $t('dearbook.group.tab_info.info_block.features.history.description.3_3')
                                     }}</span>

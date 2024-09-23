@@ -1,39 +1,30 @@
 <script setup>
-// import DeleteUserForm from "./Partials/DeleteUserForm.vue";
+import DeleteGroupForm from "./Partials/DeleteGroupForm.vue";
+import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
 // import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
-// import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
 
 defineProps({
-    status: {
-        type: String,
+    group: {
+        type: Object,
     },
 });
+
+const emit = defineEmits(['callActiveShowNotification',])
 </script>
 
 <template>
-    <div class="mt-2 space-y-6">
-        <div class="px-4 bg-white shadow md:px-8 sm:py-4 dark:bg-gray-800 sm:rounded-lg">
-            <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
-                {{ $t("About") }}
-            </h2>
-        </div>
-    </div>
-
-    <div class="mt-4 space-y-6">
+    <div class="md:w-[55%] mx-auto my-6 space-y-6">
         <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
-            <!-- <UpdateProfileInformationForm
-                :must-verify-email="mustVerifyEmail"
-                :status="status"
-                class="max-w-xl"
-            /> -->
+            <UpdateProfileInformationForm @callActiveShowNotification="$emit('callActiveShowNotification')"
+                :group="group" class="w-full" />
         </div>
 
-        <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
-            <!-- <UpdatePasswordForm class="max-w-xl" /> -->
-        </div>
+        <!-- <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
+            <UpdatePasswordForm class="max-w-xl" />
+        </div> -->
 
         <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
-            <!-- <DeleteUserForm class="max-w-xl" /> -->
+            <DeleteGroupForm :group="group" class="w-full" />
         </div>
     </div>
 </template>

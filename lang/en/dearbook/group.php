@@ -28,6 +28,11 @@ return [
         'btn_init_creation' => 'Create new group',
         'btn_init_update' => 'Update group',
         'btn_init_updated' => 'Updated.',
+        'extra' => [
+            'date_of_creation' => 'Date of creation:',
+            'created_by' => 'Created by:',
+            'you' => 'you',
+        ],
     ],
 
     'search' => [
@@ -94,7 +99,11 @@ return [
     ],
 
     'delete_option' => [
-        'intro' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.',
-        'conformation' => 'Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.',
+        'header' => 'Delete group',
+        'intro' => 'Once your group is deleted, all of its resources and data will be permanently deleted. Before deleting your group, please, download any data or information that you wish to retain.',
+        'confirmation' => [
+            'question' => 'Are you sure you want to delete your group?',
+            'text' => 'Once your group is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your group.',
+        ],
     ],
 ];

@@ -8,13 +8,14 @@ use App\Models\GroupUser;
 use Illuminate\Support\Str;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
-use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\StoreGroupRequest;
+use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\UpdateGroupRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
 
 class GroupController extends Controller
@@ -84,7 +85,14 @@ class GroupController extends Controller
      */
     public function update(UpdateGroupRequest $request, Group $group)
     {
-        //
+        // dump('request->all', $request->all());
+        // dump('group', $group);
+        // dd();
+        $group->update($request->all());
+
+        return Redirect::route('group.profile', [
+            'group' => $group->slug,
+        ])->with('success', 'Your group data has been updated successfully!');
     }
 
     /**
