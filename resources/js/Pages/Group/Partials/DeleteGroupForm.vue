@@ -29,7 +29,8 @@ const confirmUserDeletion = () => {
 
 const deleteGroup = () => {
     form.delete(route('group.destroy', props.group), {
-        preserveScroll: true,
+        // Aplicando solo el preserveScroll cuando se devuelvan errores de validación
+        preserveScroll: 'errors',
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
         onFinish: () => form.reset(),

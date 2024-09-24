@@ -1,7 +1,7 @@
 <script setup>
 import ResponsiveDropDownMenu from '@/Components/dearbook/ArchiveManagement/DropDownMenu/Index.vue'
-import NavBar from '@/Pages/ArchiveManagement/Partials/NavBar.vue'
-import ListItem from '@/Pages/ArchiveManagement/Partials/Item.vue'
+import NavBar from '@/Pages/ArchiveManagement/Partials/Post/NavBar.vue'
+import PostListItem from '@/Pages/ArchiveManagement/Partials/Post/Item.vue'
 import { computed, ref, onMounted } from 'vue';
 import { router, useForm } from "@inertiajs/vue3";
 
@@ -27,6 +27,7 @@ const postIdsForm = useForm({
     from: '',
 })
 
+const managementSection = 'posts'
 const managementType = 'trash'
 
 const navBarRef = ref(null)
@@ -191,7 +192,8 @@ defineExpose({ loadCurrentTrashedPosts, })
 
 <template>
     <div>
-        <ResponsiveDropDownMenu :management-type="managementType" @callLoadComponent="loadComponent" />
+        <ResponsiveDropDownMenu :management-section="managementSection" :management-type="managementType"
+            @callLoadComponent="loadComponent" />
 
         <NavBar ref="navBarRef" :button-disabled="buttonDisabled" :checked-ids-length="checkedIds.length"
             :management-type="managementType" @callCheckAll="checkAll" @callUnMarkAll="unMarkAll"
@@ -206,7 +208,7 @@ defineExpose({ loadCurrentTrashedPosts, })
             <div v-for="(postsPerDay, day) of posts" class="px-3 py-4 mt-4 bg-white rounded-lg">
                 <h4 class="ml-1.5 text-lg font-bold">{{ day }} <small>({{ postsPerDay.length }})</small></h4>
 
-                <ListItem v-for="(post, index) of postsPerDay" :post="post" :index="index" v-model="checkedIds"
+                <PostListItem v-for="(post, index) of postsPerDay" :post="post" :index="index" v-model="checkedIds"
                     @callCheckItem="checkItem" @callSubmitProcess="submitProcess" />
             </div>
         </template>

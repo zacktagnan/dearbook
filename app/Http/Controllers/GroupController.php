@@ -6,18 +6,19 @@ use Inertia\Inertia;
 use App\Models\Group;
 use App\Models\GroupUser;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
 use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\GroupStoreRequest;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\GroupDeleteRequest;
+use App\Http\Requests\GroupUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
-use App\Http\Requests\GroupDeleteRequest;
-use App\Http\Requests\GroupStoreRequest;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
-use App\Http\Requests\GroupUpdateRequest;
 
 class GroupController extends Controller
 {
@@ -28,8 +29,6 @@ class GroupController extends Controller
      */
     public function profile(Group $group, ?string $tabIndex = 'conversation')
     {
-        // dump('num', $num);
-        // dd();
         $group->load('currentGroupUser');
 
         $defaultIndex = match ($tabIndex) {
@@ -105,6 +104,48 @@ class GroupController extends Controller
         $group->delete();
 
         return Redirect::to('/');
+    }
+
+    public function restoreAllSelected(Request $request)
+    {
+        if ($request->checked_ids) {
+            $groupsToRestore = match ($request->from) {
+                // 'archive' => Group::onlyArchived()
+                //     ->whereIn('id', $request->checked_ids)
+                //     ->get(),
+                'trash' => Group::onlyTrashed()
+                    ->whereIn('id', $request->checked_ids)
+                    ->get(),
+            };
+
+            foreach ($groupsToRestore as $group) {
+                $this->applyRestoration($group, $request->from);
+            }
+        }
+
+        return back();
+    }
+
+    public function restore(int $id, string $from)
+    {
+        $group = match ($from) {
+            // 'archive' => Group::onlyArchived()->findOrFail($id),
+            'trash' => Group::onlyTrashed()->findOrFail($id),
+        };
+        $this->applyRestoration($group, $from);
+
+        return back();
+    }
+
+    public function applyRestoration(Group $group, string $from)
+    {
+        if ($group->user_id !== auth()->id()) {
+            return response("You don't have permission to PROCESS the Restoration of this group", Response::HTTP_FORBIDDEN);
+        }
+        match ($from) {
+            // 'archive' => $group->unArchive(),
+            'trash' => $group->restore(),
+        };
     }
 
     public function updateCoverImage(GroupCoverImageUpdateRequest $request): void

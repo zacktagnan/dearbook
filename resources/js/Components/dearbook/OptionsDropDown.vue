@@ -151,7 +151,8 @@ const emit = defineEmits([
                             </MenuItem>
                         </div>
 
-                        <div class="px-1 py-1">
+                        <!-- Momentáneamente, desactivado para cuando itemType === 'group' -->
+                        <div v-if="itemType !== 'group'" class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
                             <button @click="$emit('callForceDeleteItem')" :class="[
                                 active

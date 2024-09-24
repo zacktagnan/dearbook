@@ -22,11 +22,27 @@ return [
         ],
     ],
 
+    // 'menu' => [
+    //     'items' => [
+    //         'activity_log' => 'Activity Log',
+    //         'archive' => 'Archive',
+    //         'trash' => 'Recycle Bin',
+    //     ],
+    // ],
     'menu' => [
-        'items' => [
-            'activity_log' => 'Activity Log',
-            'archive' => 'Archive',
-            'trash' => 'Recycle Bin',
+        'posts' => [
+            'header' => 'Posts',
+            'items' => [
+                'activity_log' => 'Activity Log',
+                'archive' => 'Archive',
+                'trash' => 'Recycle Bin',
+            ],
+        ],
+        'groups' => [
+            'header' => 'Groups',
+            'items' => [
+                'trash' => 'Recycle Bin',
+            ],
         ],
     ],
 

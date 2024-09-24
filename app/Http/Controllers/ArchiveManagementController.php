@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Inertia\Inertia;
+use App\Models\Group;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -82,6 +83,24 @@ class ArchiveManagementController extends Controller
 
         return response()->json([
             'current_trashed_posts' => $this->trashedPostsCollection(),
+        ], Response::HTTP_OK);
+    }
+
+    public function trashedGroupsCollection(): Collection
+    {
+        // , 'archived_at'
+        return Group::with(['user'])->select('id', 'name', 'about', 'cover_path', 'thumbnail_path', 'user_id', 'deleted_by', 'deleted_at', 'created_at')
+            ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
+            ->onlyTrashed()->latest()
+            ->where('user_id', auth()->id())
+            ->get()
+            ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+    }
+
+    public function trashedGroups()
+    {
+        return response()->json([
+            'current_trashed_groups' => $this->trashedGroupsCollection(),
         ], Response::HTTP_OK);
     }
 

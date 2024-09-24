@@ -22,11 +22,27 @@ return [
         ],
     ],
 
+    // 'menu' => [
+    //     'items' => [
+    //         'activity_log' => 'Registro de Actividad',
+    //         'archive' => 'Archivo',
+    //         'trash' => 'Papelera',
+    //     ],
+    // ],
     'menu' => [
-        'items' => [
-            'activity_log' => 'Registro de Actividad',
-            'archive' => 'Archivo',
-            'trash' => 'Papelera',
+        'posts' => [
+            'header' => 'Publicaciones',
+            'items' => [
+                'activity_log' => 'Registro de Actividad',
+                'archive' => 'Archivo',
+                'trash' => 'Papelera',
+            ],
+        ],
+        'groups' => [
+            'header' => 'Grupos',
+            'items' => [
+                'trash' => 'Papelera',
+            ],
         ],
     ],
 

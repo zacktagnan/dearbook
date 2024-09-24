@@ -16,6 +16,8 @@ const emit = defineEmits(['callCheckItem', 'callSubmitProcess'])
 
 const authUser = usePage().props.auth.user;
 
+const itemType = 'post'
+
 const isPostAuthor = computed(
     () => authUser && authUser.id === props.post.user.id
 );
@@ -113,7 +115,7 @@ const getContentExcerpt = (content) => {
                 @callRestoreItemFromArchive="$emit('callSubmitProcess', 'restore_from_archive', post.id)"
                 @callRestoreItemFromTrash="$emit('callSubmitProcess', 'restore_from_trash', post.id)"
                 @callForceDeleteItem="$emit('callSubmitProcess', 'force_delete', post.id)"
-                :ellipsis-type-icon="'vertical'" :item-type="'post'" />
+                :ellipsis-type-icon="'vertical'" :item-type="itemType" />
         </div>
     </div>
 </template>

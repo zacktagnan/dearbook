@@ -5,31 +5,42 @@ import DropDownMenuItem from '@/Components/dearbook/ArchiveManagement/DropDownMe
 import { ref } from 'vue'
 
 defineProps({
+    managementSection: String,
     managementType: String,
 });
 
 const showingNavigationDropdown = ref(false);
 
-const menuItems = [
-    {
-        title: 'activity_log',
-        withMarginTop: false,
-        icon: ListBulletIcon,
-        componentName: 'ManageActivityLog',
-    },
-    {
-        title: 'archive',
-        withMarginTop: true,
-        icon: ArchiveBoxIcon,
-        componentName: 'ManageArchive',
-    },
-    {
-        title: 'trash',
-        withMarginTop: true,
-        icon: TrashIcon,
-        componentName: 'ManageTrash',
-    },
-]
+const menuItems = {
+    'posts': [
+        {
+            title: 'activity_log',
+            withMarginTop: false,
+            icon: ListBulletIcon,
+            componentName: 'ManagePostActivityLog',
+        },
+        {
+            title: 'archive',
+            withMarginTop: true,
+            icon: ArchiveBoxIcon,
+            componentName: 'ManagePostArchive',
+        },
+        {
+            title: 'trash',
+            withMarginTop: true,
+            icon: TrashIcon,
+            componentName: 'ManagePostTrash',
+        },
+    ],
+    'groups': [
+        {
+            title: 'trash',
+            withMarginTop: true,
+            icon: TrashIcon,
+            componentName: 'ManageGroupTrash',
+        },
+    ],
+}
 
 const emit = defineEmits(['callLoadComponent']);
 
@@ -45,8 +56,11 @@ const loadComponent = (componentName, showingNavigationDropdownValue) => {
         <div class="px-4 mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-between h-14">
                 <div class="flex">
-                    <h3 class="text-xl font-bold flex items-center">
-                        {{ $t('dearbook.archive_management.menu.items.' + managementType) }}
+                    <h3 class="text-xl font-bold flex gap-1 items-center">
+                        {{ $t('dearbook.archive_management.menu.posts.items.' + managementType) }}
+                        <span class="text-sm italic font-normal">
+                            ({{ $t('dearbook.archive_management.menu.' + managementSection + '.header') }})
+                        </span>
                     </h3>
                 </div>
 
@@ -75,16 +89,21 @@ const loadComponent = (componentName, showingNavigationDropdownValue) => {
         <div :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }" class="sm:hidden">
             <!-- Responsive Settings Options -->
             <div class="pt-1 pb-2 border-t border-gray-200 dark:border-gray-600">
-                <div class="mt-1">
-                    <DropDownMenuItem v-for="item of menuItems"
-                        :title="$t('dearbook.archive_management.menu.items.' + item.title)"
-                        :component-name="item.componentName" :class="{ 'mt-1': item.withMarginTop }"
-                        @callLoadComponent="loadComponent">
-                        <template #icon>
-                            <component :is="item.icon" class="w-4 h-4" />
-                        </template>
-                    </DropDownMenuItem>
-                </div>
+                <template v-for="(menuItem, index) of menuItems" :key="index">
+                    <h4 class="ml-5 mt-1.5 text-sm font-bold">
+                        {{ $t('dearbook.archive_management.menu.' + index + '.header') }}
+                    </h4>
+                    <div class="mt-0">
+                        <DropDownMenuItem v-for="item of menuItem"
+                            :title="$t('dearbook.archive_management.menu.' + index + '.items.' + item.title)"
+                            :component-name="item.componentName" :class="{ 'mt-1': item.withMarginTop }"
+                            @callLoadComponent="loadComponent">
+                            <template #icon>
+                                <component :is="item.icon" class="w-4 h-4" />
+                            </template>
+                        </DropDownMenuItem>
+                    </div>
+                </template>
             </div>
         </div>
     </div>

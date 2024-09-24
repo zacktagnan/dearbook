@@ -2,9 +2,10 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { Head, router, usePage } from "@inertiajs/vue3";
 import ArchiveMenuList from '@/Components/dearbook/ArchiveManagement/Menu/List.vue'
-import ManageActivityLog from '@/Pages/ArchiveManagement/ActivityLog.vue'
-import ManageArchive from '@/Pages/ArchiveManagement/Archive.vue'
-import ManageTrash from '@/Pages/ArchiveManagement/Trash.vue'
+import ManagePostActivityLog from '@/Pages/ArchiveManagement/Post/ActivityLog.vue'
+import ManagePostArchive from '@/Pages/ArchiveManagement/Post/Archive.vue'
+import ManagePostTrash from '@/Pages/ArchiveManagement/Post/Trash.vue'
+import ManageGroupTrash from '@/Pages/ArchiveManagement/Group/Trash.vue'
 import { onMounted, ref, shallowRef } from "vue";
 
 const props = defineProps({
@@ -14,9 +15,11 @@ const props = defineProps({
 });
 
 const componentList = {
-    'ManageActivityLog': ManageActivityLog,
-    'ManageArchive': ManageArchive,
-    'ManageTrash': ManageTrash,
+    'ManagePostActivityLog': ManagePostActivityLog,
+    'ManagePostArchive': ManagePostArchive,
+    'ManagePostTrash': ManagePostTrash,
+    // ------------------------------------------------
+    'ManageGroupTrash': ManageGroupTrash,
 }
 
 const selectedComponent = shallowRef(null)
@@ -138,17 +141,17 @@ const forceDeleting = () => {
 const reInitDataAfterProcess = (processType, from = '') => {
     if (processType === 'delete_all_selected') {
         if (from === 'activity_log') {
-            selectedComponent.value = componentList['ManageActivityLog']
-            archiveMenuListRef.value.setSelectedMenuItem('ManageActivityLog')
+            selectedComponent.value = componentList['ManagePostActivityLog']
+            archiveMenuListRef.value.setSelectedMenuItem('ManagePostActivityLog')
         }
         if (from === 'archive') {
-            selectedComponent.value = componentList['ManageArchive']
-            archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+            selectedComponent.value = componentList['ManagePostArchive']
+            archiveMenuListRef.value.setSelectedMenuItem('ManagePostArchive')
         }
     }
     else if (processType === 'force_delete_all_selected') {
-        selectedComponent.value = componentList['ManageTrash']
-        archiveMenuListRef.value.setSelectedMenuItem('ManageTrash')
+        selectedComponent.value = componentList['ManagePostTrash']
+        archiveMenuListRef.value.setSelectedMenuItem('ManagePostTrash')
     }
 
     activeShowNotification()
@@ -252,16 +255,16 @@ const notifyProcessEnding = (processType) => {
 onMounted(() => {
     // para procesos unitarios...
     if (props.success && props.success.from === 'trash') {
-        selectedComponent.value = componentList['ManageTrash']
-        archiveMenuListRef.value.setSelectedMenuItem('ManageTrash')
+        selectedComponent.value = componentList['ManagePostTrash']
+        archiveMenuListRef.value.setSelectedMenuItem('ManagePostTrash')
     }
     else if (props.success && props.success.from === 'archive') {
-        selectedComponent.value = componentList['ManageArchive']
-        archiveMenuListRef.value.setSelectedMenuItem('ManageArchive')
+        selectedComponent.value = componentList['ManagePostArchive']
+        archiveMenuListRef.value.setSelectedMenuItem('ManagePostArchive')
     }
     else if (props.success && props.success.from === 'activity_log') {
-        selectedComponent.value = componentList['ManageActivityLog']
-        archiveMenuListRef.value.setSelectedMenuItem('ManageActivityLog')
+        selectedComponent.value = componentList['ManagePostActivityLog']
+        archiveMenuListRef.value.setSelectedMenuItem('ManagePostActivityLog')
     }
 
     if (props.success) {
@@ -286,13 +289,13 @@ onMounted(() => {
             <div class="md:ml-[315px] px-4 md:px-20 pt-4 pb-4 lg:pt-5 lg:col-span-10">
                 <!-- Parte Central -->
                 <template v-if="success">
-                    <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
+                    <component :is="selectedComponent || ManagePostActivityLog" ref="componentRef"
                         @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding"
                         @callLoadComponent="loadComponent" />
                 </template>
                 <template v-else>
                     <KeepAlive>
-                        <component :is="selectedComponent || ManageActivityLog" ref="componentRef"
+                        <component :is="selectedComponent || ManagePostActivityLog" ref="componentRef"
                             @callConfirmProcess="showConfirmProcess" @callNotifyProcessEnding="notifyProcessEnding"
                             @callLoadComponent="loadComponent" />
                     </KeepAlive>

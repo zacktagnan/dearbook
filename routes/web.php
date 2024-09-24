@@ -60,6 +60,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/activity-log-posts', [ArchiveManagementController::class, 'activityLogPosts'])->name('activity-log-posts');
         Route::get('/archived-posts', [ArchiveManagementController::class, 'archivedPosts'])->name('archived-posts');
         Route::get('/trashed-posts', [ArchiveManagementController::class, 'trashedPosts'])->name('trashed-posts');
+
+        Route::get('/trashed-groups', [ArchiveManagementController::class, 'trashedGroups'])->name('trashed-groups');
+
         Route::get('/notify-process-ending/{processType}', [ArchiveManagementController::class, 'notifyProcessEnding'])->name('notify.process.ending');
     });
 
@@ -69,6 +72,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/update-thumbnail-image', [GroupController::class, 'updateThumbnailImage'])->name('update-thumbnail-image');
         Route::patch('{group}', [GroupController::class, 'update'])->name('update');
         Route::delete('{group}', [GroupController::class, 'destroy'])->name('destroy');
+
+        Route::get('/restore/{id}/{from}', [GroupController::class, 'restore'])->name('restore');
+        Route::post('/restore-all-selected', [GroupController::class, 'restoreAllSelected'])->name('restore-all-selected');
+        // Route::get('/force-destroy/{id}/{from}', [GroupController::class, 'forceDestroy'])->name('force-destroy');
+        // Route::post('/force-destroy-all-selected', [GroupController::class, 'forceDestroyAllSelected'])->name('force-destroy-all-selected');
+        // Route::get('/archive/{id}/{from}', [GroupController::class, 'archive'])->name('archive');
+        // Route::post('/archive-all-selected', [GroupController::class, 'archiveAllSelected'])->name('archive-all-selected');
     });
 });
 
