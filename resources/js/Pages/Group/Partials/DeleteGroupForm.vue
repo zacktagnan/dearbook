@@ -40,7 +40,8 @@ const deleteGroup = () => {
 const closeModal = () => {
     confirmingUserDeletion.value = false;
 
-    form.reset();
+    form.reset()
+    form.errors = []
 };
 </script>
 
