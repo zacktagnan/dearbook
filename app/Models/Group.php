@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Enums\GroupUserStatus;
 use App\Traits\CustomDateFormatting;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -45,7 +46,7 @@ class Group extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'group_users');
+        return $this->belongsToMany(User::class, 'group_users')->where('status', GroupUserStatus::APPROVED->value);
     }
 
     public function currentGroupUser(): HasOne
