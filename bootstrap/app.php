@@ -6,6 +6,9 @@ use Illuminate\Foundation\Application;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+// use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +25,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // No vale :: ini
+        // $exceptions->render(function (BadRequestHttpException $e, Request $request) {
+        //     return 'BadRequestHttpException';
+        //     // return Inertia::render('Errors/other')->toResponse($request)->setStatusCode($response->getStatusCode());
+        // });
+        // No vale :: fin
         $exceptions->respond(function (Response $response, Throwable $exception, Request $request) {
             // -> Para entornos de PRODUCTION...
             // if (! app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
@@ -40,13 +49,40 @@ return Application::configure(basePath: dirname(__DIR__))
 
             // ============================================================================================
 
-            $status = $response->getStatusCode();
+            // dump('getStatusCode', $response->getStatusCode());
+            // dump('exception', $exception);
+            // // dump('exception->message', 'Excepción: ' .  $exception->message);
+            // // dump('exception->previous', $exception->previous->message);
+            // dd();
 
-            return match ($status) {
-                401 => Inertia::render('Errors/401')->toResponse($request)->setStatusCode($status),
-                403 => Inertia::render('Errors/403')->toResponse($request)->setStatusCode($status),
-                404 => Inertia::render('Errors/404')->toResponse($request)->setStatusCode($status),
-                500, 503 => Inertia::render('Errors/500')->toResponse($request)->setStatusCode($status),
+            // Vale pero no del todo :: ini
+            // if ($exception instanceof BadRequestException || $exception instanceof BadRequestHttpException) {
+            //     return Inertia::render('Errors/other', [
+            //         // Así, se imprime el mensaje predeterminado de la excepción capturada
+            //         // pero no el mensaje personalizado pasado por el constructor
+            //         'status' => $response->getStatusCode() . $exception->getMessage(),
+            //     ])->toResponse($request)->setStatusCode($response->getStatusCode());
+            // }
+            // Vale pero no del todo :: fin
+
+            $statusCode = $response->getStatusCode();
+
+            return match ($statusCode) {
+                // 401 => Inertia::render('Errors/401')->toResponse($request)->setStatusCode($statusCode),
+                // 403 => Inertia::render('Errors/403')->toResponse($request)->setStatusCode($statusCode),
+                // 404 => Inertia::render('Errors/404')->toResponse($request)->setStatusCode($statusCode),
+                // 500, 503 => Inertia::render('Errors/500')->toResponse($request)->setStatusCode($statusCode),
+                // ----------------------------------------------------------------------------------------------------
+                // 401, 403, 404, 500, 503 => Inertia::render('Errors/' . $statusCode, [
+                //     'statusCode' => $statusCode,
+                // ])->toResponse($request)->setStatusCode($statusCode),
+                // ----------------------------------------------------------------------------------------------------
+                401, 403, 404, 503 => Inertia::render('Errors/ErrorCode', [
+                    'statusCode' => $statusCode,
+                ])->toResponse($request)->setStatusCode($statusCode),
+                500 => Inertia::render('Errors/ErrorCode', [
+                    'statusCode' => $statusCode,
+                ])->toResponse($request)->setStatusCode($statusCode),
                 419 => redirect()->back()->withErrors(['status' => __('The page expired, please try again.')]),
 
                 default => $response,

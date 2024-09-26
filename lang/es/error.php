@@ -27,4 +27,22 @@ return [
         'title' => 'Error 503 - Servicio No Disponible',
         'message' => 'Lo sentimos. Estamos realizando tareas de mantenimiento. Vuelva más tarde.',
     ],
+
+    'other' => [
+        'title_base' => 'Error :code - :text',
+        'type' => [
+            'token_not_valid' => [
+                'title' => 'Enlace no válido',
+                'message' => 'El enlace no es válido para el propósito al que estaba destinado.',
+            ],
+            'token_used' => [
+                'title' => 'Enlace ya empleado',
+                'message' => 'El enlace ya ha sido empleado en otro momento.',
+            ],
+            'token_expired' => [
+                'title' => 'Enlace expirado',
+                'message' => 'El enlace ha expirado y no sirve.',
+            ],
+        ],
+    ],
 ];

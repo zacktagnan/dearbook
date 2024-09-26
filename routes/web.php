@@ -79,6 +79,9 @@ Route::middleware('auth')->group(function () {
         // Route::post('/force-destroy-all-selected', [GroupController::class, 'forceDestroyAllSelected'])->name('force-destroy-all-selected');
         // Route::get('/archive/{id}/{from}', [GroupController::class, 'archive'])->name('archive');
         // Route::post('/archive-all-selected', [GroupController::class, 'archiveAllSelected'])->name('archive-all-selected');
+
+        Route::post('/invite-users/{group:slug}', [GroupController::class, 'inviteUsers'])->name('invite-users');
+        Route::get('/accept-invitation/{token}', [GroupController::class, 'acceptInvitation'])->name('accept-invitation');
     });
 });
 

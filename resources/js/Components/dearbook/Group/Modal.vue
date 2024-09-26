@@ -258,7 +258,7 @@ const processErrors = (errors) => {
                                 </div>
 
                                 <div class="flex p-[14px] gap-3">
-                                    <button type="button" :title="modalData.submitButtonText"
+                                    <button type="button" :title="$t('Cancel')"
                                         class="w-1/2 inline-flex justify-center px-4 py-2 font-medium bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-500 rounded-md text-sm text-gray-700 dark:text-gray-300 tracking-widest shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-25 transition ease-in-out duration-150"
                                         @click="closeModal">
                                         {{ $t('Cancel') }}

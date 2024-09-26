@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Inertia\Inertia;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -16,9 +17,13 @@ use App\Http\Requests\GroupStoreRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\GroupDeleteRequest;
 use App\Http\Requests\GroupUpdateRequest;
+use App\Http\Requests\InviteUsersRequest;
+use App\Notifications\InvitationToJoinGroup;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
+use App\Notifications\InvitationToJoinGroupApproved;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
 {
@@ -194,5 +199,87 @@ class GroupController extends Controller
         if (Storage::disk($this->fileDisk)->exists($imageFile)) {
             Storage::disk($this->fileDisk)->delete($imageFile);
         }
+    }
+
+    public function inviteUsers(InviteUsersRequest $request, Group $group): RedirectResponse
+    {
+        // Siempre que sea un groupUser con STATUS a PENDING...
+        if ($request->groupUser) {
+            $request->groupUser->delete();
+        }
+
+        $expirationTimeInHours = 24;
+        $token = Str::random(256);
+
+        GroupUser::create([
+            'status' => GroupUserStatus::PENDING->value,
+            'role' => GroupUserRole::USER->value,
+            'token' => $token,
+            'token_expires_at' => Carbon::now()->addHours($expirationTimeInHours),
+            'user_id' => $request->user->id, // User que se captura dentro de inviteUsersRequest
+            'group_id' => $group->id,
+            'created_by' => $request->user()->id, // User que ejecuta la petición, es decir, el ADMIN autenticado
+        ]);
+
+        $request->user->notify(new InvitationToJoinGroup($group, $request->user, $expirationTimeInHours, $token));
+
+        return back()->with('success', 'El usuario ' . $request->user->username . ' ha sido invitado a unirse al grupo "' . $group->name . '".');
+    }
+
+    public function acceptInvitation(string $token)
+    {
+        // $groupUser = GroupUser::where('token', '43210')
+        $groupUser = GroupUser::where('token', $token)
+            ->first();
+
+        $status = [];
+        $status['code'] = 400;
+        $status['title'] = '';
+
+        if (!$groupUser) {
+
+            // throw new BadRequestException('Token not valid');
+
+            // return Inertia::render('Errors/other', [
+            //     'posts' => $posts,
+            //     'groups' => GroupResource::collection($groups),
+            // ]);
+            $status['title'] = __('error.other.title_base', [
+                'code' => $status['code'],
+                'text' => __('error.other.type.token_not_valid.title'),
+            ]);
+            $status['message'] = __('error.other.type.token_not_valid.message');
+        } else if ($groupUser->token_uses_at || $groupUser->status === GroupUserStatus::APPROVED->value) {
+            $status['title'] = __('error.other.title_base', [
+                'code' => $status['code'],
+                'text' => __('error.other.type.token_used.title'),
+            ]);
+            $status['message'] = __('error.other.type.token_used.message');
+        } else if ($groupUser->token_expires_at < Carbon::now()) {
+            $status['title'] = __('error.other.title_base', [
+                'code' => $status['code'],
+                'text' => __('error.other.type.token_expired.title'),
+            ]);
+            $status['message'] = __('error.other.type.token_expired.message');
+        }
+
+        // return Inertia::render('Errors/other', [
+        //     'status' => $status,
+        // ]);
+        if ($status['title'] !== '') {
+            return Inertia::render('Errors/OtherError', compact('status'));
+        }
+
+        $groupUser->update([
+            'status' => GroupUserStatus::APPROVED->value,
+            'token_uses_at' => Carbon::now(),
+        ]);
+
+        $groupUser->userAdmin->notify(new InvitationToJoinGroupApproved($groupUser->group, $groupUser->user));
+
+        return redirect(route('group.profile', $groupUser->group))
+            ->with('success', __('', [
+                'group_name' => $groupUser->group->name,
+            ]));
     }
 }

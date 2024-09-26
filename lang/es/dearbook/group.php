@@ -35,6 +35,14 @@ return [
         ],
     ],
 
+    'form_invite_user' => [
+        'fields' => [
+            'username_or_email' => [
+                'placeholder' => 'Nombre de usuario o Email',
+            ],
+        ],
+    ],
+
     'search' => [
         'placeholder' => 'Teclea el grupo a buscar',
     ],
@@ -104,6 +112,24 @@ return [
         'confirmation' => [
             'question' => '¿Está seguro que quiere eliminar su grupo?',
             'text' => 'Una vez que se elimine su grupo, todos sus recursos y datos se eliminarán de forma permanente. Ingrese su contraseña para confirmar que desea eliminar su grupo de forma permanente.',
+        ],
+    ],
+
+    'mail' => [
+        'invitation_to_join_group' => [
+            'subject' => 'Invitación para unirse al grupo',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => ':admin_group te ha invitado a unirte al grupo ":group_name".',
+            'closing_phrase' => '¡¡Atención!!... El enlace expirará :num_hours horas después de recibir este mensaje.',
+            'btn_text' => 'Aceptar INVITACIÓN',
+        ],
+        'invitation_approved_by_user' => [
+            'subject' => 'Nuevo Miembro - Invitación aprobada por el usuario',
+            'greeting' => '¿Qué tal :admin_group?...',
+            'opening_phrase' => ':user_name ha aceptado unirse al grupo ":group_name" mediante la invitación que se le envió.',
+            'btn_text' => 'Acceder al GRUPO',
+
+            'notification' => 'Bienvenid@ a ":group_name", acabas de unirte por invitación.',
         ],
     ],
 ];

@@ -106,4 +106,21 @@ return [
             'text' => 'Once your group is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your group.',
         ],
     ],
+
+    'mail' => [
+        'invitation_to_join_group' => [
+            'subject' => 'Invitation to join group',
+            'greeting' => 'How are you :user_name?',
+            'opening_phrase' => ':admin_group has invited you to join the ":group_name" group.',
+            'closing_phrase' => 'Attention!!... The link will expire :num_hours hours after receiving this message.',
+            'btn_text' => 'Accept INVITATION',
+        ],
+        'invitation_approved_by_user' => [
+            'subject' => 'New Member - Invitation approved by the user',
+            'greeting' => 'What\'s up :admin_group?...',
+            'opening_phrase' => ':user_name has agreed to join the ":group_name" group via the invitation sent to him.',
+            'btn_text' => 'Access to GROUP',
+            'notification' => 'Welcome to ":group_name", you have just joined by invitation.',
+        ],
+    ],
 ];

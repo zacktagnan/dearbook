@@ -182,6 +182,15 @@ const showCropImageModal = () => {
 const closeCropImageModal = () => {
     showingCropImageModal.value = false;
 };
+
+// -----------------------------------------------
+
+import InviteUserModal from '@/Pages/Group/InviteUserModal.vue'
+
+const showingInviteUserModal = ref(false);
+const showInviteUserModal = () => {
+    showingInviteUserModal.value = true;
+};
 </script>
 
 <template>
@@ -345,7 +354,7 @@ const closeCropImageModal = () => {
                         </div>
 
                         <div class="flex gap-2 items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0 lg:mr-[47px]">
-                            <button v-if="isAdminGroup"
+                            <button v-if="isAdminGroup" @click="showInviteUserModal"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Invitar usuarios">
                                 <UserPlusIcon class="w-5 h-5 mr-1" />
@@ -440,5 +449,8 @@ const closeCropImageModal = () => {
             <CropperIndex @callCloseCropImageModal="closeCropImageModal"
                 @callActiveShowNotification="activeShowNotification" :group="group" />
         </Modal>
+
+        <InviteUserModal :group="group" v-model="showingInviteUserModal"
+            @callActiveShowNotification="activeShowNotification" />
     </AuthenticatedLayout>
 </template>

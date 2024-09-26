@@ -27,4 +27,22 @@ return [
         'title' => 'Error 503 - Service Unavailable',
         'message' => 'Sorry. We are doing some maintenance. Please check back soon.',
     ],
+
+    'other' => [
+        'title_base' => 'Error :code - :text',
+        'type' => [
+            'token_not_valid' => [
+                'title' => 'Link no valid',
+                'message' => 'The link is not valid for the purpose for which it was intended.',
+            ],
+            'token_used' => [
+                'title' => 'Link already used',
+                'message' => 'The link has already been used at another time.',
+            ],
+            'token_expired' => [
+                'title' => 'Link expired',
+                'message' => 'The link has expired and is no longer useful.',
+            ],
+        ],
+    ],
 ];
