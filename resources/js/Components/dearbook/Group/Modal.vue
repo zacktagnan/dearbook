@@ -30,7 +30,7 @@ const props = defineProps({
 
 const groupForm = useForm({
     name: "",
-    auto_approval: true,
+    auto_approval: false,
     type: "public",
     about: "",
     // _method: "POST",
@@ -75,6 +75,22 @@ const emit = defineEmits(["update:modelValue", "callGroupCreated", "callActiveSh
 //         deep: true,
 //     }
 // );
+
+const autoApprovalGroupRef = ref(null)
+const autoApprovalDisabled = ref(false)
+
+const autoApprovalToFalseAndDisable = (disable) => {
+    // groupForm.auto_approval = disable
+    autoApprovalDisabled.value = !disable
+    if (autoApprovalDisabled.value) {
+        groupForm.auto_approval = false
+        // autoApprovalGroupRef.value.checked = false
+    }
+    console.log('================================================')
+    console.log('groupForm.type', groupForm.type)
+    console.log('autoApprovalDisabled', autoApprovalDisabled.value)
+    console.log('groupForm.auto_approval', groupForm.auto_approval)
+}
 
 const closeModal = () => {
     show.value = false;
@@ -226,21 +242,29 @@ const processErrors = (errors) => {
 
 
                                 <div class="flex justify-center gap-11 px-[14px] mt-5">
-                                    <label class="flex items-center whitespace-nowrap">
-                                        <Checkbox v-model:checked="groupForm.auto_approval" />
-                                        <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                                    <label disabled class="flex items-center whitespace-nowrap">
+                                        <Checkbox ref="autoApprovalGroupRef" class="disabled:bg-gray-100"
+                                            :disabled="autoApprovalDisabled"
+                                            v-model:checked="groupForm.auto_approval" />
+                                        <span :class="[
+                                            autoApprovalDisabled
+                                                ? 'text-gray-400'
+                                                : 'text-gray-600'
+                                        ]" class="text-sm ms-2 dark:text-gray-400">{{
                                             $t('dearbook.group.form.fields.auto_approval.label') }}</span>
                                     </label>
 
                                     <div class="flex gap-4">
                                         <label class="flex items-center">
-                                            <Radiobutton v-model:checked="groupForm.type" :value="'public'" />
+                                            <Radiobutton @change="autoApprovalToFalseAndDisable(true)"
+                                                v-model:checked="groupForm.type" :value="'public'" />
                                             <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
                                                 $t('dearbook.group.form.fields.type.label.public') }}</span>
                                         </label>
 
                                         <label class="flex items-center">
-                                            <Radiobutton v-model:checked="groupForm.type" :value="'private'" />
+                                            <Radiobutton @change="autoApprovalToFalseAndDisable(false)"
+                                                v-model:checked="groupForm.type" :value="'private'" />
                                             <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
                                                 $t('dearbook.group.form.fields.type.label.private') }}</span>
                                         </label>
