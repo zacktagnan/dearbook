@@ -151,6 +151,12 @@ class GroupController extends Controller
             // 'archive' => $group->unArchive(),
             'trash' => $group->restore(),
         };
+
+        if ($from === 'trash') {
+            $group->update([
+                'deleted_by' => null,
+            ]);
+        }
     }
 
     public function updateCoverImage(GroupCoverImageUpdateRequest $request): void
