@@ -8,6 +8,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import PublicAccessIcon from '@/Components/Icons/PublicAccess.vue'
 import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
+import PendingRequestIcon from '@/Components/Icons/PendingRequest.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
@@ -34,7 +35,8 @@ const props = defineProps({
 // const isMyGroupProfile = computed(() => authUser && authUser.id === props.group.user.id);
 // o
 const isAdminGroup = computed(() => props.group.role === 'admin');
-const isUserGroup = computed(() => props.group.role === 'user')
+const isUserGroup = computed(() => props.group.role === 'user' && props.group.status === 'approved')
+const isUserGroupPending = computed(() => props.group.role === 'user' && props.group.status === 'pending')
 const isNotMemberAndGroupAutoApproval = computed(() => !props.group.role && props.group.auto_approval)
 const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !props.group.auto_approval)
 const isPrivateGroup = computed(() => props.group.type === 'private');
@@ -378,6 +380,13 @@ const showInviteUserModal = () => {
                                 <UserGroupIcon class="w-5 h-5 mr-1" />
                                 Detalles de Miembro
                             </button>
+                            <div v-if="isUserGroupPending"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest transition ease-in-out duration-150"
+                                title="Solicitud Pendiente de Aprobación">
+                                <PendingRequestIcon class-content="w-5 h-5 mr-1"
+                                        fill-content="#ffffff" />
+                                Solicitud Pendiente de Aprobación
+                            </div>
                             <PrimaryButton v-if="isAdminGroup" @click="asignSelectedIndex(1)"
                                 class="bg-cyan-600 hover:bg-cyan-500" title="Editar">
                                 <PencilSquareIcon class="w-5 h-5 mr-1" />
