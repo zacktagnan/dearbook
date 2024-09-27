@@ -107,20 +107,28 @@ return [
         ],
     ],
 
-    'mail' => [
-        'invitation_to_join_group' => [
-            'subject' => 'Invitation to join group',
-            'greeting' => 'How are you :user_name?',
-            'opening_phrase' => ':admin_group has invited you to join the ":group_name" group.',
-            'closing_phrase' => 'Attention!!... The link will expire :num_hours hours after receiving this message.',
-            'btn_text' => 'Accept INVITATION',
-        ],
-        'invitation_approved_by_user' => [
-            'subject' => 'New Member - Invitation approved by the user',
-            'greeting' => 'What\'s up :admin_group?...',
-            'opening_phrase' => ':user_name has agreed to join the ":group_name" group via the invitation sent to him.',
-            'btn_text' => 'Access to GROUP',
+    'process_to_join' => [
+        'by_invitation' => [
+            'mailing' => [
+                'invitation_to_join_group' => [
+                    'subject' => 'Invitation to join group',
+                    'greeting' => 'How are you :user_name?',
+                    'opening_phrase' => ':admin_group has invited you to join the ":group_name" group.',
+                    'closing_phrase' => 'Attention!!... The link will expire :num_hours hours after receiving this message.',
+                    'btn_text' => 'Accept INVITATION',
+                ],
+                'invitation_approved_by_user' => [
+                    'subject' => 'New Member - Invitation approved by the user',
+                    'greeting' => 'What\'s up :admin_group?...',
+                    'opening_phrase' => ':user_name has agreed to join the ":group_name" group via the invitation sent to him.',
+                    'btn_text' => 'Access to GROUP',
+                ],
+            ],
             'notification' => 'Welcome to ":group_name", you have just joined by invitation.',
         ],
+        'by_auto_join' => [
+            'notification' => 'Welcome to ":group_name" ... good decision on your part.',
+        ],
+        'by_request' => [],
     ],
 ];

@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/invite-users/{group:slug}', [GroupController::class, 'inviteUsers'])->name('invite-users');
         Route::get('/accept-invitation/{token}', [GroupController::class, 'acceptInvitation'])->name('accept-invitation');
+        Route::post('/join/{group:slug}', [GroupController::class, 'join'])->name('join');
+        Route::post('/request-join/{group:slug}', [GroupController::class, 'requestJoin'])->name('request-join');
     });
 });
 

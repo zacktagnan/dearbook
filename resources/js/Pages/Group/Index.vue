@@ -193,6 +193,14 @@ const showingInviteUserModal = ref(false);
 const showInviteUserModal = () => {
     showingInviteUserModal.value = true;
 };
+
+const joinToGroup = () => {
+    const joinForm = useForm({})
+
+    joinForm.post(route('group.join', props.group.slug))
+}
+
+const requestJoinToGroup = () => { }
 </script>
 
 <template>
@@ -362,13 +370,13 @@ const showInviteUserModal = () => {
                                 <UserPlusIcon class="w-5 h-5 mr-1" />
                                 Invitar
                             </button>
-                            <button v-if="isNotMemberAndGroupAutoApproval"
+                            <button v-if="isNotMemberAndGroupAutoApproval" @click="joinToGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Unirte al grupo">
                                 <UserGroupIcon class="w-5 h-5 mr-1" />
                                 Unirte al grupo
                             </button>
-                            <button v-if="isNotMemberAndGroupNotAutoApproval"
+                            <button v-if="isNotMemberAndGroupNotAutoApproval" @click="requestJoinToGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Solicitar unirte al grupo">
                                 <UserGroupIcon class="w-5 h-5 mr-1" />
@@ -383,8 +391,7 @@ const showInviteUserModal = () => {
                             <div v-if="isUserGroupPending"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest transition ease-in-out duration-150"
                                 title="Solicitud Pendiente de Aprobación">
-                                <PendingRequestIcon class-content="w-5 h-5 mr-1"
-                                        fill-content="#ffffff" />
+                                <PendingRequestIcon class-content="w-5 h-5 mr-1" fill-content="#ffffff" />
                                 Solicitud Pendiente de Aprobación
                             </div>
                             <PrimaryButton v-if="isAdminGroup" @click="asignSelectedIndex(1)"

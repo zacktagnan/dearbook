@@ -284,8 +284,40 @@ class GroupController extends Controller
         $groupUser->userAdmin->notify(new InvitationToJoinGroupApproved($groupUser->group, $groupUser->user));
 
         return redirect(route('group.profile', $groupUser->group))
-            ->with('success', __('', [
+            ->with('success', __('dearbook/group.process_to_join.by_invitation.notification', [
                 'group_name' => $groupUser->group->name,
             ]));
+    }
+
+    public function join(Request $request, Group $group)
+    {
+        // $request->user();
+
+        GroupUser::create([
+            'status' => GroupUserStatus::APPROVED->value,
+            'role' => GroupUserRole::USER->value,
+            'user_id' => $request->user()->id, // User que se captura dentro de inviteUsersRequest
+            'group_id' => $group->id,
+            'created_by' => $request->user()->id,
+            // En este caso, el propio User es el que realiza el ingreso en el Group
+        ]);
+
+        return back()->with('success', __('dearbook/group.process_to_join.by_auto_join.notification', [
+            'group_name' => $group->name,
+        ]));
+    }
+
+    public function requestJoin(Request $request, Group $group)
+    {
+        // $request->user();
+
+        GroupUser::create([
+            'status' => GroupUserStatus::PENDING->value,
+            'role' => GroupUserRole::USER->value,
+            'user_id' => $request->user()->id, // User que se captura dentro de inviteUsersRequest
+            'group_id' => $group->id,
+            'created_by' => $request->user()->id,
+            // En este caso, el propio User que realiza el ingreso en el Group, quedando PENDING de ser aprobado
+        ]);
     }
 }

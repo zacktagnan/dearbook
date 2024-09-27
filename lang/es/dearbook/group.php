@@ -115,21 +115,28 @@ return [
         ],
     ],
 
-    'mail' => [
-        'invitation_to_join_group' => [
-            'subject' => 'Invitación para unirse al grupo',
-            'greeting' => '¿Qué tal :user_name?...',
-            'opening_phrase' => ':admin_group te ha invitado a unirte al grupo ":group_name".',
-            'closing_phrase' => '¡¡Atención!!... El enlace expirará :num_hours horas después de recibir este mensaje.',
-            'btn_text' => 'Aceptar INVITACIÓN',
-        ],
-        'invitation_approved_by_user' => [
-            'subject' => 'Nuevo Miembro - Invitación aprobada por el usuario',
-            'greeting' => '¿Qué tal :admin_group?...',
-            'opening_phrase' => ':user_name ha aceptado unirse al grupo ":group_name" mediante la invitación que se le envió.',
-            'btn_text' => 'Acceder al GRUPO',
-
+    'process_to_join' => [
+        'by_invitation' => [
+            'mailing' => [
+                'invitation_to_join_group' => [
+                    'subject' => 'Invitación para unirse al grupo',
+                    'greeting' => '¿Qué tal :user_name?...',
+                    'opening_phrase' => ':admin_group te ha invitado a unirte al grupo ":group_name".',
+                    'closing_phrase' => '¡¡Atención!!... El enlace expirará :num_hours horas después de recibir este mensaje.',
+                    'btn_text' => 'Aceptar INVITACIÓN',
+                ],
+                'invitation_approved_by_user' => [
+                    'subject' => 'Nuevo Miembro - Invitación aprobada por el usuario',
+                    'greeting' => '¿Qué tal :admin_group?...',
+                    'opening_phrase' => ':user_name ha aceptado unirse al grupo ":group_name" mediante la invitación que se le envió.',
+                    'btn_text' => 'Acceder al GRUPO',
+                ],
+            ],
             'notification' => 'Bienvenid@ a ":group_name", acabas de unirte por invitación.',
         ],
+        'by_auto_join' => [
+            'notification' => 'Bienvenid@ a ":group_name" ... buena decisión la tuya.',
+        ],
+        'by_request' => [],
     ],
 ];
