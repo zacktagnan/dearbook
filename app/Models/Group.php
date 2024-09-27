@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
 use App\Traits\CustomDateFormatting;
 use Spatie\Sluggable\HasSlug;
@@ -68,5 +69,12 @@ class Group extends Model
     public function isAdminOfTheGroup(int $userId): bool
     {
         return $this->currentGroupUser->user_id === $userId;
+    }
+
+    public function adminsGroup(): BelongsToMany
+    {
+        // return $this->belongsToMany(User::class, 'group_users')->wherePivot('role', GroupUserRole::ADMIN->value);
+        // o con un WHERE simple
+        return $this->belongsToMany(User::class, 'group_users')->where('role', GroupUserRole::ADMIN->value);
     }
 }

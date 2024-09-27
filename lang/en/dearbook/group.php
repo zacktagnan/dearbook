@@ -129,6 +129,16 @@ return [
         'by_auto_join' => [
             'notification' => 'Welcome to ":group_name" ... good decision on your part.',
         ],
-        'by_request' => [],
+        'by_request' => [
+            'mailing' => [
+                'request_to_join_group' => [
+                    'subject' => 'Request to join group',
+                    'greeting' => 'What\'s up :admin_group?...',
+                    'opening_phrase' => ':user_name has requested to join the group ":group_name".',
+                    'btn_text' => 'Approve REQUEST',
+                ],
+            ],
+            'notification' => 'Request sended. You will receive an email when it be approved.',
+        ],
     ],
 ];

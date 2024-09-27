@@ -137,6 +137,16 @@ return [
         'by_auto_join' => [
             'notification' => 'Bienvenid@ a ":group_name" ... buena decisión la tuya.',
         ],
-        'by_request' => [],
+        'by_request' => [
+            'mailing' => [
+                'request_to_join_group' => [
+                    'subject' => 'Solicitud para unirse al grupo',
+                    'greeting' => '¿Qué tal :admin_group?...',
+                    'opening_phrase' => ':user_name ha solicitado unirse al grupo ":group_name".',
+                    'btn_text' => 'Aprobar SOLICITUD',
+                ],
+            ],
+            'notification' => 'Solicitud enviada. Recibirás un email cuando sea aprobada.',
+        ],
     ],
 ];

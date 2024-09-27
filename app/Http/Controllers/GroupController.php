@@ -23,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use App\Notifications\RequestToJoinGroup;
+use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
@@ -291,8 +293,6 @@ class GroupController extends Controller
 
     public function join(Request $request, Group $group)
     {
-        // $request->user();
-
         GroupUser::create([
             'status' => GroupUserStatus::APPROVED->value,
             'role' => GroupUserRole::USER->value,
@@ -309,8 +309,6 @@ class GroupController extends Controller
 
     public function requestJoin(Request $request, Group $group)
     {
-        // $request->user();
-
         GroupUser::create([
             'status' => GroupUserStatus::PENDING->value,
             'role' => GroupUserRole::USER->value,
@@ -319,5 +317,9 @@ class GroupController extends Controller
             'created_by' => $request->user()->id,
             // En este caso, el propio User que realiza el ingreso en el Group, quedando PENDING de ser aprobado
         ]);
+
+        Notification::send($group->adminsGroup, new RequestToJoinGroup($group, $request->user()));
+
+        return back()->with('success', __('dearbook/group.process_to_join.by_request.notification'));
     }
 }

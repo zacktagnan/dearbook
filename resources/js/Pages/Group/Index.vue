@@ -200,7 +200,11 @@ const joinToGroup = () => {
     joinForm.post(route('group.join', props.group.slug))
 }
 
-const requestJoinToGroup = () => { }
+const requestJoinToGroup = () => {
+    const joinForm = useForm({})
+
+    joinForm.post(route('group.request-join', props.group.slug))
+}
 </script>
 
 <template>

@@ -2,10 +2,12 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
+use App\Models\Group;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
 class RequestToJoinGroup extends Notification
 {
@@ -14,7 +16,7 @@ class RequestToJoinGroup extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(public Group $group, public User $userRequesting)
     {
         //
     }
@@ -35,9 +37,18 @@ class RequestToJoinGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.subject'))
+            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->line(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.greeting', [
+                'admin_group' => $this->group->user->name,
+            ]))
+            ->line(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.opening_phrase', [
+                'user_name' => $this->userRequesting->name,
+                'group_name' => $this->group->name,
+            ]))
+            ->action(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.btn_text'), route('group.profile', [
+                'group' => $this->group->slug,
+            ]));
     }
 
     /**
