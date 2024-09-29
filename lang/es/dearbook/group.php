@@ -29,8 +29,8 @@ return [
         'btn_init_update' => 'Actualizar grupo',
         'btn_init_updated' => 'Actualizado.',
         'extra' => [
-            'date_of_creation' => 'Fecha de creación:',
-            'created_by' => 'Creado por:',
+            'date_of_creation' => 'Día de creación:',
+            'created_by' => 'Por:',
             'you' => 'tí',
         ],
     ],

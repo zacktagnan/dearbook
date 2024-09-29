@@ -58,7 +58,7 @@ const submitUpdate = () => {
                 <InputError class="mt-2" :message="groupForm.errors.name || groupForm.errors.name_unique" />
             </div>
 
-            <div class="flex justify-center gap-28">
+            <div class="flex flex-col md:flex-row items-center md:justify-center gap-4 md:gap-14 lg:gap-28">
                 <div class="flex items-center gap-3">
                     <InputLabel for="auto_approval" :value="$t('dearbook.group.form.fields.auto_approval.label')" />
                     <Checkbox id="auto_approval" v-model:checked="groupForm.auto_approval" />
@@ -84,7 +84,7 @@ const submitUpdate = () => {
                 <InputError class="mt-2" :message="groupForm.errors.about" />
             </div>
 
-            <div class="flex justify-between">
+            <div class="flex flex-col md:flex-row md:justify-between mx-auto md:mx-0 w-3/4 md:w-full">
                 <div class="flex gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <div class="font-medium">{{ $t('dearbook.group.form.extra.date_of_creation') }}</div>
                     <div>{{ group.created_at_formatted }}</div>
