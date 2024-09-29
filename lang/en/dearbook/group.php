@@ -39,6 +39,10 @@ return [
         'placeholder' => 'Type the group to search',
     ],
 
+    'search_inside_profile' => [
+        'placeholder' => 'Type a member name to search',
+    ],
+
     'list' => [
         'no_registers' => 'You are not joined to any group.',
         'no_description' => 'Description not available yet.',
@@ -50,6 +54,14 @@ return [
                 'pending' => 'Request pending to be approval',
             ],
         ],
+    ],
+
+    'list_members' => [
+        'no_registers' => 'No members yet.',
+    ],
+
+    'list_requests' => [
+        'no_registers' => 'No requests pending.',
     ],
 
     'general_info' => [
@@ -139,6 +151,22 @@ return [
                 ],
             ],
             'notification' => 'Request sended. You will receive an email when it be approved.',
+        ],
+        'request_approved_or_not' => [
+            'decision' => [
+                'approved' => 'approved',
+                'rejected' => 'rejected',
+            ],
+            'mailing' => [
+                'request_approved_or_not' => [
+                    'subject' => 'Request to join group',
+                    'greeting' => 'What\'s up :user_name?...',
+                    'opening_phrase' => 'Your request to join the group ":group_name" was :status.',
+                    'closing_phrase' => 'Sorry.',
+                    'btn_text' => 'Access to GROUP',
+                ],
+            ],
+            'notification' => 'The ":user_name" request was :status.',
         ],
     ],
 ];

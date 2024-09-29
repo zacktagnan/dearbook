@@ -55,10 +55,11 @@ class GroupResource extends JsonResource
 
             // 'total_group_user' => count($this->allGroupUser), //OK
             // 'all_group_users' => UserResource::collection($this->allGroupUser),
+            // Esta relación da todos los miembros sea cuál sea su STATUS (APPROVED, PENDING, REJECTED o el que sea)
             // 'all_group_users' => $this->allGroupUser,
             // ------------------------------------------------------------------------------
-            'total_group_user' => count($this->users),
-            'all_group_users' => UserResource::collection($this->users),
+            'total_group_user' => count($this->members),
+            'all_group_users' => UserResource::collection($this->members()->orderBy('role')->orderBy('name')->get()),
 
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,

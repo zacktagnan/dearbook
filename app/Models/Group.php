@@ -45,9 +45,14 @@ class Group extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function users(): BelongsToMany
+    public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'group_users')->where('status', GroupUserStatus::APPROVED->value);
+    }
+
+    public function requestsPending(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'group_users')->where('status', GroupUserStatus::PENDING->value);
     }
 
     public function currentGroupUser(): HasOne

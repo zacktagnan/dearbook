@@ -1,9 +1,13 @@
 <script setup>
-import FollowingItem from '@/Components/dearbook/Following/Item.vue';
+import UserItem from '@/Components/dearbook/User/Item.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
 const searchKeyword = ref('')
+
+// TEMPORAL
+import { usePage } from "@inertiajs/vue3";
+const authUser = usePage().props.auth.user;
 </script>
 
 <template>
@@ -18,16 +22,17 @@ const searchKeyword = ref('')
         </div>
 
         <div v-else>
-            <FollowingItem image="https://picsum.photos/100" title="Pol Niuman" :class="{ 'mt-1': false }" />
-            <FollowingItem image="https://picsum.photos/100" title="Rover Redfor" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
-            <FollowingItem image="https://picsum.photos/100" title="Catarine Ross" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': false }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
         </div>
     </div>
 </template>

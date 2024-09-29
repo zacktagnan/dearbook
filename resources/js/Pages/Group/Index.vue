@@ -10,9 +10,11 @@ import PublicAccessIcon from '@/Components/Icons/PublicAccess.vue'
 import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import PendingRequestIcon from '@/Components/Icons/PendingRequest.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
+import TextInput from '@/Components/TextInput.vue'
+import UserItem from '@/Components/dearbook/User/Item.vue'
 
 const props = defineProps({
     errors: Object,
@@ -29,6 +31,7 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
+    requestsPending: Array,
 });
 
 // const authUser = usePage().props.auth.user;
@@ -38,12 +41,15 @@ const isAdminGroup = computed(() => props.group.role === 'admin');
 // const isUserGroup = computed(() => props.group.role === 'user' && props.group.status === 'approved')
 const isMemberGroup = computed(() => props.group.role && props.group.status === 'approved')
 const isUserGroupPending = computed(() => props.group.role === 'user' && props.group.status === 'pending')
+const isUserGroupRejected = computed(() => props.group.role === 'user' && props.group.status === 'rejected')
 const isNotMemberAndGroupAutoApproval = computed(() => !props.group.role && props.group.auto_approval)
 const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !props.group.auto_approval)
 const isPrivateGroup = computed(() => props.group.type === 'private')
 const isAutoApprovalGroup = computed(() => props.group.auto_approval);
 
 const maxGroupUsersIconsToList = 5
+
+const searchKeyword = ref('')
 
 const zIndex = ref(20)
 // const loadZIndex = () => {
@@ -206,6 +212,24 @@ const requestJoinToGroup = () => {
     const joinForm = useForm({})
 
     joinForm.post(route('group.request-join', props.group.slug))
+}
+
+const approveUser = (user) => {
+    const form = useForm({
+        user_id: user.id,
+        action: 'approved',
+    })
+
+    form.post(route('group.request-approve-or-not', props.group.slug))
+}
+
+const rejectUser = (user) => {
+    const form = useForm({
+        user_id: user.id,
+        action: 'rejected',
+    })
+
+    form.post(route('group.request-approve-or-not', props.group.slug))
 }
 </script>
 
@@ -373,38 +397,44 @@ const requestJoinToGroup = () => {
                             <button v-if="isNotMemberAndGroupAutoApproval" @click="joinToGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Unirte al grupo">
-                                <UserGroupIcon class="w-5 h-5 mr-1" />
-                                Unirte al grupo
+                                <UserGroupIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Unirte al grupo</span>
                             </button>
                             <button v-if="isNotMemberAndGroupNotAutoApproval" @click="requestJoinToGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Solicitar unirte al grupo">
-                                <UserGroupIcon class="w-5 h-5 mr-1" />
-                                Solicitar unirte al grupo
+                                <UserGroupIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Solicitar unirte al grupo</span>
                             </button>
                             <div v-if="isUserGroupPending"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest transition ease-in-out duration-150"
                                 title="Solicitud Pendiente de Aprobación">
-                                <PendingRequestIcon class-content="w-5 h-5 mr-1" fill-content="#ffffff" />
-                                Solicitud Pendiente de Aprobación
+                                <PendingRequestIcon class-content="w-5 h-5 md:mr-1" fill-content="#ffffff" />
+                                <span class="hidden md:block">Solicitud Pendiente de Aprobación</span>
+                            </div>
+                            <div v-if="isUserGroupRejected"
+                                class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-gray-400 dark:bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-400 uppercase tracking-widest transition ease-in-out duration-150"
+                                title="Solicitud Rechazada">
+                                <ArrowLeftStartOnRectangleIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Solicitud Rechazada</span>
                             </div>
                             <button v-if="isMemberGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Detalles de Miembro">
-                                <UserGroupIcon class="w-5 h-5 mr-1" />
-                                Detalles de Miembro
+                                <UserGroupIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Detalles de Miembro</span>
                             </button>
 
                             <div v-if="isAdminGroup" class="w-0.5 h-9 bg-[#0099ce]" />
 
                             <PrimaryButton v-if="isAdminGroup" @click="showInviteUserModal" title="Invitar usuarios">
-                                <UserPlusIcon class="w-5 h-5 mr-1" />
-                                Invitar
+                                <UserPlusIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Invitar</span>
                             </PrimaryButton>
                             <PrimaryButton v-if="isAdminGroup" @click="asignSelectedIndex(1)"
                                 title="Editar perfil de grupo">
-                                <PencilSquareIcon class="w-5 h-5 mr-1" />
-                                Editar
+                                <PencilSquareIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Editar</span>
                             </PrimaryButton>
                         </div>
                     </div>
@@ -457,13 +487,44 @@ const requestJoinToGroup = () => {
                         </TabPanel>
 
                         <template v-if="isMemberGroup || !isPrivateGroup">
-                            <TabPanel :key="followers" class="p-3 bg-white shadow">
-                                Contenido de Miembros
+                            <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                                <TextInput class="w-full" :model-value="searchKeyword"
+                                    :placeholder="$t('dearbook.group.search_inside_profile.placeholder')" />
+                                <div v-if="group.all_group_users.length" class="grid gap-3 mt-3">
+                                    <UserItem v-for="member of group.all_group_users" :user="member"
+                                        :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+                                        :key="member.id" />
+                                </div>
+                                <div v-else>
+                                    <p class="w-full text-center">
+                                        {{ $t('dearbook.group.list_members.no_registers') }}
+                                    </p>
+                                </div>
                             </TabPanel>
 
-                            <TabPanel :key="followers" v-if="isAdminGroup && !isAutoApprovalGroup"
-                                class="p-3 bg-white shadow">
-                                Contenido de Solicitudes
+                            <TabPanel v-if="isAdminGroup && !isAutoApprovalGroup"
+                                class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                                <div v-if="requestsPending.length" class="grid md:grid-cols-2 gap-3">
+                                    <UserItem v-for="user of requestsPending" :user="user"
+                                        :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+                                        :key="user.id">
+                                        <button @click.prevent.stop="approveUser(user)" title="Aprobar solicitud"
+                                            class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-emerald-200 hover:bg-emerald-400">
+                                            <CheckIcon class="w-4 h-4 md:hidden" />
+                                            <span class="hidden md:block">aprobar</span>
+                                        </button>
+                                        <button @click.prevent.stop="rejectUser(user)" title="Rechazar solicitud"
+                                            class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-red-200 hover:bg-red-400">
+                                            <XMarkIcon class="w-4 h-4 md:hidden" />
+                                            <span class="hidden md:block">rechazar</span>
+                                        </button>
+                                    </UserItem>
+                                </div>
+                                <div v-else>
+                                    <p class="w-full text-center">
+                                        {{ $t('dearbook.group.list_requests.no_registers') }}
+                                    </p>
+                                </div>
                             </TabPanel>
 
                             <TabPanel :key="followers" class="p-3 bg-white shadow">

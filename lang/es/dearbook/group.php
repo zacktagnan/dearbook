@@ -47,6 +47,10 @@ return [
         'placeholder' => 'Teclea el grupo a buscar',
     ],
 
+    'search_inside_profile' => [
+        'placeholder' => 'Teclea el nombre de miembro a buscar',
+    ],
+
     'list' => [
         'no_registers' => 'No estás unido a ningún grupo.',
         'no_description' => 'Descripción no disponible aún.',
@@ -58,6 +62,14 @@ return [
                 'pending' => 'Solicitud pendiente de ser aprobada',
             ],
         ],
+    ],
+
+    'list_members' => [
+        'no_registers' => 'No hay miembros todavía.',
+    ],
+
+    'list_requests' => [
+        'no_registers' => 'No hay solicitudes pendientes.',
     ],
 
     'general_info' => [
@@ -147,6 +159,22 @@ return [
                 ],
             ],
             'notification' => 'Solicitud enviada. Recibirás un email cuando sea aprobada.',
+        ],
+        'request_approved_or_not' => [
+            'decision' => [
+                'approved' => 'aprobada',
+                'rejected' => 'rechazada',
+            ],
+            'mailing' => [
+                'request_approved_or_not' => [
+                    'subject' => 'Solicitud para unirse al grupo',
+                    'greeting' => '¿Qué tal :user_name?...',
+                    'opening_phrase' => 'Su solicitud para unirse al grupo ":group_name" fue :status.',
+                    'closing_phrase' => 'Lo sentimos.',
+                    'btn_text' => 'Acceder al GRUPO',
+                ],
+            ],
+            'notification' => 'La solicitud de ":user_name" fue :status.',
         ],
     ],
 ];

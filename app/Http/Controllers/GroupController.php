@@ -23,7 +23,9 @@ use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use App\Http\Resources\UserResource;
 use App\Notifications\RequestToJoinGroup;
+use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -38,6 +40,8 @@ class GroupController extends Controller
     {
         $group->load('currentGroupUser');
 
+        $requestsPending = $group->requestsPending()->orderBy('name')->get();
+
         $defaultIndex = match ($tabIndex) {
             'conversation' => 0,
             'info' => 1,
@@ -51,6 +55,9 @@ class GroupController extends Controller
             'success' => session('success'),
             'group' => new GroupResource($group),
             'defaultIndex' => $defaultIndex,
+            'requestsPending' => !$group->auto_approval
+                ? UserResource::collection($requestsPending)
+                : null,
         ]);
     }
 
@@ -176,7 +183,7 @@ class GroupController extends Controller
         $group = Group::findOrFail($groupId);
 
         if (!$group->isAdminOfTheGroup(auth()->id())) {
-            return response("You don't have permission to UPDATE images of this group", Response::HTTP_FORBIDDEN);
+            return response("You don't have permission to UPDATE images of this group.", Response::HTTP_FORBIDDEN);
         }
 
         if ($type === 'cover') {
@@ -321,5 +328,35 @@ class GroupController extends Controller
         Notification::send($group->adminsGroup, new RequestToJoinGroup($group, $request->user()));
 
         return back()->with('success', __('dearbook/group.process_to_join.by_request.notification'));
+    }
+
+    public function requestApproveOrNot(Request $request, Group $group)
+    {
+        if (!$group->isAdminOfTheGroup(auth()->id())) {
+            return response("You don't have permission to APPROVE member requests of this group.", Response::HTTP_FORBIDDEN);
+        }
+
+        $groupUser = GroupUser::where('user_id', $request->user_id)
+            ->where('group_id', $group->id)
+            ->where('status', GroupUserStatus::PENDING->value)
+            ->first();
+
+        if ($groupUser) {
+            if ($request->action === GroupUserStatus::APPROVED->value) {
+                $groupUser->status = GroupUserStatus::APPROVED->value;
+            } else if ($request->action === GroupUserStatus::REJECTED->value) {
+                $groupUser->status = GroupUserStatus::REJECTED->value;
+            }
+            $groupUser->save();
+
+            $groupUser->user->notify(new RequestToJoinGroupApprovedOrNot($group, $groupUser->user, $request->action));
+
+            return back()->with('success', __('dearbook/group.process_to_join.request_approved_or_not.notification', [
+                'user_name' => $groupUser->user->name,
+                'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $request->action),
+            ]));
+        }
+
+        return back();
     }
 }
