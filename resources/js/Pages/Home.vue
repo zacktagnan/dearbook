@@ -7,8 +7,13 @@ import FollowingList from "@/Components/dearbook/Following/List.vue";
 import { Head } from "@inertiajs/vue3";
 
 defineProps({
+    // Aquí, por ser una consulta paginada "posts" llega como Object, luego, al List se manda "posts.data" que ya se trata de un Array
     posts: Object,
-    groups: Array, // ¿Por qué, en este caso, Array y no Object como para el "posts" o viceversa?
+    // En cambio, no es una consulta paginada y ya llega como un Array de Objects
+    groups: Array,
+    after_comment_deleted: {
+        type: Object,
+    },
 });
 </script>
 
@@ -28,7 +33,8 @@ defineProps({
 
             <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
                 <PostCreate />
-                <PostList class="flex-1 last:mb-[5px]" :posts="posts.data" />
+                <PostList class="flex-1 last:mb-[5px]" :posts="posts.data"
+                    :after_comment_deleted="after_comment_deleted" />
             </div>
         </div>
     </AuthenticatedLayout>

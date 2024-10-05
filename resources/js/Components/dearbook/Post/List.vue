@@ -8,10 +8,14 @@ import ConfirmPostDeletionModal from '@/Components/Modal.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { router, usePage } from "@inertiajs/vue3";
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 
 const props = defineProps({
+    // En Home, posts llega como Object por ser una consulta paginada, aquí es recibido como Array pues lo que llega es, realmente, no los posts sino posts.data
     'posts': Array,
+    after_comment_deleted: {
+        type: Object,
+    },
 })
 
 const showEditModal = ref(false)
@@ -85,6 +89,7 @@ const closeConfirmDeletion = () => {
     showingConfirmDeletion.value = false;
 };
 
+const postItemRef = ref({})
 const deleteEntity = () => {
     // Se ha hecho necesario pasar el ID de la entidad en vez de toda la entidad en ambos casos
     if (entityToDelete.value.entityPrefix === 'post.comment' || entityToDelete.value.entityPrefix === 'post') {
@@ -98,16 +103,32 @@ const deleteEntity = () => {
         onSuccess: () => {
             closeConfirmDeletion()
 
+            if (entityToDelete.value.entityPrefix === 'post.comment') {
+                postItemRef.value[props.after_comment_deleted.post_id].restartGeneralDataFromPostComments(props.after_comment_deleted.general_data)
+                postItemRef.value[props.after_comment_deleted.post_id].restartPostCommentList(props.after_comment_deleted.latest_comments, props.after_comment_deleted.all_comments)
+            }
+
+            // El aplicar este RELOAD puede que no tenga efecto alguno y, sobre todo, tras establecer el WATCH sobre props.posts
+            if (entityToDelete.value.entityPrefix === 'post') {
+                router.reload()
+            }
+
             if (showDetailModal.value === true) {
                 // if (entityToDelete.value.entityPrefix === 'post') {
                 //     showDetailModal.value = false
                 // } else if (entityToDelete.value.entityPrefix === 'post.comment') {
                 //     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
                 // }
-                if (entityToDelete.value.entityPrefix === 'post.comment') {
-                    postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
+                // if (entityToDelete.value.entityPrefix === 'post.comment') {
+                //     console.log('Ejecutando...filterDeletedComment ¿? ... desde Post/List - commentID: [' + entityToDelete.value.entity + ']')
+                //     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
+                // }
+                // Solo para ¿POST?
+                // showDetailModal.value = false
+
+                if (entityToDelete.value.entityPrefix === 'post') {
+                    showDetailModal.value = false
                 }
-                showDetailModal.value = false
             }
         },
     });
@@ -192,6 +213,14 @@ const closeShowNotification = () => {
     showNotification.value = false
 }
 
+watch(
+    () => props.posts,
+    () => {
+        // console.log('POSTs listado ha cambiado...')
+        reinitAllPosts()
+    }
+)
+
 
 import axiosClient from '@/axiosClient'
 
@@ -201,6 +230,13 @@ const allPosts = ref({
     data: page.props.posts.data,
     next: page.props.posts.links.next,
 })
+
+const reinitAllPosts = () => {
+    allPosts.value = {
+        data: page.props.posts.data,
+        next: page.props.posts.links.next,
+    }
+}
 
 const loadMoreIntersectRef = ref(null)
 
@@ -235,12 +271,12 @@ onMounted(() => {
 
 <template>
     <div>
-        <PostItem v-for="post in allPosts.data" :post="post" @callOpenEditModal="openEditModal"
-            @callArchiveItem="archiveItem" @callOpenDetailModal="openDetailModal"
+        <PostItem v-for="post in allPosts.data" :ref="el => postItemRef[post.id] = el" :post="post"
+            @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem" @callOpenDetailModal="openDetailModal"
             @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
             @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification" />
 
-        <div ref="loadMoreIntersectRef"></div>
+        <div ref="loadMoreIntersectRef" class="-translate-y-32"></div>
 
         <PostModal :post="postToEdit" v-model="showEditModal" @callActiveShowNotification="activeShowNotification" />
 

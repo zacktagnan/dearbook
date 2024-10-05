@@ -177,6 +177,7 @@ const focusCommentTextArea = () => {
 
 const filterDeletedComment = (commentId) => {
     props.post.all_comments = props.post.all_comments.filter(c => c.id != commentId)
+    props.post.latest_comments = props.post.latest_comments.filter(c => c.id != commentId)
     props.post.total_of_comments--
 }
 
@@ -192,7 +193,7 @@ const restartPostCommentList = (latestComments, allComments) => {
 }
 
 defineExpose({
-    filterDeletedComment, restartPostCommentList,
+    filterDeletedComment, restartGeneralDataFromPostComments, restartPostCommentList,
 })
 </script>
 

@@ -157,7 +157,8 @@ class PostController extends Controller
         // // y, entonces, mejor no establecer ningún tipo de RETURN
 
         if ($to === 'home') {
-            return to_route($to);
+            return to_route($to, [], Response::HTTP_SEE_OTHER);
+            // return url('/');
         } else {
             return to_route('archive-management.index')->with([
                 'success' => [

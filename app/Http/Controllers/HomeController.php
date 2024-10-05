@@ -48,6 +48,7 @@ class HomeController extends Controller
             ->get();
 
         return Inertia::render('Home', [
+            'after_comment_deleted' => session('after_comment_deleted'),
             'posts' => $posts,
             'groups' => GroupResource::collection($groups),
         ]);
