@@ -32,6 +32,13 @@ import { reactionTypesFormat, } from "@/Libs/helpers";
 
 import PostHeader from "@/Components/dearbook/Post/Header.vue";
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
+import { MenuItem } from "@headlessui/vue";
+import {
+    PencilIcon,
+    TrashIcon,
+    ArrowUturnLeftIcon,
+    ArchiveBoxIcon,
+} from "@heroicons/vue/24/solid";
 import { usePage } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
@@ -206,17 +213,125 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <OptionsDropDown v-model="isPostAuthor" :is-trashed="isTrashed" :is-archived="isArchived"
-                @callEditItem="openEditModal" @callArchiveItem="$emit('callArchiveItem', post.id)"
-                @callDeleteItem="$emit('callConfirmDeletion', post, 'post')"
-                @callRestoreItemFromArchive="$emit('callRestoreItemFromArchive')"
-                @callRestoreItemFromTrash="$emit('callRestoreItemFromTrash')"
-                @callForceDeleteItem="$emit('callForceDeleteItem')" :ellipsis-type-icon="'vertical'"
-                :item-type="'post'" />
+            <OptionsDropDown v-model="isPostAuthor" :ellipsis-type-icon="'vertical'">
+                <template v-if="!isTrashed && !isArchived">
+                    <div class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="openEditModal" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Editar publicación">
+                            <PencilIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                            Editar
+                        </button>
+                        </MenuItem>
+                    </div>
+
+                    <div class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="$emit('callArchiveItem', post.id)" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Mover al archivo">
+                            <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                            Al archivo
+                        </button>
+                        </MenuItem>
+
+                        <MenuItem v-slot="{ active }">
+                        <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Mover a la papelera">
+                            <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                            A la papelera
+                        </button>
+                        </MenuItem>
+                    </div>
+                </template>
+                <template v-else>
+                    <template v-if="isTrashed">
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callRestoreItemFromTrash')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Restaurar publicación">
+                                <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                    aria-hidden="true" />
+                                Restaurar
+                            </button>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callArchiveItem', post.id)" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Mover al archivo">
+                                <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Al archivo
+                            </button>
+                            </MenuItem>
+
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callForceDeleteItem')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Eliminar del todo">
+                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Eliminar
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </template>
+                    <template v-if="isArchived">
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callRestoreItemFromArchive')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Restaurar publicación">
+                                <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                    aria-hidden="true" />
+                                Restaurar
+                            </button>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Mover a la papelera">
+                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                A la papelera
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </template>
+                </template>
+            </OptionsDropDown>
             <!-- =========================================================== -->
         </div>
-
-        <!-- <pre>{{ post }}</pre> -->
 
         <div class="mt-1">
             <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength"

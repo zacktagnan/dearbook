@@ -1,5 +1,9 @@
 <script setup>
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
+import { MenuItem } from "@headlessui/vue";
+import {
+    ArrowUturnLeftIcon,
+} from "@heroicons/vue/24/solid";
 import { Link, usePage } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 
@@ -16,7 +20,8 @@ const emit = defineEmits(['callCheckItem', 'callSubmitProcess'])
 
 const authUser = usePage().props.auth.user;
 
-const itemType = 'group'
+// Para versión anterior de OptionsDropDown
+// const itemType = 'group'
 
 const isGroupAuthor = computed(
     () => authUser && authUser.id === props.group.user.id
@@ -98,10 +103,23 @@ const getContentExcerpt = (content) => {
                 @callRestoreItemFromArchive="$emit('callSubmitProcess', 'restore_from_archive', group.id)"
                 @callForceDeleteItem="$emit('callSubmitProcess', 'force_delete', group.id)" -->
 
-            <OptionsDropDown v-model="isGroupAuthor" :is-trashed="isTrashed" :is-archived="isArchived"
-                :is-activity-log="isActivityLog"
-                @callRestoreItemFromTrash="$emit('callSubmitProcess', 'restore_from_trash', group.id)"
-                :ellipsis-type-icon="'vertical'" :item-type="itemType" />
+            <OptionsDropDown v-model="isGroupAuthor" :ellipsis-type-icon="'vertical'">
+                <template v-if="isTrashed">
+                    <div class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="$emit('callSubmitProcess', 'restore_from_trash', group.id)" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Restaurar grupo">
+                            <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                            Restaurar
+                        </button>
+                        </MenuItem>
+                    </div>
+                </template>
+            </OptionsDropDown>
         </div>
     </div>
 </template>

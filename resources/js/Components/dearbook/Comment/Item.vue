@@ -1,5 +1,6 @@
 <script setup>
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
+import { MenuItem } from "@headlessui/vue";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 import CommentReactionBox from '@/Components/dearbook/Comment/Reaction/Box.vue'
 import CommentReactionTypeUsersSummary from "@/Components/dearbook/Comment/Reaction/TypeUsersSummary.vue";
@@ -268,10 +269,35 @@ const limitingLatestCommentsListHigh = computed(
                         :content-classes="'text-sm text-justify'" />
                 </div>
 
-                <OptionsDropDown v-model="isCommentAuthorAndEditable" @callEditItem="startEditingItem(comment)"
-                    @callDeleteItem="confirmDeletion(comment, 'post.comment')" :ellipsis-type-icon="'horizontal'"
+                <OptionsDropDown v-model="isCommentAuthorAndEditable" :ellipsis-type-icon="'horizontal'"
                     :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
-                    :show-menu-item-icon="false" :item-type="'comment'" />
+                    :show-menu-item-icon="false">
+                    <div class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="startEditingItem(comment)" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Editar comentario">
+                            Editar
+                        </button>
+                        </MenuItem>
+                    </div>
+
+                    <div class="px-1 py-1">
+                        <MenuItem v-slot="{ active }">
+                        <button @click="confirmDeletion(comment, 'post.comment')" :class="[
+                            active
+                                ? 'bg-sky-100'
+                                : 'text-gray-900',
+                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                        ]" title="Eliminar">
+                            Eliminar
+                        </button>
+                        </MenuItem>
+                    </div>
+                </OptionsDropDown>
             </div>
 
             <div v-if="attachmentFilesComputed.length > 0" class="mt-1.5">
