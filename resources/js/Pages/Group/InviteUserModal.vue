@@ -48,8 +48,9 @@ const closeModal = () => {
 const submitInvitation = () => {
     inviteForm.post(route("group.invite-users", props.group.slug), {
         preserveScroll: true,
-        onSuccess: (res) => {
-            console.log(res)
+        // onSuccess: (res) => {
+        // Recibir esta RESpuesta (todo el objeto que es renderizado en la vista) no es relevante, al menos, por el momento
+        onSuccess: () => {
             closeModal()
             emit('callActiveShowNotification')
         },
