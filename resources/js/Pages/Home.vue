@@ -27,7 +27,7 @@ defineProps({
                 <GroupList :groups="groups" />
             </div>
 
-            <div class="overflow-hidden lg:col-span-3 lg:order-3">
+            <div class="overflow-hidden lg:col-span-3 lg:order-3 lg:w-full lg:max-w-[455px]">
                 <FollowingList />
             </div>
 

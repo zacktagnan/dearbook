@@ -5,7 +5,7 @@ import FollowingListItems from '@/Components/dearbook/Following/ListItems.vue';
 </script>
 
 <template>
-    <div class="flex flex-col p-3 border rounded bg-sky-200">
+    <div class="flex flex-col p-3 border rounded bg-sky-200 lg:fixed lg:max-w-[inherit] lg:w-full">
         <div class="flex-1 block lg:hidden">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">
