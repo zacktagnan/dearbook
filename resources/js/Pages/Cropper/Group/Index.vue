@@ -43,6 +43,7 @@ const saveImage = () => {
         imagesForm.thumbnail = blob
 
         imagesForm.post(route('group.update-thumbnail-image'), {
+            preserveScroll: true,
             onSuccess: () => {
                 emit('callCloseCropImageModal')
                 emit('callActiveShowNotification')

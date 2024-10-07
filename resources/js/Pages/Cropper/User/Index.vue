@@ -42,6 +42,7 @@ const saveImage = () => {
         imagesForm.avatar = blob
 
         imagesForm.post(route('profile.update-avatar-image'), {
+            preserveScroll: true,
             onSuccess: () => {
                 emit('callCloseCropImageModal')
                 emit('callActiveShowNotification')

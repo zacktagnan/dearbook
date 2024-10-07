@@ -59,7 +59,14 @@ class GroupResource extends JsonResource
             // 'all_group_users' => $this->allGroupUser,
             // ------------------------------------------------------------------------------
             'total_group_user' => count($this->members),
-            'all_group_users' => UserResource::collection($this->members()->orderBy('role')->orderBy('name')->get()),
+            'all_group_users' => GroupUserResource::collection(
+                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.group_id'])
+                    ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                    ->where('g_u.group_id', $this->id)
+                    ->orderBy('g_u.role')
+                    ->orderBy('users.name')
+                    ->get()
+            ),
 
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,

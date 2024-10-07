@@ -24,6 +24,7 @@ use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
 use App\Http\Resources\UserResource;
+use App\Notifications\MemberRoleChange;
 use App\Notifications\RequestToJoinGroup;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use Illuminate\Support\Facades\Notification;
@@ -84,14 +85,6 @@ class GroupController extends Controller
 
         // return back();
         return response(new GroupResource($group), Response::HTTP_CREATED);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Group $group)
-    {
-        //
     }
 
     /**
@@ -354,6 +347,40 @@ class GroupController extends Controller
             return back()->with('success', __('dearbook/group.process_to_join.request_approved_or_not.notification', [
                 'user_name' => $groupUser->user->name,
                 'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $request->action),
+            ]));
+        }
+
+        return back();
+    }
+
+    public function changeRole(Request $request, Group $group)
+    {
+        if (!$group->isAdminOfTheGroup(auth()->id())) {
+            return response("You don't have permission to CHANGE the Role member inside this group.", Response::HTTP_FORBIDDEN);
+        }
+
+        if ($group->isOwnerOfTheGroup($request->user_id)) {
+            return response("You don't have permission to CHANGE the Role of the owner of the group.", Response::HTTP_FORBIDDEN);
+        }
+
+        /**
+         * de querer validar el valor de $request->role según los valores establecidos del ENUM GroupUserRole:
+         *      'role' => 'required', Rule::enum(GroupUserRole::class),
+         */
+
+        $groupUser = GroupUser::where('user_id', $request->user_id)
+            ->where('group_id', $group->id)
+            ->first();
+
+        if ($groupUser) {
+            $groupUser->role = $request->role;
+            $groupUser->save();
+
+            $groupUser->user->notify(new MemberRoleChange($group, $groupUser->user, $request->role));
+
+            return back()->with('success', __('dearbook/group.member_role_change.notification', [
+                'role' => $request->role,
+                'user_name' => $groupUser->user->name,
             ]));
         }
 

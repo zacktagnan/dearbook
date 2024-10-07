@@ -34,9 +34,12 @@ const props = defineProps({
     requestsPending: Array,
 });
 
-// const authUser = usePage().props.auth.user;
+const authUser = usePage().props.auth.user;
 // const isMyGroupProfile = computed(() => authUser && authUser.id === props.group.user.id);
 // o
+const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props.group.user.id)
+const isTheOwnerGroup = (memberId) => props.group.user.id === memberId
+
 const isAdminGroup = computed(() => props.group.role === 'admin');
 // const isUserGroup = computed(() => props.group.role === 'user' && props.group.status === 'approved')
 const isMemberGroup = computed(() => props.group.role && props.group.status === 'approved')
@@ -167,6 +170,7 @@ const submitCoverImage = () => {
     fadeTarget.style.removeProperty("opacity");
 
     imagesForm.post(route('group.update-cover-image'), {
+        preserveScroll: true,
         onSuccess: () => {
             showNotification.value = true
             resetCoverImage()
@@ -205,13 +209,17 @@ const showInviteUserModal = () => {
 const joinToGroup = () => {
     const joinForm = useForm({})
 
-    joinForm.post(route('group.join', props.group.slug))
+    joinForm.post(route('group.join', props.group.slug), {
+        preserveScroll: true
+    })
 }
 
 const requestJoinToGroup = () => {
     const joinForm = useForm({})
 
-    joinForm.post(route('group.request-join', props.group.slug))
+    joinForm.post(route('group.request-join', props.group.slug), {
+        preserveScroll: true
+    })
 }
 
 const approveUser = (user) => {
@@ -220,7 +228,9 @@ const approveUser = (user) => {
         action: 'approved',
     })
 
-    form.post(route('group.request-approve-or-not', props.group.slug))
+    form.post(route('group.request-approve-or-not', props.group.slug), {
+        preserveScroll: true
+    })
 }
 
 const rejectUser = (user) => {
@@ -229,7 +239,21 @@ const rejectUser = (user) => {
         action: 'rejected',
     })
 
-    form.post(route('group.request-approve-or-not', props.group.slug))
+    form.post(route('group.request-approve-or-not', props.group.slug), {
+        preserveScroll: true
+    })
+}
+
+const memberRoleChange = (user, newRoleSelected) => {
+    console.log(user, newRoleSelected)
+    const form = useForm({
+        user_id: user.id,
+        role: newRoleSelected,
+    })
+
+    form.post(route('group.change-role', props.group.slug), {
+        preserveScroll: true
+    })
 }
 </script>
 
@@ -343,19 +367,22 @@ const rejectUser = (user) => {
                                         v-if="group.total_group_user === 0" class="font-bold">{{
                                             $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
                                                 'total': group.total_group_user
-                                            }) }}</span><button v-else @click="asignSelectedIndex(2)"
-                                        class="hover:underline"
+                                            }) }}</span><button v-else-if="isMemberGroup || !isPrivateGroup"
+                                        @click="asignSelectedIndex(2)" class="hover:underline"
                                         :title="$tChoice('dearbook.group.general_info.title_list_members', group.total_group_user)">
                                         <span class="font-bold">{{
                                             $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
                                                 'total': group.total_group_user
                                             }) }}</span>
-                                    </button>
+                                    </button><span v-else class="font-bold">{{
+                                        $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                            'total': group.total_group_user
+                                        }) }}</span>
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
                                     <div v-if="group.total_group_user === 0" class="h-[30px]" />
-                                    <div v-else
+                                    <div v-else-if="isMemberGroup || !isPrivateGroup"
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
                                         <div v-for="(groupUser, index) of group.all_group_users?.slice(
                                             0,
@@ -493,7 +520,16 @@ const rejectUser = (user) => {
                                 <div v-if="group.all_group_users.length" class="grid gap-3 mt-3">
                                     <UserItem v-for="member of group.all_group_users" :user="member"
                                         :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
-                                        :key="member.id" />
+                                        :key="member.id">
+                                        <div v-if="isAdminGroup">
+                                            <select @change="memberRoleChange(member, $event.target.value)"
+                                                :disabled="isTheOwnerGroup(member.id)"
+                                                class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400">
+                                                <option value="admin" :selected="member.role === 'admin'">admin</option>
+                                                <option value="user" :selected="member.role === 'user'">user</option>
+                                            </select>
+                                        </div>
+                                    </UserItem>
                                 </div>
                                 <div v-else>
                                     <p class="w-full text-center">
@@ -511,12 +547,12 @@ const rejectUser = (user) => {
                                         <button @click.prevent.stop="approveUser(user)" title="Aprobar solicitud"
                                             class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-emerald-200 hover:bg-emerald-400">
                                             <CheckIcon class="w-4 h-4 md:hidden" />
-                                            <span class="hidden md:block">aprobar</span>
+                                            <span class="text-sm hidden md:block">aprobar</span>
                                         </button>
                                         <button @click.prevent.stop="rejectUser(user)" title="Rechazar solicitud"
                                             class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-red-200 hover:bg-red-400">
                                             <XMarkIcon class="w-4 h-4 md:hidden" />
-                                            <span class="hidden md:block">rechazar</span>
+                                            <span class="text-sm hidden md:block">rechazar</span>
                                         </button>
                                     </UserItem>
                                 </div>

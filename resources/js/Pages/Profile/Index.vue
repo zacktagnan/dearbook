@@ -133,6 +133,7 @@ const submitCoverImage = () => {
     fadeTarget.style.removeProperty("opacity");
 
     imagesForm.post(route('profile.update-cover-image'), {
+        preserveScroll: true,
         onSuccess: () => {
             showNotification.value = true
             resetCoverImage()

@@ -47,7 +47,7 @@ class Group extends Model
 
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'group_users')->where('status', GroupUserStatus::APPROVED->value);
+        return $this->belongsToMany(User::class, 'group_users')->where('group_users.status', GroupUserStatus::APPROVED->value);
     }
 
     public function requestsPending(): BelongsToMany
@@ -73,7 +73,16 @@ class Group extends Model
 
     public function isAdminOfTheGroup(int $userId): bool
     {
-        return $this->currentGroupUser->user_id === $userId;
+        return GroupUser::query()
+            ->where('user_id', $userId)
+            ->where('group_id', $this->id)
+            ->where('role', GroupUserRole::ADMIN->value)
+            ->exists();
+    }
+
+    public function isOwnerOfTheGroup(int $userId): bool
+    {
+        return $this->user_id === $userId;
     }
 
     public function adminsGroup(): BelongsToMany

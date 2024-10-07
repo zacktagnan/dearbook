@@ -170,11 +170,24 @@ return [
                     'subject' => 'Solicitud para unirse al grupo',
                     'greeting' => '¿Qué tal :user_name?...',
                     'opening_phrase' => 'Su solicitud para unirse al grupo ":group_name" fue :status.',
-                    'closing_phrase' => 'Lo sentimos.',
+                    'closing_phrase' => [
+                        'approved' => '¡Enhorabuena!',
+                        'rejected' => 'Lo sentimos.',
+                    ],
                     'btn_text' => 'Acceder al GRUPO',
                 ],
             ],
             'notification' => 'La solicitud de ":user_name" fue :status.',
         ],
+    ],
+
+    'member_role_change' => [
+        'mailing' => [
+            'subject' => 'Cambio de ROLE en el grupo',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => 'Se te asignó el ROLE de ":role" dentro del grupo ":group_name".',
+            'btn_text' => 'Acceder al GRUPO',
+        ],
+        'notification' => 'Cambio satisfactorio de Role a ":role" para :user_name.',
     ],
 ];

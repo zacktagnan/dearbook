@@ -50,7 +50,8 @@ class RequestToJoinGroupApprovedOrNot extends Notification
                 ]))
                 ->action(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.btn_text'), route('group.profile', [
                     'group' => $this->group->slug,
-                ]));
+                ]))
+                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
         } else if ($this->decision === GroupUserStatus::REJECTED->value) {
             return (new MailMessage)
                 ->subject(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.subject'))
@@ -62,7 +63,7 @@ class RequestToJoinGroupApprovedOrNot extends Notification
                     'group_name' => $this->group->name,
                     'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $this->decision),
                 ]))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase'));
+                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
         }
     }
 

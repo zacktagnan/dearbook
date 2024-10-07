@@ -35,6 +35,14 @@ return [
         ],
     ],
 
+    'form_invite_user' => [
+        'fields' => [
+            'username_or_email' => [
+                'placeholder' => 'Username or Email',
+            ],
+        ],
+    ],
+
     'search' => [
         'placeholder' => 'Type the group to search',
     ],
@@ -162,11 +170,24 @@ return [
                     'subject' => 'Request to join group',
                     'greeting' => 'What\'s up :user_name?...',
                     'opening_phrase' => 'Your request to join the group ":group_name" was :status.',
-                    'closing_phrase' => 'Sorry.',
+                    'closing_phrase' => [
+                        'approved' => 'Congratulations!',
+                        'rejected' => 'Sorry.',
+                    ],
                     'btn_text' => 'Access to GROUP',
                 ],
             ],
             'notification' => 'The ":user_name" request was :status.',
         ],
+    ],
+
+    'member_role_change' => [
+        'mailing' => [
+            'subject' => 'ROLE change in the group',
+            'greeting' => 'What\'s up :user_name?...',
+            'opening_phrase' => 'You have been assigned the role of ":role" dentro del grupo ":group_name".',
+            'btn_text' => 'Access to GROUP',
+        ],
+        'notification' => 'Successful change of Role to ":role" for :user_name.',
     ],
 ];

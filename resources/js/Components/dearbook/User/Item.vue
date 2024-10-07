@@ -11,17 +11,21 @@ defineProps({
 </script>
 
 <template>
-    <div :class="'rounded-md cursor-pointer transition-all' + classes">
-        <Link :href="route('profile.index', { username: user.username })" class="flex items-center gap-2 px-2 py-1">
-        <img :src="user.avatar_url ||
-            '/img/default_avatar.png'" class="mt-1 w-[36px] rounded-full" :alt="user.name">
-        <div class="flex justify-between items-center flex-1">
-            <h3 class="text-lg font-black">{{ user.name }}</h3>
+    <div :class="'rounded-md transition-all' + classes">
+        <div :href="route('profile.index', { username: user.username })" class="flex items-center gap-2 px-2 py-1">
+            <Link :href="route('profile.index', { username: user.username })">
+            <img :src="user.avatar_url ||
+                '/img/default_avatar.png'" class="w-[36px] rounded-full" :alt="user.name">
+            </Link>
+            <div class="flex justify-between items-center flex-1">
+                <Link :href="route('profile.index', { username: user.username })">
+                <h3 class="font-black hover:underline">{{ user.name }}</h3>
+                </Link>
 
-            <div class="flex gap-1 md:gap-2">
-                <slot />
+                <div class="flex gap-1 md:gap-2">
+                    <slot />
+                </div>
             </div>
         </div>
-        </Link>
     </div>
 </template>
