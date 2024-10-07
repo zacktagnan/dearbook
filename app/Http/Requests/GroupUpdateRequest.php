@@ -11,7 +11,9 @@ class GroupUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        /** @var \App\Models\Group $group */
+        $group = $this->route('group');
+        return $group->isAdminOfTheGroup(auth()->id());
     }
 
     /**
