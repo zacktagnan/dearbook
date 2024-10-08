@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Attachmentable;
 use App\Traits\CustomDateFormatting;
 use App\Traits\Reactionable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,5 +50,21 @@ class Post extends Model
     public function latestComments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public static function listedOnTimeLine($userId): Builder
+    {
+        return Post::withCount(['reactions',])
+            ->with([
+                'reactions' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'currentUserComments' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'latestComments',
+                'comments',
+            ])
+            ->latest();
     }
 }
