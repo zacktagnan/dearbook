@@ -88,7 +88,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                                     })">
                                     <span v-if="group.user.id === user.id">{{
                                         $t('dearbook.group.tab_info.info_block.features.history.description.3_3')
-                                    }}</span>
+                                        }}</span>
                                     <span v-else>{{ group.user.name }}</span>
                                 </a>.
                             </p>
@@ -104,7 +104,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                     <h2 class="px-2 font-semibold text-gray-600 lg:text-lg dark:text-gray-100">
                         {{ $t("dearbook.group.tab_info.members_block.header") }} · <span class="text-gray-400">{{
                             group.total_group_user
-                        }}</span>
+                            }}</span>
                     </h2>
                 </header>
 
@@ -114,7 +114,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                     <div class="flex items-center justify-center w-8 h-8 shadow-lg rounded-full">
                         <a :href="route('profile.index', { username: group.user.username })"
                             :title="'Perfil de ' + group.user.name">
-                            <img :src="group.user.avatar_url || '/img/default_avatar.png'" :alt="group.user.name"
+                            <img :src="group.user.avatar_url" :alt="group.user.name"
                                 class="w-8 h-8 rounded-full border-[1px] border-gray-200 hover:border-gray-400 transition-colors delay-150" />
                         </a>
                     </div>

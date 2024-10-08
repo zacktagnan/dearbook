@@ -306,7 +306,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                                 </span>
                             </div>
                         </div>
-                        <img :src="coverImageSrc || group.cover_url || '/img/default_cover_group.jpg'" alt="Cover"
+                        <img :src="coverImageSrc || group.cover_url" alt="Cover"
                             class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
                     </div>
 
@@ -345,9 +345,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                             <div>
                                 <div
                                     class="md:absolute p-1 bg-white rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
-                                    <img :src="thumbnailImageSrc || group.thumbnail_url ||
-                                        '/img/default_thumbnail_group.png'
-                                        " alt=""
+                                    <img :src="thumbnailImageSrc || group.thumbnail_url" alt=""
                                         class="rounded-md border-[1px] border-gray-200 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
                                 </div>
 
@@ -399,8 +397,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                                             <a :href="route('profile.index', { username: groupUser.username })" :title="$t('Profile of', {
                                                 'name': groupUser.name
                                             })">
-                                                <img :src="groupUser.avatar_url || '/img/default_avatar.png'"
-                                                    :alt="groupUser.name"
+                                                <img :src="groupUser.avatar_url" :alt="groupUser.name"
                                                     class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-white hover:ring-[#0099ce]" />
                                             </a>
                                         </div>

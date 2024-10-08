@@ -171,8 +171,8 @@ const emit = defineEmits([
         </div>
 
         <div class="p-4 mt-4 bg-black rounded-ss-md rounded-se-md">
-            <Cropper ref="cropper" class="h-[400px] mx-auto max-h-[500px] w-full"
-                :src="image || user.avatar_url || '/img/default_avatar.png'" :stencil-props="{
+            <Cropper ref="cropper" class="h-[400px] mx-auto max-h-[500px] w-full" :src="image || user.avatar_url"
+                :stencil-props="{
                     aspectRatio: 1 / 1
                 }" :auto-zoom="true" @change="change" :debounce="false" />
         </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Libs\Utilities;
 use Illuminate\Http\Request;
 use App\Traits\UserReactions;
 use Illuminate\Support\Facades\Storage;
@@ -28,10 +29,10 @@ class CommentResource extends JsonResource
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'username' => $this->user->username,
-                // -> Si existe y no es NULL, se trata, sino, se devuelve NULL
+                // -> Si existe y no es NULL, se trata, sino, se devuelve NULL o, directamente, la imagen predeterminada
                 'avatar_url' => $this->user->avatar_path
                     ? Storage::url($this->user->avatar_path)
-                    : null,
+                    : Utilities::$defaultAvatarImage,
             ],
 
             'total_of_comments' => $this->totalOfComments,

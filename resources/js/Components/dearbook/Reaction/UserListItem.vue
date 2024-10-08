@@ -12,20 +12,16 @@ defineProps({
     <div class="flex justify-between mt-4 font-bold">
         <!-- {{ $page.props.auth.user.name }} || {{ entity.current_user_type_reaction }} -->
         <div class="flex items-center gap-3">
-            <a :href="route('profile.index', { username: user.username })"
-                :title="'Perfil de ' + user.name" class="relative">
-                <img :src="user.avatar_url ||
-                '/img/default_avatar.png'" class="w-10 transition-all border-2 rounded-full hover:border-cyan-500"
+            <a :href="route('profile.index', { username: user.username })" :title="'Perfil de ' + user.name"
+                class="relative">
+                <img :src="user.avatar_url" class="w-10 transition-all border-2 rounded-full hover:border-cyan-500"
                     :alt="user.name" />
 
-                <img
-                :src="'/img/emojis/' + type + '.png'"
-                :alt="title"
-                class="absolute w-4 h-4 left-[26px] top-[26px]" />
+                <img :src="'/img/emojis/' + type + '.png'" :alt="title"
+                    class="absolute w-4 h-4 left-[26px] top-[26px]" />
             </a>
 
-            <a :href="route('profile.index', { username: user.username })"
-                :title="'Perfil de ' + user.name">
+            <a :href="route('profile.index', { username: user.username })" :title="'Perfil de ' + user.name">
                 {{ user.name }}
             </a>
         </div>

@@ -270,8 +270,8 @@ defineExpose({
     <div class="flex gap-2 mt-2.5">
         <a :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name" class="h-fit">
-            <img :src="$page.props.auth.user.avatar_url ||
-                '/img/default_avatar.png'" class="w-8 transition-all border-2 rounded-full hover:border-cyan-500"
+            <img :src="$page.props.auth.user.avatar_url"
+                class="w-8 transition-all border-2 rounded-full hover:border-cyan-500"
                 :alt="$page.props.auth.user.name" />
         </a>
 
@@ -403,14 +403,14 @@ defineExpose({
                                         myFile
                                     ).name
                                         " :title="(
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                                " class="h-20" :class="[
-                                                myFile.deleted
-                                                    ? 'opacity-50'
-                                                    : '',
-                                            ]" />
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                            " class="h-20" :class="[
+                                                    myFile.deleted
+                                                        ? 'opacity-50'
+                                                        : '',
+                                                ]" />
                                     <video v-if="
                                         isVideo(
                                             myFile.file ||
@@ -421,14 +421,14 @@ defineExpose({
                                         myFile
                                     ).name
                                         " :title="(
-                                                myFile.file ||
-                                                myFile
-                                            ).name
-                                                " class="h-20" :class="[
-                                                myFile.deleted
-                                                    ? 'opacity-50'
-                                                    : '',
-                                            ]"></video>
+                                            myFile.file ||
+                                            myFile
+                                        ).name
+                                            " class="h-20" :class="[
+                                                    myFile.deleted
+                                                        ? 'opacity-50'
+                                                        : '',
+                                                ]"></video>
                                 </template>
 
                                 <template v-else>

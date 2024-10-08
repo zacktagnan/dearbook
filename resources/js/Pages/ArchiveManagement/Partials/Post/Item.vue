@@ -63,7 +63,7 @@ const loadImage = (post) => {
     } else if (image && !isImageFile) {
         return image
     } else {
-        return null
+        return usePage().props.defaultAvatarImage
     }
 }
 
@@ -107,7 +107,7 @@ const getContentExcerpt = (content) => {
         <div class="w-full p-2 rounded-lg hover:bg-black/5">
             <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle"
                 class="flex items-center w-full gap-2 p-1">
-            <img :src="loadImage(post) || '/img/default_avatar.png'" class="w-[60px] h-[60px] border-2 rounded-full" />
+            <img :src="loadImage(post)" class="w-[60px] h-[60px] border-2 rounded-full" />
             <div class="text-sm text-left">
                 <div v-html="getContentExcerpt(post.body) || '(sin texto)'"></div>
                 <small class="lowercase">{{ post.created_at_time }}</small>

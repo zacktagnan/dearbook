@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Libs\Utilities;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -31,13 +32,13 @@ class GroupResource extends JsonResource
             // 'thumbnail_path' => $this->thumbnail_path,
 
             // 'thumbnail_url' => 'https://picsum.photos/100',
-            // -> Si existe y no es NULL, se trata, sino, se devuelve NULL
+            // -> Si existe y no es NULL, se trata, sino, se devuelve NULL o, directamente, la imagen predeterminada
             'cover_url' => $this->cover_path
                 ? Storage::url($this->cover_path)
-                : null,
+                : Utilities::$defaultGroupCoverImage,
             'thumbnail_url' => $this->thumbnail_path
                 ? Storage::url($this->thumbnail_path)
-                : null,
+                : Utilities::$defaultGroupThumbnailImage,
             'auto_approval' => $this->auto_approval,
             // 'about' => $this->about,
             'short_description' => Str::words($this->about, 11, '...'),
@@ -50,7 +51,7 @@ class GroupResource extends JsonResource
                 'username' => $this->user->username,
                 'avatar_url' => $this->user->avatar_path
                     ? Storage::url($this->user->avatar_path)
-                    : null,
+                    : Utilities::$defaultAvatarImage,
             ],
 
             // 'total_group_user' => count($this->allGroupUser), //OK

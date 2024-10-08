@@ -52,6 +52,8 @@ class HandleInertiaRequests extends Middleware
             // Pasado a ...
             'allowedMimeTypes' => Utilities::$allowedMimeTypes,
             'maxTimeOnSecondsForNotificationBox' => Utilities::$maxTimeOnSecondsForNotificationBox,
+
+            'defaultAvatarImage' => Utilities::$defaultAvatarImage,
         ];
     }
 }

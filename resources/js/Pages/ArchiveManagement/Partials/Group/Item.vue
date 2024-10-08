@@ -55,7 +55,7 @@ const loadImage = (group) => {
     } else if (image && !isImageFile) {
         return image
     } else {
-        return null
+        return usePage().props.defaultAvatarImage
     }
 }
 
@@ -86,8 +86,7 @@ const getContentExcerpt = (content) => {
             <!-- <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle"
                 class="flex items-center w-full gap-2 p-1"> -->
             <div class="flex items-center w-full gap-2 p-1">
-                <img :src="loadImage(group) || '/img/default_avatar.png'"
-                    class="w-[60px] h-[60px] border-2 rounded-full" />
+                <img :src="loadImage(group)" class="w-[60px] h-[60px] border-2 rounded-full" />
                 <div class="text-left">
                     <div class="font-bold cursor-pointer" v-html="group.name"
                         :title="getContentExcerpt(group.about) || '(sin descripción)'" />

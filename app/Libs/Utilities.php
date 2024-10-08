@@ -4,6 +4,12 @@ namespace App\Libs;
 
 class Utilities
 {
+    public static string $defaultCoverImage = '/img/default_cover.jpg';
+    public static string $defaultAvatarImage = '/img/default_avatar.png';
+
+    public static string $defaultGroupCoverImage = '/img/default_cover_group.jpg';
+    public static string $defaultGroupThumbnailImage = '/img/default_thumbnail_group.png';
+
     public static array $allowedMimeTypes = [
         'jpg',
         'jpeg',

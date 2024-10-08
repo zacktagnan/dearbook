@@ -49,8 +49,7 @@ const showingNavigationDropdown = ref(false);
                                             <button type="button" title="Cuenta"
                                                 class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md group/menu_user dark:text-gray-400 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none">
                                                 <!-- {{ $page.props.auth.user.name }} -->
-                                                <img :src="$page.props.auth.user.avatar_url ||
-                                                    '/img/default_avatar.png'"
+                                                <img :src="$page.props.auth.user.avatar_url"
                                                     class="w-10 transition-all border-2 rounded-full group-hover/menu_user:border-cyan-500"
                                                     :alt="$page.props.auth.user.name" />
 
@@ -72,8 +71,7 @@ const showingNavigationDropdown = ref(false);
                                                 :title="$t('Profile')"
                                                 class="flex items-center gap-1.5 group/menu_user_profile_item">
                                                 <!-- {{ $t('Profile') }} -->
-                                                <img :src="$page.props.auth.user.avatar_url ||
-                                                    '/img/default_avatar.png'"
+                                                <img :src="$page.props.auth.user.avatar_url"
                                                     class="transition-all border-2 rounded-full w-9 h-9 group-hover/menu_user_profile_item:border-cyan-500"
                                                     :alt="$page.props.auth.user.name" />
                                                 <span class="font-bold">{{ $page.props.auth.user.name }}</span>
@@ -130,8 +128,7 @@ const showingNavigationDropdown = ref(false);
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
                         <div class="flex px-4">
-                            <img :src="$page.props.auth.user.avatar_url ||
-                                '/img/default_avatar.png'"
+                            <img :src="$page.props.auth.user.avatar_url"
                                 class="w-10 transition-all border-2 rounded-full group-hover:border-cyan-500"
                                 :alt="$page.props.auth.user.name" />
                             <div class="ml-4">

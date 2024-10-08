@@ -182,7 +182,7 @@ const closeCropImageModal = () => {
                     v-else-if="showNotification && errors.avatar" :title="'Error'" :message="errors.avatar" />
 
                 <div class="relative bg-white">
-                    <img :src="coverImageSrc || user.cover_url || '/img/default_cover.jpg'" alt="Cover"
+                    <img :src="coverImageSrc || user.cover_url" alt="Cover"
                         class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
 
                     <div class="absolute lg:right-5 lg:bottom-[172px] right-5 top-28 md:top-72 lg:top-auto">
@@ -219,9 +219,7 @@ const closeCropImageModal = () => {
                             <div class="flex justify-center lg:justify-start lg:static">
                                 <div
                                     class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
-                                    <img :src="avatarImageSrc || user.avatar_url ||
-                                        '/img/default_avatar.png'
-                                        " alt=""
+                                    <img :src="avatarImageSrc || user.avatar_url" alt=""
                                         class="rounded-full border-[1px] border-gray-200 w-[174px] h-[168px]" />
                                 </div>
 
