@@ -6,7 +6,7 @@ import {
 } from "@heroicons/vue/24/solid";
 import TextareaInput from '@/Components/TextareaInput.vue';
 import { ref, watch, computed } from 'vue';
-import { usePage } from "@inertiajs/vue3";
+import { usePage, Link } from "@inertiajs/vue3";
 import { isImage, isVideo } from "@/Libs/helpers";
 import InputError from "@/Components/InputError.vue";
 
@@ -167,12 +167,12 @@ defineExpose({
 
 <template>
     <div class="flex gap-2 mt-3">
-        <a :href="route('profile.index', { username: $page.props.auth.user.username })"
+        <Link :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name" class="h-fit">
-            <img :src="$page.props.auth.user.avatar_url ||
-                '/img/default_avatar.png'" class="w-8 transition-all border-2 rounded-full hover:border-cyan-500"
-                :alt="$page.props.auth.user.name" />
-        </a>
+        <img :src="$page.props.auth.user.avatar_url ||
+            '/img/default_avatar.png'" class="w-8 transition-all border-2 rounded-full hover:border-cyan-500"
+            :alt="$page.props.auth.user.name" />
+        </Link>
 
         <div class="flex flex-col w-full gap-0">
             <TextareaInput ref="commentTextAreaRef" v-model="comment"

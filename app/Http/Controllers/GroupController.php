@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
 use App\Models\GroupUser;
@@ -10,24 +11,25 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
+use App\Http\Resources\UserResource;
 use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
+use App\Notifications\MemberRoleChange;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\GroupStoreRequest;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\GroupDeleteRequest;
 use App\Http\Requests\GroupUpdateRequest;
 use App\Http\Requests\InviteUsersRequest;
+use App\Notifications\RequestToJoinGroup;
 use App\Notifications\InvitationToJoinGroup;
+use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
-use App\Http\Requests\GroupThumbnailImageUpdateRequest;
-use App\Http\Resources\UserResource;
-use App\Notifications\MemberRoleChange;
-use App\Notifications\RequestToJoinGroup;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
-use Illuminate\Support\Facades\Notification;
+use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use App\Http\Resources\PostResource;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
@@ -40,6 +42,10 @@ class GroupController extends Controller
     public function profile(Group $group, ?string $tabIndex = 'conversation')
     {
         $group->load('currentGroupUser');
+
+        $posts = Post::listedOnTimeLine(auth()->id())
+            ->where('group_id', $group->id)
+            ->paginate(20);
 
         $requestsPending = $group->requestsPending()->orderBy('name')->get();
 
@@ -55,6 +61,8 @@ class GroupController extends Controller
             // 'status' => session('status'),
             'success' => session('success'),
             'group' => new GroupResource($group),
+            'posts' => PostResource::collection($posts),
+            'after_comment_deleted' => session('after_comment_deleted'),
             'defaultIndex' => $defaultIndex,
             'requestsPending' => !$group->auto_approval
                 ? UserResource::collection($requestsPending)

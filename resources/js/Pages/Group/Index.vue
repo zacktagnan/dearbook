@@ -15,6 +15,7 @@ import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
+import PostList from "@/Components/dearbook/Post/List.vue"
 
 const props = defineProps({
     errors: Object,
@@ -25,6 +26,12 @@ const props = defineProps({
     //     type: String,
     // },
     group: {
+        type: Object,
+    },
+    posts: {
+        type: Object,
+    },
+    after_comment_deleted: {
         type: Object,
     },
     defaultIndex: {
@@ -474,7 +481,7 @@ const memberRoleChange = (user, newRoleSelected) => {
         <div class="">
             <div class="mt-0">
                 <TabGroup :selectedIndex="getSetSelectedIndex">
-                    <div class="bg-white shadow sticky top-[57px]">
+                    <div class="bg-white shadow sticky top-[57px] z-20">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Conversación" :selected="selected" />
@@ -503,8 +510,9 @@ const memberRoleChange = (user, newRoleSelected) => {
                     </div>
 
                     <TabPanels class="px-4 mx-auto my-4 lg:px-0 lg:w-2/3">
-                        <TabPanel :key="posts" class="p-3 bg-white shadow">
-                            Contenido de Conversación
+                        <TabPanel>
+                            <PostList class="flex-1 last:mb-[5px]" :posts="posts.data"
+                                :after_comment_deleted="after_comment_deleted" />
                         </TabPanel>
 
                         <TabPanel :key="followers" class="">

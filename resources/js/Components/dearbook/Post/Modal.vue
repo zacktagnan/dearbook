@@ -353,7 +353,7 @@ const openInputAttachmentFile = () => {
 <template>
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
-            <Dialog as="div" @close="closeModal" class="relative z-10">
+            <Dialog as="div" @close="closeModal" class="relative z-30">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0"
                     enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black/25" />
@@ -411,7 +411,7 @@ const openInputAttachmentFile = () => {
                                                     : ''
                                                     ">
                                                 <div v-if="myFile.deleted"
-                                                    class="absolute inset-x-0 bottom-0 z-30 flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75">
+                                                    class="absolute inset-x-0 bottom-0 z-40 flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75">
                                                     <span class="text-sm">to delete...</span>
 
                                                     <button @click="
