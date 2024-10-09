@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
@@ -19,9 +20,9 @@ class ArchiveManagementController extends Controller
 
     public function activityLogPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments' => function ($query) {
+        return Post::with(['user', 'attachments', 'group' => function ($query) {
             $query->limit(1)->orderBy('id')->get();
-        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at')
+        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
             ->latest()
             ->where('user_id', auth()->id())
@@ -38,9 +39,9 @@ class ArchiveManagementController extends Controller
 
     public function archivedPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments' => function ($query) {
+        return Post::with(['user', 'attachments', 'group' => function ($query) {
             $query->limit(1)->orderBy('id')->get();
-        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at')
+        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
             ->onlyArchived()->latest()
             ->where('user_id', auth()->id())
@@ -57,9 +58,9 @@ class ArchiveManagementController extends Controller
 
     public function trashedPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments' => function ($query) {
+        return Post::with(['user', 'attachments', 'group' => function ($query) {
             $query->limit(1)->orderBy('id')->get();
-        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at')
+        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             // ->select('id', 'body', 'user_id', 'created_at')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
             ->onlyTrashed()->latest()

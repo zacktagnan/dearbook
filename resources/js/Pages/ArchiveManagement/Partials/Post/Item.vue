@@ -104,13 +104,19 @@ const getContentExcerpt = (content) => {
             </div>
         </div>
 
-        <div class="w-full p-2 rounded-lg hover:bg-black/5">
+        <div class="w-full p-2 rounded-lg hover:bg-black/5 text-sm">
             <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle"
                 class="flex items-center w-full gap-2 p-1">
             <img :src="loadImage(post)" class="w-[60px] h-[60px] border-2 rounded-full" />
-            <div class="text-sm text-left">
+            <div class=" text-left">
                 <div v-html="getContentExcerpt(post.body) || '(sin texto)'"></div>
                 <small class="lowercase">{{ post.created_at_time }}</small>
+            </div>
+            <div v-if="post.group" class="ml-8">
+                <Link :href="route('group.profile', { group: post.group.slug })" title="Acceder al grupo"
+                    class="px-2 py-1 rounded-full text-gray-500 hover:text-gray-700 font-bold bg-sky-200 hover:bg-sky-300 transition-colors duration-150">
+                {{ post.group.name }}
+                </Link>
             </div>
             </Link>
         </div>
