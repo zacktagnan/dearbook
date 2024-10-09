@@ -391,6 +391,12 @@ const openInputAttachmentFile = () => {
 
                                 <div class="px-[14px] pt-[14px]">
                                     <PostHeader :post="post" :show-post-date="false" />
+
+                                    <div v-if="postForm.errors.group_id"
+                                        class="rounded-md bg-red-500 text-white px-3 py-2 mb-2 text-sm font-bold">
+                                        {{ postForm.errors.group_id }}
+                                    </div>
+
                                     <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
                                         :config="editorConfig">
                                     </ckeditor>

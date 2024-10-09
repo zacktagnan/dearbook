@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Enums\GroupUserStatus;
+use Closure;
 use App\Libs\Utilities;
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\GroupUser;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rules\File;
+use Illuminate\Foundation\Http\FormRequest;
 
 class PostStoreRequest extends FormRequest
 {
@@ -76,7 +79,21 @@ class PostStoreRequest extends FormRequest
                 File::types(Utilities::$allowedMimeTypes),
             ],
 
-            'group_id' => 'nullable|exists:groups,id',
+            'group_id' => [
+                'nullable',
+                'exists:groups,id',
+                function (string $attribute, mixed $value, Closure $fail) {
+                    $groupUser = GroupUser::where('user_id', auth()->id())
+                        ->where('group_id', $value)
+                        ->where('status', GroupUserStatus::APPROVED->value)
+                        // ->first();
+                        ->exists();
+
+                    if (!$groupUser) {
+                        $fail('Solo un MIEMBRO aprobado puede publicar.');
+                    }
+                },
+            ],
         ];
     }
 
