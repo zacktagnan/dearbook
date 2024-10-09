@@ -39,13 +39,19 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profile(Group $group, ?string $tabIndex = 'conversation')
+    public function profile(Request $request, Group $group, ?string $tabIndex = 'conversation')
     {
         $group->load('currentGroupUser');
 
         $posts = Post::listedOnTimeLine(auth()->id())
             ->where('group_id', $group->id)
-            ->paginate(20);
+            ->paginate(5); //20
+
+        $posts = PostResource::collection($posts);
+
+        if ($request->wantsJson()) {
+            return $posts;
+        }
 
         $requestsPending = $group->requestsPending()->orderBy('name')->get();
 
@@ -61,7 +67,7 @@ class GroupController extends Controller
             // 'status' => session('status'),
             'success' => session('success'),
             'group' => new GroupResource($group),
-            'posts' => PostResource::collection($posts),
+            'posts' => $posts,
             'after_comment_deleted' => session('after_comment_deleted'),
             'defaultIndex' => $defaultIndex,
             'requestsPending' => !$group->auto_approval

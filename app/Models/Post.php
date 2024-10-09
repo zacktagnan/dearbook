@@ -25,6 +25,7 @@ class Post extends Model
     protected $fillable = [
         'body',
         'user_id',
+        'group_id',
     ];
 
     public function user(): BelongsTo

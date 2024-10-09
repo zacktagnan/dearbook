@@ -70,12 +70,17 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    group: {
+        type: Object,
+        default: null,
+    },
     modelValue: Boolean,
 });
 
 const postForm = useForm({
     // id: null,
     body: "",
+    group_id: null,
     attachments: [],
     deleted_file_ids: [],
     _method: "POST",
@@ -151,6 +156,10 @@ const attachmentErrors = ref([]);
 
 const submitPost = () => {
     postForm.attachments = attachmentFiles.value.map((myFile) => myFile.file);
+
+    if (props.group) {
+        postForm.group_id = props.group.id
+    }
 
     if (props.post.id) {
         processUpdate();

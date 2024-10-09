@@ -15,6 +15,7 @@ import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
+import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
 
 const props = defineProps({
@@ -508,6 +509,7 @@ const memberRoleChange = (user, newRoleSelected) => {
 
                     <TabPanels class="px-4 mx-auto my-4 lg:px-0 lg:w-2/3">
                         <TabPanel>
+                            <PostCreate :group="group" />
                             <PostList class="flex-1 last:mb-[5px]" :posts="posts.data"
                                 :after_comment_deleted="after_comment_deleted" />
                         </TabPanel>

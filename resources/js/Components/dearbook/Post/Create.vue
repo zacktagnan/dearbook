@@ -27,6 +27,13 @@ import { ref } from 'vue';
 
 // ====================
 
+defineProps({
+    group: {
+        type: Object,
+        default: null,
+    },
+})
+
 const postToCreate = ref({
     id: null,
     body: '',
@@ -113,7 +120,7 @@ const closeShowNotification = () => {
     + 'errorsFromPostToCreate.body >> ' + errorsFromPostToCreate.body
         }} -->
 
-        <PostModal :post="postToCreate" v-model="showCreateModal"
+        <PostModal :post="postToCreate" :group="group" v-model="showCreateModal"
             @callActiveShowNotification="activeShowNotification" />
 
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"

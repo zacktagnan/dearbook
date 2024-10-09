@@ -156,7 +156,13 @@ class PostController extends Controller
         // // Si no se establece el BACK(), no vale el RedirectResponse
         // // y, entonces, mejor no establecer ningún tipo de RETURN
 
-        if ($to === 'home') {
+        if (str_contains($to, 'group')) {
+            $groupSlug = explode('_', $to)[1];
+            $to = 'group.profile';
+            return to_route($to, [
+                'group' => $groupSlug,
+            ], Response::HTTP_SEE_OTHER);
+        } else if ($to === 'home') {
             return to_route($to, [], Response::HTTP_SEE_OTHER);
             // return url('/');
         } else {

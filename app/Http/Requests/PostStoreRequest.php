@@ -59,7 +59,7 @@ class PostStoreRequest extends FormRequest
                     // $totalSize = collect($value)->sum(function (UploadedFile $file) {
                     //     return $file->getSize();
                     // });
-                    $totalSize = collect($value)->sum(fn (UploadedFile $file) => $file->getSize());
+                    $totalSize = collect($value)->sum(fn(UploadedFile $file) => $file->getSize());
 
                     // dd('maximumBytes', $this->maximumBytes, 'maximumTotalBytes', $this->maximumTotalBytes, 'totalSize', $totalSize, $totalSize / $this->maximumBytes);
 
@@ -75,6 +75,8 @@ class PostStoreRequest extends FormRequest
                 // File::types(self::$allowedMimeTypes),
                 File::types(Utilities::$allowedMimeTypes),
             ],
+
+            'group_id' => 'nullable|exists:groups,id',
         ];
     }
 

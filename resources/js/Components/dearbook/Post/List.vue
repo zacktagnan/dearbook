@@ -8,7 +8,7 @@ import ConfirmPostDeletionModal from '@/Components/Modal.vue'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import DangerButton from '@/Components/DangerButton.vue';
 import { router, usePage } from "@inertiajs/vue3";
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, onUpdated, watch } from 'vue';
 
 const props = defineProps({
     // En Home, posts llega como Object por ser una consulta paginada, aquí es recibido como Array pues lo que llega es, realmente, no los posts sino posts.data
@@ -73,7 +73,11 @@ const showConfirmDeletion = (entity, entityPrefix) => {
     let to = 'none'
     if (entityPrefix !== 'post.comment') {
         if (entity.deleted_at === '' && entity.archived_at === '') {
-            to = 'home'
+            if (entity.group) {
+                to = 'group_' + entity.group.slug
+            } else {
+                to = 'home'
+            }
         } else if (entity.archived_at !== '') {
             to = 'archive'
         }
@@ -237,6 +241,13 @@ const reinitAllPosts = () => {
         next: page.props.posts.links.next,
     }
 }
+
+// onUpdated(() => {
+//     allPosts.value = {
+//         data: page.props.posts.data,
+//         next: page.props.posts.links.next,
+//     }
+// })
 
 const loadMoreIntersectRef = ref(null)
 
