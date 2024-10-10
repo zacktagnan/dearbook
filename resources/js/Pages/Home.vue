@@ -33,8 +33,10 @@ defineProps({
 
             <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
                 <PostCreate />
-                <PostList class="flex-1 last:mb-[5px]" :posts="posts.data"
+                <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
                     :after_comment_deleted="after_comment_deleted" />
+                <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">No hay publicaciones actualmente
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>

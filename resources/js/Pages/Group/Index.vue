@@ -508,12 +508,32 @@ const memberRoleChange = (user, newRoleSelected) => {
                     </div>
 
                     <TabPanels class="px-4 mx-auto my-4 lg:px-0 lg:w-2/3">
+                        <!-- Conversaciones -->
                         <TabPanel>
-                            <PostCreate :group="group" />
-                            <PostList class="flex-1 last:mb-[5px]" :posts="posts.data"
-                                :after_comment_deleted="after_comment_deleted" />
+                            <template v-if="isMemberGroup || !isPrivateGroup">
+                                <template v-if="isMemberGroup">
+                                    <PostCreate :group="group" />
+                                </template>
+                                <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
+                                    :after_comment_deleted="after_comment_deleted" />
+                                <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">No hay
+                                    conversaciones actualmente</div>
+                            </template>
+                            <template v-else-if="!isMemberGroup && isPrivateGroup">
+                                <div class="p-4 bg-white mt-4 rounded shadow flex justify-center items-center gap-4">
+                                    <img src="/img/posts-blocked.png" class="w-20" alt="Apartado bloqueado" />
+                                    <div>
+                                        <h3 class="font-bold text-lg">Este grupo es <span class="italic">PRIVADO</span>
+                                        </h3>
+                                        <p class="mt-2">Es preciso unirse al grupo para poder ver las conversaciones o
+                                            participar en
+                                            ellas.</p>
+                                    </div>
+                                </div>
+                            </template>
                         </TabPanel>
 
+                        <!-- Información -->
                         <TabPanel :key="followers" class="">
                             <Edit v-if="isAdminGroup" @callActiveShowNotification="activeShowNotification"
                                 :group="group" />
@@ -521,6 +541,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                         </TabPanel>
 
                         <template v-if="isMemberGroup || !isPrivateGroup">
+                            <!-- Miembros -->
                             <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
                                 <TextInput class="w-full" :model-value="searchKeyword"
                                     :placeholder="$t('dearbook.group.search_inside_profile.placeholder')" />
@@ -545,6 +566,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                                 </div>
                             </TabPanel>
 
+                            <!-- Solicitudes -->
                             <TabPanel v-if="isAdminGroup && !isAutoApprovalGroup"
                                 class="p-3 bg-white shadow md:w-4/6 mx-auto">
                                 <div v-if="requestsPending.length" class="grid md:grid-cols-2 gap-3">
@@ -570,6 +592,7 @@ const memberRoleChange = (user, newRoleSelected) => {
                                 </div>
                             </TabPanel>
 
+                            <!-- Fotos -->
                             <TabPanel :key="followers" class="p-3 bg-white shadow">
                                 Contenido de Fotos
                             </TabPanel>
