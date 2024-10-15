@@ -249,7 +249,7 @@ const closeCropImageModal = () => {
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
                                         <div class="z-20 flex items-center justify-center w-[30px] h-[30px] shadow-lg">
                                             <a href="#">
-                                                <img src="/img/demo/avatar.png" alt=""
+                                                <img src="/img/default_avatar.png" alt=""
                                                     class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900" />
                                             </a>
                                         </div>
