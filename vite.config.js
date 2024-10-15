@@ -3,6 +3,8 @@ import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 import i18n from 'laravel-vue-i18n/vite'
 
+// let host = 'localhost'
+
 export default defineConfig({
     plugins: [
         laravel({
@@ -19,4 +21,8 @@ export default defineConfig({
         }),
         i18n(),
     ],
+    // server: {
+    //     hmr: { host },
+    //     host,
+    // },
 });
