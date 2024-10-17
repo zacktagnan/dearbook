@@ -157,13 +157,11 @@ const attachmentErrors = ref([]);
 const submitPost = () => {
     postForm.attachments = attachmentFiles.value.map((myFile) => myFile.file);
 
-    if (props.group) {
-        postForm.group_id = props.group.id
-    }
-
     if (props.post.id) {
+        postForm.group_id = props.post.group ? props.post.group.id : null
         processUpdate();
     } else {
+        postForm.group_id = props.group ? props.group.id : null
         processStore();
     }
 };
