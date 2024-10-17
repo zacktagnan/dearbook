@@ -155,7 +155,7 @@ return [
                     'subject' => 'Solicitud para unirse al grupo',
                     'greeting' => '¿Qué tal :admin_group?...',
                     'opening_phrase' => ':user_name ha solicitado unirse al grupo ":group_name".',
-                    'btn_text' => 'Aprobar SOLICITUD',
+                    'btn_text' => 'Ir a Aprobar SOLICITUD',
                 ],
             ],
             'notification' => 'Solicitud enviada. Recibirás un email cuando sea aprobada.',

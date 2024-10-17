@@ -58,8 +58,8 @@ class GroupController extends Controller
         $defaultIndex = match ($tabIndex) {
             'conversation' => 0,
             'info' => 1,
-            'followers' => 2,
-            'followed' => 3,
+            'members' => 2,
+            'requests' => 3,
             'photos' => 4,
         };
 

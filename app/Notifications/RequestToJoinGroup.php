@@ -48,6 +48,7 @@ class RequestToJoinGroup extends Notification
             ]))
             ->action(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.btn_text'), route('group.profile', [
                 'group' => $this->group->slug,
+                'tabIndex' => 'requests',
             ]));
     }
 

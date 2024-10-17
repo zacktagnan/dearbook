@@ -155,7 +155,7 @@ return [
                     'subject' => 'Request to join group',
                     'greeting' => 'What\'s up :admin_group?...',
                     'opening_phrase' => ':user_name has requested to join the group ":group_name".',
-                    'btn_text' => 'Approve REQUEST',
+                    'btn_text' => 'Go to Approve REQUEST',
                 ],
             ],
             'notification' => 'Request sended. You will receive an email when it be approved.',

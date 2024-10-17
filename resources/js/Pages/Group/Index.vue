@@ -88,7 +88,8 @@ const loadZIndex = (index) => {
     }[index];
 }
 
-const theSelectedIndex = ref(0)
+// const theSelectedIndex = ref(0)
+const theSelectedIndex = ref(props.defaultIndex)
 const getSetSelectedIndex = computed({
     get() {
         return theSelectedIndex.value
