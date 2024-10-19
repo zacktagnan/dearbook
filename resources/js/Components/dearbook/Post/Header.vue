@@ -34,6 +34,12 @@ defineProps({
                 </template>
             </h4>
             <div v-if="showPostDate" class="flex text-gray-400">
+                <div v-if="post.group && post.is_admin_of_the_group">
+                    <div class="tooltip tooltip-right" :data-tip="'Es ADMIN del grupo'">
+                        <small class="mr-0.5 text-xs hover:cursor-pointer px-1 text-sky-600 rounded-md bg-sky-100">Administrador</small>
+                    </div>
+                    <small class="mr-0.5 text-xs">&bull;</small>
+                </div>
                 <div class="tooltip tooltip-right" :data-tip="post.created_at_large_format">
                     <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle"
                         class="text-xs hover:cursor-pointer hover:underline">
