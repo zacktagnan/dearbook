@@ -160,62 +160,63 @@ class PostCommentController extends Controller
     public function destroy(int $id, string $to)
     {
         $comment = Comment::findOrFail($id);
-        if ($comment->user_id !== auth()->id()) {
-            return response("You don't have permission to DELETE this comment", Response::HTTP_FORBIDDEN);
+        $post = Post::findOrFail($comment->post_id);
+
+        if ($comment->isAuthor(auth()->id()) || $post->isAuthor(auth()->id())) {
+            DB::beginTransaction();
+
+            try {
+                $this->changeParentOrOrphan($comment);
+                $this->deleteResources($comment);
+
+
+                $comment->delete();
+
+                DB::commit();
+
+                // return response()->json([
+                //     'message' => 'Registro de COMMENT eliminado de BD',
+                //     // 'current_user_has_comment' => $hasComment,
+                //     // 'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
+                //     // // -> Sin el commentTree
+                //     // // 'latest_comments' => CommentResource::collection(
+                //     // //     $post->latestComments()->root()->latest()->limit(1)->get()
+                //     // // ),
+                //     // // 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
+                //     // // -> Con el commentTree
+                //     // 'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
+                //     // 'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
+
+                //     // 'all_child_comments' => !is_null($request->parent_id)
+                //     //     ? CommentResource::collection($commentParent->childComments()->get())
+                //     //     : [],
+                // ], Response::HTTP_OK);
+                // Este tipo de respuesta JSON no es posible que sea recibida por el useForm que efectuó esta petición de DELETE
+                // ... Habría que usar AXIOS, como en los procesos de STORE o UPDATE
+                // Así que se establece la devolución de datos mediante el envío de una Session a través del WITH
+
+                $totalPostCurrentUserComments = $post->currentUserComments()->where('user_id', auth()->id())->count();
+                $generalData = [
+                    'total_of_comments' => count($post->comments),
+                    'current_user_has_comment' => $totalPostCurrentUserComments > 0,
+                    'current_user_total_of_comments' => $totalPostCurrentUserComments,
+                ];
+
+                return back()->with('after_comment_deleted', [
+                    'message' => 'Registro de COMMENT eliminado de BD',
+                    'post_id' => $post->id,
+                    'general_data' => $generalData,
+                    'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
+                    'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+
+                return back();
+            }
         }
 
-        DB::beginTransaction();
-
-        try {
-            $this->changeParentOrOrphan($comment);
-            $this->deleteResources($comment);
-
-            $post = Post::findOrFail($comment->post_id);
-
-            $comment->delete();
-
-            DB::commit();
-
-            // return response()->json([
-            //     'message' => 'Registro de COMMENT eliminado de BD',
-            //     // 'current_user_has_comment' => $hasComment,
-            //     // 'current_user_total_of_comments' => $post->currentUserComments()->where('user_id', auth()->id())->count(),
-            //     // // -> Sin el commentTree
-            //     // // 'latest_comments' => CommentResource::collection(
-            //     // //     $post->latestComments()->root()->latest()->limit(1)->get()
-            //     // // ),
-            //     // // 'all_comments' => CommentResource::collection($post->comments()->root()->get()),
-            //     // // -> Con el commentTree
-            //     // 'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
-            //     // 'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
-
-            //     // 'all_child_comments' => !is_null($request->parent_id)
-            //     //     ? CommentResource::collection($commentParent->childComments()->get())
-            //     //     : [],
-            // ], Response::HTTP_OK);
-            // Este tipo de respuesta JSON no es posible que sea recibida por el useForm que efectuó esta petición de DELETE
-            // ... Habría que usar AXIOS, como en los procesos de STORE o UPDATE
-            // Así que se establece la devolución de datos mediante el envío de una Session a través del WITH
-
-            $totalPostCurrentUserComments = $post->currentUserComments()->where('user_id', auth()->id())->count();
-            $generalData = [
-                'total_of_comments' => count($post->comments),
-                'current_user_has_comment' => $totalPostCurrentUserComments > 0,
-                'current_user_total_of_comments' => $totalPostCurrentUserComments,
-            ];
-
-            return back()->with('after_comment_deleted', [
-                'message' => 'Registro de COMMENT eliminado de BD',
-                'post_id' => $post->id,
-                'general_data' => $generalData,
-                'latest_comments' => $this->convertLatestCommentsIntoTree($post->latestComments()->get()),
-                'all_comments' => $this->convertCommentsIntoTree($post->comments()->get()),
-            ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return back();
-        }
+        return response("You don't have permission to DELETE this comment", Response::HTTP_FORBIDDEN);
     }
 
     private function changeParentOrOrphan(Comment $comment): void

@@ -55,4 +55,9 @@ class Comment extends Model
     {
         $query->whereNull('parent_id');
     }
+
+    public function isAuthor(int $userId): bool
+    {
+        return $this->user_id === $userId;
+    }
 }
