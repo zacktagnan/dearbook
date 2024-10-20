@@ -23,4 +23,13 @@ return [
         'message' => 'Una vez que se elimine cada una de las publicaciones seleccionadas, igualmente, todos los recursos y datos relacionados de cada una de ellas serán eliminados de forma permanente y definitiva.',
         'button_text' => 'Eliminar Publicaciones Seleccionadas',
     ],
+
+    'deleted_by_admin' => [
+        'mailing' => [
+            'subject' => 'Publicación eliminada por ADMIN de grupo',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => 'Un ADMIN del grupo ":group_name" ha eliminado su publicación.',
+            'btn_text' => 'Acceder al GRUPO',
+        ],
+    ],
 ];

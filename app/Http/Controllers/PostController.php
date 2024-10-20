@@ -12,6 +12,7 @@ use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\PostResource;
 use App\Libs\Utilities;
+use App\Notifications\PostDeleted;
 use App\Traits\ResourcesDeletion;
 use Illuminate\Http\Request;
 use Inertia\Response as InertiaResponse;
@@ -144,11 +145,15 @@ class PostController extends Controller
     {
         $post = Post::withArchived()->findOrFail($id);
 
-        if ($post->group && $post->group->isAdminOfTheGroup(auth()->id()) || $post->isAuthor(auth()->id())) {
+        if ($post->isAuthor(auth()->id()) || $post->group && $post->group->isAdminOfTheGroup(auth()->id())) {
             if (!is_null($post->archived_at)) {
                 $post->unArchive();
             }
             $post->delete();
+
+            if (!$post->isAuthor(auth()->id())) {
+                $post->user->notify(new PostDeleted($post->user, $post->group));
+            }
 
             // return back();
             // // Si no se establece el BACK(), no vale el RedirectResponse

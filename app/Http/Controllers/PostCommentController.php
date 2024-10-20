@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
+use App\Notifications\CommentDeleted;
 use App\Traits\CommentsTree;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -173,6 +174,10 @@ class PostCommentController extends Controller
                 $comment->delete();
 
                 DB::commit();
+
+                if (!$comment->isAuthor(auth()->id())) {
+                    $comment->user->notify(new CommentDeleted($comment->user, $post));
+                }
 
                 // return response()->json([
                 //     'message' => 'Registro de COMMENT eliminado de BD',
