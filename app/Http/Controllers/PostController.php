@@ -143,36 +143,37 @@ class PostController extends Controller
     public function destroy(int $id, string $to) //: ResponseFactory|RedirectResponse
     {
         $post = Post::withArchived()->findOrFail($id);
-        if ($post->user_id !== auth()->id()) {
-            return response("You don't have permission to DELETE this post", Response::HTTP_FORBIDDEN);
+
+        if ($post->group && $post->group->isAdminOfTheGroup(auth()->id()) || $post->isAuthor(auth()->id())) {
+            if (!is_null($post->archived_at)) {
+                $post->unArchive();
+            }
+            $post->delete();
+
+            // return back();
+            // // Si no se establece el BACK(), no vale el RedirectResponse
+            // // y, entonces, mejor no establecer ningún tipo de RETURN
+
+            if (str_contains($to, 'group')) {
+                $groupSlug = explode('_', $to)[1];
+                $to = 'group.profile';
+                return to_route($to, [
+                    'group' => $groupSlug,
+                ], Response::HTTP_SEE_OTHER);
+            } else if ($to === 'home') {
+                return to_route($to, [], Response::HTTP_SEE_OTHER);
+                // return url('/');
+            } else {
+                return to_route('archive-management.index')->with([
+                    'success' => [
+                        'from' => $to,
+                        'message' => 'Publicación enviada a la papelera satisfactoriamente.',
+                    ],
+                ]);
+            }
         }
 
-        if (!is_null($post->archived_at)) {
-            $post->unArchive();
-        }
-        $post->delete();
-
-        // return back();
-        // // Si no se establece el BACK(), no vale el RedirectResponse
-        // // y, entonces, mejor no establecer ningún tipo de RETURN
-
-        if (str_contains($to, 'group')) {
-            $groupSlug = explode('_', $to)[1];
-            $to = 'group.profile';
-            return to_route($to, [
-                'group' => $groupSlug,
-            ], Response::HTTP_SEE_OTHER);
-        } else if ($to === 'home') {
-            return to_route($to, [], Response::HTTP_SEE_OTHER);
-            // return url('/');
-        } else {
-            return to_route('archive-management.index')->with([
-                'success' => [
-                    'from' => $to,
-                    'message' => 'Publicación enviada a la papelera satisfactoriamente.',
-                ],
-            ]);
-        }
+        return response("You don't have permission to DELETE this post", Response::HTTP_FORBIDDEN);
     }
 
     public function destroyFromManagementAllSelected(Request $request)

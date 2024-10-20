@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'confirm_deletion' => [
-        'question' => '¿Está seguro que desea mandar su publicación a la papelera?',
+        'question' => '¿Está seguro que desea mandar esta publicación a la papelera?',
         'message' => 'Una vez en la papelera, dicha publicación no será visible públicamente. Podrá ser archivada, restaurada y/o eliminada por completo desde la sección de Gestión de Archivo.',
         'button_text' => 'Mandar a la Papelera',
     ],

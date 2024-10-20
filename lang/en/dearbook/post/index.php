@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 return [
     'confirm_deletion' => [
-        'question' => 'Are you sure you want to move your post to bin?',
+        'question' => 'Are you sure you want to move this post to bin?',
         'message' => 'Once in the trash, such a post will not be publicly visible. It can be archived, restored and/or deleted completely from the Archive Management section.',
         'button_text' => 'Move to Bin',
     ],

@@ -68,4 +68,9 @@ class Post extends Model
             ])
             ->latest();
     }
+
+    public function isAuthor(int $userId): bool
+    {
+        return $this->user_id === $userId;
+    }
 }

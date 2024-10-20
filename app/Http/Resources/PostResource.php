@@ -35,6 +35,7 @@ class PostResource extends JsonResource
 
             // Cargando a través del nombre de la relación con Post,
             'group' => $this->group,
+            'group' => new GroupResource($this->group),
             'is_admin_of_the_group' => $this->group?->isAdminOfTheGroup($this->user->id),
 
             'attachments' => AttachmentResource::collection($this->attachments),
