@@ -149,6 +149,9 @@ class PostController extends Controller
             if (!is_null($post->archived_at)) {
                 $post->unArchive();
             }
+
+            $post->deleted_by = auth()->id();
+            $post->save();
             $post->delete();
 
             if (!$post->isAuthor(auth()->id())) {
@@ -280,6 +283,11 @@ class PostController extends Controller
             'archive' => $post->unArchive(),
             'trash' => $post->restore(),
         };
+
+        if ($from === 'trash') {
+            $post->deleted_by = null;
+            $post->save();
+        }
     }
 
     public function forceDestroyAllSelected(Request $request)
