@@ -56,8 +56,10 @@ class Post extends Model
     public static function listedOnTimeLine($userId): Builder
     {
         return Post::withCount(['reactions',])
-            ->whereHas('group', function ($query) {
-                $query->whereNull('deleted_at');
+            ->where(function ($query) {
+                $query->whereHas('group', function ($query) {
+                    $query->whereNull('deleted_at');
+                })->orWhereDoesntHave('group');
             })
             ->with([
                 'reactions' => function ($query) use ($userId) {
