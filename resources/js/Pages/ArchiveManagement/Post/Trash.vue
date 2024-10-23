@@ -17,7 +17,11 @@ const allTrashedPostIds = ref([])
 const getAllTrashedPostIds = () => {
     Object.keys(posts.value).forEach(index => {
         for (let item of posts.value[index]) {
-            allTrashedPostIds.value.push(item.id)
+            // allTrashedPostIds.value.push(item.id)
+            // Solo los eliminados por el autor del Post...
+            if (item.user_id === item.deleted_by) {
+                allTrashedPostIds.value.push(item.id)
+            }
         }
     });
 }

@@ -276,7 +276,7 @@ class PostController extends Controller
 
     public function applyRestoration(Post $post, string $from)
     {
-        if ($post->user_id !== auth()->id()) {
+        if ($this->restorationIsNotAllowed($post, $from)) {
             return response("You don't have permission to PROCESS the Restoration of this post", Response::HTTP_FORBIDDEN);
         }
         match ($from) {
@@ -288,6 +288,14 @@ class PostController extends Controller
             $post->deleted_by = null;
             $post->save();
         }
+    }
+
+    public function restorationIsNotAllowed(Post $post, string $from): bool
+    {
+        return match ($from) {
+            'archive' => $post->user_id !== auth()->id(),
+            'trash' => $post->user_id !== auth()->id() && !$post->group->isAdminOfTheGroup(auth()->id()),
+        };
     }
 
     public function forceDestroyAllSelected(Request $request)
@@ -337,7 +345,7 @@ class PostController extends Controller
 
     public function applyForceDeletion(Post $post)
     {
-        if ($post->user_id !== auth()->id()) {
+        if ($this->forceDeletionIsNotAllowed($post)) {
             return response("You don't have permission to PROCESS the Total Deletion of this post", Response::HTTP_FORBIDDEN);
         }
 
@@ -352,6 +360,11 @@ class PostController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
         }
+    }
+
+    public function forceDeletionIsNotAllowed(Post $post): bool
+    {
+        return $post->user_id !== auth()->id() && !$post->group->isAdminOfTheGroup(auth()->id());
     }
 
     private function deleteResources(Post $post): void

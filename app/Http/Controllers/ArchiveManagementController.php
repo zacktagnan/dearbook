@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\GroupResource;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -56,23 +58,59 @@ class ArchiveManagementController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function trashedPostsCollection(): Collection
+    public function trashedPostsCollection(): Collection|JsonResponse
     {
-        return Post::with(['user', 'attachments', 'group' => function ($query) {
-            $query->limit(1)->orderBy('id')->get();
-        }])->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
-            // ->select('id', 'body', 'user_id', 'created_at')
-            ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
-            ->onlyTrashed()->latest()
-            // ->groupBy('user_id', 'created_at', 'id')
-            ->where('user_id', auth()->id())
-            ->get()
-            // ->groupBy([fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'), 'user_id', 'id']);
-            // ->groupBy([fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'), 'id'])
-            // Buen resultado
-            // ->groupBy(fn ($item) => Carbon::parse($item->created_at)->format('Y-m-d'));
-            ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
-        // ->all();
+        $authId = auth()->id();
+
+        try {
+            $posts = Post::onlyTrashed()
+                ->where(function ($query) use ($authId) {
+                    $query->where('user_id', $authId)
+                        ->orWhere(function ($subQuery) use ($authId) {
+                            $subQuery->whereHas('group.currentGroupUser', function ($query) {
+                                $query->where('role', 'admin');
+                            })
+                                // No mostrar si el autor lo envió a la papelera
+                                ->where('deleted_by', '!==', $authId);
+                        });
+                    $query->orWhere(function ($subQuery) {
+                        // Permitir que cualquier ADMIN vea los posts eliminados por otros ADMIN
+                        $subQuery->whereHas('group.currentGroupUser', function ($query) {
+                            $query->where('role', 'admin');
+                        });
+                    });
+                })
+                ->selectRaw('
+                    id,
+                    body,
+                    user_id,
+                    deleted_by,
+                    deleted_at,
+                    archived_at,
+                    group_id,
+                    created_at,
+                    DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time,
+                    DATE_FORMAT(deleted_at, "%Y-%m-%d %H:%i:%s") AS deleted_at_time
+                ')
+                ->with(['user', 'attachments', 'group'])
+                ->latest()
+                ->get();
+
+            $posts->each(function ($post) {
+                if ($post->group) {
+                    $post->group = new GroupResource($post->group);
+                    $post->group = $post->group->toArray(request());
+                    // Convierte a array para que sea interpreta a modo de JSON desde el Frontend
+                }
+            });
+
+            $groupedPosts = $posts->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+
+            return new Collection($groupedPosts);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['error' => 'Error en la consulta'], 500);
+        }
     }
 
     public function trashedPosts()

@@ -14,7 +14,7 @@ return [
         'button_text' => 'Move to Bin Selected Posts',
     ],
     'confirm_force_deletion' => [
-        'question' => 'Are you sure you want to delete your post?',
+        'question' => 'Are you sure you want to delete this post?',
         'message' => 'Once said post is deleted, all resources and data related to it will be permanently and definitive deleted also.',
         'button_text' => 'Delete Post',
     ],

@@ -28,6 +28,7 @@ class PostResource extends JsonResource
                 ?: '',
             'user' => new UserResource($this->user),
 
+            'deleted_by' => $this->deleted_by,
             'deleted_at' => $this->deleted_at
                 ?: '',
             'archived_at' => $this->archived_at

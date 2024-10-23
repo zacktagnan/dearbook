@@ -14,7 +14,7 @@ return [
         'button_text' => 'Mandar a la Papelera Publicaciones Seleccionadas',
     ],
     'confirm_force_deletion' => [
-        'question' => '¿Está seguro que desea eliminar su publicación?',
+        'question' => '¿Está seguro que desea eliminar esta publicación?',
         'message' => 'Una vez que se elimine dicha publicación, igualmente, todos los recursos y datos relacionados con ella serán eliminados de forma permanente y definitiva.',
         'button_text' => 'Eliminar Publicación',
     ],

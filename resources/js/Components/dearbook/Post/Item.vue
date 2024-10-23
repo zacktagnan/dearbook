@@ -73,6 +73,10 @@ const isTrashed = computed(
     () => props.post.deleted_at !== ''
 );
 
+const isTrashedByAdminGroup = computed(
+    () => props.post.group && props.post.deleted_by && props.post.deleted_by !== props.post.user.id
+);
+
 const isArchived = computed(
     () => props.post.archived_at !== ''
 );
@@ -269,7 +273,7 @@ defineExpose({
                     </template>
                     <template v-else>
                         <template v-if="isTrashed">
-                            <div class="px-1 py-1">
+                            <div v-if="!isTrashedByAdminGroup" class="px-1 py-1">
                                 <MenuItem v-slot="{ active }">
                                 <button @click="$emit('callRestoreItemFromTrash')" :class="[
                                     active
@@ -285,7 +289,7 @@ defineExpose({
                             </div>
 
                             <div class="px-1 py-1">
-                                <MenuItem v-slot="{ active }">
+                                <MenuItem v-if="!isTrashedByAdminGroup" v-slot="{ active }">
                                 <button @click="$emit('callArchiveItem', post.id)" :class="[
                                     active
                                         ? 'bg-sky-100'
@@ -344,19 +348,51 @@ defineExpose({
                 </template>
 
                 <template v-else-if="isPostGroupAdmin">
-                    <div class="px-1 py-1">
-                        <MenuItem v-slot="{ active }">
-                            <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                    <template v-if="!isTrashed">
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                                <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                                    active
+                                        ? 'bg-sky-100'
+                                        : 'text-gray-900',
+                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]" title="Mover a la papelera">
+                                    <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                    A la papelera
+                                </button>
+                            </MenuItem>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callRestoreItemFromArchive')" :class="[
                                 active
                                     ? 'bg-sky-100'
                                     : 'text-gray-900',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Mover a la papelera">
-                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                A la papelera
+                            ]" title="Restaurar publicación">
+                                <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                    aria-hidden="true" />
+                                Restaurar
                             </button>
-                        </MenuItem>
-                    </div>
+                            </MenuItem>
+                        </div>
+
+                        <div class="px-1 py-1">
+                            <MenuItem v-slot="{ active }">
+                            <button @click="$emit('callForceDeleteItem')" :class="[
+                                active
+                                    ? 'bg-sky-100'
+                                    : 'text-gray-900',
+                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                            ]" title="Eliminar del todo">
+                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                Eliminar
+                            </button>
+                            </MenuItem>
+                        </div>
+                    </template>
                 </template>
             </OptionsDropDown>
             <!-- =========================================================== -->
