@@ -58,7 +58,15 @@ class Post extends Model
         return Post::withCount(['reactions',])
             ->where(function ($query) {
                 $query->whereHas('group', function ($query) {
-                    $query->whereNull('deleted_at');
+                    $query->where('type', 'public')
+                        ->whereNull('deleted_at');
+                })->orWhere(function ($query) {
+                    $query->whereHas('group', function ($query) {
+                        $query->where('type', 'private')
+                            ->whereNull('deleted_at');
+                    })->whereHas('group.currentGroupUser', function ($query) {
+                        $query->where('status', 'approved');
+                    });
                 })->orWhereDoesntHave('group');
             })
             ->with([
