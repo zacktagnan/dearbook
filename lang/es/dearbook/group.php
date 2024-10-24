@@ -206,6 +206,6 @@ return [
             'opening_phrase' => 'Has sido expulsado del grupo ":group_name". Lo sentimos mucho.',
             'btn_text' => 'Acceder al GRUPO',
         ],
-        'notification' => 'Expulsión satisfactorio del miembro :user_name.',
+        'notification' => 'Expulsión satisfactoria del miembro :user_name.',
     ],
 ];
