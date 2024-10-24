@@ -264,6 +264,35 @@ const memberRoleChange = (user, newRoleSelected) => {
         preserveScroll: true
     })
 }
+
+import ConfirmDeleteMemberModal from '@/Components/Modal.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import DangerButton from '@/Components/DangerButton.vue';
+
+const memberToDelete = ref(null)
+
+const showingConfirmDeleteMemberModal = ref(false);
+const showConfirmDeleteMemberModal = (member) => {
+    memberToDelete.value = member
+    showingConfirmDeleteMemberModal.value = true;
+};
+const closeConfirmDeleteMemberModal = () => {
+    showingConfirmDeleteMemberModal.value = false;
+};
+
+const deleteMember = () => {
+    closeConfirmDeleteMemberModal()
+
+    if (memberToDelete.value) {
+        const form = useForm({
+            user_id: memberToDelete.value.id,
+        })
+
+        form.delete(route('group.remove-member', props.group.slug), {
+            preserveScroll: true
+        })
+    }
+}
 </script>
 
 <template>
@@ -550,13 +579,24 @@ const memberRoleChange = (user, newRoleSelected) => {
                                     <UserItem v-for="member of group.all_group_users" :user="member"
                                         :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
                                         :key="member.id">
-                                        <div v-if="isAdminGroup">
+                                        <div v-if="isAdminGroup" class="flex items-center gap-2">
                                             <select @change="memberRoleChange(member, $event.target.value)"
                                                 :disabled="isTheOwnerGroup(member.id)"
                                                 class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400">
                                                 <option value="admin" :selected="member.role === 'admin'">admin</option>
                                                 <option value="user" :selected="member.role === 'user'">user</option>
                                             </select>
+
+                                            <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-300"
+                                            :title="[
+                                                isTheOwnerGroup(member.id)
+                                                ? 'Imposible eliminar creador del grupo'
+                                                : 'Eliminar miembro'
+                                            ]"
+                                            :disabled="isTheOwnerGroup(member.id)"
+                                            @click="showConfirmDeleteMemberModal(member)">
+                                                <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-gray-100" />
+                                            </button>
                                         </div>
                                     </UserItem>
                                 </div>
@@ -610,5 +650,26 @@ const memberRoleChange = (user, newRoleSelected) => {
 
         <InviteUserModal :group="group" v-model="showingInviteUserModal"
             @callActiveShowNotification="activeShowNotification" />
+
+        <ConfirmDeleteMemberModal :show="showingConfirmDeleteMemberModal" @close="closeConfirmDeleteMemberModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ $t('dearbook.group.delete_member_option.confirmation.question') }}
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ $t('dearbook.group.delete_member_option.confirmation.text') }}
+                </p>
+
+                <div class="flex justify-end mt-6">
+                    <SecondaryButton @click="closeConfirmDeleteMemberModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+
+                    <DangerButton class="ms-3"
+                        @click="deleteMember" :title="$t('dearbook.group.delete_member_option.confirmation.btn_text')">
+                        {{ $t('dearbook.group.delete_member_option.confirmation.btn_text') }}
+                    </DangerButton>
+                </div>
+            </div>
+        </ConfirmDeleteMemberModal>
     </AuthenticatedLayout>
 </template>

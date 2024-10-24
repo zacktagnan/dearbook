@@ -127,6 +127,14 @@ return [
         ],
     ],
 
+    'delete_member_option' => [
+        'confirmation' => [
+            'question' => 'Proceso de expulsión de miembro',
+            'text' => 'Está a punto de expulsar al miembro ":user_name" del grupo. Confirmar para proseguir con el proceso.',
+            'btn_text' => 'Expulsar miembro',
+        ],
+    ],
+
     'process_to_join' => [
         'by_invitation' => [
             'mailing' => [
@@ -189,5 +197,15 @@ return [
             'btn_text' => 'Acceder al GRUPO',
         ],
         'notification' => 'Cambio satisfactorio de Role a ":role" para :user_name.',
+    ],
+
+    'member_removed' => [
+        'mailing' => [
+            'subject' => 'Expulsado del grupo',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => 'Has sido expulsado del grupo ":group_name". Lo sentimos mucho.',
+            'btn_text' => 'Acceder al GRUPO',
+        ],
+        'notification' => 'Expulsión satisfactorio del miembro :user_name.',
     ],
 ];

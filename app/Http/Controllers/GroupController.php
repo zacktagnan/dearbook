@@ -30,6 +30,7 @@ use App\Notifications\InvitationToJoinGroupApproved;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
 use App\Http\Resources\PostResource;
+use App\Notifications\MemberRemovedFromGroup;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
@@ -394,6 +395,34 @@ class GroupController extends Controller
 
             return back()->with('success', __('dearbook/group.member_role_change.notification', [
                 'role' => $request->role,
+                'user_name' => $groupUser->user->name,
+            ]));
+        }
+
+        return back();
+    }
+
+    public function removeMember(Request $request, Group $group)
+    {
+        if (!$group->isAdminOfTheGroup(auth()->id())) {
+            return response("You don't have permission to DELETE the selected member from this group.", Response::HTTP_FORBIDDEN);
+        }
+
+        if ($group->isOwnerOfTheGroup($request->user_id)) {
+            return response("You don't have permission to DELETE the owner of the group.", Response::HTTP_FORBIDDEN);
+        }
+
+        $groupUser = GroupUser::where('user_id', $request->user_id)
+            ->where('group_id', $group->id)
+            ->first();
+
+        if ($groupUser) {
+            $memberDeleted = $groupUser->user;
+            $groupUser->delete();
+
+            $memberDeleted->notify(new MemberRemovedFromGroup($group, $memberDeleted));
+
+            return back()->with('success', __('dearbook/group.member_removed.notification', [
                 'user_name' => $groupUser->user->name,
             ]));
         }
