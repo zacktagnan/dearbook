@@ -166,7 +166,7 @@ const reset = () => {
 const loadCurrentTrashedPosts = async (hasToReset) => {
     try {
         const response = await axiosClient.get(route('archive-management.trashed-posts'))
-        posts.value = response.data.current_trashed_posts
+        posts.value = response.data.current_trashed_posts || []
 
         if (hasToReset) {
             reset()
@@ -175,6 +175,7 @@ const loadCurrentTrashedPosts = async (hasToReset) => {
         getAllTrashedPostIds()
     } catch (error) {
         console.log('ERRORS-loadCurrentTrashedPosts', error)
+        posts.value = [];
     }
 }
 

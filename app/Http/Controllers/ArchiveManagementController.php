@@ -6,6 +6,7 @@ use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\GroupResource;
 use Illuminate\Database\Eloquent\Collection;
@@ -22,7 +23,7 @@ class ArchiveManagementController extends Controller
 
     public function activityLogPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments', 'group'])
+        return Post::with(['user', 'attachments', 'group.currentGroupUser'])
             ->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
             ->latest()
@@ -40,7 +41,7 @@ class ArchiveManagementController extends Controller
 
     public function archivedPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments', 'group'])
+        return Post::with(['user', 'attachments', 'group.currentGroupUser'])
             ->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
             ->onlyArchived()->latest()
@@ -63,48 +64,65 @@ class ArchiveManagementController extends Controller
         try {
             $posts = Post::onlyTrashed()
                 ->where(function ($query) use ($authId) {
+                    // Mostrar posts eliminados por el usuario (sus propios posts)
                     $query->where('user_id', $authId)
+                        ->where('deleted_by', $authId)
                         ->orWhere(function ($subQuery) use ($authId) {
-                            $subQuery->whereHas('group.currentGroupUser', function ($query) {
-                                $query->where('role', 'admin');
-                            })
-                                // No mostrar si el autor lo envió a la papelera
-                                ->where('deleted_by', '!==', $authId);
+                            // Permitir que el autor vea sus posts eliminados por otros (ADMIN)
+                            $subQuery->where('user_id', $authId);
                         });
-                    $query->orWhere(function ($subQuery) {
-                        // Permitir que cualquier ADMIN vea los posts eliminados por otros ADMIN
-                        $subQuery->whereHas('group.currentGroupUser', function ($query) {
+
+                    // También mostrar posts eliminados por otros administradores
+                    $query->orWhere(function ($subQuery) use ($authId) {
+                        // Posts eliminados por un ADMIN
+                        $subQuery->whereHas('group.currentGroupUser', function ($query) use ($authId) {
                             $query->where('role', 'admin');
-                        });
+                        })
+                            // Excluir posts eliminados que son de autoría del ADMIN que está consultando
+                            ->where('user_id', '!=', $authId)
+                            // Permitir que el ADMIN vea los posts eliminados por otros ADMINs
+                            ->where('deleted_by', '!=', DB::raw('user_id'));
                     });
                 })
                 ->selectRaw('
-                    id,
-                    body,
-                    user_id,
-                    deleted_by,
-                    deleted_at,
-                    archived_at,
-                    group_id,
-                    created_at,
-                    DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time,
-                    DATE_FORMAT(deleted_at, "%Y-%m-%d %H:%i:%s") AS deleted_at_time
-                ')
-                ->with(['user', 'attachments', 'group'])
+                id,
+                body,
+                user_id,
+                deleted_by,
+                deleted_at,
+                archived_at,
+                group_id,
+                created_at,
+                DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time,
+                DATE_FORMAT(deleted_at, "%Y-%m-%d %H:%i:%s") AS deleted_at_time
+            ')
+                // ->with(['user', 'attachments', 'group'])
+                ->with(['user', 'group'])
                 ->latest()
                 ->get();
 
+            // Procesamiento adicional si es necesario
             $posts->each(function ($post) {
+                // Al ser attachments una relación de tipo MorphMany, no se puede aplicar el ->isNotEmpty()
+                // if ($post->attachments()->isNotEmpty()) {
+                if ($post->attachments()->count() > 0) {
+                    // Asigna solo el primer attachment si existe
+                    $post->attachments = [$post->attachments()->first()];
+                } else {
+                    // Si no tiene attachments, se asigna null o un arreglo vacío
+                    $post->attachments = []; // establecer null o []
+                }
+
                 if ($post->group) {
-                    $post->group = new GroupResource($post->group);
+                    $post->group = new GroupResource($post->group, false);
                     $post->group = $post->group->toArray(request());
-                    // Convierte a array para que sea interpreta a modo de JSON desde el Frontend
                 }
             });
 
-            $groupedPosts = $posts->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+            // Agrupar los posts por fecha (ajusta según tu necesidad)
+            $postsWithGroupBy = $posts->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
 
-            return new Collection($groupedPosts);
+            return new Collection($postsWithGroupBy);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['error' => 'Error en la consulta'], 500);

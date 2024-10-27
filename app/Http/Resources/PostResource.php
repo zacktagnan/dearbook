@@ -35,11 +35,11 @@ class PostResource extends JsonResource
                 ?: '',
 
             // Cargando a través del nombre de la relación con Post,
-            'group' => $this->group,
             'group' => new GroupResource($this->group),
             'is_admin_of_the_group' => $this->group?->isAdminOfTheGroup($this->user->id),
 
             'attachments' => AttachmentResource::collection($this->attachments),
+
             // -> Consulta desde el Resource - Enviar datos
             // 'users_that_react_to_post' => $usersThatReactToPost,
             'total_of_reactions' => $this->reactions_count,
@@ -77,6 +77,4 @@ class PostResource extends JsonResource
             'updated_at_large_format' => $this->updatedAtWithLargeFormat(),
         ];
     }
-
-    protected function getIfIsAnAdminGroup() {}
 }
