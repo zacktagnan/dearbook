@@ -10,6 +10,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class GroupResource extends JsonResource
 {
+    public function __construct($resource, public bool $includeMembers = true)
+    {
+        parent::__construct($resource);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +22,7 @@ class GroupResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $dataResource = [
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
@@ -54,26 +59,32 @@ class GroupResource extends JsonResource
                     : Utilities::$defaultAvatarImage,
             ],
 
-            // 'total_group_user' => count($this->allGroupUser), //OK
-            // 'all_group_users' => UserResource::collection($this->allGroupUser),
-            // Esta relación da todos los miembros sea cuál sea su STATUS (APPROVED, PENDING, REJECTED o el que sea)
-            // 'all_group_users' => $this->allGroupUser,
-            // ------------------------------------------------------------------------------
-            'total_group_user' => count($this->members),
-            'all_group_users' => GroupUserResource::collection(
-                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.group_id'])
-                    ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
-                    ->where('g_u.group_id', $this->id)
-                    ->orderBy('g_u.role')
-                    ->orderBy('users.name')
-                    ->get()
-            ),
-
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'created_at_formatted' => $this->createdAtWithFormat(),
         ];
+
+        if ($this->includeMembers) {
+            // 'total_group_user' => count($this->allGroupUser), //OK
+            // 'all_group_users' => UserResource::collection($this->allGroupUser),
+            // Esta relación da todos los miembros sea cuál sea su STATUS (APPROVED, PENDING, REJECTED o el que sea)
+            // 'all_group_users' => $this->allGroupUser,
+            // ---------------------------------------------------------------------------------------------------------
+            // Pero, con el uso de MEMBERS, solamente, se obtienen los que ya tienen el STATUS de APPROVED
+            // ---------------------------------------------------------------------------------------------------------
+            $dataResource['total_group_user'] = count($this->members);
+            $dataResource['all_group_users'] = GroupUserResource::collection(
+                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.group_id'])
+                    ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                    ->where('g_u.group_id', $this->id)
+                    ->orderBy('g_u.role')
+                    ->orderBy('users.name')
+                    ->get()
+            );
+        }
+
+        return $dataResource;
     }
 }
