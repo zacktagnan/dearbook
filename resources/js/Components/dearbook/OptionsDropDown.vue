@@ -8,6 +8,10 @@ import { computed } from "vue";
 
 const props = defineProps({
     ellipsisTypeIcon: String,
+    isDisabled: {
+        type: Boolean,
+        default: false,
+    },
     menuButtonClasses: {
         type: String,
         default: '',
@@ -28,8 +32,8 @@ const show = computed({
 <template>
     <Menu v-if="show" as="div" class="relative inline-block text-left">
         <div>
-            <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5"
-                :class="menuButtonClasses" title="Ver opciones">
+            <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5 disabled:hover:bg-transparent disabled:text-gray-400"
+                :class="menuButtonClasses" :title="isDisabled ? 'Sin acceso' : 'Ver opciones'" :disabled="isDisabled">
                 <EllipsisVerticalIcon v-if="ellipsisTypeIcon === 'vertical'" class="w-5 h-5" aria-hidden="true" />
                 <EllipsisHorizontalIcon v-else-if="ellipsisTypeIcon === 'horizontal'" class="w-5 h-5"
                     aria-hidden="true" />

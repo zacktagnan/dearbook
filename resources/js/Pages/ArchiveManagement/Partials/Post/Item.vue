@@ -33,6 +33,17 @@ const isPostGroupAdmin = computed(
     () => props.post.group?.current_group_user?.role === 'admin'
 );
 
+const isPostGroupMember = computed(
+    () => props.post.group && props.post.group?.current_group_user?.status === 'approved'
+);
+
+const disableOptions = computed(() => {
+    if (props.post.group) {
+        return !isPostGroupMember.value
+    }
+    return false
+});
+
 const isTrashed = computed(
     () => props.post.deleted_at !== null
 );
@@ -160,7 +171,7 @@ const getContentExcerpt = (content) => {
             </div>
 
             <div class="pr-2">
-                <OptionsDropDown v-model="isPostAuthorOrIsPostGroupAdmin" :ellipsis-type-icon="'vertical'">
+                <OptionsDropDown v-model="isPostAuthorOrIsPostGroupAdmin" :ellipsis-type-icon="'vertical'" :is-disabled="disableOptions">
                     <template v-if="!isTrashed && !isArchived">
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
