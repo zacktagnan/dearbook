@@ -9,11 +9,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\CommentReactionController;
 use App\Http\Controllers\GroupController;
+use App\Http\Middleware\CheckGroupMembership;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/u/{user:username}/posts/{id}', [PostController::class, 'show'])->name('post.show');
+    Route::get('/u/{user:username}/posts/{id}', [PostController::class, 'show'])->name('post.show')
+        ->middleware(CheckGroupMembership::class);
     Route::get('/g/{group:slug}/{tabIndex?}', [GroupController::class, 'profile'])->name('group.profile');
 });
 

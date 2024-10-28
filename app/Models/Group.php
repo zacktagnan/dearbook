@@ -61,6 +61,11 @@ class Group extends Model
         return $this->hasOne(GroupUser::class)->where('user_id', auth()->id());
     }
 
+    public function currentGroupUserApproved(): HasOne
+    {
+        return $this->hasOne(GroupUser::class)->where('user_id', auth()->id())->where('status', GroupUserStatus::APPROVED->value);
+    }
+
     public function allGroupUser(): HasMany
     {
         return $this->hasMany(GroupUser::class);

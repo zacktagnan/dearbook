@@ -208,4 +208,10 @@ return [
         ],
         'notification' => 'Successful expulsion of the member :user_name.',
     ],
+
+    'exceptions' => [
+        'forbidden_area' => [
+            'message' => 'The group ":group_name" requires membership to access its private content.',
+        ],
+    ],
 ];

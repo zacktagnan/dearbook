@@ -208,4 +208,10 @@ return [
         ],
         'notification' => 'Expulsión satisfactoria del miembro :user_name.',
     ],
+
+    'exceptions' => [
+        'forbidden_area' => [
+            'message' => 'El grupo ":group_name" demanda ser miembro para acceder a su contenido privado.',
+        ],
+    ],
 ];

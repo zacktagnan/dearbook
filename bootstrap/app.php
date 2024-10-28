@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ForbiddenAreaException;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
@@ -66,6 +67,12 @@ return Application::configure(basePath: dirname(__DIR__))
             // Vale pero no del todo :: fin
 
             $statusCode = $response->getStatusCode();
+            $message = null;
+
+            if ($exception instanceof ForbiddenAreaException) {
+                $statusCode = $exception->getStatusCode();
+                $message = $exception->getMessage();
+            }
 
             return match ($statusCode) {
                 // 401 => Inertia::render('Errors/401')->toResponse($request)->setStatusCode($statusCode),
@@ -79,9 +86,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 // ----------------------------------------------------------------------------------------------------
                 401, 403, 404, 503 => Inertia::render('Errors/ErrorCode', [
                     'statusCode' => $statusCode,
+                    'message' => $message,
                 ])->toResponse($request)->setStatusCode($statusCode),
                 500 => Inertia::render('Errors/ErrorCode', [
                     'statusCode' => $statusCode,
+                    'message' => $message,
                 ])->toResponse($request)->setStatusCode($statusCode),
                 419 => redirect()->back()->withErrors(['status' => __('The page expired, please try again.')]),
 
