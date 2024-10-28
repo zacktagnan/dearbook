@@ -25,20 +25,7 @@ class PostController extends Controller
 
     public function show(User $user, int $id): InertiaResponse
     {
-        $userId = auth()->id();
-        $post = Post::withCount(['reactions',])
-            ->with([
-                'reactions' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                },
-                'currentUserComments' => function ($query) use ($userId) {
-                    $query->where('user_id', $userId);
-                },
-                'latestComments',
-                'comments',
-            ])
-            ->withArchived()
-            ->withTrashed()
+        $post = Post::detail(auth()->id())
             ->findOrFail($id);
 
         return Inertia::render('Post/Detail', [

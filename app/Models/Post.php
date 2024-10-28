@@ -82,6 +82,23 @@ class Post extends Model
             ->latest();
     }
 
+    public static function detail($userId): Builder
+    {
+        return Post::withCount(['reactions',])
+            ->with([
+                'reactions' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'currentUserComments' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'latestComments',
+                'comments',
+            ])
+            ->withArchived()
+            ->withTrashed();
+    }
+
     public function isAuthor(int $userId): bool
     {
         return $this->user_id === $userId;

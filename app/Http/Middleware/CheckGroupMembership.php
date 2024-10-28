@@ -17,7 +17,8 @@ class CheckGroupMembership
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $post = Post::findOrFail($request->route('id'));
+        $post = Post::detail(auth()->id())
+            ->findOrFail($request->route('id'));
 
         if ($post->group) {
             if ($post->group->type === 'private') {
