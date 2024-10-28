@@ -17,7 +17,8 @@ class CheckGroupMembership
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $post = Post::detail(auth()->id())
+        $post = Post::withArchived()
+            ->withTrashed()
             ->findOrFail($request->route('id'));
 
         if ($post->group) {
