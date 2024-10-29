@@ -73,9 +73,14 @@ const isTrashed = computed(
     () => props.post.deleted_at !== ''
 );
 
+const { group } = props.post;
+
 const isTrashedByAdminGroup = computed(
-    () => props.post.group && props.post.deleted_by && props.post.deleted_by !== props.post.user.id
+    () => group && props.post.deleted_by && props.post.deleted_by !== props.post.user.id
 );
+
+const isPostGroupMember = computed(() => !!(group && group?.status === 'approved'));
+const disableOptions = computed(() => !!(group && !isPostGroupMember.value));
 
 const isArchived = computed(
     () => props.post.archived_at !== ''
@@ -228,7 +233,7 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <OptionsDropDown v-model="isPostAuthorOrIsPostGroupAdmin" :ellipsis-type-icon="'vertical'">
+            <OptionsDropDown v-model="isPostAuthorOrIsPostGroupAdmin" :ellipsis-type-icon="'vertical'" :is-disabled="disableOptions">
                 <template v-if="isPostAuthor">
                     <template v-if="!isTrashed && !isArchived">
                         <div class="px-1 py-1">

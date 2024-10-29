@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+use App\Http\Resources\GroupResource;
 use App\Http\Resources\PostResource;
 use App\Libs\Utilities;
 use App\Notifications\PostDeleted;
@@ -27,6 +28,8 @@ class PostController extends Controller
     {
         $post = Post::detail(auth()->id())
             ->findOrFail($id);
+
+        $post->group = $post->group ? new GroupResource($post->group) : null;
 
         return Inertia::render('Post/Detail', [
             'post' => new PostResource($post),

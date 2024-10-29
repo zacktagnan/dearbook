@@ -94,6 +94,7 @@ class Post extends Model
                 },
                 'latestComments',
                 'comments',
+                'group',
             ])
             ->withArchived()
             ->withTrashed();
