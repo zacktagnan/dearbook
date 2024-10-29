@@ -42,7 +42,7 @@ class GroupController extends Controller
      */
     public function profile(Request $request, Group $group, ?string $tabIndex = 'conversation')
     {
-        $group->load('currentGroupUser');
+        $group->load('currentGroupUser', 'user');
 
         $posts = Post::listedOnTimeLine(auth()->id())
             ->where('group_id', $group->id)

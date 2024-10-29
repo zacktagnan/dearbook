@@ -79,6 +79,7 @@ class GroupResource extends JsonResource
                 $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.group_id'])
                     ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
                     ->where('g_u.group_id', $this->id)
+                    ->orderByRaw('CASE WHEN users.id = ? THEN 0 ELSE 1 END', [$this->user_id])
                     ->orderBy('g_u.role')
                     ->orderBy('users.name')
                     ->get()
