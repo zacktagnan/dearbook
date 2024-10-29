@@ -29,40 +29,19 @@ const isPostAuthor = computed(
     () => authUser && authUser.id === props.post.user.id
 );
 
-const isPostGroupAdmin = computed(
-    () => props.post.group?.current_group_user?.role === 'admin'
-);
+const { group } = props.post;
 
-const isPostGroupMember = computed(
-    () => props.post.group && props.post.group?.current_group_user?.status === 'approved'
-);
+const isPostGroupAdmin = computed(() => group?.current_group_user?.role === 'admin');
+const isPostGroupMember = computed(() => !!(group && group?.current_group_user?.status === 'approved'));
+const isPostGroupPrivate = computed(() => !!(group && group?.type === 'private'));
+const disableOptions = computed(() => !!(group && !isPostGroupMember.value));
+const disableDetailLink = computed(() => isPostGroupPrivate.value && !isPostGroupMember.value);
 
-const disableOptions = computed(() => {
-    if (props.post.group) {
-        return !isPostGroupMember.value
-    }
-    return false
-});
-
-const isTrashed = computed(
-    () => props.post.deleted_at !== null
-);
-
-const isTrashedByAuthUser = computed(
-    () => authUser && authUser.id === props.post.deleted_by
-);
-
-const isPostAuthorOrIsPostGroupAdmin = computed(
-    () => isPostAuthor.value || isPostGroupAdmin.value
-);
-
-const isTrashedByAdminGroup = computed(
-    () => !!(props.post.group && props.post.deleted_by && props.post.deleted_by !== props.post.user_id)
-);
-
-const isArchived = computed(
-    () => props.post.archived_at !== null
-);
+const isTrashed = computed(() => props.post.deleted_at !== null);
+const isTrashedByAuthUser = computed(() => authUser && authUser.id === props.post.deleted_by);
+const isPostAuthorOrIsPostGroupAdmin = computed(() => isPostAuthor.value || isPostGroupAdmin.value);
+const isTrashedByAdminGroup = computed(() => !!(group && props.post.deleted_by && props.post.deleted_by !== props.post.user_id));
+const isArchived = computed(() => props.post.archived_at !== null);
 
 import { isImage, isVideo, } from "@/Libs/helpers";
 
@@ -291,8 +270,8 @@ const getContentExcerpt = (content) => {
             </div>
         </div>
 
-        <!-- <div class="absolute top-0 left-0 w-full h-full bg-black/40 z-10 rounded-lg flex justify-center items-center text-gray-100 italic font-bold">
-            <p class="px-4 py-2 rounded-lg bg-gray-700/40 text-justify">Imposible gestionar este Post por haber dejado de ser miembro de este grupo.</p>
-        </div> -->
+        <div v-if="disableDetailLink" class="absolute top-0 left-0 w-full h-full bg-black/40 z-10 rounded-lg flex justify-center items-center text-gray-100 italic font-bold">
+            <p class="px-4 py-2 rounded-lg bg-gray-700/40 text-justify">Imposible acceder a este Post por haber dejado de ser miembro de este grupo privado.</p>
+        </div>
     </div>
 </template>
