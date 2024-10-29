@@ -8,12 +8,14 @@ use App\Models\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Http\Resources\GroupResource;
+use App\Traits\PostDataFormatOnArchiveManagement;
 use Illuminate\Database\Eloquent\Collection;
 use Symfony\Component\HttpFoundation\Response;
 
 class ArchiveManagementController extends Controller
 {
+    use PostDataFormatOnArchiveManagement;
+
     public function index()
     {
         return Inertia::render('ArchiveManagement/Index', [
@@ -23,13 +25,16 @@ class ArchiveManagementController extends Controller
 
     public function activityLogPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments', 'group.currentGroupUser'])
+        $posts = Post::with(['user', 'group.currentGroupUser'])
             ->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
-            ->latest()
             ->where('user_id', auth()->id())
-            ->get()
-            ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+            ->latest()
+            ->get();
+
+        $postsWithGroupBy = $this->processCollection($posts, 'only_attachment');
+
+        return new Collection($postsWithGroupBy);
     }
 
     public function activityLogPosts()
@@ -41,13 +46,17 @@ class ArchiveManagementController extends Controller
 
     public function archivedPostsCollection(): Collection
     {
-        return Post::with(['user', 'attachments', 'group.currentGroupUser'])
+        $posts = Post::onlyArchived()
+            ->with(['user', 'group.currentGroupUser'])
             ->select('id', 'body', 'user_id', 'deleted_at', 'archived_at', 'created_at', 'group_id')
             ->selectRaw('DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time')
-            ->onlyArchived()->latest()
             ->where('user_id', auth()->id())
-            ->get()
-            ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+            ->latest()
+            ->get();
+
+        $postsWithGroupBy = $this->processCollection($posts, 'only_attachment');
+
+        return new Collection($postsWithGroupBy);
     }
 
     public function archivedPosts()
@@ -63,6 +72,19 @@ class ArchiveManagementController extends Controller
 
         try {
             $posts = Post::onlyTrashed()
+                ->with(['user', 'group'])
+                ->selectRaw('
+                    id,
+                    body,
+                    user_id,
+                    deleted_by,
+                    deleted_at,
+                    archived_at,
+                    group_id,
+                    created_at,
+                    DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time,
+                    DATE_FORMAT(deleted_at, "%Y-%m-%d %H:%i:%s") AS deleted_at_time
+                ')
                 ->where(function ($query) use ($authId) {
                     // Mostrar posts eliminados por el usuario (sus propios posts)
                     $query->where('user_id', $authId)
@@ -84,43 +106,10 @@ class ArchiveManagementController extends Controller
                             ->where('deleted_by', '!=', DB::raw('user_id'));
                     });
                 })
-                ->selectRaw('
-                id,
-                body,
-                user_id,
-                deleted_by,
-                deleted_at,
-                archived_at,
-                group_id,
-                created_at,
-                DATE_FORMAT(created_at, "%l:%i %p") AS created_at_time,
-                DATE_FORMAT(deleted_at, "%Y-%m-%d %H:%i:%s") AS deleted_at_time
-            ')
-                // ->with(['user', 'attachments', 'group'])
-                ->with(['user', 'group'])
                 ->latest()
                 ->get();
 
-            // Procesamiento adicional si es necesario
-            $posts->each(function ($post) {
-                // Al ser attachments una relación de tipo MorphMany, no se puede aplicar el ->isNotEmpty()
-                // if ($post->attachments()->isNotEmpty()) {
-                if ($post->attachments()->count() > 0) {
-                    // Asigna solo el primer attachment si existe
-                    $post->attachments = [$post->attachments()->first()];
-                } else {
-                    // Si no tiene attachments, se asigna null o un arreglo vacío
-                    $post->attachments = []; // establecer null o []
-                }
-
-                if ($post->group) {
-                    $post->group = new GroupResource($post->group, false);
-                    $post->group = $post->group->toArray(request());
-                }
-            });
-
-            // Agrupar los posts por fecha (ajusta según tu necesidad)
-            $postsWithGroupBy = $posts->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
+            $postsWithGroupBy = $this->processCollection($posts, 'attachment_and_group');
 
             return new Collection($postsWithGroupBy);
         } catch (\Exception $e) {
