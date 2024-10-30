@@ -39,31 +39,31 @@ class RequestToJoinGroupApprovedOrNot extends Notification
     {
         if ($this->decision === GroupUserStatus::APPROVED->value) {
             return (new MailMessage)
-                ->subject(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.subject'))
+                ->subject(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.subject'))
                 ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.greeting', [
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.greeting', [
                     'user_name' => $this->userApproved->name,
                 ]))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.opening_phrase', [
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.opening_phrase', [
                     'group_name' => $this->group->name,
-                    'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $this->decision),
+                    'status' => __('dearbook/group/notify.process_to_join.request_approved_or_not.decision.' . $this->decision),
                 ]))
-                ->action(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.btn_text'), route('group.profile', [
+                ->action(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.btn_text'), route('group.profile', [
                     'group' => $this->group->slug,
                 ]))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
         } else if ($this->decision === GroupUserStatus::REJECTED->value) {
             return (new MailMessage)
-                ->subject(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.subject'))
+                ->subject(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.subject'))
                 ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.greeting', [
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.greeting', [
                     'user_name' => $this->userApproved->name,
                 ]))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.opening_phrase', [
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.opening_phrase', [
                     'group_name' => $this->group->name,
-                    'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $this->decision),
+                    'status' => __('dearbook/group/notify.process_to_join.request_approved_or_not.decision.' . $this->decision),
                 ]))
-                ->line(__('dearbook/group.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
+                ->line(__('dearbook/group/notify.process_to_join.request_approved_or_not.mailing.request_approved_or_not.closing_phrase.' . $this->decision));
         }
     }
 

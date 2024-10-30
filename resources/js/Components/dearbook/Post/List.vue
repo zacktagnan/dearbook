@@ -307,20 +307,20 @@ onMounted(() => {
             <div class="p-6">
                 <template v-if="entityToDelete.entityPrefix === 'post'">
                     <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ $t('dearbook.post.index.confirm_deletion.question') }}
+                        {{ $t('dearbook.post.confirm.deletion.question') }}
                     </h2>
 
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {{ $t('dearbook.post.index.confirm_deletion.message') }}
+                        {{ $t('dearbook.post.confirm.deletion.message') }}
                     </p>
                 </template>
                 <template v-else-if="entityToDelete.entityPrefix === 'post.comment'">
                     <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                        {{ $t('dearbook.comment.index.confirm_deletion.question') }}
+                        {{ $t('dearbook.comment.confirm.deletion.question') }}
                     </h2>
 
                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                        {{ $t('dearbook.comment.index.confirm_deletion.message') }}
+                        {{ $t('dearbook.comment.confirm.deletion.message') }}
                     </p>
                 </template>
 
@@ -329,12 +329,12 @@ onMounted(() => {
                     </SecondaryButton>
 
                     <DangerButton v-if="entityToDelete.entityPrefix === 'post'" class="ms-3" @click="deleteEntity"
-                        :title="$t('dearbook.post.index.confirm_deletion.button_text')">
-                        {{ $t('dearbook.post.index.confirm_deletion.button_text') }}
+                        :title="$t('dearbook.post.confirm.deletion.button_text')">
+                        {{ $t('dearbook.post.confirm.deletion.button_text') }}
                     </DangerButton>
                     <DangerButton v-else-if="entityToDelete.entityPrefix === 'post.comment'" class="ms-3"
-                        @click="deleteEntity" :title="$t('dearbook.comment.index.confirm_deletion.button_text')">
-                        {{ $t('dearbook.comment.index.confirm_deletion.button_text') }}
+                        @click="deleteEntity" :title="$t('dearbook.comment.confirm.deletion.button_text')">
+                        {{ $t('dearbook.comment.confirm.deletion.button_text') }}
                     </DangerButton>
                 </div>
             </div>

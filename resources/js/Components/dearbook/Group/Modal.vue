@@ -232,7 +232,7 @@ const processErrors = (errors) => {
 
                                 <div class="flex px-[14px] mt-5 gap-3">
                                     <TextInput type="text" class="block w-full" v-model="groupForm.name" required
-                                        autofocus :placeholder="$t('dearbook.group.form.fields.name.placeholder')" />
+                                        autofocus :placeholder="$t('dearbook.group.form.create.fields.name.placeholder')" />
                                 </div>
 
                                 <div class="px-[14px]">
@@ -251,7 +251,7 @@ const processErrors = (errors) => {
                                                 ? 'text-gray-400'
                                                 : 'text-gray-600'
                                         ]" class="text-sm ms-2 dark:text-gray-400">{{
-                                            $t('dearbook.group.form.fields.auto_approval.label') }}</span>
+                                            $t('dearbook.group.form.create.fields.auto_approval.label') }}</span>
                                     </label>
 
                                     <div class="flex gap-4">
@@ -259,14 +259,14 @@ const processErrors = (errors) => {
                                             <Radiobutton @change="autoApprovalToFalseAndDisable(true)"
                                                 v-model:checked="groupForm.type" :value="'public'" />
                                             <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
-                                                $t('dearbook.group.form.fields.type.label.public') }}</span>
+                                                $t('dearbook.group.form.create.fields.type.label.public') }}</span>
                                         </label>
 
                                         <label class="flex items-center">
                                             <Radiobutton @change="autoApprovalToFalseAndDisable(false)"
                                                 v-model:checked="groupForm.type" :value="'private'" />
                                             <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
-                                                $t('dearbook.group.form.fields.type.label.private') }}</span>
+                                                $t('dearbook.group.form.create.fields.type.label.private') }}</span>
                                         </label>
                                     </div>
                                 </div>
@@ -274,7 +274,7 @@ const processErrors = (errors) => {
 
                                 <div class="px-[14px] mt-5">
                                     <TextareaInput v-model="groupForm.about"
-                                        :placeholder="$t('dearbook.group.form.fields.about.placeholder')"
+                                        :placeholder="$t('dearbook.group.form.create.fields.about.placeholder')"
                                         :class="'block w-full max-h-28'" rows="2" />
 
                                     <!-- <InputError class="mt-2" :message="groupForm.errors.about" /> -->

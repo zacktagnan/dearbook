@@ -49,25 +49,25 @@ const closeModal = () => {
     <section class="space-y-6">
         <header>
             <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{
-                $t('dearbook.group.delete_option.header') }}</h2>
+                $t('dearbook.group.confirm.delete_option.header') }}</h2>
 
             <p class="mt-1 text-sm text-justify text-gray-600 dark:text-gray-400">
-                {{ $t('dearbook.group.delete_option.intro') }}
+                {{ $t('dearbook.group.confirm.delete_option.intro') }}
             </p>
         </header>
 
-        <DangerButton @click="confirmUserDeletion" :title="$t('dearbook.group.delete_option.header')">{{
-            $t('dearbook.group.delete_option.header') }}
+        <DangerButton @click="confirmUserDeletion" :title="$t('dearbook.group.confirm.delete_option.header')">{{
+            $t('dearbook.group.confirm.delete_option.header') }}
         </DangerButton>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ $t('dearbook.group.delete_option.confirmation.question') }}
+                    {{ $t('dearbook.group.confirm.delete_option.modal.question') }}
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {{ $t('dearbook.group.delete_option.confirmation.text') }}
+                    {{ $t('dearbook.group.confirm.delete_option.modal.text') }}
                 </p>
 
                 <div class="mt-6">
@@ -83,8 +83,8 @@ const closeModal = () => {
                     <SecondaryButton @click="closeModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
 
                     <DangerButton class="ms-3" :class="{ 'opacity-25': form.processing }" :disabled="form.processing"
-                        @click="deleteGroup" :title="$t('dearbook.group.delete_option.header')">
-                        {{ $t('dearbook.group.delete_option.header') }}
+                        @click="deleteGroup" :title="$t('dearbook.group.confirm.delete_option.header')">
+                        {{ $t('dearbook.group.confirm.delete_option.header') }}
                     </DangerButton>
                 </div>
             </div>

@@ -301,7 +301,7 @@ class GroupController extends Controller
         $groupUser->userAdmin->notify(new InvitationToJoinGroupApproved($groupUser->group, $groupUser->user));
 
         return redirect(route('group.profile', $groupUser->group))
-            ->with('success', __('dearbook/group.process_to_join.by_invitation.notification', [
+            ->with('success', __('dearbook/group/notify.process_to_join.by_invitation.web', [
                 'group_name' => $groupUser->group->name,
             ]));
     }
@@ -317,7 +317,7 @@ class GroupController extends Controller
             // En este caso, el propio User es el que realiza el ingreso en el Group
         ]);
 
-        return back()->with('success', __('dearbook/group.process_to_join.by_auto_join.notification', [
+        return back()->with('success', __('dearbook/group/notify.process_to_join.by_auto_join.web', [
             'group_name' => $group->name,
         ]));
     }
@@ -335,7 +335,7 @@ class GroupController extends Controller
 
         Notification::send($group->adminsGroup, new RequestToJoinGroup($group, $request->user()));
 
-        return back()->with('success', __('dearbook/group.process_to_join.by_request.notification'));
+        return back()->with('success', __('dearbook/group/notify.process_to_join.by_request.web'));
     }
 
     public function requestApproveOrNot(Request $request, Group $group)
@@ -359,9 +359,9 @@ class GroupController extends Controller
 
             $groupUser->user->notify(new RequestToJoinGroupApprovedOrNot($group, $groupUser->user, $request->action));
 
-            return back()->with('success', __('dearbook/group.process_to_join.request_approved_or_not.notification', [
+            return back()->with('success', __('dearbook/group/notify.process_to_join.request_approved_or_not.web', [
                 'user_name' => $groupUser->user->name,
-                'status' => __('dearbook/group.process_to_join.request_approved_or_not.decision.' . $request->action),
+                'status' => __('dearbook/group/notify.process_to_join.request_approved_or_not.decision.' . $request->action),
             ]));
         }
 
@@ -393,7 +393,7 @@ class GroupController extends Controller
 
             $groupUser->user->notify(new MemberRoleChange($group, $groupUser->user, $request->role));
 
-            return back()->with('success', __('dearbook/group.member_role_change.notification', [
+            return back()->with('success', __('dearbook/group/notify.member_role_change.web', [
                 'role' => $request->role,
                 'user_name' => $groupUser->user->name,
             ]));
@@ -422,7 +422,7 @@ class GroupController extends Controller
 
             $memberDeleted->notify(new MemberRemovedFromGroup($group, $memberDeleted));
 
-            return back()->with('success', __('dearbook/group.member_removed.notification', [
+            return back()->with('success', __('dearbook/group/notify.member_removed.web', [
                 'user_name' => $groupUser->user->name,
             ]));
         }

@@ -95,7 +95,7 @@ const submitInvitation = () => {
                                     <TextInput type="text" class="block w-full"
                                         :class="inviteForm.errors.username_or_email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''"
                                         v-model="inviteForm.username_or_email" required autofocus
-                                        :placeholder="$t('dearbook.group.form_invite_user.fields.username_or_email.placeholder')" />
+                                        :placeholder="$t('dearbook.group.form.invite_user.fields.username_or_email.placeholder')" />
                                 </div>
 
                                 <div class="px-[14px]">

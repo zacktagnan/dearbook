@@ -25,7 +25,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
             <div>
                 <header>
                     <h2 class="px-2 font-semibold text-gray-600 lg:text-lg dark:text-gray-100">
-                        {{ $t("dearbook.group.tab_info.info_block.header") }}
+                        {{ $t("dearbook.group.index.tab_info.info_block.header") }}
                     </h2>
                 </header>
 
@@ -36,7 +36,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                         :content="group.full_description" :max-content-length="maxContentLength"
                         :showing-banner-if-content-is-null="false" />
                     <div v-else-if="!group.full_description" class="text-sm italic"
-                        v-html="$t('dearbook.group.tab_info.info_block.no_intro')" />
+                        v-html="$t('dearbook.group.index.tab_info.info_block.no_intro')" />
                 </div>
 
                 <div class="mt-4 px-2 mb-2">
@@ -47,10 +47,10 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                             <PublicAccessIcon v-else class-content="w-[18px] h-[18px]" fill-content="#9ca3af" />
                         </div>
                         <div class="flex-col">
-                            <h3 class="lg:text-lg">{{ $t('dearbook.group.tab_info.info_block.features.' + group.type +
+                            <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.' + group.type +
                                 '.title') }}
                             </h3>
-                            <p class="text-[13px] leading-none">{{ $t('dearbook.group.tab_info.info_block.features.' +
+                            <p class="text-[13px] leading-none">{{ $t('dearbook.group.index.tab_info.info_block.features.' +
                                 group.type +
                                 '.description') }}
                             </p>
@@ -62,10 +62,10 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                             <EyeIcon class="w-5 h-5 text-gray-400" />
                         </div>
                         <div class="flex-col">
-                            <h3 class="lg:text-lg">{{ $t('dearbook.group.tab_info.info_block.features.visible.title') }}
+                            <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.visible.title') }}
                             </h3>
                             <p class="text-[13px] leading-none">{{
-                                $t('dearbook.group.tab_info.info_block.features.visible.description') }}
+                                $t('dearbook.group.index.tab_info.info_block.features.visible.description') }}
                             </p>
                         </div>
                     </div>
@@ -75,19 +75,19 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                             <HistoryIcon class-content="w-5 h-5" fill-content="#9ca3af" />
                         </div>
                         <div class="flex-col">
-                            <h3 class="lg:text-lg">{{ $t('dearbook.group.tab_info.info_block.features.history.title') }}
+                            <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.history.title') }}
                             </h3>
                             <p class="text-[13px] leading-none">{{
-                                $t('dearbook.group.tab_info.info_block.features.history.description.1_3', {
+                                $t('dearbook.group.index.tab_info.info_block.features.history.description.1_3', {
                                     'date': group.created_at_formatted
                                 }) }} {{
-                                    $t('dearbook.group.tab_info.info_block.features.history.description.2_3') }} <a
+                                    $t('dearbook.group.index.tab_info.info_block.features.history.description.2_3') }} <a
                                     :href="route('profile.index', { username: group.user.username })"
                                     class="hover:underline font-medium" :title="$t('Profile of', {
                                         'name': group.user.name
                                     })">
                                     <span v-if="group.user.id === user.id">{{
-                                        $t('dearbook.group.tab_info.info_block.features.history.description.3_3')
+                                        $t('dearbook.group.index.tab_info.info_block.features.history.description.3_3')
                                         }}</span>
                                     <span v-else>{{ group.user.name }}</span>
                                 </a>.
@@ -102,7 +102,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
             <div>
                 <header>
                     <h2 class="px-2 font-semibold text-gray-600 lg:text-lg dark:text-gray-100">
-                        {{ $t("dearbook.group.tab_info.members_block.header") }} · <span class="text-gray-400">{{
+                        {{ $t("dearbook.group.index.tab_info.members_block.header") }} · <span class="text-gray-400">{{
                             group.total_group_user
                             }}</span>
                     </h2>
@@ -121,7 +121,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
 
                     <p class="mt-3 text-sm"><a :href="route('profile.index', { username: group.user.username })"
                             class="hover:underline font-medium" :title="'Perfil de ' + group.user.name">{{
-                                group.user.name }}</a> {{ $t("dearbook.group.tab_info.members_block.admin_text") }}</p>
+                                group.user.name }}</a> {{ $t("dearbook.group.index.tab_info.members_block.admin_text") }}</p>
                 </div>
             </div>
         </div>

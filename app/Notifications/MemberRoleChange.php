@@ -37,16 +37,16 @@ class MemberRoleChange extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/group.member_role_change.mailing.subject'))
+            ->subject(__('dearbook/group/notify.member_role_change.mailing.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/group.member_role_change.mailing.greeting', [
+            ->line(__('dearbook/group/notify.member_role_change.mailing.greeting', [
                 'user_name' => $this->userMember->name,
             ]))
-            ->line(__('dearbook/group.member_role_change.mailing.opening_phrase', [
+            ->line(__('dearbook/group/notify.member_role_change.mailing.opening_phrase', [
                 'role' => $this->role,
                 'group_name' => $this->group->name,
             ]))
-            ->action(__('dearbook/group.member_role_change.mailing.btn_text'), route('group.profile', [
+            ->action(__('dearbook/group/notify.member_role_change.mailing.btn_text'), route('group.profile', [
                 'group' => $this->group->slug,
             ]));
     }

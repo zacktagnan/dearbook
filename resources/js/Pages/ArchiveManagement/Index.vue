@@ -306,38 +306,38 @@ onMounted(() => {
                 <div class="p-6">
                     <template v-if="registerBoxToProcess.processType === 'delete'">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ $t('dearbook.post.index.confirm_deletion.question') }}
+                            {{ $t('dearbook.post.confirm.deletion.question') }}
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $t('dearbook.post.index.confirm_deletion.message') }}
+                            {{ $t('dearbook.post.confirm.deletion.message') }}
                         </p>
                     </template>
                     <template v-else-if="registerBoxToProcess.processType === 'delete_all_selected'">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ $t('dearbook.post.index.confirm_deletion_collection.question') }}
+                            {{ $t('dearbook.post.confirm.deletion_collection.question') }}
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $t('dearbook.post.index.confirm_deletion_collection.message') }}
+                            {{ $t('dearbook.post.confirm.deletion_collection.message') }}
                         </p>
                     </template>
                     <template v-else-if="registerBoxToProcess.processType === 'force_delete'">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ $t('dearbook.post.index.confirm_force_deletion.question') }}
+                            {{ $t('dearbook.post.confirm.force_deletion.question') }}
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $t('dearbook.post.index.confirm_force_deletion.message') }}
+                            {{ $t('dearbook.post.confirm.force_deletion.message') }}
                         </p>
                     </template>
                     <template v-else-if="registerBoxToProcess.processType === 'force_delete_all_selected'">
                         <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.question') }}
+                            {{ $t('dearbook.post.confirm.force_deletion_collection.question') }}
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.message') }}
+                            {{ $t('dearbook.post.confirm.force_deletion_collection.message') }}
                         </p>
                     </template>
 
@@ -346,23 +346,23 @@ onMounted(() => {
                         </SecondaryButton>
 
                         <DangerButton v-if="registerBoxToProcess.processType === 'delete'" class="ms-3"
-                            @click="deleting" :title="$t('dearbook.post.index.confirm_deletion.button_text')">
-                            {{ $t('dearbook.post.index.confirm_deletion.button_text') }}
+                            @click="deleting" :title="$t('dearbook.post.confirm.deletion.button_text')">
+                            {{ $t('dearbook.post.confirm.deletion.button_text') }}
                         </DangerButton>
                         <DangerButton v-else-if="registerBoxToProcess.processType === 'delete_all_selected'"
                             class="ms-3" @click="deleting"
-                            :title="$t('dearbook.post.index.confirm_deletion_collection.button_text')">
-                            {{ $t('dearbook.post.index.confirm_deletion_collection.button_text') }}
+                            :title="$t('dearbook.post.confirm.deletion_collection.button_text')">
+                            {{ $t('dearbook.post.confirm.deletion_collection.button_text') }}
                         </DangerButton>
                         <DangerButton v-else-if="registerBoxToProcess.processType === 'force_delete'" class="ms-3"
                             @click="forceDeleting"
-                            :title="$t('dearbook.post.index.confirm_force_deletion.button_text')">
-                            {{ $t('dearbook.post.index.confirm_force_deletion.button_text') }}
+                            :title="$t('dearbook.post.confirm.force_deletion.button_text')">
+                            {{ $t('dearbook.post.confirm.force_deletion.button_text') }}
                         </DangerButton>
                         <DangerButton v-else-if="registerBoxToProcess.processType === 'force_delete_all_selected'"
                             class="ms-3" @click="forceDeleting"
-                            :title="$t('dearbook.post.index.confirm_force_deletion_collection.button_text')">
-                            {{ $t('dearbook.post.index.confirm_force_deletion_collection.button_text') }}
+                            :title="$t('dearbook.post.confirm.force_deletion_collection.button_text')">
+                            {{ $t('dearbook.post.confirm.force_deletion_collection.button_text') }}
                         </DangerButton>
                     </div>
                 </div>

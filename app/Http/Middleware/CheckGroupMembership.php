@@ -24,7 +24,7 @@ class CheckGroupMembership
         if ($post->group) {
             if ($post->group->type === 'private') {
                 if (!$post->group->currentGroupUserApproved) {
-                    throw new ForbiddenAreaException(__('dearbook/group.exceptions.forbidden_area.message', [
+                    throw new ForbiddenAreaException(__('dearbook/group/exception.forbidden_area.message', [
                         'group_name' => $post->group->name,
                     ]), 403);
                 }

@@ -17,19 +17,19 @@ defineProps({
                 <h3 class="text-lg font-black">{{ group.name }}</h3>
 
                 <div class="flex gap-1">
-                    <span v-if="group.role === 'admin'" :title="$t('dearbook.group.list.title.role.admin')">
+                    <span v-if="group.role === 'admin'" :title="$t('dearbook.group.list.main.title.role.admin')">
                         <AdjustmentsHorizontalIcon
                             class="w-[21px] h-[21px] text-cyan-500 rounded-full bg-white p-[0.5px]" />
                     </span>
 
-                    <span v-if="group.status === 'pending'" :title="$t('dearbook.group.list.title.status.pending')">
+                    <span v-if="group.status === 'pending'" :title="$t('dearbook.group.list.main.title.status.pending')">
                         <ShieldExclamationIcon
                             class="w-[21px] h-[21px] text-orange-500 rounded-full bg-white p-[0.5px]" />
                     </span>
                 </div>
             </div>
             <div class="text-xs text-gray-500">{{ group.short_description ||
-                $t('dearbook.group.list.no_description') }}
+                $t('dearbook.group.list.main.no_description') }}
             </div>
         </div>
         </Link>

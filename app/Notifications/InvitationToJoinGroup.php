@@ -37,19 +37,19 @@ class InvitationToJoinGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/group.process_to_join.by_invitation.mailing.invitation_to_join_group.subject'))
+            ->subject(__('dearbook/group/notify.process_to_join.by_invitation.mailing.to_join_group.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/group.process_to_join.by_invitation.mailing.invitation_to_join_group.greeting', [
+            ->line(__('dearbook/group/notify.process_to_join.by_invitation.mailing.to_join_group.greeting', [
                 'user_name' => $this->userReceiver->name,
             ]))
-            ->line(__('dearbook/group.process_to_join.by_invitation.mailing.invitation_to_join_group.opening_phrase', [
+            ->line(__('dearbook/group/notify.process_to_join.by_invitation.mailing.to_join_group.opening_phrase', [
                 'admin_group' => $this->group->user->name,
                 'group_name' => $this->group->name,
             ]))
-            ->action(__('dearbook/group.process_to_join.by_invitation.mailing.invitation_to_join_group.btn_text'), route('group.accept-invitation', [
+            ->action(__('dearbook/group/notify.process_to_join.by_invitation.mailing.to_join_group.btn_text'), route('group.accept-invitation', [
                 'token' => $this->token,
             ]))
-            ->line(__('dearbook/group.process_to_join.by_invitation.mailing.invitation_to_join_group.closing_phrase', [
+            ->line(__('dearbook/group/notify.process_to_join.by_invitation.mailing.to_join_group.closing_phrase', [
                 'num_hours' => $this->expirationTimeInHours,
             ]));
     }

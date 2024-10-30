@@ -36,15 +36,15 @@ class MemberRemovedFromGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/group.member_removed.mailing.subject'))
+            ->subject(__('dearbook/group/notify.member_removed.mailing.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/group.member_removed.mailing.greeting', [
+            ->line(__('dearbook/group/notify.member_removed.mailing.greeting', [
                 'user_name' => $this->userMember->name,
             ]))
-            ->line(__('dearbook/group.member_removed.mailing.opening_phrase', [
+            ->line(__('dearbook/group/notify.member_removed.mailing.opening_phrase', [
                 'group_name' => $this->group->name,
             ]))
-            ->action(__('dearbook/group.member_removed.mailing.btn_text'), route('group.profile', [
+            ->action(__('dearbook/group/notify.member_removed.mailing.btn_text'), route('group.profile', [
                 'group' => $this->group->slug,
             ]));
     }

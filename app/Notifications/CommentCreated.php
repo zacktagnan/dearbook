@@ -2,21 +2,19 @@
 
 namespace App\Notifications;
 
-use App\Models\Post;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class CommentDeleted extends Notification
+class CommentCreated extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public User $commentAuthor, public Post $post)
+    public function __construct()
     {
         //
     }
@@ -37,16 +35,9 @@ class CommentDeleted extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/comment/notify.deleted_by_author.mailing.subject'))
-            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/comment/notify.deleted_by_author.mailing.greeting', [
-                'user_name' => $this->commentAuthor->name,
-            ]))
-            ->line(__('dearbook/comment/notify.deleted_by_author.mailing.opening_phrase'))
-            ->action(__('dearbook/comment/notify.deleted_by_author.mailing.btn_text'), route('post.show', [
-                'user' => $this->post->user->username,
-                'id' => $this->post->id,
-            ]));
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**

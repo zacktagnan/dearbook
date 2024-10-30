@@ -37,16 +37,16 @@ class RequestToJoinGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.subject'))
+            ->subject(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.greeting', [
+            ->line(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.greeting', [
                 'admin_group' => $this->group->user->name,
             ]))
-            ->line(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.opening_phrase', [
+            ->line(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.opening_phrase', [
                 'user_name' => $this->userRequesting->name,
                 'group_name' => $this->group->name,
             ]))
-            ->action(__('dearbook/group.process_to_join.by_request.mailing.request_to_join_group.btn_text'), route('group.profile', [
+            ->action(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.btn_text'), route('group.profile', [
                 'group' => $this->group->slug,
                 'tabIndex' => 'requests',
             ]));

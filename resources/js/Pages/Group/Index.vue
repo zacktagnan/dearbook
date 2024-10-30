@@ -287,6 +287,7 @@ const deleteMember = () => {
         const form = useForm({
             user_id: memberToDelete.value.id,
         })
+        memberToDelete.value = null
 
         form.delete(route('group.remove-member', props.group.slug), {
             preserveScroll: true
@@ -317,7 +318,7 @@ const deleteMember = () => {
                         <div
                             class="w-full py-3.5 md:py-4 md:rounded-es-lg md:rounded-ee-lg bg-cyan-600 text-white absolute bottom-0">
                             <div class="pl-4 md:hidden text-xs leading-tight">
-                                {{ $t('dearbook.group.general_info.group_by') }}
+                                {{ $t('dearbook.group.index.general_info.group_by') }}
                                 <span class="font-bold">
                                     <a :href="route('profile.index', { username: group.user.username })"
                                         class="hover:underline" :title="$t('Profile of', {
@@ -327,7 +328,7 @@ const deleteMember = () => {
                                 </span>
                             </div>
                             <div class="hidden md:block md:pl-[228px]">
-                                {{ $t('dearbook.group.general_info.group_by') }}
+                                {{ $t('dearbook.group.index.general_info.group_by') }}
                                 <span class="font-bold">
                                     <a :href="route('profile.index', { username: group.user.username })"
                                         class="hover:underline" :title="$t('Profile of', {
@@ -399,19 +400,19 @@ const deleteMember = () => {
                                     <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
                                         fill-content="#4b5563" />
                                     <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
-                                        $t('dearbook.group.general_info.type.' + group.type) }} · <span
+                                        $t('dearbook.group.index.general_info.type.' + group.type) }} · <span
                                         v-if="group.total_group_user === 0" class="font-bold">{{
-                                            $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                            $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
                                                 'total': group.total_group_user
                                             }) }}</span><button v-else-if="isMemberGroup || !isPrivateGroup"
                                         @click="asignSelectedIndex(2)" class="hover:underline"
-                                        :title="$tChoice('dearbook.group.general_info.title_list_members', group.total_group_user)">
+                                        :title="$tChoice('dearbook.group.index.general_info.title_list_members', group.total_group_user)">
                                         <span class="font-bold">{{
-                                            $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                            $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
                                                 'total': group.total_group_user
                                             }) }}</span>
                                     </button><span v-else class="font-bold">{{
-                                        $tChoice('dearbook.group.general_info.x_members', group.total_group_user, {
+                                        $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
                                             'total': group.total_group_user
                                         }) }}</span>
                                 </small>
@@ -436,7 +437,7 @@ const deleteMember = () => {
                                             :class="loadZIndex('+')"
                                             class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             <a href="#"
-                                                :title="$t('dearbook.group.general_info.see_more_members') + ' :: (+' + (group.total_group_user - maxGroupUsersIconsToList) + ')'">
+                                                :title="$t('dearbook.group.index.general_info.see_more_members') + ' :: (+' + (group.total_group_user - maxGroupUsersIconsToList) + ')'">
                                                 <PlusIcon class="w-5 h-5" />
                                             </a>
                                         </div>
@@ -574,7 +575,7 @@ const deleteMember = () => {
                             <!-- Miembros -->
                             <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
                                 <TextInput class="w-full" :model-value="searchKeyword"
-                                    :placeholder="$t('dearbook.group.search_inside_profile.placeholder')" />
+                                    :placeholder="$t('dearbook.group.search.inside_profile.placeholder')" />
                                 <div v-if="group.all_group_users.length" class="grid gap-3 mt-3">
                                     <UserItem v-for="member of group.all_group_users" :user="member"
                                         :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
@@ -602,7 +603,7 @@ const deleteMember = () => {
                                 </div>
                                 <div v-else>
                                     <p class="w-full text-center">
-                                        {{ $t('dearbook.group.list_members.no_registers') }}
+                                        {{ $t('dearbook.group.list.main.members.no_registers') }}
                                     </p>
                                 </div>
                             </TabPanel>
@@ -628,7 +629,7 @@ const deleteMember = () => {
                                 </div>
                                 <div v-else>
                                     <p class="w-full text-center">
-                                        {{ $t('dearbook.group.list_requests.no_registers') }}
+                                        {{ $t('dearbook.group.list.main.requests.no_registers') }}
                                     </p>
                                 </div>
                             </TabPanel>
@@ -654,19 +655,21 @@ const deleteMember = () => {
         <ConfirmDeleteMemberModal :show="showingConfirmDeleteMemberModal" @close="closeConfirmDeleteMemberModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
-                    {{ $t('dearbook.group.delete_member_option.confirmation.question') }}
+                    {{ $t('dearbook.group.confirm.delete_member_option.modal.question') }}
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                    {{ $t('dearbook.group.delete_member_option.confirmation.text') }}
+                    {{ $t('dearbook.group.confirm.delete_member_option.modal.text', {
+                        user_name: memberToDelete.name
+                    }) }}
                 </p>
 
                 <div class="flex justify-end mt-6">
                     <SecondaryButton @click="closeConfirmDeleteMemberModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
 
                     <DangerButton class="ms-3"
-                        @click="deleteMember" :title="$t('dearbook.group.delete_member_option.confirmation.btn_text')">
-                        {{ $t('dearbook.group.delete_member_option.confirmation.btn_text') }}
+                        @click="deleteMember" :title="$t('dearbook.group.confirm.delete_member_option.modal.btn_text')">
+                        {{ $t('dearbook.group.confirm.delete_member_option.modal.btn_text') }}
                     </DangerButton>
                 </div>
             </div>

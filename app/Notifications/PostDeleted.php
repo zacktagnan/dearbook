@@ -37,15 +37,15 @@ class PostDeleted extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject(__('dearbook/post/index.deleted_by_admin.mailing.subject'))
+            ->subject(__('dearbook/post/notify.deleted_by_admin.mailing.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/post/index.deleted_by_admin.mailing.greeting', [
+            ->line(__('dearbook/post/notify.deleted_by_admin.mailing.greeting', [
                 'user_name' => $this->postAuthor->name,
             ]))
-            ->line(__('dearbook/post/index.deleted_by_admin.mailing.opening_phrase', [
+            ->line(__('dearbook/post/notify.deleted_by_admin.mailing.opening_phrase', [
                 'group_name' => $this->group->name,
             ]))
-            ->action(__('dearbook/post/index.deleted_by_admin.mailing.btn_text'), route('group.profile', [
+            ->action(__('dearbook/post/notify.deleted_by_admin.mailing.btn_text'), route('group.profile', [
                 'group' => $this->group->slug,
             ]));
     }
