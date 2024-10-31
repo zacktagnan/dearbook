@@ -19,6 +19,8 @@ return [
 
     'members' => [
         'no_registers' => 'No hay miembros todavía.',
+        'creating_date_text' => 'Creó el grupo :creating_date',
+        'joining_date_text' => 'Se unió :joining_date',
     ],
 
     'requests' => [

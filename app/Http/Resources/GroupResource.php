@@ -76,7 +76,7 @@ class GroupResource extends JsonResource
             // ---------------------------------------------------------------------------------------------------------
             $dataResource['total_group_user'] = count($this->members);
             $dataResource['all_group_users'] = GroupUserResource::collection(
-                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.group_id'])
+                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
                     ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
                     ->where('g_u.group_id', $this->id)
                     ->orderByRaw('CASE WHEN users.id = ? THEN 0 ELSE 1 END', [$this->user_id])

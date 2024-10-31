@@ -7,6 +7,10 @@ defineProps({
         type: String,
         default: '',
     },
+    userJoiningDateToGroup: {
+        type: String,
+        default: '',
+    },
 });
 </script>
 
@@ -17,9 +21,12 @@ defineProps({
             <img :src="user.avatar_url" class="w-[36px] rounded-full" :alt="user.name">
             </Link>
             <div class="flex justify-between items-center flex-1">
-                <Link :href="route('profile.index', { username: user.username })">
-                <h3 class="font-black hover:underline">{{ user.name }}</h3>
-                </Link>
+                <div class="flex-col leading-none">
+                    <Link :href="route('profile.index', { username: user.username })">
+                    <h3 class="font-black hover:underline">{{ user.name }}</h3>
+                    </Link>
+                    <span v-if="userJoiningDateToGroup" class="text-xs">{{ userJoiningDateToGroup }}</span>
+                </div>
 
                 <div class="flex gap-1 md:gap-2">
                     <slot />

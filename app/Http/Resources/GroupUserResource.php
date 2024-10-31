@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
+use App\Models\Group;
 use App\Libs\Utilities;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +29,26 @@ class GroupUserResource extends JsonResource
             'role' => $this->role,
             'status' => $this->status,
             'group_id' => $this->group_id,
+            'joining_date' => $this->getJoiningDateFormatted($this->created_at, $this->group_id, $this->user_id),
         ];
+    }
+
+    private function getJoiningDateFormatted(Carbon $date, int $groupId, int $userId): string
+    {
+        if ($this->isUserTheOwnerOfTheGroup($groupId, $userId)) {
+            return __('dearbook/group/list.members.creating_date_text', [
+                'creating_date' => $date->diffForHumans(),
+            ]);
+        }
+        return __('dearbook/group/list.members.joining_date_text', [
+            'joining_date' => $date->diffForHumans(),
+        ]);
+    }
+
+    public function isUserTheOwnerOfTheGroup(int $groupId, int $userId): bool
+    {
+        return Group::where('user_id', $userId)
+            ->where('id', $groupId)
+            ->exists();
     }
 }
