@@ -11,6 +11,7 @@ import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import PendingRequestIcon from '@/Components/Icons/PendingRequest.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/vue/24/outline";
+import ChiefAdminStarIcon from '@/Components/Icons/Star.vue'
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import TextInput from '@/Components/TextInput.vue'
@@ -581,29 +582,52 @@ const deleteMember = () => {
                                         :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
                                         :key="member.id">
                                         <div v-if="isAdminGroup" class="flex items-center gap-2">
-                                            <select @change="memberRoleChange(member, $event.target.value)"
+                                            <select v-if="authUserIsTheOwnerGroup" @change="memberRoleChange(member, $event.target.value)"
                                                 :disabled="isTheOwnerGroup(member.id)"
                                                 class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400">
                                                 <option value="admin" :selected="member.role === 'admin'">admin</option>
                                                 <option value="user" :selected="member.role === 'user'">user</option>
                                             </select>
 
-                                            <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-300"
-                                            :title="[
-                                                isTheOwnerGroup(member.id)
-                                                ? 'Imposible eliminar creador del grupo'
-                                                : 'Eliminar miembro'
-                                            ]"
-                                            :disabled="isTheOwnerGroup(member.id)"
-                                            @click="showConfirmDeleteMemberModal(member)">
-                                                <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-gray-100" />
-                                            </button>
+                                            <template v-if="authUser.id === member.id && isTheOwnerGroup(member.id)">
+                                                <!-- <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-100"
+                                                :title="[
+                                                    isTheOwnerGroup(member.id)
+                                                    ? 'Imposible eliminar creador del grupo'
+                                                    : 'Eliminar miembro'
+                                                ]"
+                                                :disabled="isTheOwnerGroup(member.id)"
+                                                @click="showConfirmDeleteMemberModal(member)">
+                                                    <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-white" />
+                                                </button> -->
+                                                <div class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                                                    <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                                                </div>
+                                            </template>
+                                            <template v-else>
+                                                <button v-if="authUser.id !== member.id && !isTheOwnerGroup(member.id)" class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-300"
+                                                :title="[
+                                                    isTheOwnerGroup(member.id)
+                                                    ? 'Imposible eliminar creador del grupo'
+                                                    : 'Eliminar miembro'
+                                                ]"
+                                                :disabled="isTheOwnerGroup(member.id)"
+                                                @click="showConfirmDeleteMemberModal(member)">
+                                                    <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-gray-100" />
+                                                </button>
+                                                <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                                                    <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                                                </div>
+                                            </template>
+                                        </div>
+                                        <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                                            <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
                                         </div>
                                     </UserItem>
                                 </div>
                                 <div v-else>
                                     <p class="w-full text-center">
-                                        {{ $t('dearbook.group.list.main.members.no_registers') }}
+                                        {{ $t('dearbook.group.list.members.no_registers') }}
                                     </p>
                                 </div>
                             </TabPanel>
@@ -629,7 +653,7 @@ const deleteMember = () => {
                                 </div>
                                 <div v-else>
                                     <p class="w-full text-center">
-                                        {{ $t('dearbook.group.list.main.requests.no_registers') }}
+                                        {{ $t('dearbook.group.list.requests.no_registers') }}
                                     </p>
                                 </div>
                             </TabPanel>

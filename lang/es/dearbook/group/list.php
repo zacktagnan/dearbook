@@ -7,6 +7,7 @@ return [
         'no_registers' => 'No estás unido a ningún grupo.',
         'no_description' => 'Descripción no disponible aún.',
         'title' => [
+            'owner' => 'Eres ADMIN Jefe del grupo',
             'role' => [
                 'admin' => 'Eres ADMIN del grupo',
             ],
