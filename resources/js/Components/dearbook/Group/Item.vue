@@ -17,7 +17,7 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
 <template>
     <div class="rounded-md cursor-pointer hover:bg-white">
         <Link :href="route('group.profile', { group: group.slug })" class="flex items-start gap-2 px-2 py-1">
-        <img :src="group.thumbnail_url" class="mt-1 w-[36px] rounded-full" :alt="group.name">
+        <img :src="group.thumbnail_url" class="mt-1 w-[36px] rounded-md" :alt="group.name">
         <div class="flex-1">
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-black">{{ group.name }}</h3>

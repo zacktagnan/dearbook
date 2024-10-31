@@ -31,6 +31,7 @@ class HomeController extends Controller
             ->where('g_u.user_id', auth()->id())
             // ->where('status', GroupUserStatus::APPROVED->value)
             // ->latest()
+            ->orderByRaw('CASE WHEN groups.user_id = ? THEN 0 ELSE 1 END', [auth()->id()])
             ->orderBy('g_u.role')
             ->orderBy('groups.name')
             ->get();
