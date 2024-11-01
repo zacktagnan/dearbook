@@ -17,7 +17,7 @@ return [
             'subject' => 'Your post has received a comment',
             'greeting' => 'What\'s up :user_name?...',
             'opening_phrase' => ':user_comment_name has commented your post.',
-            'btn_text' => 'View Post',
+            'btn_text' => 'View POST',
         ],
     ],
 ];

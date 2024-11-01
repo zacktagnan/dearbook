@@ -17,7 +17,25 @@ return [
             'subject' => 'Post created in ":group_name"',
             'greeting' => 'What\'s up member of ":group_name"?...',
             'opening_phrase' => 'In the group you are part of, a new post has been added.',
-            'btn_text' => 'View Post',
+            'btn_text' => 'View POST',
+        ],
+    ],
+
+    'added_reaction' => [
+        'mailing' => [
+            'subject' => 'Reaction received by your post',
+            'greeting' => 'What\'s up :user_name?...',
+            'opening_phrase' => ':user_reaction_name has issued a reaction of ":type" on your post.',
+            'btn_text' => 'View POST',
+        ],
+    ],
+
+    'updated_reaction' => [
+        'mailing' => [
+            'subject' => 'Reaction updated on your post',
+            'greeting' => 'What\'s up :user_name?...',
+            'opening_phrase' => ':user_reaction_name has modified his reaction to ":type" on your post.',
+            'btn_text' => 'View POST',
         ],
     ],
 ];

@@ -17,7 +17,7 @@ return [
             'subject' => 'Tu publicación recibió un comentario',
             'greeting' => '¿Qué tal :user_name?...',
             'opening_phrase' => ':user_comment_name ha comentado tu publicación.',
-            'btn_text' => 'Ver la Publicación',
+            'btn_text' => 'Ver la PUBLICACIÓN',
         ],
     ],
 ];

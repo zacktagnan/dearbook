@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Traits\UserReactions;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ReactionRequest;
+use App\Notifications\ReactionAddedOnPost;
+use App\Notifications\ReactionUpdatedOnPost;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostReactionController extends Controller
@@ -14,10 +17,13 @@ class PostReactionController extends Controller
 
     public function reaction(ReactionRequest $request, Post $post): JsonResponse
     {
+        $notifyReaction = null;
+        $type = '';
         if (!$request->current_reaction_type) {
             $hasReaction = true;
             $this->createReaction($post, $request->reaction_type);
             $type = $request->reaction_type;
+            $notifyReaction = 'created';
         } else {
             if ($request->from_main_reaction_button) {
                 if ($this->reactionExists($post)) {
@@ -28,12 +34,22 @@ class PostReactionController extends Controller
                     $hasReaction = true;
                     $this->createReaction($post, $request->reaction_type);
                     $type = $request->reaction_type;
+                    $notifyReaction = 'created';
                 }
             } else {
                 $hasReaction = true;
                 $this->updateReaction($post, $request->reaction_type);
                 $type = $request->reaction_type;
+                $notifyReaction = 'updated';
             }
+        }
+
+        if (($notifyReaction === 'created' || $notifyReaction === 'updated') && !$post->isAuthor(auth()->id())) {
+            $user = User::where('id', auth()->id())->first();
+            match ($notifyReaction) {
+                'created' => $post->user->notify(new ReactionAddedOnPost($user, $post, $type)),
+                'updated' => $post->user->notify(new ReactionUpdatedOnPost($user, $post, $type)),
+            };
         }
 
         $reactions = $post->reactions()->count();
