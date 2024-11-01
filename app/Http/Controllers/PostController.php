@@ -67,14 +67,14 @@ class PostController extends Controller
                 ]);
             }
 
-            DB::commit();
-
             if ($post->group) {
                 // Notification::send($post->group->members, new PostCreated($post, $post->group));
 
                 $allMembersExceptPostAuthor = $post->group->members()->where('users.id', '!=', $post->user_id)->get();
                 Notification::send($allMembersExceptPostAuthor, new PostCreated($post, $post->group));
             }
+
+            DB::commit();
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);
             $this->deleteFolderIfEmpty($destinationFolder);

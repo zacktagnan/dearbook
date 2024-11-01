@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CommentResource;
 use App\Http\Requests\CommentStoreRequest;
 use App\Http\Requests\CommentUpdateRequest;
+use App\Notifications\CommentCreated;
 use App\Notifications\CommentDeleted;
 use App\Traits\CommentsTree;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,6 +55,8 @@ class PostCommentController extends Controller
                     'created_by' => $request->user()->id,
                 ]);
             }
+
+            $post->user->notify(new CommentCreated($comment, $post));
 
             DB::commit();
 
