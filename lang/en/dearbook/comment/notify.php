@@ -20,4 +20,22 @@ return [
             'btn_text' => 'View POST',
         ],
     ],
+
+    'added_reaction' => [
+        'mailing' => [
+            'subject' => 'Reaction received by your comment',
+            'greeting' => 'What\'s up :user_name?...',
+            'opening_phrase' => ':user_reaction_name has issued a reaction of ":type" on your comment.',
+            'btn_text' => 'View POST',
+        ],
+    ],
+
+    'updated_reaction' => [
+        'mailing' => [
+            'subject' => 'Reaction updated on your comment',
+            'greeting' => 'What\'s up :user_name?...',
+            'opening_phrase' => ':user_reaction_name has modified his reaction to ":type" on your comment.',
+            'btn_text' => 'View POST',
+        ],
+    ],
 ];

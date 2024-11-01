@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use App\Models\Comment;
 use App\Traits\UserReactions;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\ReactionRequest;
 use App\Http\Resources\CommentResource;
+use App\Notifications\ReactionAddedOnComment;
+use App\Notifications\ReactionUpdatedOnComment;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommentReactionController extends Controller
@@ -16,10 +19,13 @@ class CommentReactionController extends Controller
 
     public function reaction(ReactionRequest $request, Comment $comment): JsonResponse
     {
+        $notifyReaction = null;
+        $type = '';
         if (!$request->current_reaction_type) {
             $hasReaction = true;
             $this->createReaction($comment, $request->reaction_type);
             $type = $request->reaction_type;
+            $notifyReaction = 'created';
         } else {
             if ($request->from_main_reaction_button) {
                 if ($this->reactionExists($comment)) {
@@ -30,12 +36,22 @@ class CommentReactionController extends Controller
                     $hasReaction = true;
                     $this->createReaction($comment, $request->reaction_type);
                     $type = $request->reaction_type;
+                    $notifyReaction = 'created';
                 }
             } else {
                 $hasReaction = true;
                 $this->updateReaction($comment, $request->reaction_type);
                 $type = $request->reaction_type;
+                $notifyReaction = 'updated';
             }
+        }
+
+        if (($notifyReaction === 'created' || $notifyReaction === 'updated') && !$comment->isAuthor(auth()->id())) {
+            $user = User::where('id', auth()->id())->first();
+            match ($notifyReaction) {
+                'created' => $comment->user->notify(new ReactionAddedOnComment($user, $comment->post, $type)),
+                'updated' => $comment->user->notify(new ReactionUpdatedOnComment($user, $comment->post, $type)),
+            };
         }
 
         $reactions = $comment->reactions()->count();

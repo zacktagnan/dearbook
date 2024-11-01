@@ -20,4 +20,22 @@ return [
             'btn_text' => 'Ver la PUBLICACIÓN',
         ],
     ],
+
+    'added_reaction' => [
+        'mailing' => [
+            'subject' => 'Reacción recibida por tu comentario',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => ':user_reaction_name ha reaccionado con ":type" a tu comentario.',
+            'btn_text' => 'Ver la PUBLICACIÓN',
+        ],
+    ],
+
+    'updated_reaction' => [
+        'mailing' => [
+            'subject' => 'Reacción modificada en tu comentario',
+            'greeting' => '¿Qué tal :user_name?...',
+            'opening_phrase' => ':user_reaction_name ha modificado a ":type" su reacción a tu comentario.',
+            'btn_text' => 'Ver la PUBLICACIÓN',
+        ],
+    ],
 ];
