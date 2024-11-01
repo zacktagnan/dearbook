@@ -142,10 +142,23 @@ const errorsFromPost = ref({})
 
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
+const notificationMsg = ref(null)
 
 const timer = ref(null)
 const timeOnSeconds = ref(0)
 const maxTimeOnSecondsForNotificationBox = usePage().props.maxTimeOnSecondsForNotificationBox;
+
+const activeShowGeneralNotification = (msg) => {
+    notificationMsg.value = msg
+    showNotification.value = true
+
+    // setTimeout(() => {
+    //     closingNotification('notification')
+    // }, 3000)
+    timer.value = null
+    timeOnSeconds.value = 0
+    startClosingNotification()
+}
 
 const activeShowNotification = (errors) => {
     errorsFromPost.value = errors
@@ -263,6 +276,7 @@ const processing = () => {
                 @callArchiveItem="archiveItem" @callOpenAttachmentsModal="openAttachmentsModal"
                 @callOpenUserReactionsModal="openUserReactionsModal" @callConfirmDeletion="showConfirmDeletion"
                 @callActiveShowNotification="activeShowNotification"
+                @callActiveShowGeneralNotification="activeShowGeneralNotification"
                 @callRestoreItemFromArchive="submitProcess('restore_from_archive', post.id)"
                 @callRestoreItemFromTrash="submitProcess('restore_from_trash', post.id)"
                 @callForceDeleteItem="submitProcess('force_delete', post.id)" :class="'rounded shadow'" />
@@ -370,6 +384,10 @@ const processing = () => {
                 @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                 v-else-if="showNotification && errorsFromPost.comment" :title="'Error'"
                 :message="errorsFromPost.comment" />
+
+            <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+                @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+                v-show="showNotification && notificationMsg" :title="'Info'" :message="notificationMsg" />
         </div>
     </AuthenticatedLayout>
 </template>

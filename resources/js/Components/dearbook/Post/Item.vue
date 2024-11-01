@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed } from "vue";
-import { ChatBubbleLeftRightIcon } from "@heroicons/vue/24/outline";
+import { ChatBubbleLeftRightIcon, DocumentDuplicateIcon, EyeIcon } from "@heroicons/vue/24/outline";
 import ReadMoreOrLess from '@/Components/dearbook/ReadMoreOrLess.vue';
 
 const props = defineProps({
@@ -12,13 +12,14 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
-    "callOpenEditModal",
-    "callOpenDetailModal",
-    "callOpenAttachmentsModal",
+    'callOpenEditModal',
+    'callOpenDetailModal',
+    'callOpenAttachmentsModal',
     'callOpenUserReactionsModal',
     'callArchiveItem',
     'callConfirmDeletion',
-    "callActiveShowNotification",
+    'callActiveShowGeneralNotification',
+    'callActiveShowNotification',
     'callRestoreItemFromArchive',
     'callRestoreItemFromTrash',
     'callForceDeleteItem',
@@ -39,7 +40,7 @@ import {
     ArrowUturnLeftIcon,
     ArchiveBoxIcon,
 } from "@heroicons/vue/24/solid";
-import { usePage } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
 const openEditModal = () => {
@@ -81,6 +82,10 @@ const isTrashedByAdminGroup = computed(
 
 const isPostGroupMember = computed(() => !!(group && group?.status === 'approved'));
 const disableOptions = computed(() => !!(group && !isPostGroupMember.value));
+const isPrivateGroup = computed(() => !!(group && group?.type === 'private'))
+const isPostGroupMemberOrNotIsPrivateGroup = computed(
+    () => isPostGroupMember.value || !isPrivateGroup.value
+)
 
 const isArchived = computed(
     () => props.post.archived_at !== ''
@@ -179,6 +184,33 @@ const typeUserReactionsPost = (type) => {
 
 // ============================================================================
 
+const copyToClipboard = async () => {
+    if (!navigator.clipboard) {
+        // alert('La API de portapapeles no es compatible con este navegador.')
+        alert('La función de copiar al portapapeles no es compatible con este navegador.\n\nTendrás que cambiar de navegador o copiar la URL manualmente.')
+        return
+    }
+
+    let postUrl = route('post.show', {
+        user: props.post.user.username,
+        id: props.post.id,
+    })
+
+    try {
+        await navigator.clipboard.writeText(postUrl)
+        // alert('Texto copiado al portapapeles!')
+        emit('callActiveShowGeneralNotification', '¡Enlace copiado al portapapeles!')
+    } catch (err) {
+        console.error('Error al copiar: ', err)
+        alert('Error al copiar el enlace')
+    }
+}
+// const copyToClipboard = () => {
+//     alert('La API de portapapeles no es compatible con este navegador.')
+// }
+
+// ============================================================================
+
 import PostReactionTypeUsersSummary from "@/Components/dearbook/Post/Reaction/TypeUsersSummary.vue";
 import PostReactionBox from "@/Components/dearbook/Post/Reaction/Box.vue";
 
@@ -233,68 +265,51 @@ defineExpose({
         <div class="flex items-center justify-between">
             <PostHeader :post="post" />
 
-            <OptionsDropDown v-model="isPostAuthorOrIsPostGroupAdmin" :ellipsis-type-icon="'vertical'" :is-disabled="disableOptions">
-                <template v-if="isPostAuthor">
-                    <template v-if="!isTrashed && !isArchived">
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                            <button @click="openEditModal" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Editar publicación">
-                                <PencilIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                Editar
-                            </button>
-                            </MenuItem>
-                        </div>
+            <OptionsDropDown v-model="isPostGroupMemberOrNotIsPrivateGroup" :ellipsis-type-icon="'vertical'">
+                <div class="px-1 py-1">
+                    <MenuItem v-slot="{ active }">
+                    <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle" @click="openEditModal" :class="[
+                        active
+                            ? 'bg-sky-100'
+                            : 'text-gray-900',
+                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]">
+                        <EyeIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                        Abrir detalle
+                    </Link>
+                    </MenuItem>
 
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                            <button @click="$emit('callArchiveItem', post.id)" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Mover al archivo">
-                                <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                Al archivo
-                            </button>
-                            </MenuItem>
-
-                            <MenuItem v-slot="{ active }">
-                            <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Mover a la papelera">
-                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                A la papelera
-                            </button>
-                            </MenuItem>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <template v-if="isTrashed">
-                            <div v-if="!isTrashedByAdminGroup" class="px-1 py-1">
+                    <MenuItem v-slot="{ active }">
+                    <button title="Copiar enlace a portapapeles" @click="copyToClipboard" :class="[
+                        active
+                            ? 'bg-sky-100'
+                            : 'text-gray-900',
+                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                    ]">
+                        <DocumentDuplicateIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                        Copiar enlace
+                    </button>
+                    </MenuItem>
+                </div>
+                <template v-if="isPostAuthorOrIsPostGroupAdmin">
+                    <template v-if="isPostAuthor">
+                        <template v-if="!isTrashed && !isArchived">
+                            <div class="px-1 py-1">
                                 <MenuItem v-slot="{ active }">
-                                <button @click="$emit('callRestoreItemFromTrash')" :class="[
+                                <button @click="openEditModal" :class="[
                                     active
                                         ? 'bg-sky-100'
                                         : 'text-gray-900',
                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                ]" title="Restaurar publicación">
-                                    <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
-                                        aria-hidden="true" />
-                                    Restaurar
+                                ]" title="Editar publicación">
+                                    <PencilIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                    Editar
                                 </button>
                                 </MenuItem>
                             </div>
 
                             <div class="px-1 py-1">
-                                <MenuItem v-if="!isTrashedByAdminGroup" v-slot="{ active }">
+                                <MenuItem v-slot="{ active }">
                                 <button @click="$emit('callArchiveItem', post.id)" :class="[
                                     active
                                         ? 'bg-sky-100'
@@ -307,19 +322,111 @@ defineExpose({
                                 </MenuItem>
 
                                 <MenuItem v-slot="{ active }">
-                                <button @click="$emit('callForceDeleteItem')" :class="[
+                                <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
                                     active
                                         ? 'bg-sky-100'
                                         : 'text-gray-900',
                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                ]" title="Eliminar del todo">
+                                ]" title="Mover a la papelera">
                                     <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                    Eliminar
+                                    A la papelera
                                 </button>
                                 </MenuItem>
                             </div>
                         </template>
-                        <template v-if="isArchived">
+                        <template v-else>
+                            <template v-if="isTrashed">
+                                <div v-if="!isTrashedByAdminGroup" class="px-1 py-1">
+                                    <MenuItem v-slot="{ active }">
+                                    <button @click="$emit('callRestoreItemFromTrash')" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Restaurar publicación">
+                                        <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                            aria-hidden="true" />
+                                        Restaurar
+                                    </button>
+                                    </MenuItem>
+                                </div>
+
+                                <div class="px-1 py-1">
+                                    <MenuItem v-if="!isTrashedByAdminGroup" v-slot="{ active }">
+                                    <button @click="$emit('callArchiveItem', post.id)" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Mover al archivo">
+                                        <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                        Al archivo
+                                    </button>
+                                    </MenuItem>
+
+                                    <MenuItem v-slot="{ active }">
+                                    <button @click="$emit('callForceDeleteItem')" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Eliminar del todo">
+                                        <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                        Eliminar
+                                    </button>
+                                    </MenuItem>
+                                </div>
+                            </template>
+                            <template v-if="isArchived">
+                                <div class="px-1 py-1">
+                                    <MenuItem v-slot="{ active }">
+                                    <button @click="$emit('callRestoreItemFromArchive')" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Restaurar publicación">
+                                        <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
+                                            aria-hidden="true" />
+                                        Restaurar
+                                    </button>
+                                    </MenuItem>
+                                </div>
+
+                                <div class="px-1 py-1">
+                                    <MenuItem v-slot="{ active }">
+                                    <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Mover a la papelera">
+                                        <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                        A la papelera
+                                    </button>
+                                    </MenuItem>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+
+                    <template v-else-if="isPostGroupAdmin">
+                        <template v-if="!isTrashed">
+                            <div class="px-1 py-1">
+                                <MenuItem v-slot="{ active }">
+                                    <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                                        active
+                                            ? 'bg-sky-100'
+                                            : 'text-gray-900',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]" title="Mover a la papelera">
+                                        <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
+                                        A la papelera
+                                    </button>
+                                </MenuItem>
+                            </div>
+                        </template>
+                        <template v-else>
                             <div class="px-1 py-1">
                                 <MenuItem v-slot="{ active }">
                                 <button @click="$emit('callRestoreItemFromArchive')" :class="[
@@ -337,72 +444,24 @@ defineExpose({
 
                             <div class="px-1 py-1">
                                 <MenuItem v-slot="{ active }">
-                                <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
+                                <button @click="$emit('callForceDeleteItem')" :class="[
                                     active
                                         ? 'bg-sky-100'
                                         : 'text-gray-900',
                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                ]" title="Mover a la papelera">
+                                ]" title="Eliminar del todo">
                                     <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                    A la papelera
+                                    Eliminar
                                 </button>
                                 </MenuItem>
                             </div>
                         </template>
                     </template>
                 </template>
-
-                <template v-else-if="isPostGroupAdmin">
-                    <template v-if="!isTrashed">
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                                <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
-                                    active
-                                        ? 'bg-sky-100'
-                                        : 'text-gray-900',
-                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                ]" title="Mover a la papelera">
-                                    <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                    A la papelera
-                                </button>
-                            </MenuItem>
-                        </div>
-                    </template>
-                    <template v-else>
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                            <button @click="$emit('callRestoreItemFromArchive')" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Restaurar publicación">
-                                <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
-                                    aria-hidden="true" />
-                                Restaurar
-                            </button>
-                            </MenuItem>
-                        </div>
-
-                        <div class="px-1 py-1">
-                            <MenuItem v-slot="{ active }">
-                            <button @click="$emit('callForceDeleteItem')" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Eliminar del todo">
-                                <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
-                                Eliminar
-                            </button>
-                            </MenuItem>
-                        </div>
-                    </template>
-                </template>
             </OptionsDropDown>
             <!-- =========================================================== -->
         </div>
-
+        <!-- <pre>{{ post }}</pre> -->
         <div class="mt-1">
             <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength"
                 :content-classes="'ck-content-output'" />

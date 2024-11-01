@@ -163,10 +163,23 @@ const errorsFromPost = ref({})
 
 const showNotification = ref(true)
 const notificationBoxRef = ref(null)
+const notificationMsg = ref(null)
 
 const timer = ref(null)
 const timeOnSeconds = ref(0)
 const maxTimeOnSecondsForNotificationBox = usePage().props.maxTimeOnSecondsForNotificationBox;
+
+const activeShowGeneralNotification = (msg) => {
+    notificationMsg.value = msg
+    showNotification.value = true
+
+    // setTimeout(() => {
+    //     closingNotification('notification')
+    // }, 3000)
+    timer.value = null
+    timeOnSeconds.value = 0
+    startClosingNotification()
+}
 
 const activeShowNotification = (errors) => {
     errorsFromPost.value = errors
@@ -285,7 +298,8 @@ onMounted(() => {
         <PostItem v-for="post in allPosts.data" :ref="el => postItemRef[post.id] = el" :post="post"
             @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem" @callOpenDetailModal="openDetailModal"
             @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
-            @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification" />
+            @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification"
+            @callActiveShowGeneralNotification="activeShowGeneralNotification" />
 
         <div ref="loadMoreIntersectRef" class="-translate-y-32"></div>
 
@@ -357,5 +371,9 @@ onMounted(() => {
         <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
             @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
             v-else-if="showNotification && errorsFromPost.comment" :title="'Error'" :message="errorsFromPost.comment" />
+
+        <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
+            @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
+            v-show="showNotification && notificationMsg" :title="'Info'" :message="notificationMsg" />
     </div>
 </template>
