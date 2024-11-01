@@ -13,9 +13,11 @@ use App\Http\Requests\PostUpdateRequest;
 use App\Http\Resources\GroupResource;
 use App\Http\Resources\PostResource;
 use App\Libs\Utilities;
+use App\Notifications\PostCreated;
 use App\Notifications\PostDeleted;
 use App\Traits\ResourcesDeletion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Inertia\Response as InertiaResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -66,6 +68,13 @@ class PostController extends Controller
             }
 
             DB::commit();
+
+            if ($post->group) {
+                // Notification::send($post->group->members, new PostCreated($post, $post->group));
+
+                $allMembersExceptPostAuthor = $post->group->members()->where('users.id', '!=', $post->user_id)->get();
+                Notification::send($allMembersExceptPostAuthor, new PostCreated($post, $post->group));
+            }
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);
             $this->deleteFolderIfEmpty($destinationFolder);

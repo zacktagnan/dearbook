@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Models\Group;
+use App\Models\Post;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +16,7 @@ class PostCreated extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(public Post $post, public Group $group)
     {
         //
     }
@@ -35,9 +37,18 @@ class PostCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+            ->subject(__('dearbook/post/notify.created_on_group.mailing.subject', [
+                'group_name' => $this->group->name,
+            ]))
+            ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
+            ->line(__('dearbook/post/notify.created_on_group.mailing.greeting', [
+                'group_name' => $this->group->name,
+            ]))
+            ->line(__('dearbook/post/notify.created_on_group.mailing.opening_phrase'))
+            ->action(__('dearbook/post/notify.created_on_group.mailing.btn_text'), route('post.show', [
+                'user' => $this->post->user->username,
+                'id' => $this->post->id,
+            ]));
     }
 
     /**
