@@ -47,7 +47,7 @@ return [
         ],
         'members_block' => [
             'header' => 'Members',
-            'admin_text' => 'is the group admin.',
+            'admin_text' => 'is the group CHIEF Admin.',
         ],
     ],
 ];
