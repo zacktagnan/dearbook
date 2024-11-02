@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AvatarImageUpdateRequest;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Follower;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Http\Requests\AvatarImageUpdateRequest;
 
 class ProfileController extends Controller
 {
@@ -23,13 +24,22 @@ class ProfileController extends Controller
 
     public function index(User $user): Response
     {
+        $isCurrentUserFollower = false;
+        if (!Auth::guest()) {
+            $isCurrentUserFollower = Follower::where('followed_id', $user->id)->where('follower_id', auth()->id())->exists();
+        }
+
+        $totalOfFollowers = Follower::where('followed_id', $user->id)->count();
+
         // dd($user);
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'success' => session('success'),
+            'isCurrentUserFollower' => $isCurrentUserFollower,
             // 'user' => $user,
             'user' => new UserResource($user),
+            'totalOfFollowers' => $totalOfFollowers,
         ]);
     }
 

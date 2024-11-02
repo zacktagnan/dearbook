@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\CommentReactionController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckGroupMembership;
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -89,6 +90,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/request-approve-or-not/{group:slug}', [GroupController::class, 'requestApproveOrNot'])->name('request-approve-or-not');
         Route::post('/change-role/{group:slug}', [GroupController::class, 'changeRole'])->name('change-role');
         Route::delete('/remove-member/{group:slug}', [GroupController::class, 'removeMember'])->name('remove-member');
+    });
+
+    Route::prefix('user')->as('user.')->group(function () {
+        Route::post('/follow-unfollow/{user}', [UserController::class, 'followUnfollow'])->name('follow-unfollow');
     });
 });
 

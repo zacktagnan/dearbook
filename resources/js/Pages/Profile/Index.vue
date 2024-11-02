@@ -7,7 +7,7 @@ import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, UserMinusIcon, UserPlusIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 
@@ -25,6 +25,8 @@ const props = defineProps({
     user: {
         type: Object,
     },
+    isCurrentUserFollower: Boolean,
+    totalOfFollowers: Number,
 });
 
 const authUser = usePage().props.auth.user;
@@ -162,6 +164,26 @@ const showCropImageModal = () => {
 const closeCropImageModal = () => {
     showingCropImageModal.value = false;
 };
+
+const followUnfollow = () => {
+    const form = useForm({
+        follow: !props.isCurrentUserFollower
+    })
+
+    form.post(route('user.follow-unfollow', props.user.id), {
+        preserveScroll: true,
+    })
+}
+
+const totalOfFollowersText = computed(() => {
+    let txt = ''
+    if (props.totalOfFollowers === 1) {
+        txt = props.totalOfFollowers + " seguidor"
+    } else {
+        txt = props.totalOfFollowers + " seguidores"
+    }
+    return txt
+})
 </script>
 
 <template>
@@ -238,10 +260,10 @@ const closeCropImageModal = () => {
                                 <h1 class="text-[32px] font-extrabold">
                                     {{ user.name }}
                                 </h1>
-                                <small v-if="true" class="font-bold text-gray-600">69 seguidores</small>
-                                <button v-else @click="asignSelectedIndex(2)" class="hover:underline"
+                                <small v-if="totalOfFollowers === 0" class="font-bold text-gray-600">{{ totalOfFollowersText }}</small>
+                                <button v-else @click="asignSelectedIndex(2)" class="hover:underline leading-[18px]"
                                     title="Listar seguidor(es)">
-                                    <small class="font-bold text-gray-600">69 seguidores</small>
+                                    <small class="font-bold text-gray-600">{{ totalOfFollowersText }}</small>
                                 </button>
 
                                 <div class="relative mt-2.5 lg:mb-6">
@@ -270,11 +292,26 @@ const closeCropImageModal = () => {
                             </div>
                         </div>
 
-                        <div v-if="isMyProfile" class="flex items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0">
-                            <PrimaryButton @click="asignSelectedIndex(1)"
+                        <div class="flex gap-2 items-end h-full mt-0 mb-4 lg:mt-16 lg:mb-0">
+                            <div v-if="!isMyProfile" class="lg:mr-[47px]">
+                                <button v-if="!isCurrentUserFollower" @click="followUnfollow"
+                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150" title="Seguir a este usuario">
+                                    <UserPlusIcon class="w-5 h-5 md:mr-1" />
+                                    <span class="hidden md:block">Seguir</span>
+                                </button>
+                                <button v-else @click="followUnfollow"
+                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150" title="Dejar de seguir a este usuario">
+                                    <UserMinusIcon class="w-5 h-5 md:mr-1" />
+                                    <span class="hidden md:block">No Seguir</span>
+                                </button>
+                            </div>
+
+                            <!-- <div v-if="isMyProfile" class="w-0.5 h-9 bg-[#0099ce]" /> -->
+
+                            <PrimaryButton v-if="isMyProfile" @click="asignSelectedIndex(1)"
                                 class="lg:mr-[47px] bg-cyan-600 hover:bg-cyan-500" title="Editar">
-                                <PencilSquareIcon class="w-5 h-5 mr-1" />
-                                Editar
+                                <PencilSquareIcon class="w-5 h-5 md:mr-1" />
+                                <span class="hidden md:block">Editar</span>
                             </PrimaryButton>
                         </div>
                     </div>
