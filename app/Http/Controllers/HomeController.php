@@ -14,8 +14,13 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $posts = Post::listedOnTimeLine(auth()->id())
-            ->paginate(20);
+        $userId = auth()->id();
+
+        $posts = Post::listedOnTimeLine($userId)
+
+            ->apply(Post::onlyFromFollowers($userId))
+
+            ->paginate(5); //20
 
         $posts = PostResource::collection($posts);
 
@@ -28,10 +33,10 @@ class HomeController extends Controller
             ->with('currentGroupUser')
             ->select(['groups.*'])
             ->join('group_users AS g_u', 'g_u.group_id', 'groups.id')
-            ->where('g_u.user_id', auth()->id())
+            ->where('g_u.user_id', $userId)
             // ->where('status', GroupUserStatus::APPROVED->value)
             // ->latest()
-            ->orderByRaw('CASE WHEN groups.user_id = ? THEN 0 ELSE 1 END', [auth()->id()])
+            ->orderByRaw('CASE WHEN groups.user_id = ? THEN 0 ELSE 1 END', [$userId])
             ->orderBy('g_u.role')
             ->orderBy('groups.name')
             ->get();
