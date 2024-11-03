@@ -12,12 +12,12 @@ const authUser = usePage().props.auth.user;
 
 <template>
     <TextInput class="w-full mt-2" :model-value="searchKeyword"
-        :placeholder="$t('dearbook.following.search.placeholder')" />
+        :placeholder="$t('dearbook.following.search.main.placeholder')" />
 
     <div class="h-[200px] lg:h-[250px] lg:flex-1 py-2 mt-1 overflow-auto">
         <div v-if="false" class="flex p-3 text-gray-400">
             <p class="w-full text-center">
-                {{ $t('dearbook.following.list.no_registers') }}
+                {{ $t('dearbook.following.list.main.no_registers') }}
             </p>
         </div>
 

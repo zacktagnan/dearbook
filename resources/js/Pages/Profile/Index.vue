@@ -10,6 +10,10 @@ import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon, UserMinusIcon, UserPlusIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
+import PostCreate from "@/Components/dearbook/Post/Create.vue"
+import PostList from "@/Components/dearbook/Post/List.vue"
+import TextInput from '@/Components/TextInput.vue'
+import UserItem from '@/Components/dearbook/User/Item.vue'
 
 const props = defineProps({
     success: {
@@ -25,13 +29,28 @@ const props = defineProps({
     user: {
         type: Object,
     },
+    posts: {
+        type: Object,
+    },
+    after_comment_deleted: {
+        type: Object,
+    },
     isCurrentUserFollower: Boolean,
     totalOfFollowers: Number,
+    followers: {
+        type: Object,
+    },
+    followings: {
+        type: Object,
+    },
 });
 
 const authUser = usePage().props.auth.user;
 
 const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
+
+const searchFollowerKeyword = ref('')
+const searchFollowingKeyword = ref('')
 
 const theSelectedIndex = ref(0)
 const getSetSelectedIndex = computed({
@@ -349,24 +368,57 @@ const totalOfFollowersText = computed(() => {
                     </div>
 
                     <TabPanels class="px-4 mx-auto my-4 lg:px-0 lg:w-2/3">
-                        <TabPanel :key="posts" class="p-3 bg-white shadow">
-                            Contenido de Publicaciones
+                        <!-- Publicaciones -->
+                        <TabPanel>
+                            <PostCreate />
+                            <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
+                                :after_comment_deleted="after_comment_deleted" />
+                            <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">
+                                No hay publicaciones actualmente
+                            </div>
                         </TabPanel>
 
-                        <TabPanel :key="followers" class="">
+                        <!-- Acerca de -->
+                        <TabPanel>
                             <Edit v-if="isMyProfile" :mustVerifyEmail="mustVerifyEmail" :status="status" />
                             <Show v-else :user="user" />
                         </TabPanel>
 
-                        <TabPanel :key="followers" class="p-3 bg-white shadow">
-                            Contenido de Seguidores
+                        <!-- Followers -->
+                        <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                            <TextInput class="w-full" :model-value="searchFollowerKeyword"
+                                :placeholder="$t('dearbook.follower.search.inside_profile.placeholder')" />
+                            <div v-if="followers.length" class="grid grid-cols-2 gap-3 mt-3">
+                                <UserItem v-for="follower of followers" :user="follower"
+                                    :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+                                    :key="follower.id" :user-since-date="follower.since_date">
+                                </UserItem>
+                            </div>
+                            <div v-else>
+                                <p class="w-full text-center mt-3">
+                                    {{ $t('dearbook.follower.list.inside_profile.no_registers') }}
+                                </p>
+                            </div>
                         </TabPanel>
 
-                        <TabPanel :key="followers" class="p-3 bg-white shadow">
-                            Contenido de Seguidos
+                        <!-- Followings -->
+                        <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                            <TextInput class="w-full" :model-value="searchFollowingKeyword"
+                                :placeholder="$t('dearbook.following.search.inside_profile.placeholder')" />
+                            <div v-if="followings.length" class="grid grid-cols-2 gap-3 mt-3">
+                                <UserItem v-for="following of followings" :user="following"
+                                    :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+                                    :key="following.id" :user-since-date="following.since_date">
+                                </UserItem>
+                            </div>
+                            <div v-else>
+                                <p class="w-full text-center mt-3">
+                                    {{ $t('dearbook.following.list.inside_profile.no_registers') }}
+                                </p>
+                            </div>
                         </TabPanel>
 
-                        <TabPanel :key="followers" class="p-3 bg-white shadow">
+                        <TabPanel :key="xxxx" class="p-3 bg-white shadow">
                             Contenido de Fotos
                         </TabPanel>
                     </TabPanels>

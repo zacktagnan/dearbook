@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Follower;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
@@ -17,12 +20,14 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\AvatarImageUpdateRequest;
+use App\Http\Resources\FollowResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends Controller
 {
     public $fileDisk = 'public';
 
-    public function index(User $user): Response
+    public function index(Request $request, User $user): Response|AnonymousResourceCollection
     {
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
@@ -31,15 +36,53 @@ class ProfileController extends Controller
 
         $totalOfFollowers = Follower::where('followed_id', $user->id)->count();
 
+        $posts = Post::listedOnTimeLine(auth()->id())
+            ->where('user_id', $user->id)
+            ->paginate(5); //20
+
+        $posts = PostResource::collection($posts);
+
+        if ($request->wantsJson()) {
+            return $posts;
+        }
+
+        $followers = User::select('users.*', 'f.created_at')
+            ->join('followers as f', 'f.follower_id', 'users.id')
+            ->where('f.followed_id', $user->id)
+            ->get();
+        $followers->transform(function ($follower) {
+            // $follower->created_at_human = Carbon::parse($follower->created_at)->diffForHumans();
+            $follower->since_date = __('dearbook/follower/list.inside_profile.since_date_text', [
+                'since_date' => Carbon::parse($follower->created_at)->diffForHumans(),
+            ]);
+            return $follower;
+        });
+
+        $followings = User::select('users.*', 'f.created_at')
+            ->join('followers as f', 'f.followed_id', 'users.id')
+            ->where('f.follower_id', $user->id)
+            ->get();
+        $followings->transform(function ($following) {
+            // $following->created_at_human = Carbon::parse($following->created_at)->diffForHumans();
+            $following->since_date = __('dearbook/following/list.inside_profile.since_date_text', [
+                'since_date' => Carbon::parse($following->created_at)->diffForHumans(),
+            ]);
+            return $following;
+        });
+
         // dd($user);
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'success' => session('success'),
-            'isCurrentUserFollower' => $isCurrentUserFollower,
             // 'user' => $user,
             'user' => new UserResource($user),
+            'posts' => $posts,
+            'after_comment_deleted' => session('after_comment_deleted'),
+            'isCurrentUserFollower' => $isCurrentUserFollower,
             'totalOfFollowers' => $totalOfFollowers,
+            'followers' => FollowResource::collection($followers),
+            'followings' => FollowResource::collection($followings),
         ]);
     }
 

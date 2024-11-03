@@ -7,7 +7,7 @@ defineProps({
         type: String,
         default: '',
     },
-    userJoiningDateToGroup: {
+    userSinceDate: {
         type: String,
         default: '',
     },
@@ -25,7 +25,7 @@ defineProps({
                     <Link :href="route('profile.index', { username: user.username })">
                     <h3 class="font-black hover:underline">{{ user.name }}</h3>
                     </Link>
-                    <span v-if="userJoiningDateToGroup" class="text-xs">{{ userJoiningDateToGroup }}</span>
+                    <span v-if="userSinceDate" class="text-xs">{{ userSinceDate }}</span>
                 </div>
 
                 <div class="flex gap-1 md:gap-2">

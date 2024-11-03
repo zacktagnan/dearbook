@@ -580,7 +580,7 @@ const deleteMember = () => {
                                 <div v-if="group.all_group_users.length" class="grid gap-3 mt-3">
                                     <UserItem v-for="member of group.all_group_users" :user="member"
                                         :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
-                                        :key="member.id" :user-joining-date-to-group="member.joining_date">
+                                        :key="member.id" :user-since-date="member.joining_date">
                                         <div v-if="isAdminGroup" class="flex items-center gap-2">
                                             <select v-if="authUserIsTheOwnerGroup" @change="memberRoleChange(member, $event.target.value)"
                                                 :disabled="isTheOwnerGroup(member.id)"
