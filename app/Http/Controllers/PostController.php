@@ -74,6 +74,9 @@ class PostController extends Controller
                 Notification::send($allMembersExceptPostAuthor, new PostCreated($post, $post->group));
             }
 
+            $followers = $post->user->followers;
+            Notification::send($followers, new PostCreated($post, null));
+
             DB::commit();
         } catch (\Exception $e) {
             $this->deleteAlreadyUploadedFiles($allFilePaths);

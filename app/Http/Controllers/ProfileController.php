@@ -46,26 +46,20 @@ class ProfileController extends Controller
             return $posts;
         }
 
-        $followers = User::select('users.*', 'f.created_at')
-            ->join('followers as f', 'f.follower_id', 'users.id')
-            ->where('f.followed_id', $user->id)
-            ->get();
+        $followers = $user->followers;
+        $followings = $user->followings;
+
         $followers->transform(function ($follower) {
             // $follower->created_at_human = Carbon::parse($follower->created_at)->diffForHumans();
             $follower->since_date = __('dearbook/follower/list.inside_profile.since_date_text', [
-                'since_date' => Carbon::parse($follower->created_at)->diffForHumans(),
+                'since_date' => Carbon::parse($follower->pivot->created_at)->diffForHumans(),
             ]);
             return $follower;
         });
-
-        $followings = User::select('users.*', 'f.created_at')
-            ->join('followers as f', 'f.followed_id', 'users.id')
-            ->where('f.follower_id', $user->id)
-            ->get();
         $followings->transform(function ($following) {
             // $following->created_at_human = Carbon::parse($following->created_at)->diffForHumans();
             $following->since_date = __('dearbook/following/list.inside_profile.since_date_text', [
-                'since_date' => Carbon::parse($following->created_at)->diffForHumans(),
+                'since_date' => Carbon::parse($following->pivot->created_at)->diffForHumans(),
             ]);
             return $following;
         });

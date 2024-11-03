@@ -16,7 +16,7 @@ class PostCreated extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Post $post, public Group $group)
+    public function __construct(public Post $post, public ?Group $group = null)
     {
         //
     }
@@ -36,16 +36,34 @@ class PostCreated extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $subject = '';
+        if ($this->group) {
+            $subject = __('dearbook/post/notify.created_on_group.mailing.subject', [
+                'group_name' => $this->group->name,
+            ]);
+        } else {
+            $subject = __('dearbook/post/notify.created.mailing.subject', [
+                'author_name' => $this->post->user->name,
+            ]);
+        }
+
         return (new MailMessage)
-            ->subject(__('dearbook/post/notify.created_on_group.mailing.subject', [
-                'group_name' => $this->group->name,
-            ]))
+            ->subject($subject)
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
-            ->line(__('dearbook/post/notify.created_on_group.mailing.greeting', [
-                'group_name' => $this->group->name,
+
+            ->lineIf(!!$this->group, __('dearbook/post/notify.created_on_group.mailing.greeting', [
+                'group_name' => $this->group?->name,
             ]))
-            ->line(__('dearbook/post/notify.created_on_group.mailing.opening_phrase'))
-            ->action(__('dearbook/post/notify.created_on_group.mailing.btn_text'), route('post.show', [
+            ->lineIf(!$this->group, __('dearbook/post/notify.created.mailing.greeting'))
+
+            ->lineIf(!!$this->group, __('dearbook/post/notify.created_on_group.mailing.opening_phrase', [
+                'author_name' => $this->post->user->name,
+            ]))
+            ->lineIf(!$this->group, __('dearbook/post/notify.created.mailing.opening_phrase', [
+                'author_name' => $this->post->user->name,
+            ]))
+
+            ->action(__('dearbook/post/notify.created_on_group_or_not.mailing.btn_text'), route('post.show', [
                 'user' => $this->post->user->username,
                 'id' => $this->post->id,
             ]));

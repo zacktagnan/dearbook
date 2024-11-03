@@ -12,11 +12,24 @@ return [
         ],
     ],
 
+    'created' => [
+        'mailing' => [
+            'subject' => 'Publicación creada por :author_name',
+            'greeting' => '¿Qué tal seguidor?...',
+            'opening_phrase' => ':author_name, al que sigues, acaba de crear una nueva publicación.',
+        ],
+    ],
+
     'created_on_group' => [
         'mailing' => [
             'subject' => 'Publicación creada en ":group_name"',
             'greeting' => '¿Qué tal miembro de ":group_name"?...',
-            'opening_phrase' => 'En el grupo que formas parte, se ha agregado una nueva publicación.',
+            'opening_phrase' => 'En el grupo del que formas parte, :author_name ha agregado una nueva publicación.',
+        ],
+    ],
+
+    'created_on_group_or_not' => [
+        'mailing' => [
             'btn_text' => 'Ver la PUBLICACIÓN',
         ],
     ],

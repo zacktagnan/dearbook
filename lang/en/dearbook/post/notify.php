@@ -12,11 +12,24 @@ return [
         ],
     ],
 
+    'created' => [
+        'mailing' => [
+            'subject' => 'Post created by :author_name',
+            'greeting' => 'What\'s up follower?...',
+            'opening_phrase' => ':author_name, one of your following, has just create a new post.',
+        ],
+    ],
+
     'created_on_group' => [
         'mailing' => [
             'subject' => 'Post created in ":group_name"',
             'greeting' => 'What\'s up member of ":group_name"?...',
-            'opening_phrase' => 'In the group you are part of, a new post has been added.',
+            'opening_phrase' => 'In the group you are part of, a new post has been added by :author_name.',
+        ],
+    ],
+
+    'created_on_group_or_not' => [
+        'mailing' => [
             'btn_text' => 'View POST',
         ],
     ],
