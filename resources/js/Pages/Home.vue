@@ -11,6 +11,7 @@ defineProps({
     posts: Object,
     // En cambio, no es una consulta paginada y ya llega como un Array de Objects
     groups: Array,
+    followings: Array,
     after_comment_deleted: {
         type: Object,
     },
@@ -28,7 +29,7 @@ defineProps({
             </div>
 
             <div class="overflow-hidden lg:col-span-3 lg:order-3 lg:w-full lg:max-w-[455px]">
-                <FollowingList />
+                <FollowingList :followings="followings" />
             </div>
 
             <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">

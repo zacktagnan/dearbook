@@ -3,11 +3,15 @@ import UserItem from '@/Components/dearbook/User/Item.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { ref } from 'vue';
 
+defineProps({
+    'followings': Array,
+})
+
 const searchKeyword = ref('')
 
 // TEMPORAL
-import { usePage } from "@inertiajs/vue3";
-const authUser = usePage().props.auth.user;
+// import { usePage } from "@inertiajs/vue3";
+// const authUser = usePage().props.auth.user;
 </script>
 
 <template>
@@ -22,7 +26,7 @@ const authUser = usePage().props.auth.user;
         </div>
 
         <div v-else>
-            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': false }" />
+            <!-- <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': false }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
@@ -32,7 +36,9 @@ const authUser = usePage().props.auth.user;
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
-            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
+            <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" /> -->
+
+            <UserItem v-for="(following, index) in followings" :user="following" :user-since-date="following.since_date" :classes="' hover:bg-white'" :class="{ 'mt-1': index > 0 }" />
         </div>
     </div>
 </template>

@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\GroupUserStatus;
-use App\Http\Resources\GroupResource;
-use App\Http\Resources\PostResource;
-use App\Models\Group;
+use Carbon\Carbon;
 use App\Models\Post;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Group;
+use Illuminate\Http\Request;
+use App\Http\Enums\GroupUserStatus;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\GroupResource;
+use App\Http\Resources\FollowResource;
 
 class HomeController extends Controller
 {
@@ -41,10 +43,21 @@ class HomeController extends Controller
             ->orderBy('groups.name')
             ->get();
 
+        $user = $request->user();
+        $followings = $user->followings;
+        $followings->transform(function ($following) {
+            // $following->created_at_human = Carbon::parse($following->created_at)->diffForHumans();
+            $following->since_date = __('dearbook/following/list.inside_profile.since_date_text', [
+                'since_date' => Carbon::parse($following->pivot->created_at)->diffForHumans(),
+            ]);
+            return $following;
+        });
+
         return Inertia::render('Home', [
             'after_comment_deleted' => session('after_comment_deleted'),
             'posts' => $posts,
             'groups' => GroupResource::collection($groups),
+            'followings' => FollowResource::collection($followings),
         ]);
     }
 }
