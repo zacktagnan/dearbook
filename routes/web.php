@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
         // Route::get('', [ProfileController::class, 'edit'])->name('edit');
         Route::patch('', [ProfileController::class, 'update'])->name('update');
         Route::delete('', [ProfileController::class, 'destroy'])->name('destroy');
+        Route::get('/multimedia/download-attachment/{attachment}', [ProfileController::class, 'downloadAttachment'])->name('multimedia.download-attachment');
     });
 
     Route::prefix('post')->as('post.')->group(function () {

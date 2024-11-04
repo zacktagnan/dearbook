@@ -20,11 +20,16 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\AvatarImageUpdateRequest;
+use App\Http\Resources\AttachmentResource;
 use App\Http\Resources\FollowResource;
+use App\Models\Attachment;
+use App\Traits\StorageManagement;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends Controller
 {
+    use StorageManagement;
+
     public $fileDisk = 'public';
 
     public function index(Request $request, User $user): Response|AnonymousResourceCollection
@@ -64,6 +69,10 @@ class ProfileController extends Controller
             return $following;
         });
 
+        $photos = Attachment::where('mime', 'like', 'image/%')
+            ->where('created_by', $user->id)
+            ->get();
+
         // dd($user);
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
@@ -77,6 +86,7 @@ class ProfileController extends Controller
             'totalOfFollowers' => $totalOfFollowers,
             'followers' => FollowResource::collection($followers),
             'followings' => FollowResource::collection($followings),
+            'photos' => AttachmentResource::collection($photos),
         ]);
     }
 

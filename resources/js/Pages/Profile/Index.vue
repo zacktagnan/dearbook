@@ -14,6 +14,7 @@ import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
 import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
+import PhotoList from "./PhotoList.vue";
 
 const props = defineProps({
     success: {
@@ -42,6 +43,9 @@ const props = defineProps({
     },
     followings: {
         type: Object,
+    },
+    photos: {
+        type: Array,// Object,
     },
 });
 
@@ -343,7 +347,7 @@ const totalOfFollowersText = computed(() => {
         <div class="">
             <div class="mt-0">
                 <TabGroup :selectedIndex="getSetSelectedIndex">
-                    <div class="bg-white shadow sticky top-[57px]">
+                    <div class="bg-white shadow sticky top-[57px] z-40">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Publicaciones" :selected="selected" />
@@ -418,8 +422,9 @@ const totalOfFollowersText = computed(() => {
                             </div>
                         </TabPanel>
 
-                        <TabPanel :key="xxxx" class="p-3 bg-white shadow">
-                            Contenido de Fotos
+                        <!-- Fotos -->
+                        <TabPanel class="p-3 bg-white shadow rounded-md">
+                            <PhotoList :photos="photos" />
                         </TabPanel>
                     </TabPanels>
                 </TabGroup>
