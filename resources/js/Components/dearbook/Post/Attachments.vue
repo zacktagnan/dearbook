@@ -33,7 +33,9 @@ const maxPreviewIndex = props.maxPreviewFiles - 1;
 
             <a :href="route('post.download-attachment', attachment)
                 " v-if="index < maxPreviewIndex" title="Descargar"
-                class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2">
+                class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-2 top-2"
+                @click.stop
+            >
                 <ArrowDownTrayIcon class="w-5 h-5" />
             </a>
 
