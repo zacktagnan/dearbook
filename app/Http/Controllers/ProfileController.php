@@ -71,14 +71,35 @@ class ProfileController extends Controller
 
         $photos = Attachment::where('mime', 'like', 'image/%')
             ->where('created_by', $user->id)
+            ->with('attachmentable')
+            ->latest()
             ->get();
 
-        // dd($user);
+        // Filtrando los attachments
+        $photos = $photos->filter(function ($attachment) {
+            if ($attachment->attachmentable_type === 'App\Models\Post') {
+                $post = $attachment->attachmentable;
+                return $post && is_null($post->deleted_at);
+            }
+
+            if ($attachment->attachmentable_type === 'App\Models\Comment') {
+                $comment = $attachment->attachmentable;
+                $post = $comment->post;
+                return $post && is_null($post->deleted_at);
+            }
+
+            // Si no es ni un Post ni un Comment, lo mantenemos
+            return true;
+        });
+
+        $photos = $photos->map(function ($attachment) {
+            return new AttachmentResource($attachment, true);
+        });
+
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'success' => session('success'),
-            // 'user' => $user,
             'user' => new UserResource($user),
             'posts' => $posts,
             'after_comment_deleted' => session('after_comment_deleted'),
@@ -86,7 +107,7 @@ class ProfileController extends Controller
             'totalOfFollowers' => $totalOfFollowers,
             'followers' => FollowResource::collection($followers),
             'followings' => FollowResource::collection($followings),
-            'photos' => AttachmentResource::collection($photos),
+            'photos' => $photos,
         ]);
     }
 

@@ -14,7 +14,7 @@ import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
 import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
-import PhotoList from "./PhotoList.vue";
+import PhotoList from '@/Pages/Media/PhotoList.vue'
 
 const props = defineProps({
     success: {
