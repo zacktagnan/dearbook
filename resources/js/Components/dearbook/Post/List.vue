@@ -123,10 +123,10 @@ const deleteEntity = () => {
                 // } else if (entityToDelete.value.entityPrefix === 'post.comment') {
                 //     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
                 // }
-                // if (entityToDelete.value.entityPrefix === 'post.comment') {
-                //     console.log('Ejecutando...filterDeletedComment ¿? ... desde Post/List - commentID: [' + entityToDelete.value.entity + ']')
-                //     postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
-                // }
+                if (entityToDelete.value.entityPrefix === 'post.comment') {
+                    console.log('Ejecutando...filterDeletedComment ¿? ... desde Post/List - commentID: [' + entityToDelete.value.entity + ']')
+                    postDetailModalRef.value.filterDeletedComment(entityToDelete.value.entity)
+                }
                 // Solo para ¿POST?
                 // showDetailModal.value = false
 
