@@ -60,8 +60,8 @@ class GroupController extends Controller
             'conversation' => 0,
             'info' => 1,
             'members' => 2,
-            'requests' => 3,
-            'photos' => 4,
+            'photos' => 3,
+            'requests' => 4,
         };
 
         return Inertia::render('Group/Index', [

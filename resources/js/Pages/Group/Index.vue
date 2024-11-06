@@ -18,6 +18,7 @@ import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
 import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
+import PhotoList from '@/Pages/Media/PhotoList.vue'
 
 const props = defineProps({
     errors: Object,
@@ -41,6 +42,9 @@ const props = defineProps({
         default: 0,
     },
     requestsPending: Array,
+    photos: {
+        type: Array,// Object,
+    },
 });
 
 const authUser = usePage().props.auth.user;
@@ -526,14 +530,14 @@ const deleteMember = () => {
                                     <TabItem text="Miembros" :selected="selected" />
                                 </Tab>
 
-                                <Tab as="template" v-if="isAdminGroup && !isAutoApprovalGroup" v-slot="{ selected }"
+                                <Tab as="template" v-slot="{ selected }"
                                     @click="asignSelectedIndex(3)">
-                                    <TabItem text="Solicitudes" :selected="selected" />
+                                    <TabItem text="Fotos" :selected="selected" />
                                 </Tab>
 
-                                <Tab as="template" v-slot="{ selected }"
-                                    @click="isAdminGroup ? asignSelectedIndex(4) : asignSelectedIndex(3)">
-                                    <TabItem text="Fotos" :selected="selected" />
+                                <Tab as="template" v-if="isAdminGroup && !isAutoApprovalGroup" v-slot="{ selected }"
+                                    @click="asignSelectedIndex(4)">
+                                    <TabItem text="Solicitudes" :selected="selected" />
                                 </Tab>
                             </template>
                         </TabList>
@@ -632,6 +636,11 @@ const deleteMember = () => {
                                 </div>
                             </TabPanel>
 
+                            <!-- Fotos -->
+                            <TabPanel :key="followers" class="p-3 bg-white shadow">
+                                Contenido de Fotos
+                            </TabPanel>
+
                             <!-- Solicitudes -->
                             <TabPanel v-if="isAdminGroup && !isAutoApprovalGroup"
                                 class="p-3 bg-white shadow md:w-4/6 mx-auto">
@@ -656,11 +665,6 @@ const deleteMember = () => {
                                         {{ $t('dearbook.group.list.requests.no_registers') }}
                                     </p>
                                 </div>
-                            </TabPanel>
-
-                            <!-- Fotos -->
-                            <TabPanel :key="followers" class="p-3 bg-white shadow">
-                                Contenido de Fotos
                             </TabPanel>
                         </template>
                     </TabPanels>
