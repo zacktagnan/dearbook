@@ -8,22 +8,22 @@ use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Models\Follower;
+use App\Models\Attachment;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Traits\StorageManagement;
+use App\Services\AttachmentService;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Resources\FollowResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\AvatarImageUpdateRequest;
-use App\Http\Resources\AttachmentResource;
-use App\Http\Resources\FollowResource;
-use App\Models\Attachment;
-use App\Traits\StorageManagement;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends Controller
@@ -31,6 +31,12 @@ class ProfileController extends Controller
     use StorageManagement;
 
     public $fileDisk = 'public';
+    protected $attachmentService;
+
+    public function __construct(AttachmentService $attachmentService)
+    {
+        $this->attachmentService = $attachmentService;
+    }
 
     public function index(Request $request, User $user): Response|AnonymousResourceCollection
     {
@@ -69,32 +75,8 @@ class ProfileController extends Controller
             return $following;
         });
 
-        $photos = Attachment::where('mime', 'like', 'image/%')
-            ->where('created_by', $user->id)
-            ->with('attachmentable')
-            ->latest()
-            ->get();
-
-        // Filtrando los attachments
-        $photos = $photos->filter(function ($attachment) {
-            if ($attachment->attachmentable_type === 'App\Models\Post') {
-                $post = $attachment->attachmentable;
-                return $post && is_null($post->deleted_at);
-            }
-
-            if ($attachment->attachmentable_type === 'App\Models\Comment') {
-                $comment = $attachment->attachmentable;
-                $post = $comment->post;
-                return $post && is_null($post->deleted_at);
-            }
-
-            // Si no es ni un Post ni un Comment, lo mantenemos
-            return true;
-        });
-
-        $photos = $photos->map(function ($attachment) {
-            return new AttachmentResource($attachment, true);
-        });
+        $photos = Attachment::forUserOrGroup($user->id)->get();
+        $photos = $this->attachmentService->filterAndTransform($photos);
 
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,

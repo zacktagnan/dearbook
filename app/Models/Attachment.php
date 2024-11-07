@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,5 +36,20 @@ class Attachment extends Model
                 Storage::disk('public')->delete($model->path);
             }
         });
+    }
+
+    public function scopeForUserOrGroup($query, $userId = null, $groupId = null): Builder
+    {
+        return $query->where('mime', 'like', 'image/%')
+            ->when($userId, function ($query) use ($userId) {
+                $query->where('created_by', $userId);
+            })
+            ->when($groupId, function ($query) use ($groupId) {
+                $query->whereHas('attachmentable', function ($q) use ($groupId) {
+                    $q->where('group_id', $groupId);
+                });
+            })
+            ->with('attachmentable')
+            ->latest();
     }
 }
