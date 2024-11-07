@@ -3,13 +3,18 @@ import {
     ArrowDownTrayIcon,
 } from "@heroicons/vue/24/solid";
 import BlogPostIcon from '@/Components/Icons/BlogPost.vue'
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import PhotoModal from "@/Components/dearbook/Attachment/Modal.vue"
 
 const props = defineProps({
-    photos: Array,
+    photos: {
+        type: Object,
+        default: () => ({}),
+    },
 })
+
+const isTherePhotos = computed(() => Object.keys(props.photos).length > 0)
 
 const showPhotoModal = ref(false)
 const currentPhotoToPreview = ref(0)
@@ -36,7 +41,7 @@ const getPostLink = (attachment) => {
 </script>
 
 <template>
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+    <div v-if="isTherePhotos" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <template v-for="(attachment, index) of photos">
             <div @click="openPhotoModal(index)" title="Ver en detalle"
                 class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
@@ -59,6 +64,7 @@ const getPostLink = (attachment) => {
             </div>
         </template>
     </div>
+    <div v-else class="text-center">Sin archivos por el momento</div>
 
     <PhotoModal :attachments="photos || []"
         :entity-prefix="currentPhotoToPreview.prefix"
