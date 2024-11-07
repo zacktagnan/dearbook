@@ -38,16 +38,11 @@ class Attachment extends Model
         });
     }
 
-    public function scopeForUserOrGroup($query, $userId = null, $groupId = null): Builder
+    public function scopeForUserOrGroup($query, $userId = null): Builder
     {
         return $query->where('mime', 'like', 'image/%')
             ->when($userId, function ($query) use ($userId) {
                 $query->where('created_by', $userId);
-            })
-            ->when($groupId, function ($query) use ($groupId) {
-                $query->whereHas('attachmentable', function ($q) use ($groupId) {
-                    $q->where('group_id', $groupId);
-                });
             })
             ->with('attachmentable')
             ->latest();

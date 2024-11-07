@@ -637,8 +637,8 @@ const deleteMember = () => {
                             </TabPanel>
 
                             <!-- Fotos -->
-                            <TabPanel :key="followers" class="p-3 bg-white shadow">
-                                Contenido de Fotos
+                            <TabPanel class="p-3 bg-white shadow rounded-md">
+                                <PhotoList :photos="photos" />
                             </TabPanel>
 
                             <!-- Solicitudes -->

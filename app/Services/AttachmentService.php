@@ -7,18 +7,22 @@ use App\Http\Resources\AttachmentResource;
 class AttachmentService
 {
 
-    public function filterAndTransform($attachments)
+    public function filterAndTransform($attachments, $groupId = null)
     {
-        return $attachments->filter(function ($attachment) {
+        return $attachments->filter(function ($attachment) use ($groupId) {
             if ($attachment->attachmentable_type === 'App\Models\Post') {
                 $post = $attachment->attachmentable;
-                return $post && is_null($post->deleted_at);
+                return $groupId
+                    ? $post && is_null($post->deleted_at) && $post->group_id === $groupId
+                    : $post && is_null($post->deleted_at);
             }
 
             if ($attachment->attachmentable_type === 'App\Models\Comment') {
                 $comment = $attachment->attachmentable;
                 $post = $comment->post;
-                return $post && is_null($post->deleted_at);
+                return $groupId
+                    ? $post && is_null($post->deleted_at) && $post->group_id === $groupId
+                    : $post && is_null($post->deleted_at);
             }
 
             // Si no es ni un Post ni un Comment, lo mantenemos

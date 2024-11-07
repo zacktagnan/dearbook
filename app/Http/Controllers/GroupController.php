@@ -7,10 +7,13 @@ use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
 use App\Models\GroupUser;
+use App\Models\Attachment;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
+use App\Services\AttachmentService;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
@@ -24,18 +27,23 @@ use App\Http\Requests\InviteUsersRequest;
 use App\Notifications\RequestToJoinGroup;
 use App\Notifications\InvitationToJoinGroup;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\MemberRemovedFromGroup;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
-use App\Http\Resources\PostResource;
-use App\Notifications\MemberRemovedFromGroup;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
 {
     public $fileDisk = 'public';
+    protected $attachmentService;
+
+    public function __construct(AttachmentService $attachmentService)
+    {
+        $this->attachmentService = $attachmentService;
+    }
 
     /**
      * Display a listing of the resource.
@@ -64,6 +72,9 @@ class GroupController extends Controller
             'requests' => 4,
         };
 
+        $photos = Attachment::forUserOrGroup()->get();
+        $photos = $this->attachmentService->filterAndTransform($photos, $group->id);
+
         return Inertia::render('Group/Index', [
             // 'status' => session('status'),
             'success' => session('success'),
@@ -74,6 +85,7 @@ class GroupController extends Controller
             'requestsPending' => !$group->auto_approval
                 ? UserResource::collection($requestsPending)
                 : null,
+            'photos' => $photos,
         ]);
     }
 
