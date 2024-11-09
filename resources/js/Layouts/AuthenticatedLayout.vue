@@ -7,11 +7,17 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 
 import ScrollToTop from '@/Components/dearbook/ScrollToTop.vue'
+import TextInput from "@/Components/TextInput.vue";
 
 const showingNavigationDropdown = ref(false);
+const keywords = ref('')
+
+const globalSearch = () => {
+    router.get(route('global-search', keywords.value))
+}
 </script>
 
 <template>
@@ -21,7 +27,7 @@ const showingNavigationDropdown = ref(false);
                 class="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto sm:px-6 lg:px-8">
-                    <div class="flex justify-between h-14">
+                    <div class="flex justify-between h-14 items-center">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
@@ -40,7 +46,13 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <div class="w-full flex justify-center">
+                            <TextInput v-model="keywords" :placeholder="'Usuarios, grupos o publicaciones'"
+                                class="placeholder:text-gray-400 placeholder:italic w-2/3 md:w-1/2"
+                                @keyup.enter="globalSearch" />
+                        </div>
+
+                        <div class="hidden sm:flex sm:items-center">
                             <!-- Settings Dropdown -->
                             <div class="relative ms-3">
                                 <Dropdown align="right" width="48">

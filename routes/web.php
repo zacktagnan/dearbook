@@ -9,6 +9,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostReactionController;
 use App\Http\Controllers\CommentReactionController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckGroupMembership;
 
@@ -96,6 +97,8 @@ Route::middleware('auth')->group(function () {
     Route::prefix('user')->as('user.')->group(function () {
         Route::post('/follow-unfollow/{user}', [UserController::class, 'followUnfollow'])->name('follow-unfollow');
     });
+
+    Route::get('global-search/{keywords?}', [SearchController::class, 'search'])->name('global-search');
 });
 
 require __DIR__ . '/auth.php';
