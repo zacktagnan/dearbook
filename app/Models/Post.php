@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Closure;
 use App\Traits\Reactionable;
 use App\Traits\Attachmentable;
 use LaravelArchivable\Archivable;
@@ -55,11 +54,6 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function scopeApply(Builder $query, Closure $closure): Builder
-    {
-        return $closure($query);
-    }
-
     public static function listedOnTimeLine($userId): Builder
     {
         return Post::withCount(['reactions',])
@@ -89,31 +83,27 @@ class Post extends Model
             ->latest();
     }
 
-    public static function onlyFromFollowers($userId): Closure
+    public static function scopeOnlyFromFollowers(Builder $query, int $userId): Builder
     {
-        return function ($query) use ($userId) {
-            $query->leftJoin('followers as f', function ($join) use ($userId) {
-                $join->on('posts.user_id', '=', 'f.followed_id')
-                    ->where('f.follower_id', '=', $userId);
+        return $query->leftJoin('followers as f', function ($join) use ($userId) {
+            $join->on('posts.user_id', '=', 'f.followed_id')
+                ->where('f.follower_id', '=', $userId);
+        })
+            ->leftJoin('group_users as g_u', function ($join) use ($userId) {
+                $join->on('g_u.group_id', '=', 'posts.group_id')
+                    ->where('g_u.user_id', '=', $userId)
+                    ->where('g_u.status', '=', GroupUserStatus::APPROVED->value);
             })
-                ->leftJoin('group_users as g_u', function ($join) use ($userId) {
-                    $join->on('g_u.group_id', '=', 'posts.group_id')
-                        ->where('g_u.user_id', '=', $userId)
-                        ->where('g_u.status', '=', GroupUserStatus::APPROVED->value);
-                })
-                ->whereNull('posts.deleted_at')
-                ->where(function ($query) use ($userId) {
-                    $query->whereNotNull('f.follower_id')
-                        ->orWhereNotNull('g_u.group_id')
-                        // ->orWhere('posts.user_id', $userId)
-                        // Para incluir los propios del AUTH
-                    ;
-                })
-                // Para no incluir los propios del AUTH
-                ->whereNot('posts.user_id', $userId);
-
-            return $query;
-        };
+            ->whereNull('posts.deleted_at')
+            ->where(function ($query) use ($userId) {
+                $query->whereNotNull('f.follower_id')
+                    ->orWhereNotNull('g_u.group_id')
+                    // ->orWhere('posts.user_id', $userId)
+                    // Para incluir los propios del AUTH
+                ;
+            })
+            // Para no incluir los propios del AUTH
+            ->whereNot('posts.user_id', $userId);
     }
 
     public static function detail($userId): Builder

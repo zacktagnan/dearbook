@@ -6,8 +6,6 @@ use Carbon\Carbon;
 use App\Models\Post;
 use Inertia\Inertia;
 use App\Models\Group;
-use Illuminate\Http\Request;
-use App\Http\Enums\GroupUserStatus;
 use App\Http\Requests\SearchGroupOrFollowingRequest;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\GroupResource;
@@ -20,7 +18,7 @@ class HomeController extends Controller
         $userId = auth()->id();
 
         $posts = Post::listedOnTimeLine($userId)
-            ->apply(Post::onlyFromFollowers($userId))
+            ->onlyFromFollowers($userId)
             ->paginate(5); //20
 
         $posts = PostResource::collection($posts);
