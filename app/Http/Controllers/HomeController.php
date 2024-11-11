@@ -33,6 +33,7 @@ class HomeController extends Controller
         $searchTerm = $processedSearch['term'];
         $filterType = $processedSearch['type'];
         $searchGroupTerm = '';
+        $searchFollowingTerm = '';
 
         $groups = Group::query()
             ->with('currentGroupUser')
@@ -54,6 +55,21 @@ class HomeController extends Controller
 
         $user = $request->user();
         $followings = $user->followings;
+        $followings = $user->followings();
+        // if ($filterType === 'following' && $searchTerm) {
+        //     $followings->where('name', 'like', '%' . $searchTerm . '%')
+        //         ->orWhere('username', 'like', "%$searchTerm%");
+        //     $searchFollowingTerm = $searchTerm;
+        // }
+        if ($filterType === 'following' && $searchTerm) {
+            // Aplicando un filtro WHERE agrupado para evitar posibles duplicados
+            $followings->where(function ($query) use ($searchTerm) {
+                $query->where('users.name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('users.username', 'like', '%' . $searchTerm . '%');
+            });
+            $searchFollowingTerm = $searchTerm;
+        }
+        $followings = $followings->get();
         $followings->transform(function ($following) {
             // $following->created_at_human = Carbon::parse($following->created_at)->diffForHumans();
             $following->since_date = __('dearbook/following/list.inside_profile.since_date_text', [
@@ -68,6 +84,7 @@ class HomeController extends Controller
             'groups' => GroupResource::collection($groups),
             'followings' => FollowResource::collection($followings),
             'searchGroupTerm' => $searchGroupTerm,
+            'searchFollowingTerm' => $searchFollowingTerm,
         ]);
     }
 }

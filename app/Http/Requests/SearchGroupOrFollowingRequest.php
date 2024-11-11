@@ -54,6 +54,9 @@ class SearchGroupOrFollowingRequest extends FormRequest
         if (strpos($searchTerm, 'search_group_') === 0) {
             $type = 'group';
             $term = substr($searchTerm, strlen('search_group_'));
+        } elseif (strpos($searchTerm, 'search_following_') === 0) {
+            $type = 'following';
+            $term = substr($searchTerm, strlen('search_following_'));
         } else {
             $type = null;
             $term = '';

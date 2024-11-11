@@ -4,7 +4,11 @@ import FollowingListTitle from '@/Components/dearbook/Following/ListTitle.vue';
 import FollowingListItems from '@/Components/dearbook/Following/ListItems.vue';
 
 const props = defineProps({
-    'followings': Array,
+    followings: Array,
+    searchFollowingTerm: {
+        type: String,
+        default: '',
+    },
 })
 </script>
 
@@ -26,7 +30,7 @@ const props = defineProps({
                 </DisclosureButton>
 
                 <DisclosurePanel>
-                    <FollowingListItems :followings="followings" />
+                    <FollowingListItems :followings="followings" :search-following-term="searchFollowingTerm" />
                 </DisclosurePanel>
             </Disclosure>
         </div>
@@ -34,7 +38,7 @@ const props = defineProps({
         <div class="flex-col flex-1 hidden lg:block">
             <FollowingListTitle />
 
-            <FollowingListItems :followings="followings" />
+            <FollowingListItems :followings="followings" :search-following-term="searchFollowingTerm" />
         </div>
     </div>
 </template>

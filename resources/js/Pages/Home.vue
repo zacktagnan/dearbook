@@ -19,6 +19,10 @@ defineProps({
         type: String,
         default: '',
     },
+    searchFollowingTerm: {
+        type: String,
+        default: '',
+    },
 });
 </script>
 
@@ -33,7 +37,7 @@ defineProps({
             </div>
 
             <div class="overflow-hidden lg:col-span-3 lg:order-3 lg:w-full lg:max-w-[455px]">
-                <FollowingList :followings="followings" />
+                <FollowingList :followings="followings" :search-following-term="searchFollowingTerm" />
             </div>
 
             <div class="flex flex-col overflow-hidden lg:col-span-6 lg:order-2">
