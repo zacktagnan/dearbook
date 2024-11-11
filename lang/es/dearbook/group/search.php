@@ -5,6 +5,7 @@ declare(strict_types=1);
 return [
     'main' => [
         'placeholder' => 'Teclea el grupo a buscar',
+        'remove_filter' => 'Eliminar filtro',
     ],
 
     'inside_profile' => [

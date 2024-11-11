@@ -15,6 +15,10 @@ defineProps({
     after_comment_deleted: {
         type: Object,
     },
+    searchGroupTerm: {
+        type: String,
+        default: '',
+    },
 });
 </script>
 
@@ -25,7 +29,7 @@ defineProps({
     <AuthenticatedLayout>
         <div class="grid gap-3 px-4 top-5 relative pb-4 lg:grid-cols-12">
             <div class="lg:col-span-3 lg:order-1">
-                <GroupList :groups="groups" />
+                <GroupList :groups="groups" :search-group-term="searchGroupTerm" />
             </div>
 
             <div class="overflow-hidden lg:col-span-3 lg:order-3 lg:w-full lg:max-w-[455px]">

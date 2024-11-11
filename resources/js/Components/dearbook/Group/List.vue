@@ -7,7 +7,11 @@ import { usePage } from "@inertiajs/vue3";
 import { ref } from 'vue';
 
 const props = defineProps({
-    'groups': Array,
+    groups: Array,
+    searchGroupTerm: {
+        type: String,
+        default: '',
+    },
 })
 
 const groupToCreate = ref({
@@ -55,7 +59,7 @@ const onGroupCreated = (group) => {
         <div class="flex-col flex-1 hidden lg:block">
             <GroupListTitle />
 
-            <GroupListItems :groups="groups" @callOpenCreateGroupModal="openCreateGroupModal" />
+            <GroupListItems :groups="groups" :search-group-term="searchGroupTerm" @callOpenCreateGroupModal="openCreateGroupModal" />
         </div>
     </div>
 
