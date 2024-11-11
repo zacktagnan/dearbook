@@ -6,6 +6,7 @@ return [
     'main' => [
         'placeholder' => 'Teclea el grupo a buscar',
         'remove_filter' => 'Eliminar filtro',
+        'no_registers' => 'No estás unido a ningún grupo con esos términos.',
     ],
 
     'inside_profile' => [
