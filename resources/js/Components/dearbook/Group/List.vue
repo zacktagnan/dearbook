@@ -51,7 +51,8 @@ const onGroupCreated = (group) => {
                 </DisclosureButton>
 
                 <DisclosurePanel>
-                    <GroupListItems :groups="groups" @callOpenCreateGroupModal="openCreateGroupModal" />
+                    <GroupListItems :groups="groups" :search-group-term="searchGroupTerm"
+                        @callOpenCreateGroupModal="openCreateGroupModal" />
                 </DisclosurePanel>
             </Disclosure>
         </div>
