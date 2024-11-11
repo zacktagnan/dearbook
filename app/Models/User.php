@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -82,7 +83,7 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withPivot('created_at');
     }
 
-    public function scopeFilterFollowingsBySearchTerm($query, $searchTerm)
+    public function scopeFilterFollowingsBySearchTerm(Builder $query, string $searchTerm): Builder
     {
         // En vez de aplicar un filtrado simple encadenado que puede producir duplicados en este caso
         //     $query->where('name', 'like', '%' . $searchTerm . '%')

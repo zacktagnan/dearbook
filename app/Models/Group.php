@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Http\Enums\GroupUserRole;
 use App\Http\Enums\GroupUserStatus;
 use App\Traits\CustomDateFormatting;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Illuminate\Database\Eloquent\Model;
@@ -97,7 +98,7 @@ class Group extends Model
         return $this->belongsToMany(User::class, 'group_users')->where('role', GroupUserRole::ADMIN->value);
     }
 
-    public function scopeFilterBySearchTerm($query, $searchTerm)
+    public function scopeFilterBySearchTerm(Builder $query, string $searchTerm): Builder
     {
         // En vez de aplicar un filtrado simple encadenado que puede producir duplicados en este caso
         //     $query->where('groups.name', 'like', '%' . $searchTerm . '%')
