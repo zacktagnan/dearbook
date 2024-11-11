@@ -39,13 +39,13 @@ const props = defineProps({
     isCurrentUserFollower: Boolean,
     totalOfFollowers: Number,
     followers: {
-        type: Object,
+        type: Array,
     },
     followings: {
-        type: Object,
+        type: Array,
     },
     photos: {
-        type: Array,// Object,
+        type: Object,// Array // Object,
     },
 });
 
