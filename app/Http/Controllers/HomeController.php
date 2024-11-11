@@ -44,11 +44,7 @@ class HomeController extends Controller
             ->orderBy('g_u.role')
             ->orderBy('groups.name');
         if ($filterType === 'group' && $searchTerm) {
-            // Aplicando un filtro WHERE agrupado sobre 'groups' para evitar posibles duplicados
-            $groups->where(function ($query) use ($searchTerm) {
-                $query->where('groups.name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('groups.about', 'like', "%$searchTerm%");
-            });
+            $groups->filterBySearchTerm($searchTerm);
             $searchGroupTerm = $searchTerm;
         }
         $groups = $groups->get();
@@ -56,17 +52,8 @@ class HomeController extends Controller
         $user = $request->user();
         $followings = $user->followings;
         $followings = $user->followings();
-        // if ($filterType === 'following' && $searchTerm) {
-        //     $followings->where('name', 'like', '%' . $searchTerm . '%')
-        //         ->orWhere('username', 'like', "%$searchTerm%");
-        //     $searchFollowingTerm = $searchTerm;
-        // }
         if ($filterType === 'following' && $searchTerm) {
-            // Aplicando un filtro WHERE agrupado para evitar posibles duplicados
-            $followings->where(function ($query) use ($searchTerm) {
-                $query->where('users.name', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('users.username', 'like', '%' . $searchTerm . '%');
-            });
+            $followings->filterFollowingsBySearchTerm($searchTerm);
             $searchFollowingTerm = $searchTerm;
         }
         $followings = $followings->get();

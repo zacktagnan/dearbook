@@ -81,4 +81,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(User::class, 'followers', 'follower_id', 'followed_id')
             ->withPivot('created_at');
     }
+
+    public function scopeFilterFollowingsBySearchTerm($query, $searchTerm)
+    {
+        // En vez de aplicar un filtrado simple encadenado que puede producir duplicados en este caso
+        //     $query->where('name', 'like', '%' . $searchTerm . '%')
+        //         ->orWhere('username', 'like', "%$searchTerm%");
+        // Aplicando un filtro WHERE agrupado sobre 'followings' para evitar posibles duplicados
+        return $query->where(function ($query) use ($searchTerm) {
+            $query->where('users.name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('users.username', 'like', '%' . $searchTerm . '%');
+        });
+    }
 }

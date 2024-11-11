@@ -96,4 +96,16 @@ class Group extends Model
         // o con un WHERE simple
         return $this->belongsToMany(User::class, 'group_users')->where('role', GroupUserRole::ADMIN->value);
     }
+
+    public function scopeFilterBySearchTerm($query, $searchTerm)
+    {
+        // En vez de aplicar un filtrado simple encadenado que puede producir duplicados en este caso
+        //     $query->where('groups.name', 'like', '%' . $searchTerm . '%')
+        //         ->orWhere('groups.about', 'like', "%$searchTerm%");
+        // Aplicando un filtro WHERE agrupado sobre 'groups' para evitar posibles duplicados
+        return $query->where(function ($query) use ($searchTerm) {
+            $query->where('groups.name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('groups.about', 'like', "%$searchTerm%");
+        });
+    }
 }
