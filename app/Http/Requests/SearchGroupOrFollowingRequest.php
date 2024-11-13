@@ -42,7 +42,6 @@ class SearchGroupOrFollowingRequest extends FormRequest
         ]);
     }
 
-
     public function getProcessedSearchTerm()
     {
         $searchTerm = $this->query('search_term', '');

@@ -43,7 +43,7 @@ const props = defineProps({
     },
     requestsPending: Array,
     photos: {
-        type: Array,// Object,
+        type: Object,// Array // Object,
     },
 });
 

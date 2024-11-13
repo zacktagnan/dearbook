@@ -12,8 +12,8 @@ import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
-import TextInput from '@/Components/TextInput.vue'
-import UserItem from '@/Components/dearbook/User/Item.vue'
+import FollowerList from '@/Pages/Profile/FollowerList.vue'
+import FollowingList from '@/Pages/Profile/FollowingList.vue'
 import PhotoList from '@/Pages/Media/PhotoList.vue'
 
 const props = defineProps({
@@ -36,6 +36,10 @@ const props = defineProps({
     after_comment_deleted: {
         type: Object,
     },
+    defaultIndex: {
+        type: Number,
+        default: 0,
+    },
     isCurrentUserFollower: Boolean,
     totalOfFollowers: Number,
     followers: {
@@ -49,14 +53,11 @@ const props = defineProps({
     },
 });
 
-const authUser = usePage().props.auth.user;
+const authUser = usePage().props.auth.user
+const isMyProfile = computed(() => authUser && authUser.id === props.user.id)
 
-const isMyProfile = computed(() => authUser && authUser.id === props.user.id);
-
-const searchFollowerKeyword = ref('')
-const searchFollowingKeyword = ref('')
-
-const theSelectedIndex = ref(0)
+// const theSelectedIndex = ref(0)
+const theSelectedIndex = ref(props.defaultIndex)
 const getSetSelectedIndex = computed({
     get() {
         return theSelectedIndex.value
@@ -390,36 +391,12 @@ const totalOfFollowersText = computed(() => {
 
                         <!-- Followers -->
                         <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
-                            <TextInput class="w-full" :model-value="searchFollowerKeyword"
-                                :placeholder="$t('dearbook.follower.search.inside_profile.placeholder')" />
-                            <div v-if="followers.length" class="grid grid-cols-2 gap-3 mt-3">
-                                <UserItem v-for="follower of followers" :user="follower"
-                                    :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
-                                    :key="follower.id" :user-since-date="follower.since_date">
-                                </UserItem>
-                            </div>
-                            <div v-else>
-                                <p class="w-full text-center mt-3">
-                                    {{ $t('dearbook.follower.list.inside_profile.no_registers') }}
-                                </p>
-                            </div>
+                            <FollowerList :followers="followers" />
                         </TabPanel>
 
                         <!-- Followings -->
                         <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
-                            <TextInput class="w-full" :model-value="searchFollowingKeyword"
-                                :placeholder="$t('dearbook.following.search.inside_profile.placeholder')" />
-                            <div v-if="followings.length" class="grid grid-cols-2 gap-3 mt-3">
-                                <UserItem v-for="following of followings" :user="following"
-                                    :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
-                                    :key="following.id" :user-since-date="following.since_date">
-                                </UserItem>
-                            </div>
-                            <div v-else>
-                                <p class="w-full text-center mt-3">
-                                    {{ $t('dearbook.following.list.inside_profile.no_registers') }}
-                                </p>
-                            </div>
+                            <FollowingList :followings="followings" />
                         </TabPanel>
 
                         <!-- Fotos -->

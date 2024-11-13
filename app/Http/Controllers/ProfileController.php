@@ -78,6 +78,15 @@ class ProfileController extends Controller
         $photos = Attachment::forUserOrGroup($user->id)->get();
         $photos = $this->attachmentService->filterAndTransform($photos);
 
+        $tabIndex = 'posts_tab';
+        $defaultIndex = match ($tabIndex) {
+            'posts_tab' => 0,
+            'about' => 1,
+            'followers' => 2,
+            'followings' => 3,
+            'photos' => 4,
+        };
+
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -85,6 +94,7 @@ class ProfileController extends Controller
             'user' => new UserResource($user),
             'posts' => $posts,
             'after_comment_deleted' => session('after_comment_deleted'),
+            'defaultIndex' => $defaultIndex,
             'isCurrentUserFollower' => $isCurrentUserFollower,
             'totalOfFollowers' => $totalOfFollowers,
             'followers' => FollowResource::collection($followers),
