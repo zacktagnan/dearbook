@@ -29,11 +29,62 @@ const searchKeyword = ref('')
 watch(() => props.members, (newMembers) => {
     membersCollection.value = [...newMembers];
 }, { immediate: true });
+
+const isTypingTerm = ref(false)
+let typingTermTimeout
+const isFiltering = ref(false)
+
+const onTypingTerm = () => {
+    isTypingTerm.value = true
+
+    clearTimeout(typingTermTimeout)
+    typingTermTimeout = setTimeout(() => {
+        isTypingTerm.value = false
+    }, 500)
+}
+
+const filterList = () => {
+    isTypingTerm.value = false
+    isFiltering.value = true
+
+    if (searchKeyword.value.trim() === '') {
+        membersCollection.value = props.members;
+    } else {
+        membersCollection.value = props.members.filter(member =>
+            member.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
+            || member.username.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        );
+    }
+}
+
+const clearFilter = () => {
+    searchKeyword.value = ''
+    membersCollection.value = props.members
+    isFiltering.value = false
+}
 </script>
 
 <template>
-    <TextInput class="w-full" v-model="searchKeyword"
-        :placeholder="$t('dearbook.group.search.inside_profile.placeholder')" />
+    <div class="relative">
+        <TextInput class="w-full" v-model="searchKeyword"
+            :placeholder="$t('dearbook.group.search.inside_profile.placeholder')"
+            @keyup="onTypingTerm"
+            @keyup.enter="filterList" />
+
+        <button @click="clearFilter" class="absolute inset-y-0 right-3 bg-red-300 hover:bg-red-400 rounded my-3 text-white transition-colors delay-150" :class="[
+            isFiltering
+            ? ''
+            : 'hidden'
+        ]" :title="$t('dearbook.group.search.inside_profile.remove_filter')">
+            <XMarkIcon class="w-4 h-4" />
+        </button>
+    </div>
+
+    <div class="text-gray-400 text-xs pl-3 h-3">
+        <p v-if="isTypingTerm" class="italic">{{ $t('dearbook.group.search.inside_profile.writing') }}</p>
+        <p v-if="!isTypingTerm && searchKeyword">{{ $t('dearbook.group.search.inside_profile.push_enter_to_filter') }}</p>
+    </div>
+
     <div v-if="membersCollection.length" class="grid gap-3 mt-3">
         <UserItem v-for="member of membersCollection" :user="member"
             :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
@@ -83,7 +134,10 @@ watch(() => props.members, (newMembers) => {
         </UserItem>
     </div>
     <div v-else>
-        <p class="w-full text-center">
+        <p v-if="isFiltering" class="w-full text-center mt-3">
+            {{ $t('dearbook.group.search.inside_profile.no_registers') }}
+        </p>
+        <p v-else class="w-full text-center mt-3">
             {{ $t('dearbook.group.list.members.no_registers') }}
         </p>
     </div>
