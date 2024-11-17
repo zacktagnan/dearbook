@@ -17,6 +17,10 @@ return [
         ],
     ],
 
+    'inside_profile' => [
+        'no_registers' => 'Without groups.',
+    ],
+
     'members' => [
         'no_registers' => 'No members yet.',
         'creating_date_text' => 'Group created :creating_date',

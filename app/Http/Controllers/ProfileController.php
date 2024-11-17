@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\GroupUserStatus;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Models\Group;
 use Inertia\Response;
 use App\Models\Follower;
 use App\Models\Attachment;
@@ -24,6 +26,7 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\AvatarImageUpdateRequest;
+use App\Http\Resources\GroupResource;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends Controller
@@ -56,6 +59,21 @@ class ProfileController extends Controller
         if ($request->wantsJson()) {
             return $posts;
         }
+
+        $groupsOwned = Group::with('currentGroupUser')
+            ->where('groups.user_id', $user->id)
+            ->orderBy('groups.name')
+            ->get();
+
+        $groupsJoined = Group::query()
+            ->with('currentGroupUser')
+            ->select(['groups.*', 'g_u.role'])
+            ->join('group_users AS g_u', 'g_u.group_id', 'groups.id')
+            ->where('g_u.user_id', $user->id)
+            ->where('g_u.status', GroupUserStatus::APPROVED->value)
+            ->where('groups.user_id', '<>', $user->id)
+            ->orderBy('groups.name')
+            ->get();
 
         $followers = $user->followers;
         $followings = $user->followings;
@@ -93,6 +111,8 @@ class ProfileController extends Controller
             'success' => session('success'),
             'user' => new UserResource($user),
             'posts' => $posts,
+            'groupsOwned' => GroupResource::collection($groupsOwned),
+            'groupsJoined' => GroupResource::collection($groupsJoined),
             'after_comment_deleted' => session('after_comment_deleted'),
             'defaultIndex' => $defaultIndex,
             'isCurrentUserFollower' => $isCurrentUserFollower,

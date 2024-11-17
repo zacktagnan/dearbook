@@ -1,9 +1,16 @@
 <script setup>
-import ProfileInformation from "./Partials/ProfileInformation.vue";
+import ProfileInformation from '@/Pages/Profile/Partials/ProfileInformation.vue';
+import GroupInformation from '@/Pages/Profile/Partials/GroupInformation/Index.vue'
 
 defineProps({
     user: {
         type: Object,
+    },
+    groupsOwned: {
+        type: Array,
+    },
+    groupsJoined: {
+        type: Array,
     },
 });
 </script>
@@ -24,6 +31,9 @@ defineProps({
     <div class="mt-4 space-y-6">
         <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
             <ProfileInformation :user="user" />
+        </div>
+        <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
+            <GroupInformation :groups-owned="groupsOwned" :groups-joined="groupsJoined" />
         </div>
     </div>
 </template>

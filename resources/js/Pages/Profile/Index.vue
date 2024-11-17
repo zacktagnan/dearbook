@@ -33,6 +33,12 @@ const props = defineProps({
     posts: {
         type: Object,
     },
+    groupsOwned: {
+        type: Array,
+    },
+    groupsJoined: {
+        type: Array,
+    },
     after_comment_deleted: {
         type: Object,
     },
@@ -386,7 +392,7 @@ const totalOfFollowersText = computed(() => {
                         <!-- Acerca de -->
                         <TabPanel>
                             <Edit v-if="isMyProfile" :mustVerifyEmail="mustVerifyEmail" :status="status" />
-                            <Show v-else :user="user" />
+                            <Show v-else :user="user" :groups-owned="groupsOwned" :groups-joined="groupsJoined" />
                         </TabPanel>
 
                         <!-- Followers -->
