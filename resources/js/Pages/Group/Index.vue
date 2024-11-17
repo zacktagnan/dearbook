@@ -2,6 +2,7 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import Edit from "@/Pages/Group/Edit.vue";
 import Show from "@/Pages/Group/Show.vue";
+import MemberList from '@/Pages/Group/MemberList.vue';
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue";
 import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -11,10 +12,8 @@ import PrivateAccessIcon from '@/Components/Icons/PrivateAccess.vue'
 import PendingRequestIcon from '@/Components/Icons/PendingRequest.vue'
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
 import { PencilSquareIcon, PlusIcon, UserPlusIcon, UserGroupIcon, ArrowLeftStartOnRectangleIcon } from "@heroicons/vue/24/outline";
-import ChiefAdminStarIcon from '@/Components/Icons/Star.vue'
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
-import TextInput from '@/Components/TextInput.vue'
 import UserItem from '@/Components/dearbook/User/Item.vue'
 import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
@@ -51,7 +50,6 @@ const authUser = usePage().props.auth.user;
 // const isMyGroupProfile = computed(() => authUser && authUser.id === props.group.user.id);
 // o
 const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props.group.user.id)
-const isTheOwnerGroup = (memberId) => props.group.user.id === memberId
 
 const isAdminGroup = computed(() => props.group.role === 'admin');
 // const isUserGroup = computed(() => props.group.role === 'user' && props.group.status === 'approved')
@@ -63,9 +61,10 @@ const isNotMemberAndGroupNotAutoApproval = computed(() => !props.group.role && !
 const isPrivateGroup = computed(() => props.group.type === 'private')
 const isAutoApprovalGroup = computed(() => props.group.auto_approval);
 
-const maxGroupUsersIconsToList = 5
+// const members = computed(() => props.group.all_group_users)
+const members = ref(props.group.all_group_users)
 
-const searchKeyword = ref('')
+const maxGroupUsersIconsToList = 5
 
 const zIndex = ref(20)
 // const loadZIndex = () => {
@@ -159,13 +158,13 @@ const closeShowNotification = () => {
 }
 
 const onCoverChange = (event) => {
-    console.log(event);
+    // console.log(event);
 
     imagesForm.cover = event.target.files[0];
     if (imagesForm.cover) {
         const reader = new FileReader();
         reader.onload = () => {
-            console.log("OnLoad COVER ...");
+            // console.log("OnLoad COVER ...");
             coverImageSrc.value = reader.result;
         };
         reader.readAsDataURL(imagesForm.cover);
@@ -178,7 +177,7 @@ const resetCoverImage = () => {
 }
 
 const submitCoverImage = () => {
-    console.log(imagesForm.cover)
+    // console.log(imagesForm.cover)
 
     var fadeTarget = document.getElementById("notification-box");
     fadeTarget.style.removeProperty("opacity");
@@ -259,14 +258,29 @@ const rejectUser = (user) => {
 }
 
 const memberRoleChange = (user, newRoleSelected) => {
-    console.log(user, newRoleSelected)
+    // console.log(user, newRoleSelected)
     const form = useForm({
         user_id: user.id,
         role: newRoleSelected,
     })
 
+    // form.post(route('group.change-role', props.group.slug), {
+    //     preserveScroll: true
+    // })
+
+    // // // members.value = props.group.all_group_users
+    // members.value = [...props.group.all_group_users]
+
     form.post(route('group.change-role', props.group.slug), {
-        preserveScroll: true
+        preserveScroll: true, // Preserva el scroll al cambiar de página
+        onSuccess: () => {
+            // Cuando la solicitud sea exitosa, actualiza la lista de miembros
+            members.value = [...props.group.all_group_users];
+        },
+        onError: (error) => {
+            // Si ocurre un error, puedes manejarlo aquí
+            console.error('Error al cambiar el rol del miembro:', error);
+        }
     })
 }
 
@@ -499,7 +513,7 @@ const deleteMember = () => {
                                 <UserPlusIcon class="w-5 h-5 md:mr-1" />
                                 <span class="hidden md:block">Invitar</span>
                             </PrimaryButton>
-                            <PrimaryButton v-if="isAdminGroup" @click="asignSelectedIndex(1)"
+                            <PrimaryButton v-if="authUserIsTheOwnerGroup" @click="asignSelectedIndex(1)"
                                 title="Editar perfil de grupo">
                                 <PencilSquareIcon class="w-5 h-5 md:mr-1" />
                                 <span class="hidden md:block">Editar</span>
@@ -570,8 +584,8 @@ const deleteMember = () => {
                         </TabPanel>
 
                         <!-- Información -->
-                        <TabPanel :key="followers" class="">
-                            <Edit v-if="isAdminGroup" @callActiveShowNotification="activeShowNotification"
+                        <TabPanel>
+                            <Edit v-if="authUserIsTheOwnerGroup" @callActiveShowNotification="activeShowNotification"
                                 :group="group" />
                             <Show v-else :group="group" />
                         </TabPanel>
@@ -579,61 +593,9 @@ const deleteMember = () => {
                         <template v-if="isMemberGroup || !isPrivateGroup">
                             <!-- Miembros -->
                             <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
-                                <TextInput class="w-full" :model-value="searchKeyword"
-                                    :placeholder="$t('dearbook.group.search.inside_profile.placeholder')" />
-                                <div v-if="group.all_group_users.length" class="grid gap-3 mt-3">
-                                    <UserItem v-for="member of group.all_group_users" :user="member"
-                                        :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
-                                        :key="member.id" :user-since-date="member.joining_date">
-                                        <div v-if="isAdminGroup" class="flex items-center gap-2">
-                                            <select v-if="authUserIsTheOwnerGroup" @change="memberRoleChange(member, $event.target.value)"
-                                                :disabled="isTheOwnerGroup(member.id)"
-                                                class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400">
-                                                <option value="admin" :selected="member.role === 'admin'">admin</option>
-                                                <option value="user" :selected="member.role === 'user'">user</option>
-                                            </select>
-
-                                            <template v-if="authUser.id === member.id && isTheOwnerGroup(member.id)">
-                                                <!-- <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-100"
-                                                :title="[
-                                                    isTheOwnerGroup(member.id)
-                                                    ? 'Imposible eliminar creador del grupo'
-                                                    : 'Eliminar miembro'
-                                                ]"
-                                                :disabled="isTheOwnerGroup(member.id)"
-                                                @click="showConfirmDeleteMemberModal(member)">
-                                                    <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-white" />
-                                                </button> -->
-                                                <div class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
-                                                    <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
-                                                </div>
-                                            </template>
-                                            <template v-else>
-                                                <button v-if="authUser.id !== member.id && !isTheOwnerGroup(member.id)" class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-300"
-                                                :title="[
-                                                    isTheOwnerGroup(member.id)
-                                                    ? 'Imposible eliminar creador del grupo'
-                                                    : 'Eliminar miembro'
-                                                ]"
-                                                :disabled="isTheOwnerGroup(member.id)"
-                                                @click="showConfirmDeleteMemberModal(member)">
-                                                    <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-gray-100" />
-                                                </button>
-                                                <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
-                                                    <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
-                                                </div>
-                                            </template>
-                                        </div>
-                                        <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
-                                            <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
-                                        </div>
-                                    </UserItem>
-                                </div>
-                                <div v-else>
-                                    <p class="w-full text-center">
-                                        {{ $t('dearbook.group.list.members.no_registers') }}
-                                    </p>
-                                </div>
+                                <MemberList :group-user-id="group.user.id" :members="members" :auth-user="authUser"
+                                    :auth-user-is-the-owner-group="authUserIsTheOwnerGroup"
+                                    :is-admin-group="isAdminGroup" @callMemberRoleChange="memberRoleChange" @callConfirmDeleteMemberModal="showConfirmDeleteMemberModal" />
                             </TabPanel>
 
                             <!-- Fotos -->
