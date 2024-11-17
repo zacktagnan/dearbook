@@ -28,7 +28,7 @@ defineProps({
         </div>
     </div>
 
-    <div class="mt-4 space-y-6">
+    <div class="mt-4 space-y-5">
         <div class="p-4 bg-white shadow sm:p-8 dark:bg-gray-800 sm:rounded-lg">
             <ProfileInformation :user="user" />
         </div>

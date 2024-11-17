@@ -44,14 +44,14 @@ class InviteUsersRequest extends FormRequest
 
                     if (!$this->user) {
                         $fail('No hay ningún usuario con ese USERNAME/EMAIL.');
-                    }
+                    } else {
+                        $this->groupUser = GroupUser::where('user_id', $this->user->id)
+                            ->where('group_id', $this->group->id)
+                            ->first();
 
-                    $this->groupUser = GroupUser::where('user_id', $this->user->id)
-                        ->where('group_id', $this->group->id)
-                        ->first();
-
-                    if ($this->groupUser && $this->groupUser->status === GroupUserStatus::APPROVED->value) {
-                        $fail('Este usuario ya es un miembro aprobado del grupo.');
+                        if ($this->groupUser && $this->groupUser->status === GroupUserStatus::APPROVED->value) {
+                            $fail('Este usuario ya es un miembro aprobado del grupo.');
+                        }
                     }
                 },
             ],
