@@ -5,6 +5,7 @@ import {
     XMarkIcon,
     PaperClipIcon,
     ArrowUturnLeftIcon,
+    SparklesIcon,
 } from "@heroicons/vue/24/solid";
 import {
     TransitionRoot,
@@ -355,12 +356,35 @@ const openInputAttachmentFile = () => {
         inputAttachmentFileRef.value.click()
     }
 }
+
+import axiosClient from '@/axiosClient'
+const generatingContent = ref(false)
+const generateContent = () => {
+    if (!postForm.body) {
+        return
+    }
+    generatingContent.value = true
+
+    axiosClient.post(route('post.generate-content'), {
+        prompt: postForm.body,
+    })
+        .then(({ data }) => {
+            console.log(data.content)
+            postForm.body = data.content
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        .finally(() => {
+            generatingContent.value = false
+        })
+}
 </script>
 
 <template>
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
-            <Dialog as="div" @close="closeModal" class="relative z-30">
+            <Dialog as="div" @close="closeModal" class="relative z-[44]">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0"
                     enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
                     <div class="fixed inset-0 bg-black/25" />
@@ -395,11 +419,26 @@ const openInputAttachmentFile = () => {
                                         {{ postForm.errors.group_id }}
                                     </div>
 
-                                    <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
-                                        :config="editorConfig">
-                                    </ckeditor>
                                     <!-- <TextareaInput placeholder="Expresa lo que quieras comunicar" class="w-full mt-2"
                                         v-model="postForm.body" autofocus></TextareaInput> -->
+                                    <!-- o -->
+                                    <!-- <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
+                                        :config="editorConfig">
+                                    </ckeditor> -->
+                                    <!-- o -->
+                                    <div class="relative group">
+                                        <ckeditor :editor="editor" @ready="onEditorReady" v-model="postForm.body"
+                                            :config="editorConfig">
+                                        </ckeditor>
+
+                                        <button @click="generateContent" :disabled="generatingContent" class="absolute right-2 top-12 size-6 p-1 rounded bg-cyan-600 hover:bg-cyan-500 text-white transition-all opacity-0 group-hover:opacity-100 disabled:cursor-not-allowed disabled:bg-cyan-300 disabled:hover:bg-cyan-300 disabled:text-gray-600" title="Generar contenido...">
+                                            <svg v-if="generatingContent" class="animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                            <SparklesIcon v-else />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div v-if="showWarningExtensions" class="m-4">

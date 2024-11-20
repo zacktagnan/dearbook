@@ -5,20 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
+use App\Libs\Utilities;
+use Illuminate\Http\Request;
+use App\Traits\ResourcesDeletion;
 use App\Traits\StorageManagement;
+use App\Notifications\PostCreated;
+use App\Notifications\PostDeleted;
 use Illuminate\Support\Facades\DB;
+use OpenAI\Laravel\Facades\OpenAI;
+use App\Http\Resources\PostResource;
+use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
-use App\Http\Resources\GroupResource;
-use App\Http\Resources\PostResource;
-use App\Libs\Utilities;
-use App\Notifications\PostCreated;
-use App\Notifications\PostDeleted;
-use App\Traits\ResourcesDeletion;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
 use Inertia\Response as InertiaResponse;
+use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
@@ -427,5 +428,32 @@ class PostController extends Controller
             $post->restore();
         }
         $post->archive();
+    }
+
+    public function generateContent(Request $request)
+    {
+        // :: Proceso hacia OpenAI ::
+        // ----------------------------------------------------
+        // $prompt = $request->get('prompt');
+        // $content = 'Please, generate social media post content based on the following prompt:'
+        //     . PHP_EOL . PHP_EOL . $prompt;
+
+        // $result = OpenAI::chat()->create([
+        //     'model' => 'gpt-3.5-turbo',
+        //     'messages' => [
+        //         ['role' => 'user', 'content' => $content],
+        //     ],
+        // ]);
+
+        // // echo $result->choices[0]->message->content; // Hello! How can I assist you today?
+        // return response([
+        //     'content' => $result->choices[0]->message->content,
+        // ]);
+
+        // :: Proceso de Respuesta Fija ::
+        // ----------------------------------------------------
+        return response([
+            'content' => '🚀 ¡Lanzamos DearBook, nuestra nueva app de red social! Desarrollada con Laravel y Vue.js para una experiencia increíble. 📱✨ Conéctate, comparte y descubre más. ¡Únete a nosotros! #DearBook #Laravel #VueJS #RedSocial #Tecnología #Innovación #App',
+        ]);
     }
 }

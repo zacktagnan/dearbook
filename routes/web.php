@@ -47,6 +47,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/archive-all-selected', [PostController::class, 'archiveAllSelected'])->name('archive-all-selected');
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
+        Route::post('/generate-content', [PostController::class, 'generateContent'])->name('generate-content');
 
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
 
