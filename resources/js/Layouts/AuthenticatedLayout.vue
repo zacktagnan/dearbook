@@ -16,7 +16,7 @@ const showingNavigationDropdown = ref(false);
 const keywords = ref('')
 
 const globalSearch = () => {
-    router.get(route('global-search', keywords.value))
+    router.get(route('global-search', encodeURIComponent(keywords.value)))
 }
 </script>
 
