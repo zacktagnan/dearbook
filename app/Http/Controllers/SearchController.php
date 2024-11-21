@@ -24,8 +24,11 @@ class SearchController extends Controller
             ->get();
 
         $posts = Post::listedOnTimeLine(auth()->id())
-            ->where('body', 'like', "%$keywords%")
-            ->paginate(5); //20
+            ->where('body', 'like', "%$keywords%");
+
+        $postsTotalCount = $posts->get()->count();
+
+        $posts = $posts->paginate(5); //20
 
         $posts = PostResource::collection($posts);
         if ($request->wantsJson()) {
@@ -37,6 +40,7 @@ class SearchController extends Controller
             'users' => UserResource::collection($users),
             'groups' => GroupResource::collection($groups),
             'posts' => $posts,
+            'postsTotalCount' => $postsTotalCount,
             'keywords' => $keywords,
         ]);
     }
