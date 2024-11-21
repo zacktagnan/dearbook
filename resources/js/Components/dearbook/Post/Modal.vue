@@ -17,45 +17,8 @@ import {
 import { useForm, usePage } from "@inertiajs/vue3";
 import { watch, ref, computed } from "vue";
 
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import "@ckeditor/ckeditor5-build-classic/build/translations/es";
 import { isImage, isVideo } from "@/Libs/helpers";
-
-const editor = ClassicEditor;
-const editorConfig = {
-    language: "es",
-    toolbar: {
-        items: [
-            "undo",
-            "redo",
-            "|",
-            "heading",
-            "|",
-            "bold",
-            "italic",
-            "|",
-            "link",
-            "bulletedList",
-            "numberedList",
-            "|",
-            "outdent",
-            "indent",
-            "blockquote",
-        ],
-    },
-    link: {
-        decorators: {
-            openInNewTab: {
-                mode: "manual",
-                label: "Open in a new tab",
-                attributes: {
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                },
-            },
-        },
-    },
-};
+import { editor, editorConfig } from "@/Libs/ckeditor-custom-config";
 
 const onEditorReady = (editor) => {
     // Situando el cursor al final del contenido existente...
