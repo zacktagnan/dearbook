@@ -43,6 +43,19 @@ import {
 import { Link, usePage } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
+// const postBody = computed(() => props.post.body.replace(
+//     /(#\p{L}+)(?![^<]*<\/a>)/gu,
+//     '<a href="/global-search/$1">$1</a>')
+// )
+// -> aplicando el "encodeURIComponent" debido al "#"
+const postBody = computed(() => props.post.body.replace(
+    /(#\p{L}+)(?![^<]*<\/a>)/gu,
+    (match, group) => {
+        const encodedGroup = encodeURIComponent(group)
+        return `<a href="/global-search/${encodedGroup}" class="post-hashtag">${group}</a>`
+    })
+)
+
 const openEditModal = () => {
     emit("callOpenEditModal", props.post);
 };
@@ -463,7 +476,7 @@ defineExpose({
         </div>
         <!-- <pre>{{ post }}</pre> -->
         <div class="mt-1">
-            <ReadMoreOrLess :content="post.body" :max-content-length="maxPostBodyLength"
+            <ReadMoreOrLess :content="postBody" :max-content-length="maxPostBodyLength"
                 :content-classes="'ck-content-output'" />
         </div>
 

@@ -18,46 +18,45 @@
     cursor: pointer;
 }
 
-
 /* == CKEditor :: ini ================================ */
-.ck-content>blockquote,
-.ck-content>dl,
-.ck-content>dd,
-.ck-content>h1,
-.ck-content>h2,
-.ck-content>h3,
-.ck-content>h4,
-.ck-content>h5,
-.ck-content>h6,
-.ck-content>hr,
-.ck-content>figure,
-.ck-content>p,
-.ck-content>pre {
+.ck-content > blockquote,
+.ck-content > dl,
+.ck-content > dd,
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6,
+.ck-content > hr,
+.ck-content > figure,
+.ck-content > p,
+.ck-content > pre {
     margin: revert;
 }
 
-.ck-content>p {
+.ck-content > p {
     margin-top: 4px;
     margin-bottom: 4px;
 }
 
-.ck-content>ol,
-.ck-content>ul {
+.ck-content > ol,
+.ck-content > ul {
     list-style: revert;
     margin: revert;
     padding: revert;
 }
 
-.ck-content>table {
+.ck-content > table {
     border-collapse: revert;
 }
 
-.ck-content>h1,
-.ck-content>h2,
-.ck-content>h3,
-.ck-content>h4,
-.ck-content>h5,
-.ck-content>h6 {
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6 {
     font-size: revert;
     font-weight: revert;
 }
@@ -72,48 +71,48 @@
     height: 8rem;
 }
 
-.ck-content-output>blockquote,
-.ck-content-output>dl,
-.ck-content-output>dd,
-.ck-content-output>h1,
-.ck-content-output>h2,
-.ck-content-output>h3,
-.ck-content-output>h4,
-.ck-content-output>h5,
-.ck-content-output>h6,
-.ck-content-output>hr,
-.ck-content-output>figure,
-.ck-content-output>p,
-.ck-content-output>pre {
+.ck-content-output > blockquote,
+.ck-content-output > dl,
+.ck-content-output > dd,
+.ck-content-output > h1,
+.ck-content-output > h2,
+.ck-content-output > h3,
+.ck-content-output > h4,
+.ck-content-output > h5,
+.ck-content-output > h6,
+.ck-content-output > hr,
+.ck-content-output > figure,
+.ck-content-output > p,
+.ck-content-output > pre {
     margin: revert;
 }
 
-.ck-content-output>p {
+.ck-content-output > p {
     margin-top: 4px;
     margin-bottom: 4px;
 }
 
-.ck-content-output>*:last-child {
+.ck-content-output > *:last-child {
     margin-bottom: 0;
 }
 
-.ck-content-output>ol,
-.ck-content-output>ul {
+.ck-content-output > ol,
+.ck-content-output > ul {
     list-style: revert;
     margin: revert;
     padding: revert;
 }
 
-.ck-content-output>table {
+.ck-content-output > table {
     border-collapse: revert;
 }
 
-.ck-content-output>h1,
-.ck-content-output>h2,
-.ck-content-output>h3,
-.ck-content-output>h4,
-.ck-content-output>h5,
-.ck-content-output>h6 {
+.ck-content-output > h1,
+.ck-content-output > h2,
+.ck-content-output > h3,
+.ck-content-output > h4,
+.ck-content-output > h5,
+.ck-content-output > h6 {
     font-size: revert;
     font-weight: revert;
 }
@@ -133,9 +132,16 @@
     color: blue;
 }
 
-.ck-content-output a.hashtag {
-    background-color: #eaf4ff;
+.ck-content-output a.post-hashtag {
+    /* background-color: #eaf4ff; */
+    background-color: #d7e9fc;
     color: #4156e2;
+    padding: 0 4px;
+    border-radius: 5px;
+}
+
+.ck-content-output a.post-hashtag:hover {
+    text-decoration: underline;
 }
 /* == CKEditor :: fin ================================ */
 
