@@ -26,6 +26,8 @@ class PostResource extends JsonResource
             'id' => $this->id,
             'body' => $this->body
                 ?: '',
+            'preview' => $this->preview
+                ?: '',
             'user' => new UserResource($this->user),
 
             'deleted_by' => $this->deleted_by,

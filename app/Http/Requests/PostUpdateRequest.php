@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Closure;
 use App\Libs\Utilities;
-use App\Rules\BodyOrAttachment;
+use App\Rules\BodyOrAttachmentOrPreview;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,7 +33,7 @@ class PostUpdateRequest extends FormRequest
     {
         return [
             'body' => array_merge($this->body ? ['string'] : [], [
-                new BodyOrAttachment($this->route('post')),
+                new BodyOrAttachmentOrPreview($this->route('post')),
                 // function (string $attribute, mixed $value, Closure $fail) {
                 //     $post = $this->route('post');
                 //     $currentAttachmentsOnBD = $post->attachments()->select('id')->get();
@@ -43,6 +43,7 @@ class PostUpdateRequest extends FormRequest
                 //     }
                 // },
             ]),
+            'preview' => 'nullable|array',
             'attachments' => [
                 'array',
                 function (string $attribute, mixed $value, Closure $fail) {
@@ -56,7 +57,7 @@ class PostUpdateRequest extends FormRequest
                     }
                 },
                 function (string $attribute, mixed $value, Closure $fail) {
-                    $totalSize = collect($value)->sum(fn (UploadedFile $file) => $file->getSize());
+                    $totalSize = collect($value)->sum(fn(UploadedFile $file) => $file->getSize());
 
                     $post = $this->route('post');
                     $currentAttachmentsOnBD = $post->attachments()->select('size')->get();
@@ -91,7 +92,18 @@ class PostUpdateRequest extends FormRequest
 
     protected function passedValidation(): void
     {
-        $this->merge(['user_id' => auth()->id()]);
+        // $this->merge(['user_id' => auth()->id()]);
+        $preview = collect($this->preview)->isEmpty() ? null : $this->preview;
+        $body = $this->body;
+        if (!is_null($preview) && trim(strip_tags($this->body)) === $this->preview['url']) {
+            $body = '';
+        }
+
+        $this->merge([
+            'user_id' => auth()->id(),
+            'body' => $body,
+            'preview' => $preview,
+        ]);
     }
 
     public function messages()

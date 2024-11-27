@@ -5,6 +5,12 @@ import "@ckeditor/ckeditor5-build-classic/build/translations/es";
 const editor = ClassicEditor;
 const editorConfig = {
     language: "es",
+    mediaEmbed: {
+        removeProviders: [
+            'dailymotion', 'flickr', 'facebook', 'googleMaps', 'instagram',
+            'spotify', 'twitter', 'vimeo', 'youtube',
+        ],
+    },
     toolbar: {
         items: [
             "undo",

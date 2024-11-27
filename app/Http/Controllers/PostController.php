@@ -18,6 +18,7 @@ use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
+use DOMDocument;
 use Inertia\Response as InertiaResponse;
 use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
@@ -455,5 +456,52 @@ class PostController extends Controller
         return response([
             'content' => '🚀 ¡Lanzamos DearBook, nuestra nueva app de red social! Desarrollada con Laravel y Vue.js para una experiencia increíble. 📱✨ Conéctate, comparte y descubre más. ¡Únete a nosotros! #DearBook #Laravel #VueJS #RedSocial #Tecnología #Innovación #App',
         ]);
+    }
+
+    public function fetchUrlPreview(Request $request)
+    {
+        $url = $request->url;
+        $ogTags = [];
+
+        $html = file_get_contents($url); // string o false
+
+        if ($html !== false) {
+            // Reemplazar entidades mal formadas
+            $html = preg_replace('/&([^;]+)(?![a-zA-Z0-9#])/s', '&amp;$1', $html);
+            $html = preg_replace('/&(?!(amp|lt|gt|quot|#x[0-9A-Fa-f]+|#\d+);)/s', '&amp;', $html);
+
+            // Forzar la codificación a UTF-8 si no está en UTF-8
+            if (!mb_detect_encoding($html, 'UTF-8', true)) {
+                $html = mb_convert_encoding($html, 'UTF-8', 'auto');
+            }
+            $dom = new DOMDocument();
+
+            // Suprimiendo warnings de un malformado HTML
+            libxml_use_internal_errors(true);
+            // $dom->loadHTML($html);
+            // Forzar la codificación al cargar el HTML
+            $dom->loadHTML('<?xml encoding="UTF-8"?>' . $html);
+
+            // $errors = libxml_get_errors();
+            // foreach ($errors as $error) {
+            //     echo "Error: " . $error->message . "\n";
+            // }
+            // libxml_clear_errors();
+
+            // Restaurando la captura de errores a su estado anterior
+            libxml_use_internal_errors(false);
+
+            $metaTags = $dom->getElementsByTagName('meta');
+            foreach ($metaTags as $tag) {
+                /** @var DOMElement $tag */
+                $property = $tag->getAttribute('property');
+                if (str_starts_with($property, 'og:')) {
+                    // $ogTags[$property] = $tag->getAttribute('content');
+                    $ogTags[$property] = mb_convert_encoding($tag->getAttribute('content'), 'UTF-8', 'auto');
+                }
+            }
+        }
+
+        return $ogTags;
     }
 }

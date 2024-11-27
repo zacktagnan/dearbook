@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/download-attachment/{attachment}', [PostController::class, 'downloadAttachment'])->name('download-attachment');
         Route::post('/generate-content', [PostController::class, 'generateContent'])->name('generate-content');
+        Route::post('/fetch-url-preview', [PostController::class, 'fetchUrlPreview'])->name('fetch-url-preview');
 
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
 

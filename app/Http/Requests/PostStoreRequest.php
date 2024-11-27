@@ -54,6 +54,7 @@ class PostStoreRequest extends FormRequest
     {
         return [
             'body' => 'required_without:attachments|nullable|string',
+            'preview' => 'nullable|array',
             'attachments' => [
                 'required_without:body',
                 'array',
@@ -99,15 +100,25 @@ class PostStoreRequest extends FormRequest
 
     protected function passedValidation(): void
     {
-        // dd('USER-auth-ID', auth()->id());
-        $this->merge(['user_id' => auth()->id()]);
+        // $this->merge(['user_id' => auth()->id()]);
+        $preview = collect($this->preview)->isEmpty() ? null : $this->preview;
+        $body = $this->body;
+        if (!is_null($preview) && trim(strip_tags($this->body)) === $this->preview['url']) {
+            $body = '';
+        }
+
+        $this->merge([
+            'user_id' => auth()->id(),
+            'body' => $body,
+            'preview' => $preview,
+        ]);
     }
 
     public function messages()
     {
         return [
-            'body.required_without' => 'Se requiere que el comentario esté constituido o por un texto o por un archivo adjunto.',
-            'attachments.required_without' => 'Se requiere que el comentario esté constituido o por un texto o por un archivo adjunto.',
+            'body.required_without' => 'Requerido texto, uno o varios adjuntos o vista previa de URL.',
+            'attachments.required_without' => 'Requerido texto, uno o varios adjuntos o vista previa de URL.',
             // 'attachments.*' => 'El adjunto elegido debe disponer de una de las siguientes extensiones: ' . implode(', ', self::$allowedMimeTypes),
             // mensaje demasiado largo
             'attachments.max' => 'Demasiados archivos adjuntos. Máximo ' . self::$maximumAmount . '. Agregados: ' . count($this->attachments) . '.',

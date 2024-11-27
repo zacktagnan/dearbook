@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class BodyOrAttachment implements DataAwareRule, ValidationRule
+class BodyOrAttachmentOrPreview implements DataAwareRule, ValidationRule
 {
     protected $data = [];
     protected $post;
@@ -25,8 +25,13 @@ class BodyOrAttachment implements DataAwareRule, ValidationRule
     {
         $currentAttachmentsOnBD = $this->post->attachments()->select('id')->get();
 
-        if ($value === null && $this->data['attachments'] === [] && (count($this->data['deleted_file_ids']) === $currentAttachmentsOnBD->count())) {
-            $fail('Es requerido bien un texto o un archivo adjunto.');
+        if (
+            $value === null
+            && $this->data['attachments'] === []
+            && (count($this->data['deleted_file_ids']) === $currentAttachmentsOnBD->count())
+            && empty(array_filter($this->data['preview']))
+        ) {
+            $fail('Es requerido bien un texto o un archivo adjunto o vista previa de URL.');
         }
     }
 

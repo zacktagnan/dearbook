@@ -32,6 +32,7 @@ import { reactionTypesFormat, } from "@/Libs/helpers";
 // =======================================================================================
 
 import PostHeader from "@/Components/dearbook/Post/Header.vue";
+import UrlPreview from "@/Components/dearbook/Post/UrlPreview.vue"
 import OptionsDropDown from "@/Components/dearbook/OptionsDropDown.vue";
 import { MenuItem } from "@headlessui/vue";
 import {
@@ -43,17 +44,25 @@ import {
 import { Link, usePage } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
+// APLICANDO Hash Tags...
 // const postBody = computed(() => props.post.body.replace(
 //     /(#\p{L}+)(?![^<]*<\/a>)/gu,
 //     '<a href="/global-search/$1">$1</a>')
 // )
 // -> aplicando el "encodeURIComponent" debido al "#"
 const postBody = computed(() => props.post.body.replace(
-    /(#\p{L}+)(?![^<]*<\/a>)/gu,
+    // cualquier coincidencia de "#texto_seguido"
+    // /(#\p{L}+)(?![^<]*<\/a>)/gu,
+    // cualquier coincidencia de "#texto_seguido" mientras no estén dentro de una URL
+    /(?<!https?:\/\/[^\s]*)(#\p{L}+)(?![^<]*<\/a>)/gu,
     (match, group) => {
         const encodedGroup = encodeURIComponent(group)
         return `<a href="/global-search/${encodedGroup}" class="post-hashtag">${group}</a>`
     })
+)
+
+const isTherePreviewData = computed(
+    () => !!(props.post.preview && (props.post.preview.title || props.post.preview.image || props.post.preview.description))
 )
 
 const openEditModal = () => {
@@ -474,10 +483,14 @@ defineExpose({
             </OptionsDropDown>
             <!-- =========================================================== -->
         </div>
-        <!-- <pre>{{ post }}</pre> -->
+        <!-- <pre>{{ 'isTherePreviewData >> ' + isTherePreviewData }}</pre>
+        <pre>{{ post }}</pre> -->
         <div class="mt-1">
-            <ReadMoreOrLess :content="postBody" :max-content-length="maxPostBodyLength"
+            <ReadMoreOrLess :content="postBody" :showing-banner-if-content-is-null="false" :max-content-length="maxPostBodyLength"
                 :content-classes="'ck-content-output'" />
+
+            <UrlPreview :is-there-preview-data="isTherePreviewData" :url="post.preview.url" :preview="post.preview"
+                :classes="'border border-cyan-200 rounded-lg bg-sky-50 w-1/2 mx-auto'" :img-classes="'w-full'" />
         </div>
 
         <div v-if="post.attachments.length > 0">
