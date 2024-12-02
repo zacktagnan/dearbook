@@ -51,4 +51,12 @@ return [
             'btn_text' => 'Ver la PUBLICACIÓN',
         ],
     ],
+
+    'pinned_state' => [
+        // 'web' => [
+        //     '0' => 'Tu publicación fue desfijada.',
+        //     '1' => 'Tu publicación fue fijada.',
+        // ],
+        'web' => '{0} Tu publicación fue desfijada.|{1} Tu publicación fue fijada.',
+    ],
 ];

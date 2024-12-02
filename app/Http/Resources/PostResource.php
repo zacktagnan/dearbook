@@ -30,6 +30,8 @@ class PostResource extends JsonResource
                 ?: '',
             'user' => new UserResource($this->user),
 
+            'is_pinned' => $this->is_pinned,
+
             'deleted_by' => $this->deleted_by,
             'deleted_at' => $this->deleted_at
                 ?: '',

@@ -50,7 +50,7 @@ class ProfileController extends Controller
 
         $totalOfFollowers = Follower::where('followed_id', $user->id)->count();
 
-        $posts = Post::listedOnTimeLine(auth()->id())
+        $posts = Post::listedOnTimeLine(auth()->id(), true)
             ->where('user_id', $user->id)
             ->paginate(5); //20
 

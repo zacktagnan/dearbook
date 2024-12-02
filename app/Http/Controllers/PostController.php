@@ -504,4 +504,27 @@ class PostController extends Controller
 
         return $ogTags;
     }
+
+    public function pinUnpin(Request $request, Post $post)
+    {
+        if ($post->isAuthor(auth()->id()) || $post->group && $post->group->isAdminOfTheGroup(auth()->id())) {
+            if (!$post->is_pinned) {
+                if ($post->group) {
+                    Post::query()->where('group_id', $post->group->id)->update([
+                        'is_pinned' => false,
+                    ]);
+                }
+                Post::query()->where('user_id', auth()->id())->update([
+                    'is_pinned' => false,
+                ]);
+            }
+
+            $post->is_pinned = !$post->is_pinned;
+            $post->save();
+
+            return back()->with('success', trans_choice('dearbook/post/notify.pinned_state.web', ($post->is_pinned ? '1' : '0')));
+        }
+
+        return response("You don't have permission to PROCESS the Pinned/Unpinned of this post", Response::HTTP_FORBIDDEN);
+    }
 }

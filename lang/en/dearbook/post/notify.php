@@ -51,4 +51,12 @@ return [
             'btn_text' => 'View POST',
         ],
     ],
+
+    'pinned_state' => [
+        // 'web' => [
+        //     '0' => 'Your post was unpinned.',
+        //     '1' => 'Your post was pinned.',
+        // ],
+        'web' => '{0} Your post was unpinned.|{1} Your post was pinned.',
+    ],
 ];

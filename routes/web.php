@@ -50,6 +50,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/generate-content', [PostController::class, 'generateContent'])->name('generate-content');
         Route::post('/fetch-url-preview', [PostController::class, 'fetchUrlPreview'])->name('fetch-url-preview');
 
+        Route::post('/{post}/pin-unpin', [PostController::class, 'pinUnpin'])->name('pin-unpin');
+
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
 
         Route::post('/{post}/comment', [PostCommentController::class, 'store'])->name('comment.store');

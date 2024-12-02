@@ -14,6 +14,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
+/**
+ * Class Post
+ *
+ * @property Group $group
+ */
 class Post extends Model
 {
     use HasFactory;
@@ -28,6 +33,7 @@ class Post extends Model
         'preview',
         'user_id',
         'group_id',
+        'is_pinned',
     ];
 
     protected $casts = [
@@ -59,9 +65,9 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function listedOnTimeLine($userId): Builder
+    public static function listedOnTimeLine($userId, $orderByPinnedPosts = false): Builder
     {
-        return Post::withCount(['reactions',])
+        $query = Post::withCount(['reactions',])
             ->where(function ($query) {
                 $query->whereHas('group', function ($query) {
                     $query->where('type', 'public')
@@ -84,8 +90,14 @@ class Post extends Model
                 },
                 'latestComments',
                 'comments',
-            ])
-            ->latest();
+            ]);
+
+        if ($orderByPinnedPosts) {
+            $query->orderBy('is_pinned', 'desc');
+        }
+        $query->latest();
+
+        return $query;
     }
 
     public static function scopeOnlyFromFollowers(Builder $query, int $userId): Builder

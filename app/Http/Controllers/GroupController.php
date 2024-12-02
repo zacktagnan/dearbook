@@ -52,7 +52,7 @@ class GroupController extends Controller
     {
         $group->load('currentGroupUser', 'user');
 
-        $posts = Post::listedOnTimeLine(auth()->id())
+        $posts = Post::listedOnTimeLine(auth()->id(), true)
             ->where('group_id', $group->id)
             ->paginate(5); //20
 
