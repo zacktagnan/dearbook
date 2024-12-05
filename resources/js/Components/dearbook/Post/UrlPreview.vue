@@ -7,7 +7,7 @@ import { computed } from "vue";
 const props = defineProps({
     isTherePreviewData: Boolean,
     url: String,
-    preview: Object,
+    preview: [Object, String],
     classes: String,
     imgClasses: {
         type: String,
