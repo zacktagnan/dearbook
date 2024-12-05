@@ -18,7 +18,7 @@ import PhotoList from '@/Pages/Media/PhotoList.vue'
 
 const props = defineProps({
     success: {
-        type: String,
+        type: [String, Object, null],
     },
     errors: Object,
     mustVerifyEmail: {
@@ -57,6 +57,7 @@ const props = defineProps({
     photos: {
         type: Object,// Array // Object,
     },
+    parent_page_name: String,
 });
 
 const authUser = usePage().props.auth.user
@@ -214,6 +215,8 @@ const totalOfFollowersText = computed(() => {
     }
     return txt
 })
+
+const successMessage = computed(() => props.success?.message ? props.success.message : props.success)
 </script>
 
 <template>
@@ -225,7 +228,7 @@ const totalOfFollowersText = computed(() => {
             <div class="lg:w-2/3 mx-auto relative">
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
-                    v-show="showNotification && success" :title="'Info'" :message="success" />
+                    v-show="showNotification && success" :title="'Info'" :message="successMessage" />
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                     v-if="showNotification && errors.cover" :title="'Error'" :message="errors.cover" />
@@ -383,7 +386,7 @@ const totalOfFollowersText = computed(() => {
                         <TabPanel>
                             <PostCreate />
                             <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
-                                :after_comment_deleted="after_comment_deleted" />
+                                :after_comment_deleted="after_comment_deleted" :parent_page_name="parent_page_name" />
                             <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">
                                 No hay publicaciones actualmente
                             </div>
