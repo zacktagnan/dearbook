@@ -11,6 +11,10 @@ const props = defineProps({
         type: String,
         default: 'latest',
     },
+    parent_page_name: {
+        type: String,
+        default: '',
+    },
 });
 
 const emit = defineEmits([
@@ -43,7 +47,7 @@ import {
     ArrowUturnLeftIcon,
     ArchiveBoxIcon,
 } from "@heroicons/vue/24/solid";
-import { Link, usePage } from "@inertiajs/vue3";
+import { Link, usePage, useForm, router } from "@inertiajs/vue3";
 import PostAttachments from '@/Components/dearbook/Post/Attachments.vue'
 
 // APLICANDO Hash Tags...
@@ -98,7 +102,7 @@ const isTrashed = computed(
     () => props.post.deleted_at !== ''
 );
 
-const { group } = props.post;
+const { group, user } = props.post;
 
 const isTrashedByAdminGroup = computed(
     () => group && props.post.deleted_by && props.post.deleted_by !== props.post.user.id
@@ -275,19 +279,66 @@ const restartPostCommentList = (latestComments, allComments) => {
     props.post.all_comments = allComments
 }
 
-import { useForm } from "@inertiajs/vue3";
+//// const isPinned = computed(() => !!(group && group.pinned_post_id === props.post.id) || !!(authUser && authUser.pinned_post_id === props.post.id))
+const isPinned = computed(() => {
+    // if (group?.id) {
+    //     return group?.pinned_post_id === props.post.id
+    // }
+    // return authUser?.pinned_post_id === props.post.id
+
+    if (props.parent_page_name === 'group_profile') {
+        return group.pinned_post_id === props.post.id
+    } else if (props.parent_page_name === 'user_profile') {
+        return user.pinned_post_id === props.post.id
+    }
+})
+
+console.log('props.parent_page_name', props.parent_page_name)
 
 const pinUnpinPost = () => {
     // axiosClient.post(route('post.pin-unpin', props.post.id))
     //     .then((res) => {
     //         props.post.is_pinned = !props.post.is_pinned
     //     })
-    const form = useForm({})
-    form.post(route('post.pin-unpin', props.post.id))
+    const form = useForm({
+        // is_pinned_on_group_profile: group?.id ? true : false,
+        is_pinned_on_group_profile: props.parent_page_name === 'group_profile' ? true : false,
+    })
+
+    form.post(route('post.pin-unpin', props.post.id), {
+        // preserveScroll: true,
+        // onSuccess: () => {
+        //     if (groupPost?.id) {
+        //         // groupPost.pinned_post_id = isPostPinned ? null : props.post.id
+        //         ////groupPost.pinned_post_id = isPostPinned ? null : usePage().props.success.current_pinned_post_id
+        //         // ---------------------------------------------------------------------------------------------------------------
+        //         ////console.log('... tras procesar, post marcado como fijado: ', groupPost.pinned_post_id)
+        //         ////console.log('usePage().props.success.current_pinned_post_id: ', usePage().props.success.current_pinned_post_id)
+        //     }
+        // },
+    })
+}
+
+const updatePinnedState = () => {
+    //// if (groupPost?.id) {
+    // if (group?.id) {
+    //     ////console.log("\n[desde updatePinnedState]\n" + 'usePage().props.success.current_pinned_post_id: ', usePage().props.success.current_pinned_post_id)
+
+    //     ////console.log("\n[desde updatePinnedState]\n" + 'groupPost.pinned_post_id: ', groupPost.pinned_post_id)
+    //     //// groupPost.pinned_post_id = usePage().props.success.current_pinned_post_id
+    //     group.pinned_post_id = usePage().props.success.current_pinned_post_id
+    // } else {
+    //     authUser.pinned_post_id = usePage().props.success.current_pinned_post_id
+    // }
+    if (props.parent_page_name === 'group_profile') {
+        group.pinned_post_id = usePage().props.success?.current_pinned_post_id
+    } else if (props.parent_page_name === 'user_profile') {
+        user.pinned_post_id = usePage().props.success?.current_pinned_post_id
+    }
 }
 
 defineExpose({
-    filterDeletedComment, restartGeneralDataFromPostComments, restartPostCommentList,
+    filterDeletedComment, restartGeneralDataFromPostComments, restartPostCommentList, updatePinnedState,
 })
 </script>
 
@@ -301,9 +352,9 @@ defineExpose({
             <PostHeader :post="post" />
 
             <div class="flex items-center gap-5">
-                <div v-if="post.is_pinned" class="flex items-center mb-1">
-                    <PinIcon :alt="$tChoice('dearbook.post.index.pinned_state.title', post.is_pinned)" class-content="w-4 h-4 mr-2 text-sky-400 fill-current" aria-hidden="true" />
-                    <span class="text-sm">{{ $tChoice('dearbook.post.index.pinned_state.text', post.is_pinned) }}</span>
+                <div v-if="isPinned" class="flex items-center mb-1">
+                    <PinIcon :alt="$tChoice('dearbook.post.index.pinned_state.title', isPinned)" class-content="w-4 h-4 mr-2 text-sky-400 fill-current" aria-hidden="true" />
+                    <span class="text-sm">{{ $tChoice('dearbook.post.index.pinned_state.text', isPinned) }}</span>
                 </div>
                 <OptionsDropDown v-model="isPostGroupMemberOrNotIsPrivateGroup" :ellipsis-type-icon="'vertical'">
                     <div class="px-1 py-1">
@@ -332,7 +383,7 @@ defineExpose({
                         </MenuItem>
                     </div>
                     <template v-if="isPostAuthorOrIsPostGroupAdmin">
-                        <template v-if="isPostAuthor">
+                        <template v-if="isPostAuthor && parent_page_name !== 'group_profile'">
                             <template v-if="!isTrashed && !isArchived">
                                 <div class="px-1 py-1">
                                     <MenuItem v-slot="{ active }" as="a">
@@ -341,10 +392,11 @@ defineExpose({
                                                 ? 'bg-sky-100'
                                                 : 'text-gray-900',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                        ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', post.is_pinned)">
-                                            <UnpinIcon v-if="post.is_pinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
+                                        ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', (isPinned ? 1 : 0))">
+                                            <UnpinIcon v-if="isPinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                             <PinIcon v-else :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
-                                            {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', post.is_pinned) }}
+                                            {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', (isPinned ? 1 : 0)) }}
+                                            [{{ isPinned }}]
                                         </button>
                                     </MenuItem>
 
@@ -463,7 +515,7 @@ defineExpose({
                             </template>
                         </template>
 
-                        <template v-else-if="isPostGroupAdmin">
+                        <template v-else-if="isPostGroupAdmin && parent_page_name !== 'user_profile'">
                             <div class="px-1 py-1">
                                 <MenuItem v-slot="{ active }" as="a">
                                     <button @click="pinUnpinPost" :class="[
@@ -471,10 +523,11 @@ defineExpose({
                                             ? 'bg-sky-100'
                                             : 'text-gray-900',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                    ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', post.is_pinned)">
-                                        <UnpinIcon v-if="post.is_pinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
+                                    ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', (isPinned ? 1 : 0))">
+                                        <UnpinIcon v-if="isPinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                         <PinIcon v-else :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
-                                        {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', post.is_pinned) }}
+                                        {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', (isPinned ? 1 : 0)) }}
+                                        [{{ isPinned }}]
                                     </button>
                                 </MenuItem>
                             </div>

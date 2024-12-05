@@ -33,7 +33,6 @@ class Post extends Model
         'preview',
         'user_id',
         'group_id',
-        'is_pinned',
     ];
 
     protected $casts = [
@@ -65,7 +64,7 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function listedOnTimeLine($userId, $orderByPinnedPosts = false): Builder
+    public static function listedOnTimeLine($userId, $orderByLatest = true): Builder
     {
         $query = Post::withCount(['reactions',])
             ->where(function ($query) {
@@ -92,10 +91,9 @@ class Post extends Model
                 'comments',
             ]);
 
-        if ($orderByPinnedPosts) {
-            $query->orderBy('is_pinned', 'desc');
+        if ($orderByLatest) {
+            $query->latest();
         }
-        $query->latest();
 
         return $query;
     }

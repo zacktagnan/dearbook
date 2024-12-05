@@ -507,24 +507,43 @@ class PostController extends Controller
 
     public function pinUnpin(Request $request, Post $post)
     {
-        if ($post->isAuthor(auth()->id()) || $post->group && $post->group->isAdminOfTheGroup(auth()->id())) {
-            if (!$post->is_pinned) {
-                if ($post->group) {
-                    Post::query()->where('group_id', $post->group->id)->update([
-                        'is_pinned' => false,
-                    ]);
-                }
-                Post::query()->where('user_id', auth()->id())->update([
-                    'is_pinned' => false,
-                ]);
-            }
+        $isPinnedOnGroupProfile = $request->get('is_pinned_on_group_profile', false);
 
-            $post->is_pinned = !$post->is_pinned;
-            $post->save();
-
-            return back()->with('success', trans_choice('dearbook/post/notify.pinned_state.web', ($post->is_pinned ? '1' : '0')));
+        if ($isPinnedOnGroupProfile && !$post->group) {
+            return response("Invalid Request to Pin/Unpin this post", Response::HTTP_BAD_REQUEST);
         }
 
-        return response("You don't have permission to PROCESS the Pinned/Unpinned of this post", Response::HTTP_FORBIDDEN);
+        if ($isPinnedOnGroupProfile && !$post->group->isAdminOfTheGroup(auth()->id())) {
+            return response("You don't have permission to PROCESS the Pinned/Unpinned of this post", Response::HTTP_FORBIDDEN);
+        }
+
+        $isPinned = false;
+
+        if ($isPinnedOnGroupProfile && $post->group->isAdminOfTheGroup(auth()->id())) {
+            if ($post->group->pinned_post_id === $post->id) {
+                $post->group->pinned_post_id = null;
+            } else {
+                $isPinned = true;
+                $post->group->pinned_post_id = $post->id;
+            }
+            $post->group->save();
+        }
+
+        if (!$isPinnedOnGroupProfile) {
+            if ($request->user()->pinned_post_id === $post->id) {
+                $request->user()->pinned_post_id = null;
+            } else {
+                $isPinned = true;
+                $request->user()->pinned_post_id = $post->id;
+            }
+            $request->user()->save();
+        }
+
+        return back()->with([
+            'success' => [
+                'message' => trans_choice('dearbook/post/notify.pinned_state.web', ($isPinned ? '1' : '0')),
+                'current_pinned_post_id' => $isPinned ? $post->id : null,
+            ],
+        ]);
     }
 }

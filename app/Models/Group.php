@@ -32,6 +32,7 @@ class Group extends Model
         'cover_path',
         'thumbnail_path',
         'deleted_by',
+        'pinned_post_id',
     ];
 
     public function getSlugOptions(): SlugOptions

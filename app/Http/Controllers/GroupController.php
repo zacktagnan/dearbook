@@ -52,9 +52,12 @@ class GroupController extends Controller
     {
         $group->load('currentGroupUser', 'user');
 
-        $posts = Post::listedOnTimeLine(auth()->id(), true)
+        $posts = Post::listedOnTimeLine(auth()->id(), false)
+            ->leftJoin('groups AS g', 'g.pinned_post_id', 'posts.id')
             ->where('group_id', $group->id)
-            ->paginate(5); //20
+            ->orderBy('g.pinned_post_id', 'desc')
+            ->orderBy('posts.created_at', 'desc')
+            ->paginate(4); //20
 
         $posts = PostResource::collection($posts);
 
@@ -75,6 +78,8 @@ class GroupController extends Controller
         $photos = Attachment::forUserOrGroup()->get();
         $photos = $this->attachmentService->filterAndTransform($photos, $group->id);
 
+        $parentPageName = 'group_profile';
+
         return Inertia::render('Group/Index', [
             // 'status' => session('status'),
             'success' => session('success'),
@@ -86,6 +91,7 @@ class GroupController extends Controller
                 ? UserResource::collection($requestsPending)
                 : null,
             'photos' => $photos,
+            'parent_page_name' => $parentPageName,
         ]);
     }
 

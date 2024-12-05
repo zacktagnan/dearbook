@@ -50,8 +50,11 @@ class ProfileController extends Controller
 
         $totalOfFollowers = Follower::where('followed_id', $user->id)->count();
 
-        $posts = Post::listedOnTimeLine(auth()->id(), true)
+        $posts = Post::listedOnTimeLine(auth()->id(), false)
+            ->leftJoin('users AS u', 'u.pinned_post_id', 'posts.id')
             ->where('user_id', $user->id)
+            ->orderBy('u.pinned_post_id', 'desc')
+            ->orderBy('posts.created_at', 'desc')
             ->paginate(5); //20
 
         $posts = PostResource::collection($posts);
@@ -105,6 +108,8 @@ class ProfileController extends Controller
             'photos' => 4,
         };
 
+        $parentPageName = 'user_profile';
+
         return Inertia::render('Profile/Index', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -120,6 +125,7 @@ class ProfileController extends Controller
             'followers' => FollowResource::collection($followers),
             'followings' => FollowResource::collection($followings),
             'photos' => $photos,
+            'parent_page_name' => $parentPageName,
         ]);
     }
 

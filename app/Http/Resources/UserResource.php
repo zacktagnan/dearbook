@@ -34,6 +34,9 @@ class UserResource extends JsonResource
             'avatar_url' => $this->avatar_path
                 ? Storage::url($this->avatar_path)
                 : Utilities::$defaultAvatarImage,
+
+            'pinned_post_id' => $this->pinned_post_id,
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

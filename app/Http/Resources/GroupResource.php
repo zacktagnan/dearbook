@@ -59,6 +59,8 @@ class GroupResource extends JsonResource
                     : Utilities::$defaultAvatarImage,
             ],
 
+            'pinned_post_id' => $this->pinned_post_id,
+
             // 'deleted_by' => $this->deleted_by,
             // 'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,

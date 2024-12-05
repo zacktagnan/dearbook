@@ -16,6 +16,10 @@ const props = defineProps({
     after_comment_deleted: {
         type: Object,
     },
+    parent_page_name: {
+        type: String,
+        default: '',
+    },
 })
 
 const showEditModal = ref(false)
@@ -235,6 +239,15 @@ watch(
     () => {
         // console.log('POSTs listado ha cambiado...')
         reinitAllPosts()
+
+        // Revisando cada Post de la lista para ver si tiene que ser marcado como Fijado o no
+        // cada vez que cambia el conjunto de "props.posts"
+        allPosts.value.data.forEach((post) => {
+            const postItem = postItemRef.value[post.id]
+            if (postItem && postItem.updatePinnedState) {
+                postItem.updatePinnedState()
+            }
+        })
     }
 )
 
@@ -295,7 +308,7 @@ onMounted(() => {
 
 <template>
     <div>
-        <PostItem v-for="post in allPosts.data" :ref="el => postItemRef[post.id] = el" :post="post"
+        <PostItem v-for="post in allPosts.data" :ref="el => postItemRef[post.id] = el" :post="post" :parent_page_name="parent_page_name"
             @callOpenEditModal="openEditModal" @callArchiveItem="archiveItem" @callOpenDetailModal="openDetailModal"
             @callOpenAttachmentsModal="openAttachmentsModal" @callOpenUserReactionsModal="openUserReactionsModal"
             @callConfirmDeletion="showConfirmDeletion" @callActiveShowNotification="activeShowNotification"
