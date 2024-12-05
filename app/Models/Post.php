@@ -89,6 +89,17 @@ class Post extends Model
                 },
                 'latestComments',
                 'comments',
+                // -> Líneas agregadas con el motivo de optimizar el número de consultas...
+                // ----------------------------------------------------------------------------
+                'comments.user',
+                'comments.reactions' => function ($query) use ($userId) {
+                    $query->where('user_id', $userId);
+                },
+                'user',
+                'group',
+                'group.currentGroupUser',
+                'attachments',
+                // ----------------------------------------------------------------------------
             ]);
 
         if ($orderByLatest) {
