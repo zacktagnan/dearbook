@@ -19,17 +19,18 @@ const globalSearch = () => {
     router.get(route('global-search', encodeURIComponent(keywords.value)))
 }
 
-const isDarkMode = ref(false)
+const isDarkMode = ref(parseInt(localStorage.getItem('darkMode') || 0))
 const toggleDarkMode = () => {
     const html = window.document.documentElement
     if (html.classList.contains('dark')) {
         html.classList.remove('dark')
         isDarkMode.value = false
+        localStorage.setItem('darkMode', '0')
     } else {
         html.classList.add('dark')
         isDarkMode.value = true
+        localStorage.setItem('darkMode', '1')
     }
-
 }
 </script>
 

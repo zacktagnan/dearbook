@@ -9,6 +9,14 @@ import CKEditor from '@ckeditor/ckeditor5-vue'
 
 import { i18nVue } from 'laravel-vue-i18n';
 
+const html = window.document.documentElement
+const darkMode = parseInt(localStorage.getItem('darkMode') || 0)
+if (darkMode) {
+    html.classList.add('dark')
+} else {
+    html.classList.remove('dark')
+}
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
