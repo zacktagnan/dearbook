@@ -293,8 +293,6 @@ const isPinned = computed(() => {
     }
 })
 
-console.log('props.parent_page_name', props.parent_page_name)
-
 const pinUnpinPost = () => {
     // axiosClient.post(route('post.pin-unpin', props.post.id))
     //     .then((res) => {

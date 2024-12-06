@@ -34,7 +34,7 @@ const onGroupCreated = (group) => {
 </script>
 
 <template>
-    <div class="flex flex-col p-3 border rounded bg-sky-200 sticky top-[4.8rem]">
+    <div class="flex flex-col p-3 dark:text-white border dark:border-gray-800 rounded bg-sky-200 dark:bg-sky-900 sticky top-[4.8rem]">
         <div class="flex-1 block lg:hidden">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">

@@ -25,7 +25,7 @@ defineProps({
                     <Link :href="route('profile.index', { username: user.username })">
                     <h3 class="font-black hover:underline">{{ user.name }}</h3>
                     </Link>
-                    <span v-if="userSinceDate" class="text-xs text-gray-500">{{ userSinceDate }}</span>
+                    <span v-if="userSinceDate" class="text-xs text-gray-500 dark:text-gray-300">{{ userSinceDate }}</span>
                 </div>
 
                 <div class="flex gap-1 md:gap-2">

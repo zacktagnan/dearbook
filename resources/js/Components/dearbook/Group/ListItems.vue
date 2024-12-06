@@ -45,7 +45,7 @@ const clearFilter = () => {
     </div>
 
     <button @click="$emit('callOpenCreateGroupModal')" :title="$t('dearbook.group.form.create.btn_init_creation')"
-        class="w-full bg-sky-400 text-gray-200 transition-colors delay-150 flex justify-center items-center rounded-md mt-3 hover:bg-[#0099ce] hover:text-white">
+        class="w-full bg-sky-400 dark:bg-sky-600/65 text-gray-200 transition-colors delay-150 flex justify-center items-center rounded-md mt-3 hover:bg-[#0099ce] dark:hover:bg-[#3593b3] hover:text-white">
         <div class="flex py-1 gap-2">
             <PlusIcon class="w-4 h-4 mt-1" />
             {{ $t('dearbook.group.form.create.btn_init_creation') }}

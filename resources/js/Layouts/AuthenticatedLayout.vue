@@ -1,7 +1,7 @@
 <script setup>
-import { ArrowLeftStartOnRectangleIcon, UserCircleIcon } from "@heroicons/vue/24/solid";
+import { ArrowLeftStartOnRectangleIcon, UserCircleIcon, MoonIcon, SunIcon } from "@heroicons/vue/24/solid";
 import { ArchiveBoxIcon } from "@heroicons/vue/24/outline";
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -18,11 +18,24 @@ const keywords = ref('')
 const globalSearch = () => {
     router.get(route('global-search', encodeURIComponent(keywords.value)))
 }
+
+const isDarkMode = ref(false)
+const toggleDarkMode = () => {
+    const html = window.document.documentElement
+    if (html.classList.contains('dark')) {
+        html.classList.remove('dark')
+        isDarkMode.value = false
+    } else {
+        html.classList.add('dark')
+        isDarkMode.value = true
+    }
+
+}
 </script>
 
 <template>
     <div>
-        <div class="min-h-screen bg-[beige] dark:bg-[#b4b440]">
+        <div class="min-h-screen bg-[beige] dark:bg-[#59594e]">
             <nav
                 class="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
@@ -46,10 +59,22 @@ const globalSearch = () => {
                             </div>
                         </div>
 
-                        <div class="w-full flex justify-center">
+                        <div class="w-full flex justify-center items-center gap-2">
                             <TextInput v-model="keywords" :placeholder="'Usuarios, grupos o publicaciones'"
                                 class="placeholder:text-gray-400 placeholder:italic w-2/3 md:w-1/2"
                                 @keyup.enter="globalSearch" />
+
+                            <button @click="toggleDarkMode"
+                                class="text-sky-200 hover:text-sky-300 dark:text-yellow-200 dark:hover:text-yellow-300 transition-colors duration-150"
+                                :title="[
+                                    isDarkMode
+                                    ? 'Cambiar al modo claro'
+                                    : 'Cambiar al modo oscuro'
+                                ]"
+                            >
+                                <SunIcon v-if="isDarkMode" class="size-8" />
+                                <MoonIcon v-else class="size-6" />
+                            </button>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center">

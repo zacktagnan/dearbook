@@ -69,7 +69,7 @@ const clearFilter = () => {
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" />
             <UserItem :user="authUser" :classes="' hover:bg-white'" :class="{ 'mt-1': true }" /> -->
 
-            <UserItem v-for="(following, index) in followings" :user="following" :user-since-date="following.since_date" :classes="' hover:bg-white'" :class="{ 'mt-1': index > 0 }" />
+            <UserItem v-for="(following, index) in followings" :user="following" :user-since-date="following.since_date" :classes="' hover:bg-white dark:hover:bg-[#102c38]'" :class="{ 'mt-1': index > 0 }" />
         </div>
     </div>
 </template>

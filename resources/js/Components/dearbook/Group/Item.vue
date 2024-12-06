@@ -15,7 +15,7 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
 </script>
 
 <template>
-    <div class="rounded-md cursor-pointer hover:bg-white">
+    <div class="rounded-md cursor-pointer hover:bg-white dark:hover:bg-[#102c38]">
         <Link :href="route('group.profile', { group: group.slug })" class="flex items-start gap-2 px-2 py-1">
         <img :src="group.thumbnail_url" class="mt-1 w-[36px] rounded-md" :alt="group.name">
         <div class="flex-1">
@@ -39,7 +39,7 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
                     </span>
                 </div>
             </div>
-            <div class="text-xs text-gray-500">{{ group.short_description ||
+            <div class="text-xs text-gray-500 dark:text-gray-300">{{ group.short_description ||
                 $t('dearbook.group.list.main.no_description') }}
             </div>
         </div>
