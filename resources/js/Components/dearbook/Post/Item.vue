@@ -359,8 +359,8 @@ defineExpose({
                         <MenuItem v-slot="{ active }">
                             <Link :href="route('post.show', { user: post.user.username, id: post.id })" title="Ver detalle" @click="openEditModal" :class="[
                                 active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
+                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                    : 'text-gray-900 dark:text-gray-400',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                             ]">
                                 <EyeIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -371,8 +371,8 @@ defineExpose({
                         <MenuItem v-slot="{ active }">
                             <button title="Copiar enlace a portapapeles" @click="copyToClipboard" :class="[
                                 active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
+                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                    : 'text-gray-900 dark:text-gray-400',
                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                             ]">
                                 <DocumentDuplicateIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -381,28 +381,27 @@ defineExpose({
                         </MenuItem>
                     </div>
                     <template v-if="isPostAuthorOrIsPostGroupAdmin">
-                        <template v-if="isPostAuthor && parent_page_name !== 'group_profile'">
+                        <template v-if="isPostAuthor">
                             <template v-if="!isTrashed && !isArchived">
                                 <div class="px-1 py-1">
-                                    <MenuItem v-slot="{ active }" as="a">
+                                    <MenuItem v-if="parent_page_name === 'user_profile' || parent_page_name === 'group_profile'" v-slot="{ active }" as="a">
                                         <button @click="pinUnpinPost" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', (isPinned ? 1 : 0))">
                                             <UnpinIcon v-if="isPinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                             <PinIcon v-else :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                             {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', (isPinned ? 1 : 0)) }}
-                                            [{{ isPinned }}]
                                         </button>
                                     </MenuItem>
 
                                     <MenuItem v-slot="{ active }">
                                         <button @click="openEditModal" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Editar publicación">
                                             <PencilIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -415,8 +414,8 @@ defineExpose({
                                     <MenuItem v-slot="{ active }">
                                         <button @click="$emit('callArchiveItem', post.id)" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Mover al archivo">
                                             <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -427,8 +426,8 @@ defineExpose({
                                     <MenuItem v-slot="{ active }">
                                         <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Mover a la papelera">
                                             <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -443,8 +442,8 @@ defineExpose({
                                         <MenuItem v-slot="{ active }">
                                             <button @click="$emit('callRestoreItemFromTrash')" :class="[
                                                 active
-                                                    ? 'bg-sky-100'
-                                                    : 'text-gray-900',
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
                                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]" title="Restaurar publicación">
                                                 <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
@@ -458,8 +457,8 @@ defineExpose({
                                         <MenuItem v-if="!isTrashedByAdminGroup" v-slot="{ active }">
                                             <button @click="$emit('callArchiveItem', post.id)" :class="[
                                                 active
-                                                    ? 'bg-sky-100'
-                                                    : 'text-gray-900',
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
                                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]" title="Mover al archivo">
                                                 <ArchiveBoxIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -470,8 +469,8 @@ defineExpose({
                                         <MenuItem v-slot="{ active }">
                                             <button @click="$emit('callForceDeleteItem')" :class="[
                                                 active
-                                                    ? 'bg-sky-100'
-                                                    : 'text-gray-900',
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
                                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]" title="Eliminar del todo">
                                                 <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -485,8 +484,8 @@ defineExpose({
                                         <MenuItem v-slot="{ active }">
                                             <button @click="$emit('callRestoreItemFromArchive')" :class="[
                                                 active
-                                                    ? 'bg-sky-100'
-                                                    : 'text-gray-900',
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
                                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]" title="Restaurar publicación">
                                                 <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
@@ -500,8 +499,8 @@ defineExpose({
                                         <MenuItem v-slot="{ active }">
                                             <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
                                                 active
-                                                    ? 'bg-sky-100'
-                                                    : 'text-gray-900',
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
                                                 'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                             ]" title="Mover a la papelera">
                                                 <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -513,19 +512,18 @@ defineExpose({
                             </template>
                         </template>
 
-                        <template v-else-if="isPostGroupAdmin && parent_page_name !== 'user_profile'">
-                            <div class="px-1 py-1">
+                        <template v-else-if="isPostGroupAdmin">
+                            <div v-if="parent_page_name === 'group_profile'" class="px-1 py-1">
                                 <MenuItem v-slot="{ active }" as="a">
                                     <button @click="pinUnpinPost" :class="[
                                         active
-                                            ? 'bg-sky-100'
-                                            : 'text-gray-900',
+                                            ? 'bg-sky-100 dark:bg-slate-500'
+                                            : 'text-gray-900 dark:text-gray-400',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                     ]" :title="$tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.title', (isPinned ? 1 : 0))">
                                         <UnpinIcon v-if="isPinned" :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                         <PinIcon v-else :active="active" class-content="w-5 h-5 mr-2 text-sky-400 fill-current" aria-hidden="true" />
                                         {{ $tChoice('dearbook.post.index.options_drop_down.pin_or_unpin.action', (isPinned ? 1 : 0)) }}
-                                        [{{ isPinned }}]
                                     </button>
                                 </MenuItem>
                             </div>
@@ -534,8 +532,8 @@ defineExpose({
                                     <MenuItem v-slot="{ active }">
                                         <button @click="$emit('callConfirmDeletion', post, 'post')" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Mover a la papelera">
                                             <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
@@ -549,8 +547,8 @@ defineExpose({
                                     <MenuItem v-slot="{ active }">
                                         <button @click="$emit('callRestoreItemFromArchive')" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Restaurar publicación">
                                             <ArrowUturnLeftIcon :active="active" class="w-5 h-5 mr-2 text-sky-400"
@@ -564,8 +562,8 @@ defineExpose({
                                     <MenuItem v-slot="{ active }">
                                         <button @click="$emit('callForceDeleteItem')" :class="[
                                             active
-                                                ? 'bg-sky-100'
-                                                : 'text-gray-900',
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]" title="Eliminar del todo">
                                             <TrashIcon :active="active" class="w-5 h-5 mr-2 text-sky-400" aria-hidden="true" />
