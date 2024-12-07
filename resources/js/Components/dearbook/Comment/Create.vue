@@ -179,7 +179,7 @@ defineExpose({
                 :class="'w-full rounded-none rounded-t-lg border-0 bg-gray-200/50 text-[15px] ring-0 focus:ring-0 resize-none pt-2 max-h-28'"
                 rows="1" />
 
-            <div class="flex items-center justify-between px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50">
+            <div class="flex items-center justify-between px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50 dark:bg-slate-900">
                 <div class="mt-1.5">
                     <button type="button" class="relative group/ico_attach_multimedia_for_comment">
                         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]">

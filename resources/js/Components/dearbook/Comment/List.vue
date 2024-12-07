@@ -44,7 +44,7 @@ const activeShowNotification = (errors) => {
 
 <template>
     <button v-if="typeList === 'latest' && showMoreCommentsLink && post.total_of_comments > 1" @click="openDetailModal"
-        class="text-[15px] font-bold text-gray-500 hover:underline mt-2" title="Todos los comentarios disponibles">
+        class="text-[15px] font-bold text-gray-500 dark:text-gray-300 hover:underline mt-2" title="Todos los comentarios disponibles">
         Ver más comentarios
     </button>
 

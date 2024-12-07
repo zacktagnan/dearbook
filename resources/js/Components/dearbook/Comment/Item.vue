@@ -263,7 +263,7 @@ const limitingLatestCommentsListHigh = computed(
             <div class="flex items-center gap-1">
                 <div class="px-3 py-1 rounded-lg" :class="[
                     comment.comment.length > 0
-                        ? 'bg-gray-200/50'
+                        ? 'bg-gray-200/50 dark:bg-slate-900'
                         : ''
                 ]">
                     <a :href="route('profile.index', { username: comment.user.username })"
@@ -330,7 +330,7 @@ const limitingLatestCommentsListHigh = computed(
             </div>
 
             <Disclosure v-if="typeList === 'all' || typeList === 'latest'">
-                <div class="flex items-center gap-4 px-3 mt-0.5 text-xs text-gray-600">
+                <div class="flex items-center gap-4 px-3 mt-0.5 text-xs text-gray-600 dark:text-gray-400">
                     <div class="z-10 tooltip tooltip-right" :data-tip="comment.created_at_large_format">
                         <small class="text-xs hover:cursor-pointer hover:underline">{{ comment.created_at_formatted
                             }}</small>

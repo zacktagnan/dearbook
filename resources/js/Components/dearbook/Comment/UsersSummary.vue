@@ -40,7 +40,7 @@ const maxUsersIndex = maxUsersListed - 1;
         </button>
 
         <div :class="[
-            'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 transition- duration-500 whitespace-nowrap',
+            'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg bottom-6 -left-7 bg-black/70 dark:bg-black/75 transition- duration-500 whitespace-nowrap',
             showUsersPopover
                 ? 'opacity-100 visible'
                 : 'opacity-0 invisible'

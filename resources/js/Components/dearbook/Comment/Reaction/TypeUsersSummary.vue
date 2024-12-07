@@ -72,7 +72,7 @@ const usersThatReactedLength = computed(() => {
             {{ totalOfReactions }}
         </span>
         <div :class="[
-            'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg -left-12 bottom-6 bg-black/70 transition-all duration-500 whitespace-nowrap',
+            'absolute z-20 p-2 text-[13px] leading-[15px] text-white rounded-lg -left-12 bottom-6 bg-black/70 dark:bg-black/75 transition-all duration-500 whitespace-nowrap',
             showUsersPopover
                 ? 'opacity-100 visible'
                 : 'opacity-0 invisible'

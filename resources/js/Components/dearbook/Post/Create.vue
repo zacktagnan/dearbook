@@ -76,7 +76,7 @@ const closeShowNotification = () => {
 </script>
 
 <template>
-    <div class="flex gap-2 p-4 bg-white border rounded">
+    <div class="flex gap-2 p-4 bg-white dark:bg-slate-800 border dark:border-slate-900 rounded">
         <a :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name">
             <img :src="$page.props.auth.user.avatar_url"
@@ -84,7 +84,7 @@ const closeShowNotification = () => {
                 :alt="$page.props.auth.user.name" />
         </a>
         <div @click="openCreateModal"
-            class="px-2.5 py-1.5 text-gray-500 border-2 border-gray-200 rounded-md cursor-pointer w-full">
+            class="px-2.5 py-1.5 dark:py-2 text-gray-500 border-2 dark:border border-gray-200 dark:border-slate-500 rounded-md cursor-pointer w-full">
             ¿Qué tienes en mente?
         </div>
         <!-- <TextareaInput v-else placeholder="Expresa lo que quieras comunicar"

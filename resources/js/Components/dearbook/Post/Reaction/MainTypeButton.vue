@@ -27,7 +27,7 @@ const mainTypeReactionFormat = computed(() => {
 <template>
     <button @click="$emit('callSendPostReaction', true, 'like')" @mouseover="$emit('callChangeShowReactionTypeBar', true)"
         @mouseleave="$emit('callChangeShowReactionTypeBar', false)"
-        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100"
+        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900"
         :class="mainTypeReactionFormat.classes">
         <HandThumbUpIcon v-if="!post.current_user_has_reaction" class="w-6 h-6" />
         <img v-else-if="post.current_user_type_reaction == 'like'" src="/img/emojis/like.png" alt="Like" class="w-6" />

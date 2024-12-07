@@ -32,7 +32,7 @@ const scrollToTop = () => {
 <template>
     <Transition>
         <button v-if="isVisible" @click="scrollToTop" title="Subir..."
-            class="fixed p-1 transition-opacity duration-300 bg-white rounded-full shadow-md opacity-50 right-5 bottom-4 text-cyan-500 hover:opacity-100">
+            class="fixed p-1 transition-opacity duration-300 bg-white dark:bg-slate-800 rounded-full shadow-md dark:shadow-slate-50 opacity-50 right-5 bottom-4 text-cyan-500 hover:opacity-100">
             <ChevronUpIcon class="w-7 h-7" />
         </button>
     </Transition>

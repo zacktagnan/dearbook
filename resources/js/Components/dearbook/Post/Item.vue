@@ -341,9 +341,9 @@ defineExpose({
 </script>
 
 <template>
-    <div class="p-4 mx-0.5 bg-white" :class="[
+    <div class="p-4 mx-0.5 bg-white dark:bg-slate-800 dark:border-slate-900 dark:text-gray-100" :class="[
         typeList === 'latest'
-            ? 'mt-4 rounded shadow hover:shadow-cyan-900'
+            ? 'mt-4 rounded shadow hover:shadow-cyan-900 dark:hover:shadow-cyan-200'
             : ''
     ]">
         <div class="flex items-center justify-between">
@@ -609,7 +609,7 @@ defineExpose({
 
         <div class="px-2">
             <div v-if="post.total_of_reactions > 0 || post.total_of_comments > 0">
-                <div class="flex items-center justify-between py-2 text-gray-500">
+                <div class="flex items-center justify-between py-2 text-gray-500 dark:text-gray-300">
                     <div v-if="post.total_of_reactions > 0" class="flex items-center">
                         <div class="flex items-center -space-x-2">
                             <PostReactionTypeUsersSummary v-if="
@@ -693,13 +693,13 @@ defineExpose({
                 <hr />
             </div>
 
-            <div v-if="!isTrashed && !isArchived" class="flex gap-2 my-1.5 font-bold text-gray-500">
+            <div v-if="!isTrashed && !isArchived" class="flex gap-2 my-1.5 font-bold text-gray-500 dark:text-gray-300">
                 <PostReactionBox :post="post" @callRestartDefaultTabIndex="setTypeUserReactionsPostByType"
                     @callActiveShowNotification="activeShowNotification" />
 
                 <div class="w-1/2">
                     <button title="Deja un comentario" @click="focusCommentTextArea"
-                        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100">
+                        class="flex items-center justify-center flex-1 w-full gap-1 px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900">
                         <ChatBubbleLeftRightIcon class="w-6 h-6" />
                         Comentar
                     </button>
