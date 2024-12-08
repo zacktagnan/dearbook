@@ -32,7 +32,7 @@ const show = computed({
 <template>
     <Menu v-if="show" as="div" class="relative inline-block text-left">
         <div>
-            <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5 disabled:hover:bg-transparent disabled:text-gray-400"
+            <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5 dark:hover:bg-gray-600 disabled:hover:bg-transparent disabled:text-gray-400"
                 :class="menuButtonClasses" :title="isDisabled ? 'Sin acceso' : 'Ver opciones'" :disabled="isDisabled">
                 <EllipsisVerticalIcon v-if="ellipsisTypeIcon === 'vertical'" class="w-5 h-5" aria-hidden="true" />
                 <EllipsisHorizontalIcon v-else-if="ellipsisTypeIcon === 'horizontal'" class="w-5 h-5"
@@ -45,7 +45,7 @@ const show = computed({
             leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"
             leave-to-class="transform scale-95 opacity-0">
             <MenuItems
-                class="absolute right-0 mt-2 origin-top-right bg-white divide-y divide-gray-100 rounded-md shadow-lg z-[11] ring-1 ring-black/5 focus:outline-none"
+                class="absolute right-0 mt-2 origin-top-right bg-white dark:bg-gray-700 divide-y divide-gray-100 dark:divide-gray-500 rounded-md shadow-lg z-[11] ring-1 ring-black/5 focus:outline-none"
                 :class="[
                     showMenuItemIcon
                         ? 'w-36'

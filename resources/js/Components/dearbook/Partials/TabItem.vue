@@ -32,7 +32,7 @@ defineProps({
             :class="[
                 'px-1 md:px-2 py-2.5 outline-none font-bold text-nowrap border-0',
                 selected
-                    ? 'bg-white ' + textColor
+                    ? 'bg-white dark:bg-slate-800 ' + textColor
                     : 'text-gray-400 hover:text-gray-500',
             ]"
         >

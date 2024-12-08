@@ -1,0 +1,247 @@
+/* == CKEditor - Estilos Principales :: ini ================================ */
+.ck-content > blockquote,
+.ck-content > dl,
+.ck-content > dd,
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6,
+.ck-content > hr,
+.ck-content > figure,
+.ck-content > p,
+.ck-content > pre {
+    margin: revert;
+}
+
+.ck-content > p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.ck-content > ol,
+.ck-content > ul {
+    list-style: revert;
+    margin: revert;
+    padding: revert;
+}
+
+.ck-content > table {
+    border-collapse: revert;
+}
+
+.ck-content > h1,
+.ck-content > h2,
+.ck-content > h3,
+.ck-content > h4,
+.ck-content > h5,
+.ck-content > h6 {
+    font-size: revert;
+    font-weight: revert;
+}
+
+.ck-content a {
+    text-decoration: underline;
+    color: #4b9afa;
+}
+
+.ck-content {
+    overflow: auto;
+    height: 8rem;
+}
+
+.ck-content-output > blockquote,
+.ck-content-output > dl,
+.ck-content-output > dd,
+.ck-content-output > h1,
+.ck-content-output > h2,
+.ck-content-output > h3,
+.ck-content-output > h4,
+.ck-content-output > h5,
+.ck-content-output > h6,
+.ck-content-output > hr,
+.ck-content-output > figure,
+.ck-content-output > p,
+.ck-content-output > pre {
+    margin: revert;
+}
+
+.ck-content-output > p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.ck-content-output > *:last-child {
+    margin-bottom: 0;
+}
+
+.ck-content-output > ol,
+.ck-content-output > ul {
+    list-style: revert;
+    margin: revert;
+    padding: revert;
+}
+
+.ck-content-output > table {
+    border-collapse: revert;
+}
+
+.ck-content-output > h1,
+.ck-content-output > h2,
+.ck-content-output > h3,
+.ck-content-output > h4,
+.ck-content-output > h5,
+.ck-content-output > h6 {
+    font-size: revert;
+    font-weight: revert;
+}
+
+.ck-content-output blockquote {
+    border-left: 5px solid #ccc;
+    font-style: italic;
+    margin-left: 0;
+    margin-right: 0;
+    overflow: hidden;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+}
+
+.ck-content-output a {
+    text-decoration: #4b9afa;
+    color: blue;
+}
+
+.ck-content-output a.post-hashtag {
+    /* background-color: #eaf4ff; */
+    background-color: #d7e9fc;
+    color: #4156e2;
+    padding: 0 4px;
+    border-radius: 5px;
+}
+
+.ck-content-output a.post-hashtag:hover {
+    text-decoration: underline;
+}
+/* == CKEditor - Estilos Principales :: fin ================================ */
+
+/* == CKEditor - Personalización para DarkMode :: ini ====================== */
+html.dark .ck-reset_all :not(.ck-reset_all-excluded *),
+html.dark .ck.ck-reset_all {
+    @apply text-cyan-600;
+}
+
+html.dark .ck.ck-toolbar {
+    @apply bg-slate-800 text-white;
+}
+
+html.dark .ck.ck-button:not(.ck-disabled):hover,
+html.dark a.ck.ck-button:not(.ck-disabled):hover,
+html.dark .ck.ck-button:not(.ck-disabled):active,
+html.dark a.ck.ck-button:not(.ck-disabled):active,
+html.dark .ck.ck-button.ck-on,
+html.dark a.ck.ck-button.ck-on {
+    @apply bg-cyan-800;
+}
+
+html.dark .ck.ck-editor__main > .ck-editor__editable {
+    @apply bg-slate-800;
+}
+
+html.dark .ck.ck-list {
+    @apply bg-slate-800;
+}
+
+html.dark .ck.ck-list__item > .ck-button.ck-on:hover:not(.ck-disabled) {
+    @apply bg-slate-700;
+}
+html.dark .ck.ck-list__item > .ck-button.ck-off:hover:not(.ck-disabled) {
+    @apply bg-slate-400;
+}
+/* == CKEditor - Personalización para DarkMode :: fin ====================== */
+
+/* :root {
+    --ck-border-radius: 4px;
+
+    --ck-font-size-base: 14px;
+
+    --ck-custom-background: rgb(30, 41, 59);
+    --ck-custom-foreground: hsl(255, 3%, 18%);
+    --ck-custom-border: hsl(300, 1%, 22%);
+    --ck-custom-white: hsl(0, 0%, 100%);
+
+    --ck-color-base-foreground: var(--ck-custom-background);
+    --ck-color-base-background: rgb(11, 25, 66);
+    --ck-color-focus-border: hsl(208, 90%, 62%);
+    --ck-color-text: hsl(0, 0%, 98%);
+    --ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
+    --ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+
+    --ck-color-button-default-background: var(--ck-custom-background);
+    --ck-color-button-default-hover-background: hsl(270, 1%, 22%);
+    --ck-color-button-default-active-background: hsl(270, 2%, 20%);
+    --ck-color-button-default-active-shadow: hsl(270, 2%, 23%);
+    --ck-color-button-default-disabled-background: var(--ck-custom-background);
+
+    --ck-color-button-on-background: var(--ck-custom-foreground);
+    --ck-color-button-on-hover-background: hsl(255, 4%, 16%);
+    --ck-color-button-on-active-background: hsl(255, 4%, 14%);
+    --ck-color-button-on-active-shadow: hsl(240, 3%, 19%);
+    --ck-color-button-on-disabled-background: var(--ck-custom-foreground);
+
+    --ck-color-button-action-background: hsl(168, 76%, 42%);
+    --ck-color-button-action-hover-background: hsl(168, 76%, 38%);
+    --ck-color-button-action-active-background: hsl(168, 76%, 36%);
+    --ck-color-button-action-active-shadow: hsl(168, 75%, 34%);
+    --ck-color-button-action-disabled-background: hsl(168, 76%, 42%);
+    --ck-color-button-action-text: var(--ck-custom-white);
+
+    --ck-color-button-save: hsl(120, 100%, 46%);
+    --ck-color-button-cancel: hsl(15, 100%, 56%);
+
+    --ck-color-dropdown-panel-background: var(--ck-custom-background);
+    --ck-color-dropdown-panel-border: var(--ck-custom-foreground);
+
+    --ck-color-dialog-background: var(--ck-custom-background);
+    --ck-color-dialog-form-header-border: var(--ck-custom-border);
+
+    --ck-color-split-button-hover-background: var(
+        --ck-color-button-default-hover-background
+    );
+    --ck-color-split-button-hover-border: var(--ck-custom-foreground);
+
+    --ck-color-input-background: var(--ck-custom-background);
+    --ck-color-input-border: hsl(257, 3%, 43%);
+    --ck-color-input-text: hsl(0, 0%, 98%);
+    --ck-color-input-disabled-background: hsl(255, 4%, 21%);
+    --ck-color-input-disabled-border: hsl(250, 3%, 38%);
+    --ck-color-input-disabled-text: hsl(0, 0%, 78%);
+
+    --ck-color-labeled-field-label-background: var(--ck-custom-background);
+
+    --ck-color-list-background: var(--ck-custom-background);
+    --ck-color-list-button-hover-background: var(--ck-color-base-foreground);
+    --ck-color-list-button-on-background: var(--ck-color-base-active);
+    --ck-color-list-button-on-background-focus: var(
+        --ck-color-base-active-focus
+    );
+    --ck-color-list-button-on-text: var(--ck-color-base-background);
+
+    --ck-color-panel-background: var(--ck-custom-background);
+    --ck-color-panel-border: var(--ck-custom-border);
+
+    --ck-color-toolbar-background: var(--ck-custom-background);
+    --ck-color-toolbar-border: var(--ck-custom-border);
+
+    --ck-color-tooltip-background: hsl(252, 7%, 14%);
+    --ck-color-tooltip-text: hsl(0, 0%, 93%);
+
+    --ck-color-image-caption-background: hsl(0, 0%, 97%);
+    --ck-color-image-caption-text: hsl(0, 0%, 20%);
+
+    --ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+    --ck-color-widget-hover-border: hsl(43, 100%, 68%);
+    --ck-color-widget-editable-focus-background: var(--ck-custom-white);
+
+    --ck-color-link-default: hsl(190, 100%, 75%);
+} */

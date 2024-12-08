@@ -282,7 +282,7 @@ defineExpose({
                 rows="1" @callFocusIn="onFocusIn" @callFocusOut="onFocusOut"
                 :block-item-class-name="'edit_block_item'" />
 
-            <div class="flex items-center justify-between px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50">
+            <div class="flex items-center justify-between px-3 pb-2 rounded-none rounded-b-lg bg-gray-200/50 dark:bg-slate-900">
                 <div class="mt-1.5">
                     <button type="button" class="relative group/ico_attach_multimedia_for_comment">
                         <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" class="w-[18px] h-[18px]">
@@ -378,7 +378,7 @@ defineExpose({
                                 ">
                                 <!-- =============================================== -->
                                 <div v-if="myFile.deleted"
-                                    class="absolute inset-x-0 bottom-0 z-[9] flex items-center justify-between px-2 py-1 text-red-700 bg-red-400/75">
+                                    class="absolute inset-x-0 bottom-0 z-[9] flex items-center justify-between px-2 py-1 text-red-700 dark:text-red-900 bg-red-400/75">
                                     <span class="text-sm">to delete...</span>
                                 </div>
                                 <!-- =============================================== -->
@@ -470,7 +470,7 @@ defineExpose({
                                     myFile
                                 )
                                 " title="Revertir borrado"
-                                class="flex items-center justify-center w-6 h-6 text-red-700 transition-all bg-red-400 rounded-full cursor-pointer hover:bg-red-700 hover:text-white">
+                                class="flex items-center justify-center w-6 h-6 text-red-700 dark:text-red-900 bg-red-400 hover:text-white hover:bg-red-700 dark:hover:text-white dark:hover:bg-red-700 transition-all rounded-full cursor-pointer">
                                 <ArrowUturnLeftIcon class="w-4 h-4" />
                             </button>
                             <button v-else @click="
@@ -479,7 +479,7 @@ defineExpose({
                                     index
                                 )
                                 " title="Excluir"
-                                class="flex items-center justify-center w-6 h-6 text-gray-100 transition-all bg-gray-300 rounded-full cursor-pointer hover:bg-gray-400">
+                                class="flex items-center justify-center w-6 h-6 text-gray-100 bg-gray-300 hover:bg-gray-400 dark:text-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-all rounded-full cursor-pointer">
                                 <XMarkIcon class="w-4 h-4" />
                             </button>
                         </div>

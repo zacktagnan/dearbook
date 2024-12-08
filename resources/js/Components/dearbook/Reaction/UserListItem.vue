@@ -26,7 +26,7 @@ defineProps({
             </a>
         </div>
 
-        <button class="flex items-center gap-1 px-2 my-0.5 bg-gray-200 rounded-md hover:bg-gray-300">
+        <button class="flex items-center gap-1 px-2 my-0.5 bg-gray-200 dark:bg-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-md transition-colors duration-150">
             <UserPlusIcon class="w-5 h-5" />
             Agregar a amigos
         </button>

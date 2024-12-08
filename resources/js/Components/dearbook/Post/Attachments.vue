@@ -22,7 +22,7 @@ const maxPreviewIndex = props.maxPreviewFiles - 1;
         maxPreviewFiles
     )">
         <div @click="$emit('callOpenAttachmentsModal', index)" title="Ver en detalle"
-            class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
+            class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-sky-200 group hover:bg-sky-700/40 dark:bg-cyan-900 dark:hover:bg-cyan-400/40">
             <div v-if="
                 index === maxPreviewIndex &&
                 attachments.length > maxPreviewFiles
