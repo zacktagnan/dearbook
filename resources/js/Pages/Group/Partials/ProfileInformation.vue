@@ -21,7 +21,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
 
 <template>
     <section>
-        <div class="w-full bg-white shadow p-4 dark:bg-gray-800 sm:rounded-lg">
+        <div class="w-full bg-white shadow p-4 dark:bg-gray-800 dark:text-gray-100 sm:rounded-lg">
             <div>
                 <header>
                     <h2 class="px-2 font-semibold text-gray-600 lg:text-lg dark:text-gray-100">
@@ -42,9 +42,9 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                 <div class="mt-4 px-2 mb-2">
                     <div class="flex gap-3">
                         <div class="mt-1 md:mt-1.5">
-                            <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-[18px] h-[18px]"
+                            <PrivateAccessIcon v-if="isPrivateGroup" class-content="size-[18px] fill-gray-600 dark:fill-gray-400"
                                 fill-content="#9ca3af" />
-                            <PublicAccessIcon v-else class-content="w-[18px] h-[18px]" fill-content="#9ca3af" />
+                            <PublicAccessIcon v-else class-content="size-[18px] fill-gray-600 dark:fill-gray-400" fill-content="#9ca3af" />
                         </div>
                         <div class="flex-col">
                             <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.' + group.type +
@@ -59,7 +59,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
 
                     <div class="flex gap-3 mt-1.5">
                         <div class="mt-0.5 md:mt-1">
-                            <EyeIcon class="w-5 h-5 text-gray-400" />
+                            <EyeIcon class="size-5 text-gray-600 dark:text-gray-400" />
                         </div>
                         <div class="flex-col">
                             <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.visible.title') }}
@@ -72,7 +72,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
 
                     <div class="flex gap-3 mt-1.5">
                         <div class="mt-1 md:mt-1.5">
-                            <HistoryIcon class-content="w-5 h-5" fill-content="#9ca3af" />
+                            <HistoryIcon class-content="size-5 fill-gray-600 dark:fill-gray-400" />
                         </div>
                         <div class="flex-col">
                             <h3 class="lg:text-lg">{{ $t('dearbook.group.index.tab_info.info_block.features.history.title') }}
@@ -119,7 +119,7 @@ const isPrivateGroup = computed(() => props.group.type === 'private')
                         </a>
                     </div>
 
-                    <p class="mt-3 text-sm"><a :href="route('profile.index', { username: group.user.username })"
+                    <p class="mt-3 text-sm dark:text-gray-100"><a :href="route('profile.index', { username: group.user.username })"
                             class="hover:underline font-medium" :title="'Perfil de ' + group.user.name">{{
                                 group.user.name }}</a> {{ $t("dearbook.group.index.tab_info.members_block.admin_text") }}</p>
                 </div>

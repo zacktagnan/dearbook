@@ -51,7 +51,7 @@ const loadComponent = (componentName, showingNavigationDropdownValue) => {
 </script>
 
 <template>
-    <div class="md:hidden w-full bg-white rounded-lg mb-4">
+    <div class="md:hidden w-full bg-white dark:bg-gray-800 dark:text-white rounded-lg mb-4">
         <!-- Management Navigation Menu -->
         <div class="px-4 mx-auto sm:px-6 lg:px-8">
             <div class="flex justify-between h-14">
@@ -67,7 +67,7 @@ const loadComponent = (componentName, showingNavigationDropdownValue) => {
                 <!-- Hamburger -->
                 <div class="flex items-center -me-2 sm:hidden pr-3">
                     <button @click="showingNavigationDropdown = !showingNavigationDropdown"
-                        class="inline-flex items-center justify-center px-1.5 py-1 text-sky-400 transition duration-150 ease-in-out rounded-md dark:text-sky-500 hover:text-sky-500 dark:hover:text-sky-400 bg-sky-50 hover:bg-sky-100 dark:hover:bg-sky-900 focus:outline-none focus:bg-sky-100 dark:focus:bg-sky-900 focus:text-sky-500 dark:focus:text-sky-400">
+                        class="inline-flex items-center justify-center px-1.5 py-1 text-sky-400 transition duration-150 ease-in-out rounded-md dark:text-sky-500 hover:text-sky-500 dark:hover:text-sky-400 bg-sky-50 dark:bg-slate-900 hover:bg-sky-100 dark:hover:bg-slate-700 focus:outline-none focus:bg-sky-100 dark:focus:bg-slate-700 focus:text-sky-500 dark:focus:text-sky-400">
                         <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                             <path :class="{
                                 hidden: showingNavigationDropdown,

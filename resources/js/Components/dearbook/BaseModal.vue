@@ -21,7 +21,7 @@ const props = defineProps({
     },
     dialogPanelDefaultClasses: {
         type: String,
-        default: 'w-full overflow-hidden text-left align-middle transition-all transform dark:text-gray-100 bg-white dark:bg-slate-900 rounded-md shadow-xl dark:shadow-gray-800',
+        default: 'w-full overflow-hidden text-left align-middle transition-all transform dark:text-gray-100 bg-white dark:bg-slate-900 rounded-md shadow-xl dark:shadow-lg dark:shadow-gray-500',
     },
     dialogPanelExtraClasses: {
         type: String,
@@ -58,7 +58,7 @@ const dialogPanelMergeClasses = computed(() => {
             <Dialog as="div" @close="$emit('callCloseModal')" :class="dialogMergeClasses">
                 <TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0"
                     enter-to="opacity-100" leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
-                    <div class="fixed inset-0 bg-black/25 dark:bg-black/55" />
+                    <div class="fixed inset-0 bg-black/25 dark:bg-black/40" />
                 </TransitionChild>
 
                 <div class="fixed inset-0 overflow-y-auto">

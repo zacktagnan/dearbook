@@ -200,12 +200,12 @@ defineExpose({ loadCurrentTrashedGroups, })
             @callSubmitGlobalProcess="submitGlobalProcess" />
 
         <template v-if="groups.length === 0">
-            <div class="px-3 py-4 mt-4 text-center bg-white rounded-lg">
+            <div class="px-3 py-4 mt-4 text-center bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg">
                 No hay registros
             </div>
         </template>
         <template v-else>
-            <div v-for="(groupsPerDay, day) of groups" class="px-3 py-4 mt-4 bg-white rounded-lg">
+            <div v-for="(groupsPerDay, day) of groups" class="px-3 py-4 mt-4 bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg">
                 <h4 class="ml-1.5 text-lg font-bold">{{ day }} <small>({{ groupsPerDay.length }})</small></h4>
 
                 <GroupListItem v-for="(group, index) of groupsPerDay" :group="group" :index="index" v-model="checkedIds"

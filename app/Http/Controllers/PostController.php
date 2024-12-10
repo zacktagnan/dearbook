@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
@@ -545,5 +546,21 @@ class PostController extends Controller
                 'current_pinned_post_id' => $isPinned ? $post->id : null,
             ],
         ]);
+    }
+
+    public function getPinned(Request $request)
+    {
+        $parentPageName = $request->parent_page_name;
+        $id = $request->id;
+
+        $pinnedPostId = null;
+
+        if ($parentPageName === 'user_profile') {
+            $pinnedPostId = User::where('id', $id)->pluck('pinned_post_id')->first();
+        } else if ($parentPageName === 'group_profile') {
+            $pinnedPostId = Group::where('id', $id)->pluck('pinned_post_id')->first();
+        }
+
+        return $pinnedPostId;
     }
 }

@@ -16,10 +16,10 @@ const loadComponent = (componentName) => {
 </script>
 
 <template>
-    <div class="transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200 hover:text-black" :class="[
+    <div class="transition-colors duration-200 rounded-md cursor-pointer hover:bg-gray-200 hover:text-black dark:hover:bg-sky-600 dark:hover:text-gray-100" :class="[
         isSelected
-            ? 'bg-gray-200 text-black'
-            : 'text-gray-500'
+            ? 'bg-gray-200 text-black dark:bg-sky-600 dark:text-gray-100'
+            : 'text-gray-500 dark:text-gray-400'
     ]">
         <div class="flex items-start gap-2 px-2 py-1">
             <button @click="loadComponent(componentName)" :title="'Ir a ' + title" class="w-full">

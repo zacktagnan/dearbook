@@ -224,7 +224,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
     <Head :title="$t('Profile')" />
 
     <AuthenticatedLayout>
-        <div class="bg-white">
+        <div class="bg-white dark:bg-gray-800">
             <div class="lg:w-2/3 mx-auto relative">
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
@@ -236,7 +236,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                     v-else-if="showNotification && errors.avatar" :title="'Error'" :message="errors.avatar" />
 
-                <div class="relative bg-white">
+                <div class="relative bg-white dark:bg-gray-800">
                     <img :src="coverImageSrc || user.cover_url" alt="Cover"
                         class="object-cover object-top w-full h-[154px] md:h-[330px] md:rounded-es-lg md:rounded-ee-lg" />
 
@@ -269,13 +269,13 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                         </div>
                     </div>
 
-                    <div class="flex flex-col items-center justify-between bg-white lg:flex-row">
+                    <div class="flex flex-col items-center justify-between dark:text-white bg-white dark:bg-gray-800 lg:flex-row">
                         <div class="flex flex-col w-full lg:block">
                             <div class="flex justify-center lg:justify-start lg:static">
                                 <div
-                                    class="absolute p-1 bg-white rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
+                                    class="absolute p-1 bg-white dark:bg-gray-800 rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
                                     <img :src="avatarImageSrc || user.avatar_url" alt=""
-                                        class="rounded-full border-[1px] border-gray-200 w-[174px] h-[168px]" />
+                                        class="rounded-full border-[1px] border-gray-200 dark:border-gray-400 dark:bg-gray-600 w-[174px] h-[168px]" />
                                 </div>
 
                                 <div
@@ -294,9 +294,9 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     {{ user.name }}
                                 </h1>
                                 <small v-if="totalOfFollowers === 0" class="font-bold text-gray-600">{{ totalOfFollowersText }}</small>
-                                <button v-else @click="asignSelectedIndex(2)" class="hover:underline leading-[18px]"
+                                <button v-else @click="asignSelectedIndex(2)" class="hover:underline leading-[18px] dark:decoration-gray-400"
                                     title="Listar seguidor(es)">
-                                    <small class="font-bold text-gray-600">{{ totalOfFollowersText }}</small>
+                                    <small class="font-bold text-gray-600 dark:text-gray-400">{{ totalOfFollowersText }}</small>
                                 </button>
 
                                 <div class="relative mt-2.5 lg:mb-6">
@@ -333,7 +333,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     <span class="hidden md:block">Seguir</span>
                                 </button>
                                 <button v-else @click="followUnfollow"
-                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-red-300 dark:bg-red-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-red-300 uppercase tracking-widest hover:bg-red-800 dark:hover:bg-white focus:bg-red-800 dark:focus:bg-white active:bg-red-900 dark:active:bg-red-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-red-800 transition ease-in-out duration-150" title="Dejar de seguir a este usuario">
+                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-red-300 dark:bg-red-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-red-400 uppercase tracking-widest hover:bg-red-800 dark:hover:bg-white focus:bg-red-800 dark:focus:bg-white active:bg-red-900 dark:active:bg-red-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-red-800 transition ease-in-out duration-150" title="Dejar de seguir a este usuario">
                                     <UserMinusIcon class="w-5 h-5 md:mr-1" />
                                     <span class="hidden md:block">No Seguir</span>
                                 </button>
@@ -357,7 +357,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
         <div class="">
             <div class="mt-0">
                 <TabGroup :selectedIndex="getSetSelectedIndex">
-                    <div class="bg-white shadow sticky top-[57px] z-40">
+                    <div class="bg-white dark:bg-gray-800 shadow dark:shadow-gray-600 sticky top-[57px] z-40">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Publicaciones" :selected="selected" />
@@ -387,7 +387,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                             <PostCreate />
                             <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
                                 :after_comment_deleted="after_comment_deleted" :parent_page_name="parent_page_name" />
-                            <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">
+                            <div v-else class="p-4 mx-0.5 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow text-center">
                                 No hay publicaciones actualmente
                             </div>
                         </TabPanel>
@@ -399,17 +399,17 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                         </TabPanel>
 
                         <!-- Followers -->
-                        <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                        <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow md:w-4/6 mx-auto">
                             <FollowerList :followers="followers" />
                         </TabPanel>
 
                         <!-- Followings -->
-                        <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                        <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow md:w-4/6 mx-auto">
                             <FollowingList :followings="followings" />
                         </TabPanel>
 
                         <!-- Fotos -->
-                        <TabPanel class="p-3 bg-white shadow rounded-md">
+                        <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow rounded-md">
                             <PhotoList :photos="photos" />
                         </TabPanel>
                     </TabPanels>

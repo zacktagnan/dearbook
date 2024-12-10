@@ -23,6 +23,7 @@ return [
                 'placeholder' => 'Short description',
             ],
         ],
+        'btn_reset' => 'Reset',
         'btn_init_creation' => 'Create new group',
         'btn_init_update' => 'Update group',
         'btn_init_updated' => 'Updated.',

@@ -2,11 +2,13 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import Checkbox from '@/Components/Checkbox.vue'
 import Radiobutton from '@/Components/Radiobutton.vue'
 import TextareaInput from '@/Components/TextareaInput.vue'
-import { useForm, usePage } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3'
+import { ref } from 'vue'
 
 const props = defineProps({
     group: {
@@ -24,7 +26,17 @@ const groupForm = useForm({
     type: props.group.type,
     about: props.group.full_description,
     // _method: "POST",
-});
+})
+
+const autoApprovalGroupRef = ref(null)
+const autoApprovalDisabled = ref(false)
+
+const autoApprovalToFalseAndDisable = (disable) => {
+    autoApprovalDisabled.value = !disable
+    if (autoApprovalDisabled.value) {
+        groupForm.auto_approval = false
+    }
+}
 
 const submitUpdate = () => {
     groupForm.patch(route('group.update', props.group), {
@@ -34,7 +46,12 @@ const submitUpdate = () => {
         },
         // onFinish: () => form.reset('password'),
     })
-};
+}
+
+const reset = () => {
+    groupForm.reset()
+    autoApprovalDisabled.value = false
+}
 </script>
 
 <template>
@@ -61,18 +78,18 @@ const submitUpdate = () => {
             <div class="flex flex-col md:flex-row items-center md:justify-center gap-4 md:gap-14 lg:gap-28">
                 <div class="flex items-center gap-3">
                     <InputLabel for="auto_approval" :value="$t('dearbook.group.form.create.fields.auto_approval.label')" />
-                    <Checkbox id="auto_approval" v-model:checked="groupForm.auto_approval" />
+                    <Checkbox ref="autoApprovalGroupRef" id="auto_approval" :disabled="autoApprovalDisabled" v-model:checked="groupForm.auto_approval" />
                 </div>
 
                 <div class="flex items-center gap-5">
                     <div class="flex items-center gap-3">
                         <InputLabel for="type_1" :value="$t('dearbook.group.form.create.fields.type.label.public')" />
-                        <Radiobutton id="type_1" v-model:checked="groupForm.type" :value="'public'" />
+                        <Radiobutton id="type_1" @change="autoApprovalToFalseAndDisable(true)" v-model:checked="groupForm.type" :value="'public'" />
                     </div>
 
                     <div class="flex items-center gap-3">
                         <InputLabel for="type_2" :value="$t('dearbook.group.form.create.fields.type.label.private')" />
-                        <Radiobutton id="type_2" v-model:checked="groupForm.type" :value="'private'" />
+                        <Radiobutton id="type_2" @change="autoApprovalToFalseAndDisable(false)" v-model:checked="groupForm.type" :value="'private'" />
                     </div>
                 </div>
             </div>
@@ -109,6 +126,8 @@ const submitUpdate = () => {
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="groupForm.processing" :title="$t('dearbook.group.form.create.btn_init_update')">{{
                     $t('dearbook.group.form.create.btn_init_update') }}</PrimaryButton>
+                <SecondaryButton @click="reset" :disabled="groupForm.processing" :title="$t('dearbook.group.form.create.btn_reset')">{{
+                    $t('dearbook.group.form.create.btn_reset') }}</SecondaryButton>
 
                 <Transition enter-active-class="transition ease-in-out" enter-from-class="opacity-0"
                     leave-active-class="transition ease-in-out" leave-to-class="opacity-0">

@@ -300,6 +300,7 @@ const closeConfirmDeleteMemberModal = () => {
     showingConfirmDeleteMemberModal.value = false;
 };
 
+const memberListRef = ref(null)
 const deleteMember = () => {
     closeConfirmDeleteMemberModal()
 
@@ -307,10 +308,14 @@ const deleteMember = () => {
         const form = useForm({
             user_id: memberToDelete.value.id,
         })
-        memberToDelete.value = null
 
         form.delete(route('group.remove-member', props.group.slug), {
-            preserveScroll: true
+            preserveScroll: true,
+            onSuccess: () => {
+                // console.log(`Miembro eliminado: ${memberToDelete.value.id} - ${memberToDelete.value.username}`)
+                memberListRef.value.filterDeletedMember(memberToDelete.value.id)
+                memberToDelete.value = null
+            }
         })
     }
 }
@@ -323,7 +328,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
     <Head :title="group.name" />
 
     <AuthenticatedLayout>
-        <div class="bg-white">
+        <div class="bg-white dark:bg-gray-800">
             <div class="lg:w-2/3 mx-auto relative">
                 <NotificationBox ref="notificationBoxRef" @callCloseShowNotification="closeShowNotification"
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
@@ -335,7 +340,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                     @callOnMouseOver="stopClosingNotification" @callOnMouseLeave="startClosingNotification"
                     v-else-if="showNotification && errors.thumbnail" :title="'Error'" :message="errors.thumbnail" />
 
-                <div class="relative bg-white">
+                <div class="relative bg-white dark:bg-gray-800">
                     <div class="relative">
                         <div
                             class="w-full py-3.5 md:py-4 md:rounded-es-lg md:rounded-ee-lg bg-cyan-600 text-white absolute bottom-0">
@@ -394,13 +399,13 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                         </div>
                     </div>
 
-                    <div class="flex flex-col lg:flex-row items-center justify-between bg-white px-3 md:px-0">
+                    <div class="flex flex-col lg:flex-row items-center justify-between dark:text-white bg-white dark:bg-gray-800 px-3 md:px-0">
                         <div class="flex lg:flex-col w-full lg:block mt-4 lg:mt-0 gap-1 lg:gap-0">
                             <div>
                                 <div
-                                    class="md:absolute p-1 bg-white rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
+                                    class="md:absolute p-1 bg-white dark:bg-gray-800 rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
                                     <img :src="thumbnailImageSrc || group.thumbnail_url" alt=""
-                                        class="rounded-md border-[1px] border-gray-200 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
+                                        class="rounded-md border-[1px] border-gray-200 dark:border-gray-400 dark:bg-gray-600 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
                                 </div>
 
                                 <div v-if="isAdminGroup"
@@ -418,10 +423,9 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     {{ group.name }}
                                 </h1>
 
-                                <small class="text-gray-600 flex items-center gap-1 mt-2">
-                                    <PrivateAccessIcon v-if="isPrivateGroup" class-content="w-3.5 h-3.5"
-                                        fill-content="#4b5563" />
-                                    <PublicAccessIcon v-else class-content="w-3 h-3" fill-content="#4b5563" /> {{
+                                <small class="text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-2">
+                                    <PrivateAccessIcon v-if="isPrivateGroup" class-content="size-3.5 fill-gray-600 dark:fill-gray-400" />
+                                    <PublicAccessIcon v-else class-content="size-3 fill-gray-600 dark:fill-gray-400" /> {{
                                         $t('dearbook.group.index.general_info.type.' + group.type) }} · <span
                                         v-if="group.total_group_user === 0" class="font-bold">{{
                                             $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
@@ -494,7 +498,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                             <div v-if="isUserGroupPending"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest transition ease-in-out duration-150"
                                 title="Solicitud Pendiente de Aprobación">
-                                <PendingRequestIcon class-content="w-5 h-5 md:mr-1" fill-content="#ffffff" />
+                                <PendingRequestIcon class-content="size-5 md:mr-1 fill-white dark:fill-cyan-700" />
                                 <span class="hidden md:block">Solicitud Pendiente de Aprobación</span>
                             </div>
                             <div v-if="isUserGroupRejected"
@@ -532,7 +536,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
         <div class="">
             <div class="mt-0">
                 <TabGroup :selectedIndex="getSetSelectedIndex">
-                    <div class="bg-white shadow sticky top-[57px] z-20">
+                    <div class="bg-white dark:bg-gray-800 shadow dark:shadow-gray-600 sticky top-[57px] z-20">
                         <TabList class="flex mx-auto lg:px-8 lg:w-2/3">
                             <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(0)">
                                 <TabItem text="Conversación" :selected="selected" />
@@ -569,11 +573,11 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                 </template>
                                 <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
                                     :after_comment_deleted="after_comment_deleted" :parent_page_name="parent_page_name" />
-                                <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">No hay
+                                <div v-else class="p-4 mx-0.5 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow text-center">No hay
                                     conversaciones actualmente</div>
                             </template>
                             <template v-else-if="!isMemberGroup && isPrivateGroup">
-                                <div class="p-4 bg-white mt-4 rounded shadow flex justify-center items-center gap-4">
+                                <div class="p-4 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow flex justify-center items-center gap-4">
                                     <img src="/img/posts-blocked.png" class="w-20" alt="Apartado bloqueado" />
                                     <div>
                                         <h3 class="font-bold text-lg">Este grupo es <span class="italic">PRIVADO</span>
@@ -595,31 +599,31 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
 
                         <template v-if="isMemberGroup || !isPrivateGroup">
                             <!-- Miembros -->
-                            <TabPanel class="p-3 bg-white shadow md:w-4/6 mx-auto">
-                                <MemberList :group-user-id="group.user.id" :members="members" :auth-user="authUser"
+                            <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow md:w-4/6 mx-auto">
+                                <MemberList ref="memberListRef" :group-user-id="group.user.id" :members="members" :auth-user="authUser"
                                     :auth-user-is-the-owner-group="authUserIsTheOwnerGroup"
                                     :is-admin-group="isAdminGroup" @callMemberRoleChange="memberRoleChange" @callConfirmDeleteMemberModal="showConfirmDeleteMemberModal" />
                             </TabPanel>
 
                             <!-- Fotos -->
-                            <TabPanel class="p-3 bg-white shadow rounded-md">
+                            <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow rounded-md">
                                 <PhotoList :photos="photos" />
                             </TabPanel>
 
                             <!-- Solicitudes -->
                             <TabPanel v-if="isAdminGroup && !isAutoApprovalGroup"
-                                class="p-3 bg-white shadow md:w-4/6 mx-auto">
+                                class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow md:w-4/6 mx-auto">
                                 <div v-if="requestsPending.length" class="grid md:grid-cols-2 gap-3">
                                     <UserItem v-for="user of requestsPending" :user="user"
-                                        :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+                                        :classes="' shadow shadow-gray-200 dark:shadow-gray-50 hover:shadow-gray-400 dark:hover:shadow-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900'"
                                         :key="user.id">
                                         <button @click.prevent.stop="approveUser(user)" title="Aprobar solicitud"
-                                            class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-emerald-200 hover:bg-emerald-400">
+                                            class="rounded-md px-2 py-1 text-gray-200 dark:text-gray-300 hover:text-white dark:hover:text-white bg-emerald-500 hover:bg-emerald-400">
                                             <CheckIcon class="w-4 h-4 md:hidden" />
                                             <span class="text-sm hidden md:block">aprobar</span>
                                         </button>
                                         <button @click.prevent.stop="rejectUser(user)" title="Rechazar solicitud"
-                                            class="rounded-md px-2 py-1 text-gray-500 hover:text-white bg-red-200 hover:bg-red-400">
+                                            class="rounded-md px-2 py-1 text-gray-200 dark:text-gray-300 hover:text-white dark:hover:text-white bg-red-500 hover:bg-red-400">
                                             <XMarkIcon class="w-4 h-4 md:hidden" />
                                             <span class="text-sm hidden md:block">rechazar</span>
                                         </button>

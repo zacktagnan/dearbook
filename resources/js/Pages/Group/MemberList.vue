@@ -62,6 +62,15 @@ const clearFilter = () => {
     membersCollection.value = props.members
     isFiltering.value = false
 }
+
+const filterDeletedMember = (memberId) => {
+    // console.log(`Tras eliminar el Miembro de ID [${memberId}], será filtrado de la lista de miembros.`)
+    membersCollection.value = props.members.filter(m => m.id != memberId)
+}
+
+defineExpose({
+    filterDeletedMember,
+})
 </script>
 
 <template>
@@ -87,7 +96,7 @@ const clearFilter = () => {
 
     <div v-if="membersCollection.length" class="grid gap-3 mt-3">
         <UserItem v-for="member of membersCollection" :user="member"
-            :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+            :classes="' shadow shadow-gray-200 dark:shadow-gray-50 hover:shadow-gray-400 dark:hover:shadow-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900'"
             :key="member.id" :user-since-date="member.joining_date">
             <div v-if="isAdminGroup" class="flex items-center gap-2">
                 <select v-if="authUserIsTheOwnerGroup" @change="$emit('callMemberRoleChange', member, $event.target.value)"

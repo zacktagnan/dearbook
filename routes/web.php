@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/fetch-url-preview', [PostController::class, 'fetchUrlPreview'])->name('fetch-url-preview');
 
         Route::post('/{post}/pin-unpin', [PostController::class, 'pinUnpin'])->name('pin-unpin');
+        Route::post('/get-pinned', [PostController::class, 'getPinned'])->name('get-pinned');
 
         Route::post('/{post}/reaction', [PostReactionController::class, 'reaction'])->name('reaction');
 

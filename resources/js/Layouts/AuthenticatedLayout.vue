@@ -36,9 +36,9 @@ const toggleDarkMode = () => {
 
 <template>
     <div>
-        <div class="min-h-screen bg-[beige] dark:bg-[#59594e]">
+        <div class="min-h-screen">
             <nav
-                class="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow dark:bg-gray-800 dark:border-gray-700">
+                class="sticky top-0 z-50 w-full bg-white border-b border-gray-100 shadow dark:shadow-gray-600 dark:bg-gray-800 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
                 <div class="px-4 mx-auto sm:px-6 lg:px-8">
                     <div class="flex justify-between h-14 items-center">
@@ -164,7 +164,7 @@ const toggleDarkMode = () => {
                         <!-- Hamburger -->
                         <div class="flex items-center -me-2 sm:hidden">
                             <button @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400">
+                                class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 focus:text-gray-500 dark:focus:text-gray-400">
                                 <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path :class="{
                                         hidden: showingNavigationDropdown,

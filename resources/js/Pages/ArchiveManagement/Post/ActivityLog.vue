@@ -148,12 +148,12 @@ defineExpose({ loadCurrentActivityLogPosts, })
             @callSubmitGlobalProcess="submitGlobalProcess" />
 
         <template v-if="posts.length === 0">
-            <div class="px-3 py-4 mt-4 text-center bg-white rounded-lg">
+            <div class="px-3 py-4 mt-4 text-center bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg">
                 No hay registros
             </div>
         </template>
         <template v-else>
-            <div v-for="(postsPerDay, day) of posts" class="px-3 py-4 mt-4 bg-white rounded-lg">
+            <div v-for="(postsPerDay, day) of posts" class="px-3 py-4 mt-4 bg-white dark:bg-gray-800 dark:text-gray-100 rounded-lg">
                 <h4 class="ml-1.5 text-lg font-bold">{{ day }} <small>({{ postsPerDay.length }})</small></h4>
 
                 <PostListItem v-for="(post, index) of postsPerDay" :post="post" :index="index" :is-activity-log="true"

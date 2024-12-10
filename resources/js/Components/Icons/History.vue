@@ -1,15 +1,11 @@
 <script setup>
 defineProps({
     classContent: String,
-    fillContent: {
-        type: String,
-        default: '#000000',
-    }
 })
 </script>
 
 <template>
-    <svg :fill="fillContent" :class="classContent" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg"
+    <svg :class="classContent" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg"
         class="cf-icon-svg">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>

@@ -147,8 +147,8 @@ const emit = defineEmits([
     <div class="w-[90%] mx-auto">
         <div class="mt-4 space-y-6">
             <div
-                class="flex items-center justify-between px-4 shadow bg-slate-400 md:px-4 sm:py-4 dark:bg-gray-800 sm:rounded-lg">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800 dark:text-gray-200">
+                class="flex items-center justify-between px-4 shadow bg-slate-400 md:px-4 sm:py-4 sm:rounded-lg">
+                <h2 class="text-xl font-semibold leading-tight text-gray-800">
                     Foto de Perfil
                 </h2>
 

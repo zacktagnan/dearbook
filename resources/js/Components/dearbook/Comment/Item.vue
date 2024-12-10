@@ -282,41 +282,41 @@ const limitingLatestCommentsListHigh = computed(
                     <template v-if="isCommentAuthorAndEditable">
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
-                            <button @click="startEditingItem(comment)" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Editar comentario">
-                                Editar
-                            </button>
+                                <button @click="startEditingItem(comment)" :class="[
+                                    active
+                                        ? 'bg-sky-100 dark:bg-slate-500'
+                                        : 'text-gray-900 dark:text-gray-400',
+                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]" title="Editar comentario">
+                                    Editar
+                                </button>
                             </MenuItem>
                         </div>
 
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
-                            <button @click="confirmDeletion(comment, 'post.comment')" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Eliminar">
-                                Eliminar
-                            </button>
+                                <button @click="confirmDeletion(comment, 'post.comment')" :class="[
+                                    active
+                                        ? 'bg-sky-100 dark:bg-slate-500'
+                                        : 'text-gray-900 dark:text-gray-400',
+                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]" title="Eliminar">
+                                    Eliminar
+                                </button>
                             </MenuItem>
                         </div>
                     </template>
                     <template v-else-if="isPostAuthor">
                         <div class="px-1 py-1">
                             <MenuItem v-slot="{ active }">
-                            <button @click="confirmDeletion(comment, 'post.comment')" :class="[
-                                active
-                                    ? 'bg-sky-100'
-                                    : 'text-gray-900',
-                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                            ]" title="Eliminar">
-                                Eliminar
-                            </button>
+                                <button @click="confirmDeletion(comment, 'post.comment')" :class="[
+                                    active
+                                        ? 'bg-sky-100 dark:bg-slate-500'
+                                        : 'text-gray-900 dark:text-gray-400',
+                                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]" title="Eliminar">
+                                    Eliminar
+                                </button>
                             </MenuItem>
                         </div>
                     </template>

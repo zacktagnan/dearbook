@@ -23,6 +23,7 @@ return [
                 'placeholder' => 'Breve descripción',
             ],
         ],
+        'btn_reset' => 'Resetear',
         'btn_init_creation' => 'Crear nuevo grupo',
         'btn_init_update' => 'Actualizar grupo',
         'btn_init_updated' => 'Actualizado.',

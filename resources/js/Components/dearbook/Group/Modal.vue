@@ -75,6 +75,7 @@ const closeModal = () => {
     processWellDone.value = false
     groupForm.errors = []
     errorsForm.value = {}
+    autoApprovalDisabled.value = false
 };
 
 const submitGroup = () => {
@@ -156,14 +157,14 @@ const processErrors = (errors) => {
 
         <div class="flex justify-center gap-11 px-[14px] mt-5">
             <label disabled class="flex items-center whitespace-nowrap">
-                <Checkbox ref="autoApprovalGroupRef" class="disabled:bg-gray-100 dark:disabled:bg-gray-700"
+                <Checkbox ref="autoApprovalGroupRef" class="disabled:bg-gray-100 dark:disabled:bg-gray-600"
                     :disabled="autoApprovalDisabled"
                     v-model:checked="groupForm.auto_approval" />
                 <span :class="[
                     autoApprovalDisabled
                         ? 'text-gray-400 dark:text-gray-600'
-                        : 'text-gray-600'
-                ]" class="text-sm ms-2 dark:text-gray-400">{{
+                        : 'text-gray-600 dark:text-gray-400'
+                ]" class="text-sm ms-2">{{
                     $t('dearbook.group.form.create.fields.auto_approval.label') }}</span>
             </label>
 

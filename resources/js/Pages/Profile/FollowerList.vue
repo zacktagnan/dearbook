@@ -70,7 +70,7 @@ const clearFilter = () => {
 
     <div v-if="followersCollection.length" class="grid grid-cols-2 gap-3 mt-3">
         <UserItem v-for="follower of followersCollection" :user="follower"
-            :classes="' shadow shadow-gray-200 hover:shadow-gray-400 hover:bg-gray-50'"
+            :classes="' shadow shadow-gray-200 dark:shadow-gray-50 hover:shadow-gray-400 dark:hover:shadow-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900'"
             :key="follower.id" :user-since-date="follower.since_date">
         </UserItem>
     </div>

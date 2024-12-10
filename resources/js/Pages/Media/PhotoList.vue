@@ -44,7 +44,7 @@ const getPostLink = (attachment) => {
     <div v-if="isTherePhotos" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
         <template v-for="(attachment, index) of photos">
             <div @click="openPhotoModal(index)" title="Ver en detalle"
-                class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square bg-cyan-100 group hover:bg-sky-700/40">
+                class="relative flex flex-col items-center justify-center text-gray-500 cursor-pointer aspect-square group bg-sky-200 hover:bg-sky-700/40 dark:bg-cyan-900 dark:hover:bg-cyan-400/40">
                 <a :href="getPostLink(attachment)
                     " title="Acceder a la publicación"
                     class="absolute flex items-center justify-center w-8 h-8 text-gray-100 transition-all bg-gray-600 rounded opacity-0 cursor-pointer group-hover:opacity-100 hover:bg-gray-800 right-12 top-2"

@@ -317,22 +317,44 @@ const pinUnpinPost = () => {
     })
 }
 
-const updatePinnedState = () => {
-    //// if (groupPost?.id) {
-    // if (group?.id) {
-    //     ////console.log("\n[desde updatePinnedState]\n" + 'usePage().props.success.current_pinned_post_id: ', usePage().props.success.current_pinned_post_id)
+const updatePinnedState = async () => {
+    let currentPinnedPostId = usePage().props.success?.current_pinned_post_id
 
-    //     ////console.log("\n[desde updatePinnedState]\n" + 'groupPost.pinned_post_id: ', groupPost.pinned_post_id)
-    //     //// groupPost.pinned_post_id = usePage().props.success.current_pinned_post_id
-    //     group.pinned_post_id = usePage().props.success.current_pinned_post_id
-    // } else {
-    //     authUser.pinned_post_id = usePage().props.success.current_pinned_post_id
-    // }
     if (props.parent_page_name === 'group_profile') {
-        group.pinned_post_id = usePage().props.success?.current_pinned_post_id
+        if (currentPinnedPostId === undefined || currentPinnedPostId === null) {
+            currentPinnedPostId = await getPinned(props.parent_page_name, group.id);
+        }
+
+        group.pinned_post_id = currentPinnedPostId
+
+        console.log('De vuelta al GROUP_PROFILE...')
+        console.log('currentPinnedPostId', currentPinnedPostId)
+        console.log('group.pinned_post_id', group.pinned_post_id)
+
     } else if (props.parent_page_name === 'user_profile') {
-        user.pinned_post_id = usePage().props.success?.current_pinned_post_id
+        if (currentPinnedPostId === undefined || currentPinnedPostId === null) {
+            currentPinnedPostId = await getPinned(props.parent_page_name, user.id);
+        }
+
+        user.pinned_post_id = currentPinnedPostId
+
+        console.log('De vuelta al USER_PROFILE...')
+        console.log('currentPinnedPostId', currentPinnedPostId)
+        console.log('user.pinned_post_id', user.pinned_post_id)
     }
+}
+
+import axiosClient from '@/axiosClient'
+
+const getPinned = (parent_page_name, id) => {
+    return axiosClient.post(route('post.get-pinned'), { parent_page_name, id })
+        .then(({data}) => {
+            return data
+        })
+        .catch(err => {
+            console.log('ERRORES: ', err)
+            return null
+        })
 }
 
 defineExpose({
@@ -585,7 +607,7 @@ defineExpose({
                 :content-classes="'ck-content-output'" />
 
             <UrlPreview :is-there-preview-data="isTherePreviewData" :url="post.preview.url" :preview="post.preview"
-                :classes="'border border-cyan-200 rounded-lg bg-sky-50 w-1/2 mx-auto'" :img-classes="'w-full'" />
+                :classes="'border border-cyan-200 dark:border-cyan-400 rounded-lg bg-sky-50 dark:bg-sky-900 w-1/2 mx-auto'" :img-classes="'w-full'" />
         </div>
 
         <div v-if="post.attachments.length > 0">

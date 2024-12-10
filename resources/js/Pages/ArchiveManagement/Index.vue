@@ -282,7 +282,7 @@ onMounted(() => {
     <AuthenticatedLayout>
         <div>
             <div
-                class="hidden md:block md:fixed px-4 pt-5 pb-4 bg-white shadow-lg lg:min-h-full w-[315px] lg:col-span-2">
+                class="hidden md:block md:fixed px-4 pt-5 pb-4 bg-white dark:bg-gray-800 dark:text-white shadow-lg lg:min-h-full w-[315px] lg:col-span-2">
                 <ArchiveMenuList ref="archiveMenuListRef" @callLoadComponent="loadComponent" />
             </div>
 

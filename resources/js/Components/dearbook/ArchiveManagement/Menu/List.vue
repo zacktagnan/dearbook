@@ -20,7 +20,7 @@ defineExpose({ setSelectedMenuItem, })
 </script>
 
 <template>
-    <div class="flex flex-col p-3 border rounded bg-sky-200">
+    <div class="flex flex-col p-3 border rounded bg-sky-200 dark:bg-sky-900 dark:border-gray-500">
         <div class="flex-1 block lg:hidden">
             <Disclosure v-slot="{ open }">
                 <DisclosureButton class="w-full" :title="open ? 'Mostrar -' : 'Mostrar +'">

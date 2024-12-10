@@ -40,7 +40,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="z-50 w-full whitespace-normal lg:w-1/4 toast notification md::whitespace-nowrap" id="notification-box"
+    <div class="z-[100] w-full whitespace-normal lg:w-1/4 toast notification md::whitespace-nowrap" id="notification-box"
         @mouseover="$emit('callOnMouseOver')" @mouseleave="$emit('callOnMouseLeave')">
         <div class="flex justify-between shadow-lg alert" :class="title === 'Info' ? 'bg-gray-200' : 'bg-red-200'">
             <div class="flex items-center gap-3">

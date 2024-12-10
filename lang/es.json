@@ -83,5 +83,6 @@
     "current_language_code": "es",
     "About": "Acerca de",
     "Information": "Información",
-    "Profile of": "Perfil de :name"
+    "Profile of": "Perfil de :name",
+    "Reset": "Resetear"
 }

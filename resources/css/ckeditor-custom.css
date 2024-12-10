@@ -109,7 +109,8 @@
 
 .ck-content-output a {
     text-decoration: #4b9afa;
-    color: blue;
+    color: #3883de;
+    font-weight: bold;
 }
 
 .ck-content-output a.post-hashtag {
@@ -157,6 +158,11 @@ html.dark .ck.ck-list__item > .ck-button.ck-on:hover:not(.ck-disabled) {
 }
 html.dark .ck.ck-list__item > .ck-button.ck-off:hover:not(.ck-disabled) {
     @apply bg-slate-400;
+}
+
+html.dark .ck-content-output a {
+    /* color: #00baf8; */
+    @apply text-cyan-400;
 }
 /* == CKEditor - Personalización para DarkMode :: fin ====================== */
 
