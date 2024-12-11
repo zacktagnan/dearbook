@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SearchRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Group;
-use Illuminate\Http\Request;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 
 class SearchController extends Controller
 {
-    public function search(Request $request, string $keywords = null)
+    public function search(SearchRequest $request, string $keywords = null)
     {
         $users = User::where('name', 'like', "%$keywords%")
             ->orWhere('username', 'like', "%$keywords%")

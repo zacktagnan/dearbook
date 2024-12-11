@@ -15,6 +15,9 @@ import TextInput from "@/Components/TextInput.vue";
 const showingNavigationDropdown = ref(false);
 const keywords = ref('')
 
+import { usePage } from "@inertiajs/vue3"
+const { errors } = usePage().props
+
 const globalSearch = () => {
     router.get(route('global-search', encodeURIComponent(keywords.value)))
 }
@@ -61,9 +64,18 @@ const toggleDarkMode = () => {
                         </div>
 
                         <div class="w-full flex justify-center items-center gap-2">
-                            <TextInput v-model="keywords" :placeholder="'Usuarios, grupos o publicaciones'"
-                                class="placeholder:text-gray-400 placeholder:italic w-2/3 md:w-1/2"
-                                @keyup.enter="globalSearch" />
+                            <TextInput v-model="keywords" @keyup.enter="globalSearch"
+                                :placeholder="[
+                                    errors.keywords
+                                        ? errors.keywords
+                                        : 'Usuarios, grupos o publicaciones'
+                                ]"
+                                class="placeholder:italic w-2/3 md:w-1/2"
+                                :class="[
+                                    errors.keywords
+                                        ? 'placeholder:text-red-400 dark:placeholder:text-red-400'
+                                        : 'placeholder:text-gray-300 dark:placeholder:text-gray-600'
+                                ]" />
 
                             <!-- <button @click="toggleDarkMode"
                                 class="text-sky-200 hover:text-sky-300 dark:text-yellow-200 dark:hover:text-yellow-300 transition-colors duration-150"

@@ -84,7 +84,7 @@ const closeShowNotification = () => {
                 :alt="$page.props.auth.user.name" />
         </a>
         <div @click="openCreateModal"
-            class="px-2.5 py-1.5 dark:py-2 text-gray-500 border-2 dark:border border-gray-200 dark:border-slate-500 rounded-md cursor-pointer w-full">
+            class="px-2.5 py-1.5 dark:py-2 text-gray-400 border-2 dark:border border-gray-200 dark:border-slate-500 rounded-md cursor-pointer w-full">
             ¿Qué tienes en mente?
         </div>
         <!-- <TextareaInput v-else placeholder="Expresa lo que quieras comunicar"
