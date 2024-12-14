@@ -6,13 +6,15 @@ import {
 } from "@heroicons/vue/24/solid";
 import { computed } from "vue";
 
+import { twMerge } from 'tailwind-merge'
+
 const props = defineProps({
     ellipsisTypeIcon: String,
     isDisabled: {
         type: Boolean,
         default: false,
     },
-    menuButtonClasses: {
+    menuButtonClassesExtra: {
         type: String,
         default: '',
     },
@@ -27,16 +29,25 @@ const show = computed({
     get: () => props.modelValue,
     set: (value) => emit("update:modelValue", value),
 });
+
+const menuButtonClassesDefault = 'p-1 transition-colors duration-150 rounded-full hover:bg-black/5 dark:hover:bg-gray-600 disabled:hover:bg-transparent disabled:text-gray-400'
+const menuButtonClasses = computed(() => {
+    return twMerge(
+        menuButtonClassesDefault,
+        props.menuButtonClassesExtra
+    )
+})
 </script>
 
 <template>
     <Menu v-if="show" as="div" class="relative inline-block text-left">
         <div>
-            <MenuButton class="p-1 transition-colors duration-150 rounded-full hover:bg-black/5 dark:hover:bg-gray-600 disabled:hover:bg-transparent disabled:text-gray-400"
-                :class="menuButtonClasses" :title="isDisabled ? 'Sin acceso' : 'Ver opciones'" :disabled="isDisabled">
-                <EllipsisVerticalIcon v-if="ellipsisTypeIcon === 'vertical'" class="w-5 h-5" aria-hidden="true" />
-                <EllipsisHorizontalIcon v-else-if="ellipsisTypeIcon === 'horizontal'" class="w-5 h-5"
-                    aria-hidden="true" />
+            <MenuButton :class="menuButtonClasses" :title="isDisabled ? 'Sin acceso' : 'Ver opciones'" :disabled="isDisabled">
+                <slot name="menu_button">
+                    <EllipsisVerticalIcon v-if="ellipsisTypeIcon === 'vertical'" class="w-5 h-5" aria-hidden="true" />
+                    <EllipsisHorizontalIcon v-else-if="ellipsisTypeIcon === 'horizontal'" class="w-5 h-5"
+                        aria-hidden="true" />
+                </slot>
             </MenuButton>
         </div>
 

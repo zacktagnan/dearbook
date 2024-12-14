@@ -277,7 +277,7 @@ const limitingLatestCommentsListHigh = computed(
                 </div>
 
                 <OptionsDropDown v-model="isCommentAuthorAndEditableOrIsPostAuthor" :ellipsis-type-icon="'horizontal'"
-                    :menu-button-classes="'opacity-0 group-hover/block_comment:opacity-100'"
+                    :menu-button-classes-extra="'opacity-0 group-hover/block_comment:opacity-100'"
                     :show-menu-item-icon="false">
                     <template v-if="isCommentAuthorAndEditable">
                         <div class="px-1 py-1">
