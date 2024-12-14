@@ -77,8 +77,8 @@ const reset = () => {
 
             <div class="flex flex-col md:flex-row items-center md:justify-center gap-4 md:gap-14 lg:gap-28">
                 <div class="flex items-center gap-3">
-                    <InputLabel for="auto_approval" :value="$t('dearbook.group.form.create.fields.auto_approval.label')" />
-                    <Checkbox ref="autoApprovalGroupRef" id="auto_approval" :disabled="autoApprovalDisabled" v-model:checked="groupForm.auto_approval" />
+                    <InputLabel for="auto_approval" :disabled="autoApprovalDisabled" :value="$t('dearbook.group.form.create.fields.auto_approval.label')" />
+                    <Checkbox ref="autoApprovalGroupRef" id="auto_approval" class="disabled:bg-gray-100 dark:disabled:bg-gray-600" :disabled="autoApprovalDisabled" v-model:checked="groupForm.auto_approval" />
                 </div>
 
                 <div class="flex items-center gap-5">

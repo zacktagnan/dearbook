@@ -162,8 +162,8 @@ const processErrors = (errors) => {
                     v-model:checked="groupForm.auto_approval" />
                 <span :class="[
                     autoApprovalDisabled
-                        ? 'text-gray-400 dark:text-gray-600'
-                        : 'text-gray-600 dark:text-gray-400'
+                        ? 'text-gray-400 dark:text-gray-500'
+                        : 'text-gray-700 dark:text-gray-300'
                 ]" class="text-sm ms-2">{{
                     $t('dearbook.group.form.create.fields.auto_approval.label') }}</span>
             </label>
@@ -172,14 +172,14 @@ const processErrors = (errors) => {
                 <label class="flex items-center">
                     <Radiobutton @change="autoApprovalToFalseAndDisable(true)"
                         v-model:checked="groupForm.type" :value="'public'" />
-                    <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                    <span class="text-sm text-gray-700 ms-2 dark:text-gray-300">{{
                         $t('dearbook.group.form.create.fields.type.label.public') }}</span>
                 </label>
 
                 <label class="flex items-center">
                     <Radiobutton @change="autoApprovalToFalseAndDisable(false)"
                         v-model:checked="groupForm.type" :value="'private'" />
-                    <span class="text-sm text-gray-600 ms-2 dark:text-gray-400">{{
+                    <span class="text-sm text-gray-700 ms-2 dark:text-gray-300">{{
                         $t('dearbook.group.form.create.fields.type.label.private') }}</span>
                 </label>
             </div>

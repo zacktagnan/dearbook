@@ -22,7 +22,7 @@ defineProps({
             {{ status }}
         </div>
 
-        <div class="p-11">
+        <div class="p-8">
             <h1 class="text-xl font-bold">{{ $t('error.' + statusCode + '.title') }}</h1>
 
             <p v-if="message" class="my-7 text-center">{{ message }}</p>

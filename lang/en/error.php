@@ -20,7 +20,7 @@ return [
         'message' => 'Sorry. The authentication required for the process has expired. Please refresh your browser to proceed.',
     ],
     '500' => [
-        'title' => 'Error 500 - Internal Server Error',
+        'title' => 'Error 500 - Internal Server Fail',
         'message' => 'Whoops!! ... Something is wrong with our server. We are working on fixing it.',
     ],
     '503' => [

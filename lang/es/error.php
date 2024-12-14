@@ -20,7 +20,7 @@ return [
         'message' => 'Lo sentimos. La autenticación necesaria para el proceso ha expirado. Actualizar el navegador para seguir adelante.',
     ],
     '500' => [
-        'title' => 'Error 500 - Error Interno de Servidor',
+        'title' => 'Error 500 - Fallo Interno de Servidor',
         'message' => '¡¡Vaya!! ... Algo va mal en nuestro servidor. Estamos trabajando para solucionarlo.',
     ],
     '503' => [
