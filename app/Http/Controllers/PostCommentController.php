@@ -14,6 +14,9 @@ use App\Http\Requests\CommentUpdateRequest;
 use App\Notifications\CommentCreated;
 use App\Notifications\CommentDeleted;
 use App\Traits\CommentsTree;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController extends Controller
@@ -22,7 +25,7 @@ class PostCommentController extends Controller
     use ResourcesDeletion;
     use StorageManagement;
 
-    public function store(CommentStoreRequest $request, Post $post)
+    public function store(CommentStoreRequest $request, Post $post): JsonResponse|RedirectResponse
     {
         DB::beginTransaction();
 
@@ -91,7 +94,7 @@ class PostCommentController extends Controller
         }
     }
 
-    public function update(CommentUpdateRequest $request, Comment $comment) //: void
+    public function update(CommentUpdateRequest $request, Comment $comment): JsonResponse
     {
         DB::beginTransaction();
 
@@ -161,7 +164,7 @@ class PostCommentController extends Controller
         }
     }
 
-    public function destroy(int $id, string $to)
+    public function destroy(int $id, string $to): RedirectResponse|HttpResponse
     {
         $comment = Comment::findOrFail($id);
         $post = Post::findOrFail($comment->post_id);

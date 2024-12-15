@@ -4,11 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Follower;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function followUnfollow(Request $request, User $user)
+    public function followUnfollow(Request $request, User $user): RedirectResponse
     {
         $msg = '';
         if ($request->follow) {

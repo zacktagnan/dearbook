@@ -3,20 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Inertia\Inertia;
+// use Inertia\Inertia;
+use Inertia\{Inertia, Response as InertiaResponse};
 use App\Models\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Traits\PostDataFormatOnArchiveManagement;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class ArchiveManagementController extends Controller
 {
     use PostDataFormatOnArchiveManagement;
 
-    public function index()
+    public function index(): InertiaResponse
     {
         return Inertia::render('ArchiveManagement/Index', [
             'success' => session('success'),
@@ -37,7 +39,7 @@ class ArchiveManagementController extends Controller
         return new Collection($postsWithGroupBy);
     }
 
-    public function activityLogPosts()
+    public function activityLogPosts(): JsonResponse
     {
         return response()->json([
             'current_activity_log_posts' => $this->activityLogPostsCollection(),
@@ -59,7 +61,7 @@ class ArchiveManagementController extends Controller
         return new Collection($postsWithGroupBy);
     }
 
-    public function archivedPosts()
+    public function archivedPosts(): JsonResponse
     {
         return response()->json([
             'current_archived_posts' => $this->archivedPostsCollection(),
@@ -118,7 +120,7 @@ class ArchiveManagementController extends Controller
         }
     }
 
-    public function trashedPosts()
+    public function trashedPosts(): JsonResponse
     {
         // Ejecutando método de otro controlador...
         // return response()->json([
@@ -141,14 +143,14 @@ class ArchiveManagementController extends Controller
             ->groupBy(fn($item) => $item->createdAtWithoutTimeAndWeekDay());
     }
 
-    public function trashedGroups()
+    public function trashedGroups(): JsonResponse
     {
         return response()->json([
             'current_trashed_groups' => $this->trashedGroupsCollection(),
         ], Response::HTTP_OK);
     }
 
-    public function notifyProcessEnding(string $processType)
+    public function notifyProcessEnding(string $processType): RedirectResponse
     {
         // $from = match ($processType) {
         //     'archive_all_selected_from_trash' => 'trash',

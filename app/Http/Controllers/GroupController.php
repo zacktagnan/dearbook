@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Post;
-use Inertia\Inertia;
+// use Inertia\Inertia;
+// use Inertia\Response as InertiaResponse;
+// o ...
+use Inertia\{Inertia, Response as InertiaResponse};
 use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\Attachment;
@@ -33,6 +36,8 @@ use App\Http\Requests\GroupCoverImageUpdateRequest;
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
@@ -48,7 +53,7 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profile(Request $request, Group $group, ?string $tabIndex = 'conversation')
+    public function profile(Request $request, Group $group, ?string $tabIndex = 'conversation'): InertiaResponse|JsonResource
     {
         $group->load('currentGroupUser', 'user');
 
@@ -98,7 +103,7 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(GroupStoreRequest $request)
+    public function store(GroupStoreRequest $request): HttpResponse
     {
         $request->merge(['user_id' => $request->user()->id]);
         $group = Group::create($request->all());
@@ -123,7 +128,7 @@ class GroupController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(GroupUpdateRequest $request, Group $group)
+    public function update(GroupUpdateRequest $request, Group $group): RedirectResponse
     {
         $group->update($request->all());
 
@@ -146,7 +151,7 @@ class GroupController extends Controller
         return Redirect::to('/');
     }
 
-    public function restoreAllSelected(Request $request)
+    public function restoreAllSelected(Request $request): RedirectResponse
     {
         if ($request->checked_ids) {
             $groupsToRestore = match ($request->from) {
@@ -166,7 +171,7 @@ class GroupController extends Controller
         return back();
     }
 
-    public function restore(int $id, string $from)
+    public function restore(int $id, string $from): RedirectResponse
     {
         $group = match ($from) {
             // 'archive' => Group::onlyArchived()->findOrFail($id),
@@ -204,7 +209,7 @@ class GroupController extends Controller
         $this->updateImage($request->group_id, $request->thumbnail, 'thumbnail');
     }
 
-    private function updateImage(int $groupId, object $file, string $type): RedirectResponse
+    private function updateImage(int $groupId, object $file, string $type): RedirectResponse|HttpResponse
     {
         $group = Group::findOrFail($groupId);
 
@@ -267,7 +272,7 @@ class GroupController extends Controller
         return back()->with('success', 'El usuario ' . $request->user->username . ' ha sido invitado a unirse al grupo "' . $group->name . '".');
     }
 
-    public function acceptInvitation(string $token)
+    public function acceptInvitation(string $token): RedirectResponse
     {
         // $groupUser = GroupUser::where('token', '43210')
         $groupUser = GroupUser::where('token', $token)
@@ -324,7 +329,7 @@ class GroupController extends Controller
             ]));
     }
 
-    public function join(Request $request, Group $group)
+    public function join(Request $request, Group $group): RedirectResponse
     {
         GroupUser::create([
             'status' => GroupUserStatus::APPROVED->value,
@@ -340,7 +345,7 @@ class GroupController extends Controller
         ]));
     }
 
-    public function requestJoin(Request $request, Group $group)
+    public function requestJoin(Request $request, Group $group): RedirectResponse
     {
         GroupUser::create([
             'status' => GroupUserStatus::PENDING->value,
@@ -356,7 +361,7 @@ class GroupController extends Controller
         return back()->with('success', __('dearbook/group/notify.process_to_join.by_request.web'));
     }
 
-    public function requestApproveOrNot(Request $request, Group $group)
+    public function requestApproveOrNot(Request $request, Group $group): RedirectResponse|HttpResponse
     {
         if (!$group->isAdminOfTheGroup(auth()->id())) {
             return response("You don't have permission to APPROVE member requests of this group.", Response::HTTP_FORBIDDEN);
@@ -386,7 +391,7 @@ class GroupController extends Controller
         return back();
     }
 
-    public function changeRole(Request $request, Group $group)
+    public function changeRole(Request $request, Group $group): RedirectResponse|HttpResponse
     {
         if (!$group->isAdminOfTheGroup(auth()->id())) {
             return response("You don't have permission to CHANGE the Role member inside this group.", Response::HTTP_FORBIDDEN);
@@ -420,7 +425,7 @@ class GroupController extends Controller
         return back();
     }
 
-    public function removeMember(Request $request, Group $group)
+    public function removeMember(Request $request, Group $group): RedirectResponse|HttpResponse
     {
         if (!$group->isAdminOfTheGroup(auth()->id())) {
             return response("You don't have permission to DELETE the selected member from this group.", Response::HTTP_FORBIDDEN);

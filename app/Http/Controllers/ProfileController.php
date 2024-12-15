@@ -6,9 +6,9 @@ use App\Http\Enums\GroupUserStatus;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
-use Inertia\Inertia;
+use Inertia\{Inertia, Response as InertiaResponse};
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Group;
-use Inertia\Response;
 use App\Models\Follower;
 use App\Models\Attachment;
 use Illuminate\Support\Str;
@@ -27,7 +27,6 @@ use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Http\Requests\AvatarImageUpdateRequest;
 use App\Http\Resources\GroupResource;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProfileController extends Controller
 {
@@ -41,7 +40,7 @@ class ProfileController extends Controller
         $this->attachmentService = $attachmentService;
     }
 
-    public function index(Request $request, User $user): Response|AnonymousResourceCollection
+    public function index(Request $request, User $user): InertiaResponse|JsonResource
     {
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
@@ -132,7 +131,7 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): Response
+    public function edit(Request $request): InertiaResponse
     {
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,

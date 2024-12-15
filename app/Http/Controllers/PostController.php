@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
-use Inertia\Inertia;
+use Inertia\{Inertia, Response as InertiaResponse};
 use App\Libs\Utilities;
 use Illuminate\Http\Request;
 use App\Traits\ResourcesDeletion;
@@ -20,7 +20,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use DOMDocument;
-use Inertia\Response as InertiaResponse;
+use Illuminate\Http\Response as HttpResponse;
 use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -146,7 +146,7 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id, string $to) //: ResponseFactory|RedirectResponse
+    public function destroy(int $id, string $to): RedirectResponse|HttpResponse
     {
         $post = Post::withArchived()->findOrFail($id);
 
@@ -189,7 +189,7 @@ class PostController extends Controller
         return response("You don't have permission to DELETE this post", Response::HTTP_FORBIDDEN);
     }
 
-    public function destroyFromManagementAllSelected(Request $request)
+    public function destroyFromManagementAllSelected(Request $request): RedirectResponse
     {
         if ($request->checked_ids) {
             $postsToDelete = Post::withArchived()
@@ -210,7 +210,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function destroyFromManagement(int $id, string $from)
+    public function destroyFromManagement(int $id, string $from): RedirectResponse
     {
         $post = Post::withArchived()->findOrFail($id);
         $this->applyDeletionFromManagement($post);
@@ -244,7 +244,7 @@ class PostController extends Controller
         }
     }
 
-    public function restoreAllSelected(Request $request)
+    public function restoreAllSelected(Request $request): RedirectResponse
     {
         if ($request->checked_ids) {
             // $postsToRestore = Post::onlyTrashed()
@@ -267,7 +267,7 @@ class PostController extends Controller
         return back();
     }
 
-    public function restore(int $id, string $from)
+    public function restore(int $id, string $from): RedirectResponse
     {
         // $post = Post::onlyTrashed()->findOrFail($id);
         $post = match ($from) {
@@ -303,7 +303,7 @@ class PostController extends Controller
         };
     }
 
-    public function forceDestroyAllSelected(Request $request)
+    public function forceDestroyAllSelected(Request $request): RedirectResponse
     {
         if ($request->checked_ids) {
             $postsToForceDelete = Post::onlyTrashed()
@@ -324,7 +324,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function forceDestroy(int $id, string $from)
+    public function forceDestroy(int $id, string $from): RedirectResponse
     {
         $post = Post::onlyTrashed()->findOrFail($id);
         $this->applyForceDeletion($post);
@@ -338,7 +338,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function forceDestroyFromDetail(int $id)
+    public function forceDestroyFromDetail(int $id): RedirectResponse
     {
         $post = Post::onlyTrashed()->findOrFail($id);
         $this->applyForceDeletion($post);
@@ -377,7 +377,7 @@ class PostController extends Controller
         $this->processingDeleteResources(new Post, $post->id);
     }
 
-    public function archiveAllSelected(Request $request)
+    public function archiveAllSelected(Request $request): RedirectResponse
     {
         if ($request->checked_ids) {
             $postsToArchive = match ($request->from) {
@@ -402,7 +402,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function archive(int $id, string $from)
+    public function archive(int $id, string $from): RedirectResponse
     {
         $post = Post::withTrashed()->findOrFail($id);
         $this->applyArchivation($post);
@@ -432,7 +432,7 @@ class PostController extends Controller
         $post->archive();
     }
 
-    public function generateContent(Request $request)
+    public function generateContent(Request $request): HttpResponse
     {
         // :: Proceso hacia OpenAI ::
         // ----------------------------------------------------
@@ -459,7 +459,7 @@ class PostController extends Controller
         ]);
     }
 
-    public function fetchUrlPreview(Request $request)
+    public function fetchUrlPreview(Request $request): array
     {
         $url = $request->url;
         $ogTags = [];
@@ -506,7 +506,7 @@ class PostController extends Controller
         return $ogTags;
     }
 
-    public function pinUnpin(Request $request, Post $post)
+    public function pinUnpin(Request $request, Post $post): HttpResponse|RedirectResponse
     {
         $isPinnedOnGroupProfile = $request->get('is_pinned_on_group_profile', false);
 

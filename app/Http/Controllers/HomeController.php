@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Post;
-use Inertia\Inertia;
+use Inertia\{Inertia, Response as InertiaResponse};
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Group;
 use App\Http\Requests\SearchGroupOrFollowingRequest;
 use App\Http\Resources\PostResource;
@@ -13,7 +14,7 @@ use App\Http\Resources\FollowResource;
 
 class HomeController extends Controller
 {
-    public function index(SearchGroupOrFollowingRequest $request)
+    public function index(SearchGroupOrFollowingRequest $request): InertiaResponse|JsonResource
     {
         $userId = auth()->id();
 

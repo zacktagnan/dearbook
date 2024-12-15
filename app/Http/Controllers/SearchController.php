@@ -6,14 +6,15 @@ use App\Http\Requests\SearchRequest;
 use App\Http\Resources\GroupResource;
 use App\Models\Post;
 use App\Models\User;
-use Inertia\Inertia;
+use Inertia\{Inertia, Response as InertiaResponse};
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Group;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 
 class SearchController extends Controller
 {
-    public function search(SearchRequest $request, string $keywords = null)
+    public function search(SearchRequest $request, string $keywords = null): InertiaResponse|JsonResource
     {
         $users = User::where('name', 'like', "%$keywords%")
             ->orWhere('username', 'like', "%$keywords%")
