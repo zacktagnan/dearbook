@@ -65,6 +65,7 @@ class HomeController extends Controller
         });
 
         return Inertia::render('Home', [
+            'success' => session('success'),
             'after_comment_deleted' => session('after_comment_deleted'),
             'posts' => $posts,
             'groups' => GroupResource::collection($groups),

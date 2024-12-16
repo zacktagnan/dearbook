@@ -76,4 +76,8 @@ return [
         ],
         'web' => 'Successful expulsion of the member :user_name.',
     ],
+
+    'member_leaving' => [
+        'web' => 'You have unsubscribed from the :group_name group.',
+    ],
 ];

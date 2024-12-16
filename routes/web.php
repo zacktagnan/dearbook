@@ -97,6 +97,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/request-approve-or-not/{group:slug}', [GroupController::class, 'requestApproveOrNot'])->name('request-approve-or-not');
         Route::post('/change-role/{group:slug}', [GroupController::class, 'changeRole'])->name('change-role');
         Route::delete('/remove-member/{group:slug}', [GroupController::class, 'removeMember'])->name('remove-member');
+        Route::delete('/leave/{group:slug}', [GroupController::class, 'leave'])->name('leave');
     });
 
     Route::prefix('user')->as('user.')->group(function () {

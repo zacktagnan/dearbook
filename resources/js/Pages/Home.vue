@@ -6,7 +6,7 @@ import PostList from "@/Components/dearbook/Post/List.vue";
 import FollowingList from "@/Components/dearbook/Following/List.vue";
 import { Head } from "@inertiajs/vue3";
 
-defineProps({
+const props = defineProps({
     // Aquí, por ser una consulta paginada "posts" llega como Object, luego, al List se manda "posts.data" que ya se trata de un Array
     posts: Object,
     // En cambio, no es una consulta paginada y ya llega como un Array de Objects
@@ -23,7 +23,18 @@ defineProps({
         type: String,
         default: '',
     },
-});
+    success: {
+        type: [String, Object, null],
+    },
+    errors: Object,
+})
+
+import { computed, ref } from "vue"
+const showNotification = ref(true)
+const successMessage = computed(() => props.success?.message ? props.success.message : props.success)
+import NotificationBox from "@/Components/dearbook/NotificationBox.vue"
+
+console.log('success', props.success)
 </script>
 
 <template>
@@ -47,6 +58,9 @@ defineProps({
                 <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">No hay publicaciones actualmente
                 </div>
             </div>
+
+            <NotificationBox @callCloseShowNotification="closeShowNotification"
+                v-show="showNotification && success" :title="'Info'" :message="successMessage" />
         </div>
     </AuthenticatedLayout>
 </template>

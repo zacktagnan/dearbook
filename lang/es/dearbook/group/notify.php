@@ -76,4 +76,8 @@ return [
         ],
         'web' => 'Expulsión satisfactoria del miembro :user_name.',
     ],
+
+    'member_leaving' => [
+        'web' => 'Acaba de darse de baja del grupo :group_name.',
+    ],
 ];

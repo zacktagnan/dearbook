@@ -19,4 +19,12 @@ return [
             'btn_text' => 'Expel member',
         ],
     ],
+
+    'leave_option' => [
+        'modal' => [
+            'question' => 'Leave group process',
+            'text' => 'You are about to stop being a member of this group. You will no longer be able to manage any posts and comments you have made within the group. Confirm to continue with the process.',
+            'btn_text' => 'Leave group',
+        ],
+    ],
 ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\GroupType;
 use Carbon\Carbon;
 use App\Models\Post;
 // use Inertia\Inertia;
@@ -448,6 +449,41 @@ class GroupController extends Controller
             return back()->with('success', __('dearbook/group/notify.member_removed.web', [
                 'user_name' => $groupUser->user->name,
             ]));
+        }
+
+        return back();
+    }
+
+    public function leave(Request $request, Group $group)
+    {
+        // dump('Usuario:Dejando el grupo...', auth()->user()->name);
+        // dump('Dejando de ser miembro del grupo...', $group->name);
+        // dd();
+        if ($group->isOwnerOfTheGroup(auth()->id())) {
+            // return response("The owner member cannot leave the group.", Response::HTTP_FORBIDDEN);
+            abort(Response::HTTP_FORBIDDEN, 'The owner member cannot leave the group.');
+        }
+
+        $groupUser = GroupUser::where('user_id', auth()->id())
+            ->where('group_id', $group->id)
+            ->first();
+
+        if ($groupUser) {
+            $groupUser->delete();
+
+            $message = __('dearbook/group/notify.member_leaving.web', [
+                'group_name' => $group->name,
+            ]);
+
+            if ($group->type === GroupType::PUBLIC->value) {
+                // volver a Group-Profile
+                return to_route('group.profile', [
+                    'group' => $group->slug
+                ])->with('success', $message);
+            } else if ($group->type === GroupType::PRIVATE->value) {
+                // volver a HOME
+                return to_route('home')->with('success', $message);
+            }
         }
 
         return back();

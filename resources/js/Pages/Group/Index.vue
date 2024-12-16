@@ -18,6 +18,10 @@ import UserItem from '@/Components/dearbook/User/Item.vue'
 import PostCreate from "@/Components/dearbook/Post/Create.vue"
 import PostList from "@/Components/dearbook/Post/List.vue"
 import PhotoList from '@/Pages/Media/PhotoList.vue'
+import OptionsDropDown from '@/Components/dearbook/OptionsDropDown.vue'
+import { MenuItem } from '@headlessui/vue'
+import LeaveIcon from '@/Components/Icons/Leave.vue'
+import ChiefAdminStarIcon from '@/Components/Icons/Star.vue'
 
 const props = defineProps({
     errors: Object,
@@ -285,20 +289,31 @@ const memberRoleChange = (user, newRoleSelected) => {
     })
 }
 
-import ConfirmDeleteMemberModal from '@/Components/Modal.vue';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmDeleteMemberModal from '@/Components/Modal.vue'
+import ConfirmLeaveGroupModal from '@/Components/Modal.vue'
+
+import SecondaryButton from '@/Components/SecondaryButton.vue'
+import DangerButton from '@/Components/DangerButton.vue'
 
 const memberToDelete = ref(null)
 
-const showingConfirmDeleteMemberModal = ref(false);
+const showingConfirmDeleteMemberModal = ref(false)
+const showingConfirmLeaveGroupModal = ref(false)
+
 const showConfirmDeleteMemberModal = (member) => {
     memberToDelete.value = member
     showingConfirmDeleteMemberModal.value = true;
-};
+}
 const closeConfirmDeleteMemberModal = () => {
     showingConfirmDeleteMemberModal.value = false;
-};
+}
+
+const showConfirmLeaveGroupModal = () => {
+    showingConfirmLeaveGroupModal.value = true;
+}
+const closeConfirmLeaveGroupModal = () => {
+    showingConfirmLeaveGroupModal.value = false;
+}
 
 const memberListRef = ref(null)
 const deleteMember = () => {
@@ -318,6 +333,20 @@ const deleteMember = () => {
             }
         })
     }
+}
+
+const leaveGroup = () => {
+    closeConfirmLeaveGroupModal()
+    console.log('Abandonando el grupo...')
+
+    const form = useForm({})
+
+    form.delete(route('group.leave', props.group.slug), {
+        preserveScroll: true,
+        onSuccess: () => {
+            console.log(`Ya no eres miembro del grupo...${props.group.name}`)
+        }
+    })
 }
 
 const successMessage = computed(() => props.success?.message ? props.success.message : props.success)
@@ -507,12 +536,50 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                 <ArrowLeftStartOnRectangleIcon class="w-5 h-5 md:mr-1" />
                                 <span class="hidden md:block">Solicitud Rechazada</span>
                             </div>
-                            <button v-if="isMemberGroup"
+                            <OptionsDropDown v-model="isMemberGroup" class="z-40" :menu-button-classes-extra="'p-0'">
+                                <template #menu_button>
+                                    <button v-if="isMemberGroup"
+                                        class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
+                                        title="Detalles de Miembro">
+                                        <UserGroupIcon class="w-5 h-5 md:mr-1" />
+                                        <span class="hidden md:block">Detalles de Miembro</span>
+                                    </button>
+                                </template>
+                                <template v-if="authUserIsTheOwnerGroup">
+                                    <div class="px-1 py-1">
+                                        <MenuItem v-slot="{ active }">
+                                            <button title="Eres el Jefe" @click="" :class="[
+                                                active
+                                                    ? 'bg-sky-100 dark:bg-slate-500'
+                                                    : 'text-gray-900 dark:text-gray-400',
+                                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                            ]">
+                                                <ChiefAdminStarIcon :active="active" aria-hidden="true" class-content="size-5 border-2 border-white bg-cyan-600 rounded-full pb-0.5 mr-2" fill-content="#fff" />
+                                                Eres el Jefe
+                                            </button>
+                                        </MenuItem>
+                                    </div>
+                                </template>
+                                <div v-else class="px-1 py-1 z-30 border-">
+                                    <MenuItem v-slot="{ active }">
+                                        <button title="Abandonar grupo" @click="showConfirmLeaveGroupModal" :class="[
+                                            active
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
+                                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        ]">
+                                            <LeaveIcon :active="active" aria-hidden="true" class-content="size-5 fill-sky-400 mr-2 text-sky-400" />
+                                            Abandonar
+                                        </button>
+                                    </MenuItem>
+                                </div>
+                            </OptionsDropDown>
+                            <!-- <button v-if="isMemberGroup"
                                 class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-cyan-700 dark:bg-cyan-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-cyan-700 uppercase tracking-widest hover:bg-cyan-600 dark:hover:bg-white focus:bg-cyan-600 dark:focus:bg-white active:bg-cyan-900 dark:active:bg-cyan-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-cyan-800 transition ease-in-out duration-150"
                                 title="Detalles de Miembro">
                                 <UserGroupIcon class="w-5 h-5 md:mr-1" />
                                 <span class="hidden md:block">Detalles de Miembro</span>
-                            </button>
+                            </button> -->
 
                             <div v-if="isAdminGroup" class="w-0.5 h-9 bg-[#0099ce]" />
 
@@ -671,5 +738,26 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                 </div>
             </div>
         </ConfirmDeleteMemberModal>
+
+        <ConfirmLeaveGroupModal :show="showingConfirmLeaveGroupModal" @close="closeConfirmLeaveGroupModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {{ $t('dearbook.group.confirm.leave_option.modal.question') }}
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ $t('dearbook.group.confirm.leave_option.modal.text') }}
+                </p>
+
+                <div class="flex justify-end mt-6">
+                    <SecondaryButton @click="closeConfirmLeaveGroupModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+
+                    <DangerButton class="ms-3"
+                        @click="leaveGroup" :title="$t('dearbook.group.confirm.leave_option.modal.btn_text')">
+                        {{ $t('dearbook.group.confirm.leave_option.modal.btn_text') }}
+                    </DangerButton>
+                </div>
+            </div>
+        </ConfirmLeaveGroupModal>
     </AuthenticatedLayout>
 </template>
