@@ -67,7 +67,12 @@ return Application::configure(basePath: dirname(__DIR__))
             // Vale pero no del todo :: fin
 
             $statusCode = $response->getStatusCode();
-            $message = null;
+            // $message = null;
+            // $message = $exception->getMessage() ? $exception->getMessage() : null;
+            // o más simple (con el operador de coalescencia nula, devolviendo el valor de la izquierda del operador si no es NULL, sino, se devolverá el de la derecha)
+            // $message = $exception->getMessage() ?? null;
+            // o más simple aún porque getMessage, automáticamente, devuelve NULL si no se envía un mensaje desde la excepción lanzada
+            $message = $exception->getMessage();
 
             if ($exception instanceof ForbiddenAreaException) {
                 $statusCode = $exception->getStatusCode();
