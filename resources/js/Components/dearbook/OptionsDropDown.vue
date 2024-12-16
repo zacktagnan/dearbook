@@ -30,7 +30,7 @@ const show = computed({
     set: (value) => emit("update:modelValue", value),
 });
 
-const menuButtonClassesDefault = 'p-1 transition-colors duration-150 rounded-full hover:bg-black/5 dark:hover:bg-gray-600 disabled:hover:bg-transparent disabled:text-gray-400'
+const menuButtonClassesDefault = 'p-1 transition-colors duration-150 rounded-full hover:bg-black/5 dark:hover:bg-gray-600 disabled:hover:bg-transparent disabled:dark:hover:bg-transparent disabled:text-gray-400 disabled:cursor-not-allowed'
 const menuButtonClasses = computed(() => {
     return twMerge(
         menuButtonClassesDefault,
