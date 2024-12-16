@@ -40,7 +40,7 @@ class RequestToJoinGroup extends Notification
             ->subject(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.subject'))
             ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'))
             ->line(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.greeting', [
-                'admin_group' => $this->group->user->name,
+                'admin_group' => $notifiable->name,
             ]))
             ->line(__('dearbook/group/notify.process_to_join.by_request.mailing.request_to_join_group.opening_phrase', [
                 'user_name' => $this->userRequesting->name,
