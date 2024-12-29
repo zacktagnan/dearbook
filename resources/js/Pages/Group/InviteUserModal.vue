@@ -4,16 +4,9 @@ import CloseModal from '@/Components/dearbook/CloseModal.vue'
 import TextInput from '@/Components/TextInput.vue'
 import InputError from '@/Components/InputError.vue'
 import {
-    XMarkIcon,
-} from "@heroicons/vue/24/solid";
-import {
-    TransitionRoot,
-    TransitionChild,
-    Dialog,
-    DialogPanel,
     DialogTitle,
 } from "@headlessui/vue";
-import { useForm, usePage } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 const props = defineProps({
@@ -64,7 +57,7 @@ const submitInvitation = () => {
 </script>
 
 <template>
-    <BaseModal v-model="show" :z-index="'z-30'" :dialog-panel-extra-classes="'max-w-lg'" @callCloseModal="closeModal">
+    <BaseModal v-model="show" :z-index="'z-50'" :dialog-panel-extra-classes="'max-w-lg'" @callCloseModal="closeModal">
         <div class="flex items-center justify-between px-3 py-2 border border-b-gray-300 dark:border-gray-700">
             <div class="w-full text-center">
                 <DialogTitle as="h3" class="text-lg font-bold text-gray-900 dark:text-gray-100">
