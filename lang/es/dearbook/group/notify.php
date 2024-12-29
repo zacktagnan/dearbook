@@ -80,4 +80,8 @@ return [
     'member_leaving' => [
         'web' => 'Acaba de darse de baja del grupo :group_name.',
     ],
+
+    'ownership_transferred' => [
+        'web' => 'Propiedad del grupo transferida a :user_name.',
+    ],
 ];

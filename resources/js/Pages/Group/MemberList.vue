@@ -7,6 +7,11 @@ import { ref, watch } from 'vue'
 
 const props = defineProps({
     groupUserId: Number,
+    isThatCreatorAndOwnerNotTheSame: {
+        type: Boolean,
+        default: false,
+    },
+    creatorAndOwner: Object,
     members: Array,
     authUser: Object,
     authUserIsTheOwnerGroup: {
@@ -20,6 +25,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['callMemberRoleChange', 'callConfirmDeleteMemberModal'])
+
+const creatorAndOwnerCollection = ref(props.creatorAndOwner)
 
 const isTheOwnerGroup = (memberId) => props.groupUserId === memberId
 
@@ -48,18 +55,41 @@ const filterList = () => {
     isFiltering.value = true
 
     if (searchKeyword.value.trim() === '') {
-        membersCollection.value = props.members;
+        membersCollection.value = props.members
+        creatorAndOwnerCollection.value = props.creatorAndOwner
     } else {
         membersCollection.value = props.members.filter(member =>
             member.name.toLowerCase().includes(searchKeyword.value.toLowerCase())
             || member.username.toLowerCase().includes(searchKeyword.value.toLowerCase())
-        );
+        )
+
+        const filteredCreatorAndOwner = {};
+
+        // Filtrar 'creator'
+        if (props.creatorAndOwner.creator && (
+            props.creatorAndOwner.creator.name.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+            props.creatorAndOwner.creator.username.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        )) {
+            filteredCreatorAndOwner.creator = props.creatorAndOwner.creator;
+        }
+
+        // Filtrar 'owner'
+        if (props.creatorAndOwner.owner && (
+            props.creatorAndOwner.owner.name.toLowerCase().includes(searchKeyword.value.toLowerCase()) ||
+            props.creatorAndOwner.owner.username.toLowerCase().includes(searchKeyword.value.toLowerCase())
+        )) {
+            filteredCreatorAndOwner.owner = props.creatorAndOwner.owner;
+        }
+
+        // Asignar el objeto filtrado a la colección reactiva
+        creatorAndOwnerCollection.value = filteredCreatorAndOwner
     }
 }
 
 const clearFilter = () => {
     searchKeyword.value = ''
     membersCollection.value = props.members
+    creatorAndOwnerCollection.value = props.creatorAndOwner
     isFiltering.value = false
 }
 
@@ -94,17 +124,92 @@ defineExpose({
         <p v-if="!isTypingTerm && searchKeyword">{{ $t('dearbook.group.search.inside_profile.push_enter_to_filter') }}</p>
     </div>
 
+    <template v-if="isThatCreatorAndOwnerNotTheSame">
+        <template v-for="(user, type) in creatorAndOwnerCollection" :key="type">
+            <UserItem :user="user" :classes="' shadow shadow-gray-200 dark:shadow-gray-50 hover:shadow-gray-400 dark:hover:shadow-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 mt-3'" :user-since-date="user.joining_date">
+                <div v-if="isAdminGroup" class="flex items-center gap-2">
+                    <select v-if="authUserIsTheOwnerGroup" @change="$emit('callMemberRoleChange', user, $event.target.value)"
+                        :disabled="isTheOwnerGroup(user.id)"
+                        class="rounded-md border-0 py-1 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400 disabled:dark:text-gray-500 dark:bg-gray-800 hover:bg-sky-100 dark:hover:bg-slate-700">
+                        <option value="admin" class="hover:bg-red-400" :selected="user.role === 'admin'">admin</option>
+                        <option value="user" :selected="user.role === 'user'">user</option>
+                    </select>
+                    <template v-else>
+                        <span v-if="user.role === 'admin'" class="px-2 rounded text-sm text-gray-900 dark:text-gray-200 border border-gray-800 dark:border-gray-300 bg-sky-100 dark:bg-slate-700">{{ user.role }}</span>
+                    </template>
+
+                    <template v-if="authUser.id === user.id && isTheOwnerGroup(user.id)">
+                        <!-- <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-100"
+                        :title="[
+                            isTheOwnerGroup(member.id)
+                            ? 'Imposible eliminar creador del grupo'
+                            : 'Eliminar miembro'
+                        ]"
+                        :disabled="isTheOwnerGroup(member.id)"
+                        @click="showConfirmDeleteMemberModal(member)">
+                            <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-white" />
+                        </button> -->
+                        <div class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                            <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                        </div>
+                    </template>
+                    <template v-else>
+                        <button v-if="authUser.id !== user.id && !isTheOwnerGroup(user.id)" class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-300"
+                        :title="[
+                            isTheOwnerGroup(user.id)
+                            ? 'Imposible eliminar creador del grupo'
+                            : 'Eliminar miembro'
+                        ]"
+                        :disabled="isTheOwnerGroup(user.id)"
+                        @click="$emit('callConfirmDeleteMemberModal', user)">
+                            <XMarkIcon class="w-4 h-4 text-gray-100 group-hover/btn_del_member:text-white group-disabled/btn_del_member:text-gray-100" />
+                        </button>
+                        <div v-else-if="isTheOwnerGroup(user.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                            <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                        </div>
+                        <div v-else class="size-6" />
+                    </template>
+                </div>
+                <div v-else>
+                    <div v-if="isTheOwnerGroup(user.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                        <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                    </div>
+                    <template v-else>
+                        <span v-if="user.role === 'admin'" class="px-2 rounded text-sm text-gray-900 dark:text-gray-200 border border-gray-800 dark:border-gray-300 bg-sky-100 dark:bg-slate-700">{{ user.role }}</span>
+                    </template>
+                </div>
+            </UserItem>
+        </template>
+    </template>
     <div v-if="membersCollection.length" class="grid gap-3 mt-3">
+        <!-- <div v-if="group.creator && group.owner">
+            <p v-if="group.creator.id === group.owner.id">
+                {{ group.creator.name }} - Creador y Propietario del grupo desde {{ group.creator.created_at }}
+            </p> -->
+
+            <!-- Si no es el mismo, mostrar solo el Creador
+            <p v-else-if="group.creator.id !== group.owner.id">
+                {{ group.creator.name }} - Creador del grupo desde {{ group.creator.created_at }}
+            </p> -->
+
+            <!-- Siempre se mostrará el Propietario
+            <p v-else>
+                {{ group.owner.name }} - Propietario del grupo, se unió hace {{ group.owner.created_at }}
+            </p>
+        </div> -->
         <UserItem v-for="member of membersCollection" :user="member"
             :classes="' shadow shadow-gray-200 dark:shadow-gray-50 hover:shadow-gray-400 dark:hover:shadow-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900'"
             :key="member.id" :user-since-date="member.joining_date">
             <div v-if="isAdminGroup" class="flex items-center gap-2">
                 <select v-if="authUserIsTheOwnerGroup" @change="$emit('callMemberRoleChange', member, $event.target.value)"
                     :disabled="isTheOwnerGroup(member.id)"
-                    class="rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400">
-                    <option value="admin" :selected="member.role === 'admin'">admin</option>
+                    class="rounded-md border-0 py-1 text-gray-900 dark:text-gray-200 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 max-w-xs text-sm leading-6 disabled:text-gray-400 disabled:dark:text-gray-500 dark:bg-gray-800 hover:bg-sky-100 dark:hover:bg-slate-700">
+                    <option value="admin" class="hover:bg-red-400" :selected="member.role === 'admin'">admin</option>
                     <option value="user" :selected="member.role === 'user'">user</option>
                 </select>
+                <template v-else>
+                    <span v-if="member.role === 'admin'" class="px-2 rounded text-sm text-gray-900 dark:text-gray-200 border border-gray-800 dark:border-gray-300 bg-sky-100 dark:bg-slate-700">{{ member.role }}</span>
+                </template>
 
                 <template v-if="authUser.id === member.id && isTheOwnerGroup(member.id)">
                     <!-- <button class="bg-red-300 rounded-full p-1 hover:bg-red-500 group/btn_del_member disabled:bg-red-100"
@@ -135,10 +240,16 @@ defineExpose({
                     <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
                         <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
                     </div>
+                    <div v-else class="size-6" />
                 </template>
             </div>
-            <div v-else-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
-                <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+            <div v-else>
+                <div v-if="isTheOwnerGroup(member.id)" class="rounded-full bg-cyan-600 p-0.5" title="Administrador Jefe">
+                    <ChiefAdminStarIcon class-content="w-[21px] h-[21px] border-2 border-white bg-cyan-600 rounded-full pb-0.5" fill-content="#fff" />
+                </div>
+                <template v-else>
+                    <span v-if="member.role === 'admin'" class="px-2 rounded text-sm text-gray-900 dark:text-gray-200 border border-gray-800 dark:border-gray-300 bg-sky-100 dark:bg-slate-700">{{ member.role }}</span>
+                </template>
             </div>
         </UserItem>
     </div>

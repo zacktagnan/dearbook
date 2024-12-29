@@ -98,6 +98,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/change-role/{group:slug}', [GroupController::class, 'changeRole'])->name('change-role');
         Route::delete('/remove-member/{group:slug}', [GroupController::class, 'removeMember'])->name('remove-member');
         Route::delete('/leave/{group:slug}', [GroupController::class, 'leave'])->name('leave');
+        Route::post('/transfer-ownership/{group:slug}', [GroupController::class, 'transferOwnership'])->name('transfer-ownership');
     });
 
     Route::prefix('user')->as('user.')->group(function () {

@@ -22,6 +22,7 @@ import OptionsDropDown from '@/Components/dearbook/OptionsDropDown.vue'
 import { MenuItem } from '@headlessui/vue'
 import LeaveIcon from '@/Components/Icons/Leave.vue'
 import ChiefAdminStarIcon from '@/Components/Icons/Star.vue'
+import TransferIcon from '@/Components/Icons/Transfer.vue'
 
 const props = defineProps({
     errors: Object,
@@ -68,6 +69,11 @@ const isAutoApprovalGroup = computed(() => props.group.auto_approval);
 
 // const members = computed(() => props.group.all_group_users)
 const members = ref(props.group.all_group_users)
+const isThatCreatorAndOwnerNotTheSame = computed(() => props.group.creator.id !== props.group.owner.id)
+const creatorAndOwner = {
+    creator: props.group.creator,
+    owner: props.group.owner,
+}
 
 const maxGroupUsersIconsToList = 5
 
@@ -219,10 +225,17 @@ const closeCropImageModal = () => {
 
 import InviteUserModal from '@/Pages/Group/InviteUserModal.vue'
 
-const showingInviteUserModal = ref(false);
+const showingInviteUserModal = ref(false)
 const showInviteUserModal = () => {
-    showingInviteUserModal.value = true;
-};
+    showingInviteUserModal.value = true
+}
+
+import TransferOwnershipModal from '@/Pages/Group/TransferOwnershipModal.vue'
+
+const showingTransferOwnershipModal = ref(false)
+const showTransferOwnershipModal = () => {
+    showingTransferOwnershipModal.value = true
+}
 
 const joinToGroup = () => {
     const joinForm = useForm({})
@@ -247,7 +260,11 @@ const approveUser = (user) => {
     })
 
     form.post(route('group.request-approve-or-not', props.group.slug), {
-        preserveScroll: true
+        preserveScroll: true,
+        onSuccess: () => {
+            // Cuando la solicitud sea exitosa, actualiza la lista de miembros
+            members.value = [...props.group.all_group_users];
+        },
     })
 }
 
@@ -345,6 +362,8 @@ const leaveGroup = () => {
         preserveScroll: true,
         onSuccess: () => {
             console.log(`Ya no eres miembro del grupo...${props.group.name}`)
+            memberListRef.value.filterDeletedMember(authUser.id)
+            memberToDelete.value = null
         }
     })
 }
@@ -428,13 +447,14 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                         </div>
                     </div>
 
-                    <div class="flex flex-col lg:flex-row items-center justify-between dark:text-white bg-white dark:bg-gray-800 px-3 md:px-0">
+                    <div
+                        class="flex flex-col lg:flex-row items-center justify-between dark:text-white bg-white dark:bg-gray-800 px-3 md:px-0">
                         <div class="flex lg:flex-col w-full lg:block mt-4 lg:mt-0 gap-1 lg:gap-0">
                             <div>
                                 <div
                                     class="md:absolute p-1 bg-white dark:bg-gray-800 rounded-md md:top-64 lg:top-[295px] lg:left-7 lg:bottom-4">
                                     <img :src="thumbnailImageSrc || group.thumbnail_url" alt=""
-                                        class="rounded-md border-[1px] border-gray-200 dark:border-gray-400 dark:bg-gray-600 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
+                                        class="rounded-md border-[1px] border-gray-300 dark:border-gray-400 bg-gray-50 dark:bg-gray-400 min-w-[106px] lg:min-w-[174px] w-[106px] h-[100px] lg:w-[174px] lg:h-[168px]" />
                                 </div>
 
                                 <div v-if="isAdminGroup"
@@ -453,29 +473,48 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                 </h1>
 
                                 <small class="text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-2">
-                                    <PrivateAccessIcon v-if="isPrivateGroup" class-content="size-3.5 fill-gray-600 dark:fill-gray-400" />
-                                    <PublicAccessIcon v-else class-content="size-3 fill-gray-600 dark:fill-gray-400" /> {{
+                                    <PrivateAccessIcon v-if="isPrivateGroup"
+                                        class-content="size-3.5 fill-gray-600 dark:fill-gray-400" />
+                                    <PublicAccessIcon v-else class-content="size-3 fill-gray-600 dark:fill-gray-400" />
+                                    {{
                                         $t('dearbook.group.index.general_info.type.' + group.type) }} · <span
                                         v-if="group.total_group_user === 0" class="font-bold">{{
-                                            $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
-                                                'total': group.total_group_user
-                                            }) }}</span><button v-else-if="isMemberGroup || !isPrivateGroup"
+                                            $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user,
+                                                {
+                                                    'total': group.total_group_user
+                                                }) }}</span><button v-else-if="isMemberGroup || !isPrivateGroup"
                                         @click="asignSelectedIndex(2)" class="hover:underline"
                                         :title="$tChoice('dearbook.group.index.general_info.title_list_members', group.total_group_user)">
                                         <span class="font-bold">{{
-                                            $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
+                                            $tChoice('dearbook.group.index.general_info.x_members',
+                                                group.total_group_user, {
                                                 'total': group.total_group_user
                                             }) }}</span>
                                     </button><span v-else class="font-bold">{{
-                                        $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user, {
-                                            'total': group.total_group_user
-                                        }) }}</span>
+                                        $tChoice('dearbook.group.index.general_info.x_members', group.total_group_user,
+                                            {
+                                                'total': group.total_group_user
+                                            }) }}</span>
                                 </small>
 
                                 <div class="relative mt-2.5 lg:mb-6">
                                     <div v-if="group.total_group_user === 0" class="h-[30px]" />
                                     <div v-else-if="isMemberGroup || !isPrivateGroup"
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
+                                        <template v-if="isThatCreatorAndOwnerNotTheSame">
+                                            <div v-for="(user, type) in creatorAndOwner" :key="type" :class="[
+                                                type === 'creator'
+                                                    ? 'z-[22]'
+                                                    : 'z-[21]'
+                                            ]" class="flex items-center justify-center w-[30px] h-[30px] shadow-lg">
+                                                <a :href="route('profile.index', { username: user.username })" :title="$t('Profile of', {
+                                                    'name': user.name
+                                                })">
+                                                    <img :src="user.avatar_url" :alt="user.name"
+                                                        class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-gray-200 hover:ring-[#0099ce]" />
+                                                </a>
+                                            </div>
+                                        </template>
                                         <div v-for="(groupUser, index) of group.all_group_users?.slice(
                                             0,
                                             maxGroupUsersIconsToList
@@ -485,7 +524,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                                 'name': groupUser.name
                                             })">
                                                 <img :src="groupUser.avatar_url" :alt="groupUser.name"
-                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-white hover:ring-[#0099ce]" />
+                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-gray-200 hover:ring-[#0099ce]" />
                                             </a>
                                         </div>
                                         <div v-if="group.total_group_user > maxGroupUsersIconsToList"
@@ -548,29 +587,46 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                 <template v-if="authUserIsTheOwnerGroup">
                                     <div class="px-1 py-1">
                                         <MenuItem v-slot="{ active }">
-                                            <button title="Eres el Jefe" @click="" :class="[
-                                                active
-                                                    ? 'bg-sky-100 dark:bg-slate-500'
-                                                    : 'text-gray-900 dark:text-gray-400',
-                                                'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                                            ]">
-                                                <ChiefAdminStarIcon :active="active" aria-hidden="true" class-content="size-5 border-2 border-white bg-cyan-600 rounded-full pb-0.5 mr-2" fill-content="#fff" />
-                                                Eres el Jefe
-                                            </button>
-                                        </MenuItem>
-                                    </div>
-                                </template>
-                                <div v-else class="px-1 py-1 z-30 border-">
-                                    <MenuItem v-slot="{ active }">
-                                        <button title="Abandonar grupo" @click="showConfirmLeaveGroupModal" :class="[
+                                        <button title="Eres el Jefe" @click="" :class="[
                                             active
                                                 ? 'bg-sky-100 dark:bg-slate-500'
                                                 : 'text-gray-900 dark:text-gray-400',
                                             'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                         ]">
-                                            <LeaveIcon :active="active" aria-hidden="true" class-content="size-5 fill-sky-400 mr-2 text-sky-400" />
-                                            Abandonar
+                                            <ChiefAdminStarIcon :active="active" aria-hidden="true"
+                                                class-content="size-5 border-2 border-white bg-cyan-600 rounded-full pb-0.5 mr-2"
+                                                fill-content="#fff" />
+                                            Eres el Jefe
                                         </button>
+                                        </MenuItem>
+                                    </div>
+                                    <div class="px-1 py-1">
+                                        <MenuItem v-slot="{ active }">
+                                        <button title="Transferir propiedad" @click="showTransferOwnershipModal" :class="[
+                                            active
+                                                ? 'bg-sky-100 dark:bg-slate-500'
+                                                : 'text-gray-900 dark:text-gray-400',
+                                            'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                        ]">
+                                            <TransferIcon :active="active" aria-hidden="true"
+                                                class-content="size-5 bg-cyan-600 rounded-full pb-0.5 mr-2 fill-white pt-0.5" />
+                                            Transferir
+                                        </button>
+                                        </MenuItem>
+                                    </div>
+                                </template>
+                                <div v-else class="px-1 py-1 z-30 border-">
+                                    <MenuItem v-slot="{ active }">
+                                    <button title="Abandonar grupo" @click="showConfirmLeaveGroupModal" :class="[
+                                        active
+                                            ? 'bg-sky-100 dark:bg-slate-500'
+                                            : 'text-gray-900 dark:text-gray-400',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                    ]">
+                                        <LeaveIcon :active="active" aria-hidden="true"
+                                            class-content="size-5 fill-sky-400 mr-2 text-sky-400" />
+                                        Abandonar
+                                    </button>
                                     </MenuItem>
                                 </div>
                             </OptionsDropDown>
@@ -618,8 +674,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     <TabItem text="Miembros" :selected="selected" />
                                 </Tab>
 
-                                <Tab as="template" v-slot="{ selected }"
-                                    @click="asignSelectedIndex(3)">
+                                <Tab as="template" v-slot="{ selected }" @click="asignSelectedIndex(3)">
                                     <TabItem text="Fotos" :selected="selected" />
                                 </Tab>
 
@@ -639,12 +694,16 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     <PostCreate :group="group" />
                                 </template>
                                 <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
-                                    :after_comment_deleted="after_comment_deleted" :parent_page_name="parent_page_name" />
-                                <div v-else class="p-4 mx-0.5 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow text-center">No hay
+                                    :after_comment_deleted="after_comment_deleted"
+                                    :parent_page_name="parent_page_name" />
+                                <div v-else
+                                    class="p-4 mx-0.5 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow text-center">
+                                    No hay
                                     conversaciones actualmente</div>
                             </template>
                             <template v-else-if="!isMemberGroup && isPrivateGroup">
-                                <div class="p-4 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow flex justify-center items-center gap-4">
+                                <div
+                                    class="p-4 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow flex justify-center items-center gap-4">
                                     <img src="/img/posts-blocked.png" class="w-20" alt="Apartado bloqueado" />
                                     <div>
                                         <h3 class="font-bold text-lg">Este grupo es <span class="italic">PRIVADO</span>
@@ -667,9 +726,12 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                         <template v-if="isMemberGroup || !isPrivateGroup">
                             <!-- Miembros -->
                             <TabPanel class="p-3 bg-white dark:bg-gray-800 dark:text-gray-100 shadow md:w-4/6 mx-auto">
-                                <MemberList ref="memberListRef" :group-user-id="group.user.id" :members="members" :auth-user="authUser"
+                                <MemberList ref="memberListRef" :group-user-id="group.user.id"
+                                    :is-that-creator-and-owner-not-the-same="isThatCreatorAndOwnerNotTheSame"
+                                    :creator-and-owner="creatorAndOwner" :members="members" :auth-user="authUser"
                                     :auth-user-is-the-owner-group="authUserIsTheOwnerGroup"
-                                    :is-admin-group="isAdminGroup" @callMemberRoleChange="memberRoleChange" @callConfirmDeleteMemberModal="showConfirmDeleteMemberModal" />
+                                    :is-admin-group="isAdminGroup" @callMemberRoleChange="memberRoleChange"
+                                    @callConfirmDeleteMemberModal="showConfirmDeleteMemberModal" />
                             </TabPanel>
 
                             <!-- Fotos -->
@@ -716,6 +778,9 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
         <InviteUserModal :group="group" v-model="showingInviteUserModal"
             @callActiveShowNotification="activeShowNotification" />
 
+        <TransferOwnershipModal :group="group" :members="members" :auth-user="authUser"
+            v-model="showingTransferOwnershipModal" @callActiveShowNotification="activeShowNotification" />
+
         <ConfirmDeleteMemberModal :show="showingConfirmDeleteMemberModal" @close="closeConfirmDeleteMemberModal">
             <div class="p-6">
                 <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
@@ -729,10 +794,11 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                 </p>
 
                 <div class="flex justify-end mt-6">
-                    <SecondaryButton @click="closeConfirmDeleteMemberModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+                    <SecondaryButton @click="closeConfirmDeleteMemberModal" :title="$t('Cancel')"> {{ $t('Cancel') }}
+                    </SecondaryButton>
 
-                    <DangerButton class="ms-3"
-                        @click="deleteMember" :title="$t('dearbook.group.confirm.delete_member_option.modal.btn_text')">
+                    <DangerButton class="ms-3" @click="deleteMember"
+                        :title="$t('dearbook.group.confirm.delete_member_option.modal.btn_text')">
                         {{ $t('dearbook.group.confirm.delete_member_option.modal.btn_text') }}
                     </DangerButton>
                 </div>
@@ -750,10 +816,11 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                 </p>
 
                 <div class="flex justify-end mt-6">
-                    <SecondaryButton @click="closeConfirmLeaveGroupModal" :title="$t('Cancel')"> {{ $t('Cancel') }} </SecondaryButton>
+                    <SecondaryButton @click="closeConfirmLeaveGroupModal" :title="$t('Cancel')"> {{ $t('Cancel') }}
+                    </SecondaryButton>
 
-                    <DangerButton class="ms-3"
-                        @click="leaveGroup" :title="$t('dearbook.group.confirm.leave_option.modal.btn_text')">
+                    <DangerButton class="ms-3" @click="leaveGroup"
+                        :title="$t('dearbook.group.confirm.leave_option.modal.btn_text')">
                         {{ $t('dearbook.group.confirm.leave_option.modal.btn_text') }}
                     </DangerButton>
                 </div>

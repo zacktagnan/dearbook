@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Carbon\Carbon;
 use App\Models\Group;
 use App\Libs\Utilities;
+use App\Models\GroupAudit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -35,9 +36,19 @@ class GroupUserResource extends JsonResource
 
     private function getJoiningDateFormatted(Carbon $date, int $groupId, int $userId): string
     {
-        if ($this->isUserTheOwnerOfTheGroup($groupId, $userId)) {
+        if ($this->isUserTheCreatorOfTheGroup($groupId, $userId) && $this->isUserTheOwnerOfTheGroup($groupId, $userId)) {
+            return __('dearbook/group/list.members.creating_and_owning_date_text', [
+                'creating_and_owning_date' => $date->diffForHumans(),
+            ]);
+        } else if ($this->isUserTheCreatorOfTheGroup($groupId, $userId)) {
+            $date = $this->creationDate($groupId, $userId);
             return __('dearbook/group/list.members.creating_date_text', [
                 'creating_date' => $date->diffForHumans(),
+            ]);
+            // return 'Es el CREADOR desde hace' . $date->diffForHumans();
+        } else if ($this->isUserTheOwnerOfTheGroup($groupId, $userId)) {
+            return __('dearbook/group/list.members.owning_date_text', [
+                'owning_date' => $date->diffForHumans(),
             ]);
         }
         return __('dearbook/group/list.members.joining_date_text', [
@@ -50,5 +61,22 @@ class GroupUserResource extends JsonResource
         return Group::where('user_id', $userId)
             ->where('id', $groupId)
             ->exists();
+    }
+
+    public function isUserTheCreatorOfTheGroup(int $groupId, int $userId): bool
+    {
+        return GroupAudit::where('group_id', $groupId)
+            ->where('event', 'created')
+            ->whereJsonContains('user->id', $userId)
+            ->exists();
+    }
+
+    public function creationDate(int $groupId, int $userId): Carbon
+    {
+        return GroupAudit::where('group_id', $groupId)
+            ->where('event', 'created')
+            ->whereJsonContains('user->id', $userId)
+            ->pluck('created_at')
+            ->first();
     }
 }

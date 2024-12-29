@@ -2,19 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\GroupType;
 use Carbon\Carbon;
 use App\Models\Post;
+use App\Models\Group;
+use App\Libs\Utilities;
 // use Inertia\Inertia;
 // use Inertia\Response as InertiaResponse;
 // o ...
-use Inertia\{Inertia, Response as InertiaResponse};
-use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\Attachment;
+use App\Models\GroupAudit;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Enums\GroupType;
 use App\Http\Enums\GroupUserRole;
+use Illuminate\Support\Facades\DB;
+use App\Http\Enums\GroupAuditEvent;
 use App\Http\Enums\GroupUserStatus;
 use App\Services\AttachmentService;
 use App\Http\Resources\PostResource;
@@ -32,13 +35,15 @@ use App\Notifications\RequestToJoinGroup;
 use App\Notifications\InvitationToJoinGroup;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\MemberRemovedFromGroup;
+use Illuminate\Http\Response as HttpResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Requests\GroupCoverImageUpdateRequest;
+use Inertia\{Inertia, Response as InertiaResponse};
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class GroupController extends Controller
@@ -121,6 +126,16 @@ class GroupController extends Controller
 
         $group->status = $groupUser['status'];
         $group->role = $groupUser['role'];
+
+        GroupAudit::create([
+            'group_id' => $group->id,
+            'user' => json_encode([
+                'id' => auth()->id(),
+                'name' => auth()->user()->name,
+            ]),
+            'event' => GroupAuditEvent::CREATED->value,
+            'details' => 'Grupo creado por ' . auth()->user()->name . '.',
+        ]);
 
         // return back();
         return response(new GroupResource($group), Response::HTTP_CREATED);
@@ -487,5 +502,56 @@ class GroupController extends Controller
         }
 
         return back();
+    }
+
+    public function transferOwnership(Request $request, Group $group): RedirectResponse|HttpResponse
+    {
+        if (!$group->isOwnerOfTheGroup(auth()->id())) {
+            // return response("Only the owner of the group have permission to TRANSFER ownership.", Response::HTTP_FORBIDDEN);
+            abort(Response::HTTP_FORBIDDEN, 'Only the owner of the group have permission to TRANSFER ownership.');
+        }
+
+        if (!$group->isAdminOfTheGroup($request->user_id)) {
+            // return response("The new OWNER have to be ADMIN of the group.", Response::HTTP_FORBIDDEN);
+            abort(Response::HTTP_FORBIDDEN, 'The new OWNER have to be ADMIN of the group.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $group->user_id = $request->user_id;
+            $groupSaved = $group->save();
+
+            if (!$groupSaved) {
+                throw new \Exception('Failed to update group ownership.');
+            }
+
+            $groupAudited = GroupAudit::create([
+                'group_id' => $group->id,
+                'user' => json_encode([
+                    'id' => auth()->id(),
+                    'name' => auth()->user()->name,
+                ]),
+                'event' => GroupAuditEvent::OWNERSHIP_TRANSFERRED->value,
+                'details' => 'Grupo traspasado a ' . $group->user->name . '.',
+            ]);
+
+            if (!$groupAudited) {
+                throw new \Exception('Failed to create group audit entry.');
+            }
+
+            DB::commit();
+
+            return back()->with('success', __('dearbook/group/notify.ownership_transferred.web', [
+                'user_name' => $group->user->name,
+            ]));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Registrar el error para depuración
+            Log::error('Error al transferir la propiedad del grupo: ' . $e->getMessage());
+
+            return back()->withErrors('Hubo un problema al transferir la propiedad del grupo.');
+        }
     }
 }

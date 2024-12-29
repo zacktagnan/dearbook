@@ -3,8 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Libs\Utilities;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -69,6 +71,50 @@ class GroupResource extends JsonResource
         ];
 
         if ($this->includeMembers) {
+            $creator = $this->creatorFromAudit->user;
+
+            $creatorUserExists = User::find($creator->id);
+
+            if ($creatorUserExists) {
+                $creatorUser = $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
+                    ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                    ->where('g_u.group_id', $this->id)
+                    ->where('g_u.user_id', '=', $creatorUserExists->id) // Excluimos al CREATOR
+                    ->first();
+                $dataResource['creator'] = new GroupUserResource($creatorUser);
+                // $dataResource['creator'] = GroupUserResource::collection(
+                //     $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
+                //         ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                //         ->where('g_u.group_id', $this->id)
+                //         ->where('g_u.user_id', '=', $creatorUserExists->id) // Excluimos al CREATOR
+                //         ->get()
+                // );
+                $dataResource['creator_account_deleted'] = false; // El creador aún existe
+            } else {
+                // Si el creador no existe (cuenta eliminada), cargar los datos desde 'group_audits'
+                $dataResource['creator'] = [
+                    'id' => $creator->id,
+                    'name' => $creator->name,
+                    'avatar_url' => Utilities::$defaultAvatarImage,
+                ];
+                $dataResource['creator_account_deleted'] = true; // Indicar que el creador ha eliminado su cuenta
+            }
+
+            // Incluir al propietario actual del grupo (almacenado en 'groups.user_id')
+            $ownerUser = $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
+                ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                ->where('g_u.group_id', $this->id)
+                ->where('g_u.user_id', '=', $this->user_id)
+                ->first();
+            $dataResource['owner'] = new GroupUserResource($ownerUser);
+            // $dataResource['owner'] = GroupUserResource::collection(
+            //     $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
+            //         ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+            //         ->where('g_u.group_id', $this->id)
+            //         ->where('g_u.user_id', '=', $this->user_id)
+            //         ->get()
+            // );
+
             // 'total_group_user' => count($this->allGroupUser), //OK
             // 'all_group_users' => UserResource::collection($this->allGroupUser),
             // Esta relación da todos los miembros sea cuál sea su STATUS (APPROVED, PENDING, REJECTED o el que sea)
@@ -77,15 +123,58 @@ class GroupResource extends JsonResource
             // Pero, con el uso de MEMBERS, solamente, se obtienen los que ya tienen el STATUS de APPROVED
             // ---------------------------------------------------------------------------------------------------------
             $dataResource['total_group_user'] = count($this->members);
-            $dataResource['all_group_users'] = GroupUserResource::collection(
-                $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
-                    ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
-                    ->where('g_u.group_id', $this->id)
-                    ->orderByRaw('CASE WHEN users.id = ? THEN 0 ELSE 1 END', [$this->user_id])
-                    ->orderBy('g_u.role')
-                    ->orderBy('users.name')
-                    ->get()
-            );
+
+            $members = $this->members()->select(['users.*', 'g_u.role', 'g_u.status', 'g_u.user_id', 'g_u.group_id', 'g_u.created_at'])
+                ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+                ->where('g_u.group_id', $this->id);
+
+            if ($creator->id !== $this->user_id) {
+                $members = $members
+                    ->where('g_u.user_id', '!=', $creatorUserExists->id) // Excluimos al CREATOR
+                    ->where('g_u.user_id', '!=', $this->user_id); // Excluimos al OWNER
+            }
+
+            $members = $members
+                ->orderByRaw('CASE WHEN users.id = ? THEN 0 ELSE 1 END', [$this->user_id])
+                ->orderBy('g_u.role')
+                ->orderBy('users.name')
+                ->get();
+
+            $dataResource['all_group_users'] = GroupUserResource::collection($members);
+
+            // $dataResource['all_group_users'] = GroupUserResource::collection(
+            //     $this->members()
+            //         ->select([
+            //             'users.*',
+            //             'g_u.role',
+            //             'g_u.status',
+            //             'g_u.user_id',
+            //             'g_u.group_id',
+            //             'g_u.created_at',
+            //             // Extraer el nombre del creador desde la columna JSON 'user'
+            //             DB::raw("JSON_UNQUOTE(JSON_EXTRACT(ga.user, '$.id')) as creator_id"),
+            //             DB::raw("JSON_UNQUOTE(JSON_EXTRACT(ga.user, '$.name')) as creator_name"),
+            //             'ga.created_at as creator_date'
+            //         ])
+            //         ->join('group_users AS g_u', 'g_u.user_id', 'users.id')
+            //         ->leftJoin('group_audits AS ga', function ($join) {
+            //             $join->on('ga.group_id', '=', 'g_u.group_id')
+            //                 ->where('ga.event', '=', 'created');
+            //         })
+            //         ->where('g_u.group_id', $this->id)
+            //         // Condición para agregar el LEFT JOIN solo si el creador no es miembro
+            //         ->when(
+            //             !$this->members()->where('user_id', $this->creator_id)->exists(),
+            //             function ($query) {
+            //                 return $query->leftJoin('group_audits AS ga', 'ga.group_id', '=', 'g_u.group_id')
+            //                     ->where('ga.event', 'created');
+            //             }
+            //         )
+            //         ->orderByRaw('CASE WHEN users.id = ? THEN 0 ELSE 1 END', [$this->user_id])
+            //         ->orderBy('g_u.role')
+            //         ->orderBy('users.name')
+            //         ->get()
+            // );
         }
 
         return $dataResource;

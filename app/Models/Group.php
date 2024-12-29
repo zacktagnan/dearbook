@@ -110,4 +110,11 @@ class Group extends Model
                 ->orWhere('groups.about', 'like', "%$searchTerm%");
         });
     }
+
+    public function creatorFromAudit(): HasOne
+    {
+        return $this->hasOne(GroupAudit::class)
+            ->where('group_id', $this->id)
+            ->where('event', 'created');
+    }
 }

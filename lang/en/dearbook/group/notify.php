@@ -80,4 +80,8 @@ return [
     'member_leaving' => [
         'web' => 'You have unsubscribed from the :group_name group.',
     ],
+
+    'ownership_transferred' => [
+        'web' => 'Group ownership transferred to :user_name.',
+    ],
 ];
