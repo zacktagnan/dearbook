@@ -170,7 +170,7 @@ defineExpose({
         <Link :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name" class="h-fit">
         <img :src="$page.props.auth.user.avatar_url"
-            class="w-8 transition-all border-2 rounded-full hover:border-cyan-500" :alt="$page.props.auth.user.name" />
+            class="w-8 transition-all border-2 rounded-full hover:border-cyan-500 bg-gray-50 dark:bg-gray-300" :alt="$page.props.auth.user.name" />
         </Link>
 
         <div class="flex flex-col w-full gap-0">

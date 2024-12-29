@@ -274,8 +274,8 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                             <div class="flex justify-center lg:justify-start lg:static">
                                 <div
                                     class="absolute p-1 bg-white dark:bg-gray-800 rounded-full top-20 md:top-64 lg:top-auto lg:left-7 lg:bottom-4">
-                                    <img :src="avatarImageSrc || user.avatar_url" alt=""
-                                        class="rounded-full border-[1px] border-gray-200 dark:border-gray-400 dark:bg-gray-600 w-[174px] h-[168px]" />
+                                    <img :src="avatarImageSrc || user.avatar_url" alt="Imagen de perfil"
+                                        class="rounded-full border-[1px] border-gray-300 dark:border-gray-200 bg-gray-50 dark:bg-gray-400 w-[174px] h-[168px]" />
                                 </div>
 
                                 <div
@@ -333,7 +333,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     <span class="hidden md:block">Seguir</span>
                                 </button>
                                 <button v-else @click="followUnfollow"
-                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-red-300 dark:bg-red-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-red-400 uppercase tracking-widest hover:bg-red-800 dark:hover:bg-white focus:bg-red-800 dark:focus:bg-white active:bg-red-900 dark:active:bg-red-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-red-800 transition ease-in-out duration-150" title="Dejar de seguir a este usuario">
+                                    class="inline-flex whitespace-nowrap items-center px-4 py-2 bg-red-300 dark:bg-red-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-red-400 uppercase tracking-widest hover:bg-red-800 dark:hover:bg-red-100 focus:bg-red-800 dark:focus:bg-red-100 active:bg-red-900 dark:active:bg-red-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-red-800 transition ease-in-out duration-150" title="Dejar de seguir a este usuario">
                                     <UserMinusIcon class="w-5 h-5 md:mr-1" />
                                     <span class="hidden md:block">No Seguir</span>
                                 </button>

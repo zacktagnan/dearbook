@@ -80,7 +80,7 @@ const closeShowNotification = () => {
         <a :href="route('profile.index', { username: $page.props.auth.user.username })"
             :title="'Perfil de ' + $page.props.auth.user.name">
             <img :src="$page.props.auth.user.avatar_url"
-                class="w-10 transition-all border-2 rounded-full hover:border-cyan-500"
+                class="w-10 transition-all border-2 rounded-full hover:border-cyan-500 bg-gray-50 dark:bg-gray-300"
                 :alt="$page.props.auth.user.name" />
         </a>
         <div @click="openCreateModal"

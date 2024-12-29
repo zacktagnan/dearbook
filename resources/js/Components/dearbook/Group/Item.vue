@@ -17,7 +17,7 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
 <template>
     <div class="rounded-md cursor-pointer hover:bg-white dark:hover:bg-[#102c38]">
         <Link :href="route('group.profile', { group: group.slug })" class="flex items-start gap-2 px-2 py-1">
-        <img :src="group.thumbnail_url" class="mt-1 w-[36px] rounded-md" :alt="group.name">
+        <img :src="group.thumbnail_url" class="mt-1 w-[36px] rounded-md border-[1px] border-gray-300 dark:border-gray-400 bg-gray-50 dark:bg-gray-400" :alt="group.name">
         <div class="flex-1">
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-black">{{ group.name }}</h3>
@@ -29,7 +29,7 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
                         </span>
                         <span v-else :title="$t('dearbook.group.list.main.title.role.admin')">
                             <AdjustmentsHorizontalIcon
-                                class="w-[21px] h-[21px] text-cyan-500 rounded-full bg-white p-[0.5px]" />
+                                class="w-[21px] h-[21px] text-cyan-500 rounded-full bg-white p-[0.5px] border-[0.5px] border-gray-200 dark:border-gray-400" />
                         </span>
                     </template>
 
