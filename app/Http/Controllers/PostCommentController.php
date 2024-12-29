@@ -17,6 +17,7 @@ use App\Traits\CommentsTree;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class PostCommentController extends Controller
@@ -39,6 +40,11 @@ class PostCommentController extends Controller
                 'comment' => $request->comment,
                 'user_id' => auth()->id(),
             ]);
+
+            if (!$comment) {
+                DB::rollBack();
+                return back()->withErrors('Error al crear el comentario.');
+            }
             $hasComment = true;
 
             $comments = $post->comments()->count();
@@ -90,7 +96,8 @@ class PostCommentController extends Controller
 
             DB::rollBack();
 
-            return back();
+            // return back();
+            return back()->withErrors('Hubo un error inesperado: ' . $e->getMessage());
         }
     }
 
@@ -102,7 +109,12 @@ class PostCommentController extends Controller
         $destinationFolder = Utilities::$commentRootFolderBaseName . $comment->id;
 
         try {
-            $comment->update($request->all());
+            $commentUpdated = $comment->update($request->all());
+
+            if (!$commentUpdated) {
+                DB::rollBack();
+                return response()->json(['message' => 'No se pudo actualizar el comentario.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
 
             if ($request->deleted_file_ids) {
                 $attachmentsToDelete = $comment->attachments()
@@ -161,6 +173,10 @@ class PostCommentController extends Controller
             $this->deleteFolderIfEmpty($destinationFolder);
 
             DB::rollBack();
+
+            return response()->json([
+                'message' => 'Hubo un error al actualizar el comentario: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -177,7 +193,11 @@ class PostCommentController extends Controller
                 $this->deleteResources($comment);
 
 
-                $comment->delete();
+                $commentDeleted = $comment->delete();
+                if (!$commentDeleted) {
+                    DB::rollBack();
+                    return back()->withErrors('No se pudo eliminar el comentario.');
+                }
 
                 DB::commit();
 
@@ -223,7 +243,10 @@ class PostCommentController extends Controller
             } catch (\Exception $e) {
                 DB::rollBack();
 
-                return back();
+                Log::error('Error al eliminar comentario: ' . $e->getMessage());
+
+                // return back();
+                return back()->withErrors('Hubo un error al eliminar el comentario.');
             }
         }
 

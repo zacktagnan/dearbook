@@ -21,6 +21,7 @@ use App\Http\Requests\PostStoreRequest;
 use App\Http\Requests\PostUpdateRequest;
 use DOMDocument;
 use Illuminate\Http\Response as HttpResponse;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,6 +54,9 @@ class PostController extends Controller
 
         try {
             $post = Post::create($request->all());
+            if (!$post) {
+                throw new \Exception('Error al crear el post.');
+            }
             $destinationFolder = Utilities::$postRootFolderBaseName . $post->id;
 
             /** @var \Illuminate\Http\UploadedFile[] $files */
@@ -61,13 +65,17 @@ class PostController extends Controller
             foreach ($files as $file) {
                 $path = $file->store($destinationFolder, 'public');
                 $allFilePaths[] = $path;
-                $post->attachments()->create([
+                $postAttachment = $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
                     'mime' => $file->getMimeType(),
                     'size' => $file->getSize(),
                     'created_by' => $request->user()->id,
                 ]);
+
+                if (!$postAttachment) {
+                    throw new \Exception('Error al guardar los archivos adjuntos.');
+                }
             }
 
             if ($post->group) {
@@ -86,8 +94,10 @@ class PostController extends Controller
             $this->deleteFolderIfEmpty($destinationFolder);
 
             DB::rollBack();
+            return back()->withErrors('Error al crear el post: ' . $e->getMessage());
         }
 
+        // return back()->with('success', 'Post creado exitosamente.');
         return back();
     }
 
@@ -103,7 +113,10 @@ class PostController extends Controller
 
         try {
             // dd($request->all());
-            $post->update($request->all());
+            $postUpdated = $post->update($request->all());
+            if (!$postUpdated) {
+                throw new \Exception('No se pudo actualizar el post.');
+            }
 
             // dd($request->deleted_file_ids);
             if ($request->deleted_file_ids) {
@@ -112,7 +125,10 @@ class PostController extends Controller
                     ->get();
 
                 foreach ($attachmentsToDelete as $attachmentToDelete) {
-                    $attachmentToDelete->delete();
+                    $attachmentDeleted = $attachmentToDelete->delete();
+                    if (!$attachmentDeleted) {
+                        throw new \Exception('Error al eliminar uno o más archivos adjuntos.');
+                    }
                 }
 
                 $this->deleteFolderIfEmpty($destinationFolder);
@@ -124,13 +140,16 @@ class PostController extends Controller
             foreach ($files as $file) {
                 $path = $file->store($destinationFolder, 'public');
                 $allFilePaths[] = $path;
-                $post->attachments()->create([
+                $postAttachment = $post->attachments()->create([
                     'name' => $file->getClientOriginalName(),
                     'path' => $path,
                     'mime' => $file->getMimeType(),
                     'size' => $file->getSize(),
                     'created_by' => $request->user()->id,
                 ]);
+                if (!$postAttachment) {
+                    throw new \Exception('Error al guardar uno o más archivos adjuntos.');
+                }
             }
 
             DB::commit();
@@ -140,6 +159,7 @@ class PostController extends Controller
             $this->deleteFolderIfEmpty($destinationFolder);
 
             DB::rollBack();
+            throw new \Exception('Error al actualizar el post: ' . $e->getMessage());
         }
     }
 
@@ -234,13 +254,20 @@ class PostController extends Controller
 
         try {
             if (!is_null($post->archived_at)) {
-                $post->unArchive();
+                $postUnArchived = $post->unArchive();
+                if (!$postUnArchived) {
+                    throw new \Exception('Failed to unarchive the post.');
+                }
             }
-            $post->delete();
+            $postDeleted = $post->delete();
+            if (!$postDeleted) {
+                throw new \Exception('Failed to delete the post.');
+            }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            return response("An error occurred during the post deletion process: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -359,11 +386,17 @@ class PostController extends Controller
         try {
             $this->deleteResources($post);
 
-            $post->forceDelete();
+            $postForceDeleted = $post->forceDelete();
+            if (!$postForceDeleted) {
+                throw new \Exception('Failed to permanently delete the post.');
+            }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Post force deletion failed: ' . $e->getMessage());
+
+            return response('An error occurred during the force deletion process: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
