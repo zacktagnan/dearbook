@@ -71,7 +71,7 @@ class GroupResource extends JsonResource
         ];
 
         if ($this->includeMembers) {
-            $creator = $this->creatorFromAudit->user;
+            $creator = json_decode($this->creatorFromAudit->user);
 
             $creatorUserExists = User::find($creator->id);
 
