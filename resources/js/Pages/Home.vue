@@ -55,12 +55,14 @@ console.log('success', props.success)
                 <PostCreate />
                 <PostList v-if="posts.data.length > 0" class="flex-1 last:mb-[5px]" :posts="posts.data"
                     :after_comment_deleted="after_comment_deleted" />
-                <div v-else class="p-4 mx-0.5 bg-white mt-4 rounded shadow text-center">No hay publicaciones actualmente
+                <div v-else
+                    class="p-4 mx-0.5 bg-white dark:bg-gray-800 dark:text-gray-100 mt-4 rounded shadow text-center">No
+                    hay publicaciones actualmente
                 </div>
             </div>
 
-            <NotificationBox @callCloseShowNotification="closeShowNotification"
-                v-show="showNotification && success" :title="'Info'" :message="successMessage" />
+            <NotificationBox @callCloseShowNotification="closeShowNotification" v-show="showNotification && success"
+                :title="'Info'" :message="successMessage" />
         </div>
     </AuthenticatedLayout>
 </template>
