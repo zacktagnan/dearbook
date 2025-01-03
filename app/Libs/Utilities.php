@@ -36,4 +36,6 @@ class Utilities
     public static string $postRootFolderBaseName = 'attachments/post-';
 
     public static string $commentRootFolderBaseName = 'attachments/comment-';
+
+    public static string $userRootFolderBaseName = 'user-';
 }
