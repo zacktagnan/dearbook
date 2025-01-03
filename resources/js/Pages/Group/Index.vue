@@ -69,11 +69,11 @@ const isAutoApprovalGroup = computed(() => props.group.auto_approval);
 
 // const members = computed(() => props.group.all_group_users)
 const members = ref(props.group.all_group_users)
-const isThatCreatorAndOwnerNotTheSame = computed(() => props.group.creator.id !== props.group.owner.id)
-const creatorAndOwner = {
+const isThatCreatorAndOwnerNotTheSame = computed(() => props.group.creator?.id !== props.group.owner?.id)
+const creatorAndOwner = ref({
     creator: props.group.creator,
     owner: props.group.owner,
-}
+})
 
 const maxGroupUsersIconsToList = 5
 
@@ -368,6 +368,14 @@ const leaveGroup = () => {
     })
 }
 
+const handleUpdateMembers = () => {
+    members.value = [...props.group.all_group_users];
+    creatorAndOwner.value = {
+        creator: props.group.creator,
+        owner: props.group.owner,
+    }
+};
+
 const successMessage = computed(() => props.success?.message ? props.success.message : props.success)
 </script>
 
@@ -507,12 +515,15 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                                     ? 'z-[22]'
                                                     : 'z-[21]'
                                             ]" class="flex items-center justify-center w-[30px] h-[30px] shadow-lg">
-                                                <a :href="route('profile.index', { username: user.username })" :title="$t('Profile of', {
-                                                    'name': user.name
-                                                })">
+                                                <a v-if="user?.username"
+                                                    :href="route('profile.index', { username: user?.username })" :title="$t('Profile of', {
+                                                        'name': user.name
+                                                    })">
                                                     <img :src="user.avatar_url" :alt="user.name"
                                                         class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-gray-200 hover:ring-[#0099ce]" />
                                                 </a>
+                                                <img v-else :src="user.avatar_url" :alt="user.name"
+                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-gray-200 hover:ring-[#0099ce]" />
                                             </div>
                                         </template>
                                         <div v-for="(groupUser, index) of group.all_group_users?.slice(
@@ -730,7 +741,8 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                     :is-that-creator-and-owner-not-the-same="isThatCreatorAndOwnerNotTheSame"
                                     :creator-and-owner="creatorAndOwner" :members="members" :auth-user="authUser"
                                     :auth-user-is-the-owner-group="authUserIsTheOwnerGroup"
-                                    :is-admin-group="isAdminGroup" @callMemberRoleChange="memberRoleChange"
+                                    :is-admin-group="isAdminGroup" :is-creator-member-group="group.creator_is_member"
+                                    @callMemberRoleChange="memberRoleChange"
                                     @callConfirmDeleteMemberModal="showConfirmDeleteMemberModal" />
                             </TabPanel>
 
@@ -779,7 +791,8 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
             @callActiveShowNotification="activeShowNotification" />
 
         <TransferOwnershipModal :group="group" :members="members" :auth-user="authUser"
-            v-model="showingTransferOwnershipModal" @callActiveShowNotification="activeShowNotification" />
+            v-model="showingTransferOwnershipModal" @callActiveShowNotification="activeShowNotification"
+            @callUpdateMembers="handleUpdateMembers" />
 
         <ConfirmDeleteMemberModal :show="showingConfirmDeleteMemberModal" @close="closeConfirmDeleteMemberModal">
             <div class="p-6">

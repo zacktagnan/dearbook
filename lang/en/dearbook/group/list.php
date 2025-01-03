@@ -25,7 +25,7 @@ return [
         'no_registers' => 'No members yet.',
         'creating_and_owning_date_text' => 'Group created and owned since :creating_and_owning_date',
         'creating_date_text' => 'Group created :creating_date',
-        'owning_date_text' => 'Group owned since :owning_date',
+        'owning_date_text' => 'Group owner, joined :owning_date',
         'joining_date_text' => 'Joined :joining_date',
     ],
 

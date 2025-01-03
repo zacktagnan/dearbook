@@ -43,6 +43,7 @@ use Inertia\{Inertia, Response as InertiaResponse};
 use App\Notifications\InvitationToJoinGroupApproved;
 use App\Notifications\RequestToJoinGroupApprovedOrNot;
 use App\Http\Requests\GroupThumbnailImageUpdateRequest;
+use App\Http\Requests\TransferRequest;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -129,10 +130,10 @@ class GroupController extends Controller
 
         GroupAudit::create([
             'group_id' => $group->id,
-            'user' => json_encode([
+            'user' => [
                 'id' => auth()->id(),
                 'name' => auth()->user()->name,
-            ]),
+            ],
             'event' => GroupAuditEvent::CREATED->value,
             'details' => 'Grupo creado por ' . auth()->user()->name . '.',
         ]);
@@ -504,7 +505,7 @@ class GroupController extends Controller
         return back();
     }
 
-    public function transferOwnership(Request $request, Group $group): RedirectResponse|HttpResponse
+    public function transferOwnership(TransferRequest $request, Group $group): RedirectResponse|HttpResponse
     {
         if (!$group->isOwnerOfTheGroup(auth()->id())) {
             // return response("Only the owner of the group have permission to TRANSFER ownership.", Response::HTTP_FORBIDDEN);
@@ -528,10 +529,10 @@ class GroupController extends Controller
 
             $groupAudited = GroupAudit::create([
                 'group_id' => $group->id,
-                'user' => json_encode([
+                'user' => [
                     'id' => auth()->id(),
                     'name' => auth()->user()->name,
-                ]),
+                ],
                 'event' => GroupAuditEvent::OWNERSHIP_TRANSFERRED->value,
                 'details' => 'Grupo traspasado a ' . $group->user->name . '.',
             ]);

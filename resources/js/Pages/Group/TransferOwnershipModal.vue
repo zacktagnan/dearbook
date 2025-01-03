@@ -1,6 +1,7 @@
 <script setup>
 import BaseModal from '@/Components/dearbook/BaseModal.vue'
 import CloseModal from '@/Components/dearbook/CloseModal.vue'
+import InputError from '@/Components/InputError.vue'
 import {
     DialogTitle,
 } from "@headlessui/vue";
@@ -19,21 +20,15 @@ const props = defineProps({
 
 // Considerar el CREATOR como otro al que transferir la propiedad siempre que siga siendo Miembro del Group y ADMIN...
 // -> para ello, como no está incluido dentro de MEMBERS, deberá ser recibido explícitamente igual que su comprobación de ser MEMBER y ADMIN.
-
-// Tras la transferencia de la propiedad, se debe actualizar el listado principal de miembros satisfactoriamente.
-// Ahora, sin esa actualización correcta, aparecen líneas de miembros duplicadas.
-// Puede que sea necesario aplicar algo relativo a la actualización similar a cuando se elimina un miembro o en procesos similares.
-
-console.log('group.creator', props.group.creator)
-console.log('group.creator.role:', props.group.creator.role)
-
 const adminMembersCollection = computed(() => {
     // return props.members.filter(member => member.role === 'admin' && member.id !== props.authUser.id)
     const filteredMembers = props.members.filter(member => member.role === 'admin' && member.id !== props.authUser.id)
-    const creatorMember = props.group.creator.role === 'admin' && props.group.creator.id !== props.authUser.id ? props.group.creator : null
-    return creatorMember ? [creatorMember, ...filteredMembers] : filteredMembers
+    const ownerMember = props.group.owner?.role === 'admin' && props.group.owner.id !== props.authUser.id ? props.group.owner : null
+    let adminMembers = ownerMember ? [ownerMember, ...filteredMembers] : filteredMembers
+    const creatorMember = props.group.creator?.role === 'admin' && props.group.creator.id !== props.authUser.id ? props.group.creator : null
+    adminMembers = creatorMember ? [creatorMember, ...filteredMembers] : filteredMembers
+    return adminMembers
 })
-console.log('adminMembersCollection-TRANSFER', adminMembersCollection.value)
 
 const transferForm = useForm({
     user_id: "",
@@ -49,7 +44,7 @@ const show = computed({
     set: (value) => emit("update:modelValue", value),
 });
 
-const emit = defineEmits(["update:modelValue", "callActiveShowNotification"]);
+const emit = defineEmits(["update:modelValue", "callActiveShowNotification", "callUpdateMembers"]);
 
 const closeModal = () => {
     show.value = false;
@@ -64,6 +59,7 @@ const submitTransfer = () => {
         onSuccess: () => {
             closeModal()
             emit('callActiveShowNotification')
+            emit('callUpdateMembers')
         },
         onError: (errors) => {
             console.log(errors);
@@ -105,6 +101,10 @@ const submitTransfer = () => {
                             `${adminMember.name} (${adminMember.username})` }}</option>
                     </select>
                 </div>
+            </div>
+
+            <div class="px-[14px]">
+                <InputError class="mt-2" :message="transferForm.errors.user_id" />
             </div>
 
             <div class="flex p-[14px] gap-3">
