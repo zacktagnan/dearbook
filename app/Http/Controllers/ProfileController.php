@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\GroupUserStatus;
 use Carbon\Carbon;
 use App\Models\Post;
 use App\Models\User;
-use Inertia\{Inertia, Response as InertiaResponse};
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Group;
 use App\Models\Follower;
 use App\Models\Attachment;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Traits\StorageManagement;
+use Illuminate\Support\Facades\DB;
+use App\Http\Enums\GroupUserStatus;
 use App\Services\AttachmentService;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\GroupResource;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Resources\FollowResource;
 use Illuminate\Support\Facades\Storage;
@@ -25,8 +25,14 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\CoverImageUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\AvatarImageUpdateRequest;
-use App\Http\Resources\GroupResource;
+use App\Libs\Utilities;
+use App\Models\GroupAudit;
+use App\Models\GroupUser;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response as HttpResponse;
+use Inertia\{Inertia, Response as InertiaResponse};
 
 class ProfileController extends Controller
 {
@@ -160,22 +166,50 @@ class ProfileController extends Controller
     /**
      * Delete the user's account.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request): RedirectResponse|HttpResponse
     {
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        DB::beginTransaction();
 
-        Auth::logout();
+        try {
+            $user = $request->user();
 
-        $user->delete();
+            $this->applyDeleteResources($user);
+
+            Auth::logout();
+
+            $user->delete();
+
+            DB::commit();
+
+            $this->deleteImageFile($user->cover_path);
+            $this->deleteImageFile($user->avatar_path);
+
+            $this->deleteFolderIfEmpty(Utilities::$userRootFolderBaseName . $user->id);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response("An error occurred during the user deletion process: " . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return Redirect::to('/');
+        // return Redirect::to('/');
+        return Redirect::to('/login');
+    }
+
+    private function applyDeleteResources(User $user): void
+    {
+        GroupUser::where('user_id', $user->id)->delete();
+        Post::withTrashed()->where('user_id', $user->id)->forceDelete();
+        $groupCollectionToDelete = Group::withTrashed()->where('user_id', $user->id)->get();
+        foreach ($groupCollectionToDelete as $groupToDelete) {
+            GroupAudit::where('group_id', $groupToDelete->id)->delete();
+        }
+        Group::withTrashed()->where('user_id', $user->id)->forceDelete();
     }
 
     // public function updateImages(Request $request): RedirectResponse
