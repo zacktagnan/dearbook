@@ -8,6 +8,12 @@ defineProps({
     groupsJoined: {
         type: Array,
     },
+    // - - - -
+    isMyProfile: {
+        type: Boolean,
+        default: false,
+    },
+    // - - - -
 });
 </script>
 
@@ -22,7 +28,9 @@ defineProps({
                 </header>
             </div>
 
-            <GroupList :groups-owned="groupsOwned" :groups-joined="groupsJoined" />
+            <!-- - - - - -->
+            <GroupList :groups-owned="groupsOwned" :groups-joined="groupsJoined" :is-my-profile="isMyProfile" />
+            <!-- - - - - -->
         </div>
     </section>
 </template>
