@@ -541,7 +541,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                         <div v-if="group.total_group_user > maxGroupUsersIconsToList"
                                             :class="loadZIndex('+')"
                                             class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
-                                            <a href="#"
+                                            <a href="void 0" @click="asignSelectedIndex(2)"
                                                 :title="$t('dearbook.group.index.general_info.see_more_members') + ' :: (+' + (group.total_group_user - maxGroupUsersIconsToList) + ')'">
                                                 <PlusIcon class="w-5 h-5" />
                                             </a>

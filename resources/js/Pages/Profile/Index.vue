@@ -7,7 +7,7 @@ import TabItem from "@/Pages/Profile/Partials/TabItem.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import NotificationBox from "@/Components/dearbook/NotificationBox.vue";
 import { CameraIcon, XMarkIcon, CheckIcon } from "@heroicons/vue/24/solid";
-import { PencilSquareIcon, UserMinusIcon, UserPlusIcon } from "@heroicons/vue/24/outline";
+import { PencilSquareIcon, PlusIcon, UserMinusIcon, UserPlusIcon } from "@heroicons/vue/24/outline";
 import { computed, ref } from "vue";
 import { Head, useForm, usePage } from "@inertiajs/vue3";
 import PostCreate from "@/Components/dearbook/Post/Create.vue"
@@ -62,6 +62,20 @@ const props = defineProps({
 
 const authUser = usePage().props.auth.user
 const isMyProfile = computed(() => authUser && authUser.id === props.user.id)
+
+const maxFollowersIconsToList = 5
+
+const zIndex = ref(20)
+const loadZIndex = (index) => {
+    return {
+        0: 'z-[20]',
+        1: 'z-[19]',
+        2: 'z-[18]',
+        3: 'z-[17]',
+        4: 'z-[16]',
+        '+': 'z-[15]',
+    }[index];
+}
 
 // const theSelectedIndex = ref(0)
 const theSelectedIndex = ref(props.defaultIndex)
@@ -303,8 +317,33 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                         }}</small>
                                 </button>
 
+                                <!-- Listando algunos seguidores... -->
                                 <div class="relative mt-2.5 lg:mb-6">
-                                    <div
+                                    <div v-if="followers.length === 0" class="h-[30px]" />
+                                    <div v-else
+                                        class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
+                                        <div v-for="(follower, index) of followers?.slice(
+                                            0,
+                                            maxFollowersIconsToList
+                                        )" :class="loadZIndex(index)"
+                                            class="flex items-center justify-center w-[30px] h-[30px] shadow-lg">
+                                            <a :href="route('profile.index', { username: follower.username })" :title="$t('Profile of', {
+                                                'name': follower.name
+                                            })">
+                                                <img :src="follower.avatar_url" :alt="follower.name"
+                                                    class="w-[30px] h-[30px] rounded-full ring-2 ring-white dark:ring-slate-900 bg-gray-100 dark:bg-gray-200 hover:ring-[#0099ce]" />
+                                            </a>
+                                        </div>
+                                        <div v-if="followers.length > maxFollowersIconsToList"
+                                            :class="loadZIndex('+')"
+                                            class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
+                                            <a href="void 0" @click="asignSelectedIndex(2)"
+                                                :title="$t('dearbook.follower.index.general_info.see_more_followers') + ' :: (+' + (followers.length - maxFollowersIconsToList) + ')'">
+                                                <PlusIcon class="w-5 h-5" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <!-- <div v-else
                                         class="flex justify-center -space-x-1 font-mono text-sm font-bold leading-6 text-white lg:justify-start">
                                         <div class="z-20 flex items-center justify-center w-[30px] h-[30px] shadow-lg">
                                             <a href="#">
@@ -324,7 +363,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                         <div
                                             class="z-[16] flex items-center justify-center w-[30px] h-[30px] bg-pink-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
                                             01</div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
