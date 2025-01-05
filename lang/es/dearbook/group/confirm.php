@@ -25,6 +25,10 @@ return [
             'question' => 'Proceso para abandonar el grupo',
             'text' => 'Está a punto de dejar de ser miembro de este grupo. Dejará de poder gestionar toda publicación y comentario que haya efectuado dentro del grupo. Confirmar para proseguir con el proceso.',
             'btn_text' => 'Abandonar grupo',
+            'previous_step' => [
+                'text' => 'Siendo dueño de ":group_name", como paso previo, se hace preciso traspasar la propiedad de este grupo a otro miembro ADMIN.',
+                'btn_text' => 'Acceder al grupo',
+            ],
         ],
     ],
 ];

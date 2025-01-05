@@ -2,9 +2,7 @@
 import DeleteUserForm from "./Partials/DeleteUserForm.vue";
 import UpdatePasswordForm from "./Partials/UpdatePasswordForm.vue";
 import UpdateProfileInformationForm from "./Partials/UpdateProfileInformationForm.vue";
-// - - - -
 import GroupInformation from '@/Pages/Profile/Partials/GroupInformation/Index.vue'
-// - - - -
 
 defineProps({
     mustVerifyEmail: {
@@ -13,19 +11,16 @@ defineProps({
     status: {
         type: String,
     },
-    // - - - -
     groupsOwned: {
         type: Array,
     },
     groupsJoined: {
         type: Array,
     },
-    // - - - -
     isMyProfile: {
         type: Boolean,
         default: true,
     },
-    // - - - -
 });
 </script>
 
@@ -43,10 +38,8 @@ defineProps({
             <DeleteUserForm class="max-w-xl" />
         </div>
 
-        <!-- - - - - -->
         <div class="p-4 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 shadow sm:p-8 sm:rounded-lg">
             <GroupInformation :groups-owned="groupsOwned" :groups-joined="groupsJoined" :is-my-profile="isMyProfile" />
         </div>
-        <!-- - - - - -->
     </div>
 </template>

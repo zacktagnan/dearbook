@@ -9,21 +9,23 @@ const props = defineProps({
     group: {
         type: Object,
     },
-    // - - - -
     isMyProfile: {
         type: Boolean,
         default: false,
     },
-    // - - - -
 });
 
-// - - - -
 const emit = defineEmits(['callShowConfirmLeaveGroup',])
-// - - - -
 
 const authUser = usePage().props.auth.user;
 
 const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props.group.user.id)
+
+const handleLeaveGroupClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    emit('callShowConfirmLeaveGroup', props.group, authUserIsTheOwnerGroup.value);
+}
 </script>
 
 <template>
@@ -61,11 +63,9 @@ const authUserIsTheOwnerGroup = computed(() => authUser && authUser.id === props
             </div>
         </div>
         </Link>
-        <!-- - - - - -->
-        <!-- href="#" :href="$emit('callShowConfirmLeaveGroup')" -->
-        <a v-if="isMyProfile" :href="$emit('callShowConfirmLeaveGroup', group)"
+
+        <a v-if="isMyProfile" :href="void 0" @click="handleLeaveGroupClick"
             class="absolute w-full bottom-2 text-sm text-center text-gray-200 bg-red-300 opacity-0 group-hover:opacity-100 hover:bg-red-400 hover:text-white transition-all"
             title="Abandonar grupo">Abandonar</a>
-        <!-- - - - - -->
     </div>
 </template>

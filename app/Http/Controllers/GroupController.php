@@ -491,14 +491,18 @@ class GroupController extends Controller
                 'group_name' => $group->name,
             ]);
 
-            if ($group->type === GroupType::PUBLIC->value) {
-                // volver a Group-Profile
-                return to_route('group.profile', [
-                    'group' => $group->slug
-                ])->with('success', $message);
-            } else if ($group->type === GroupType::PRIVATE->value) {
-                // volver a HOME
-                return to_route('home')->with('success', $message);
+            if ($request->from === 'user_profile') {
+                return back()->with('success', $message);
+            } else {
+                if ($group->type === GroupType::PUBLIC->value) {
+                    // volver a Group-Profile
+                    return to_route('group.profile', [
+                        'group' => $group->slug
+                    ])->with('success', $message);
+                } else if ($group->type === GroupType::PRIVATE->value) {
+                    // volver a HOME
+                    return to_route('home')->with('success', $message);
+                }
             }
         }
 

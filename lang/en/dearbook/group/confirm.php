@@ -25,6 +25,10 @@ return [
             'question' => 'Leave group process',
             'text' => 'You are about to stop being a member of this group. You will no longer be able to manage any posts and comments you have made within the group. Confirm to continue with the process.',
             'btn_text' => 'Leave group',
+            'previous_step' => [
+                'text' => 'As the owner of ":group_name", as a previous step, it is necessary to transfer ownership of this group to another ADMIN member.',
+                'btn_text' => 'Accessing the group',
+            ],
         ],
     ],
 ];
