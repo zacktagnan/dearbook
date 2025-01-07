@@ -95,4 +95,14 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->orWhere('users.username', 'like', '%' . $searchTerm . '%');
         });
     }
+
+    public function isFollowing(User $user)
+    {
+        return $this->followings()->where('followed_id', $user->id)->exists();
+    }
+
+    public function isFollowedBy(User $user)
+    {
+        return $this->followers()->where('follower_id', $user->id)->exists();
+    }
 }

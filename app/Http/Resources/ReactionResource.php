@@ -26,6 +26,7 @@ class ReactionResource extends JsonResource
                 'avatar_url' => $this->user->avatar_path
                     ? Storage::url($this->user->avatar_path)
                     : null,
+                'is_followed_by' => $this->user->isFollowedBy(auth()->user()),
             ],
         ];
     }

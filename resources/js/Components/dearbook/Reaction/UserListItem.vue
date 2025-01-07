@@ -1,11 +1,24 @@
 <script setup>
-import { UserPlusIcon, } from "@heroicons/vue/24/solid";
+import FollowGeneralButton from "@/Components/FollowGeneralButton.vue";
+// import { UserPlusIcon, } from "@heroicons/vue/24/solid";
+import { usePage } from "@inertiajs/vue3"
+import { computed } from "vue"
 
-defineProps({
+const props = defineProps({
     user: Object,
     type: String,
     title: String,
 })
+
+const authUser = usePage().props.auth.user
+
+const isNotAuthUser = computed(
+    () => !!(props.user.id !== authUser.id)
+)
+
+const updateFollowStatus = (isFollowedBy) => {
+    props.user.is_followed_by = isFollowedBy
+}
 </script>
 
 <template>
@@ -26,9 +39,12 @@ defineProps({
             </a>
         </div>
 
-        <button class="flex items-center gap-1 px-2 my-0.5 bg-gray-200 dark:bg-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-md transition-colors duration-150">
+        <!-- <button v-if="isNotAuthUser"
+            class="flex items-center gap-1 px-2 my-0.5 bg-gray-200 dark:bg-gray-400 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-md transition-colors duration-150">
             <UserPlusIcon class="w-5 h-5" />
             Agregar a amigos
-        </button>
+        </button> -->
+        <FollowGeneralButton v-if="isNotAuthUser" :user="user" :is-current-user-follower="user.is_followed_by"
+            @call-follow-status-change="updateFollowStatus" />
     </div>
 </template>
