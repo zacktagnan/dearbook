@@ -46,5 +46,6 @@ const updateFollowStatus = (isFollowedBy) => {
         </button> -->
         <FollowGeneralButton v-if="isNotAuthUser" :user="user" :is-current-user-follower="user.is_followed_by"
             @call-follow-status-change="updateFollowStatus" />
+        <!-- <FollowGeneralButton v-if="isNotAuthUser" :user="user" :is-current-user-follower="user.is_followed_by" /> -->
     </div>
 </template>

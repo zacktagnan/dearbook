@@ -1,7 +1,8 @@
 <script setup>
 import { UserMinusIcon, UserPlusIcon } from "@heroicons/vue/24/outline";
 import { useForm } from "@inertiajs/vue3"
-import { ref } from "vue";
+import { computed, onMounted, ref, watch } from "vue"
+import { followState } from "@/StoresGlobal/followState";
 
 const props = defineProps({
     user: {
@@ -14,9 +15,27 @@ const emit = defineEmits(['callFollowStatusChange'])
 
 const isAuthUserFollower = ref(props.isCurrentUserFollower)
 
+// const localFollowStatus = ref(props.isCurrentUserFollower)
+// const isAuthUserFollower = computed({
+//     get: () => followState.getFollowStatus(props.user.id) || localFollowStatus.value,
+//     set: (value) => followState.setFollowStatus(props.user.id, value)
+// })
+
+// onMounted(() => {
+//     if (!followState.followStatus.hasOwnProperty(props.user.id)) {
+//         followState.setFollowStatus(props.user.id, localFollowStatus.value)
+//     }
+// })
+
+// Observar el estado global y forzar la actualización del componente
+// watch(() => followState.getFollowStatus(props.user.id), (newVal) => {
+//     isAuthUserFollower.value = newVal
+// })
+
 const followUnfollow = () => {
     const form = useForm({
-        follow: !props.isCurrentUserFollower
+        // follow: !props.isCurrentUserFollower
+        follow: !isAuthUserFollower.value
     })
 
     form.post(route('user.follow-unfollow', props.user.id), {
@@ -24,6 +43,12 @@ const followUnfollow = () => {
         onSuccess: () => {
             isAuthUserFollower.value = !isAuthUserFollower.value
             emit('callFollowStatusChange', isAuthUserFollower.value)
+            // ---------------
+            // followState.setFollowStatus(props.user.id, !isAuthUserFollower.value)
+            // ---------------
+            // followState.setFollowStatus(props.user.id, !isAuthUserFollower.value)
+            // isAuthUserFollower.value = !isAuthUserFollower.value
+            // localFollowStatus.value = !localFollowStatus.value
         }
     })
 }
