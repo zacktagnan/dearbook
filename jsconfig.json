@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
         "baseUrl": ".",
+        // Para ignorar las advertencias de deprecación en TypeScript 6.0 sobre "baseUrl"
+        "ignoreDeprecations": "6.0",
         "paths": {
             "@/*": ["resources/js/*"],
             "ziggy-js": ["./vendor/tightenco/ziggy"]
