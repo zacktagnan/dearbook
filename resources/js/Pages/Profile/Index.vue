@@ -327,7 +327,7 @@ const successMessage = computed(() => props.success?.message ? props.success.mes
                                         </div>
                                         <div v-if="followers.length > maxFollowersIconsToList" :class="loadZIndex('+')"
                                             class="flex items-center justify-center w-[30px] h-[30px] bg-cyan-500 rounded-full shadow-lg ring-2 ring-white dark:ring-slate-900">
-                                            <a href="void 0" @click="asignSelectedIndex(2)"
+                                            <a href="javascript: void(0);" @click="asignSelectedIndex(2)"
                                                 :title="$t('dearbook.follower.index.general_info.see_more_followers') + ' :: (+' + (followers.length - maxFollowersIconsToList) + ')'">
                                                 <PlusIcon class="w-5 h-5" />
                                             </a>
